@@ -1168,7 +1168,7 @@ def _get_software_agent(pr, gmprocess_version):
     software = "gmprocess"
     hashstr = "0000001"
     agent_id = f"seis_prov:sp001_sa_{hashstr}"
-    giturl = "https://github.com/usgs/groundmotion-processing"
+    giturl = "https://code.usgs.gov/ghsc/esi/groundmotion-processing"
     pr.agent(
         agent_id,
         other_attributes=(

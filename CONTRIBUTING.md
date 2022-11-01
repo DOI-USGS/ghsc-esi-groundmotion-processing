@@ -15,7 +15,7 @@ For additional information, please see the [USGS software development best
 practices guide][4] and the [USGS Code of Scientific Conduct][5]. 
 
 
-[1]: https://github.com/usgs/groundmotion-processing/issues
+[1]: https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues
 [2]: https://help.github.com/articles/fork-a-repo/
 [3]: https://help.github.com/articles/about-pull-requests/
 [4]: https://github.com/usgs/best-practices

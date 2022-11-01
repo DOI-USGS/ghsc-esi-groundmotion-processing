@@ -59,7 +59,7 @@ Then open a new powershell terminal and run `conda create --name gmprocess pytho
 First clone this repository and go into the root directory with
 
 ```term
-git clone https://github.com/usgs/groundmotion-processing.git
+git clone https://code.usgs.gov/ghsc/esi/groundmotion-processing.git
 cd groundmotion-processing
 ```
 
@@ -98,4 +98,4 @@ pytest .
 This will be followed by a lot of terminal output.
 Warnings are expected to occur and do not indicate a problem.
 Errors indicate that something has gone wrong and you will want to troubleshoot.
-You can create an issue in [GitHub](https://github.com/usgs/groundmotion-processing/issues) if you are not able to resolve the problem.
+You can create an issue in [GitHub](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) if you are not able to resolve the problem.

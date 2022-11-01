@@ -7,7 +7,7 @@ Description
 Getting Help
 : If you need help, please  browse and search this documentation. Additionally,
   you can submit questions, bugs reports, and feature requests on the 
-  [issue tracker](https://github.com/usgs/groundmotion-processing/issues) on GitHub.
+  [issue tracker](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) on GitHub.
 
 
 Acknowledgements

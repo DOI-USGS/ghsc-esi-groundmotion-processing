@@ -3,7 +3,7 @@
 The config file is the primary means by which users can adjust and customize
 *gmprocess*. 
 
-The [default config file]((https://github.com/usgs/groundmotion-processing/blob/main/src/gmprocess/data/config_production.yml)) in the source code includes comments to help explain the values
+The [default config file]((https://code.usgs.gov/ghsc/esi/groundmotion-processing/blob/main/src/gmprocess/data/config_production.yml)) in the source code includes comments to help explain the values
 and their units.
 This is a useful reference because sections or comments can be removed from the
 config file for a given project. 
@@ -90,7 +90,7 @@ deleting it's entry.
 
 To see the available arguments for each step and their default values, you can look
 up the function in the `gmprocess/waveform_processing` directory 
-([here](https://github.com/usgs/groundmotion-processing/tree/main/gmprocess/waveform_processing)
+([here](https://code.usgs.gov/ghsc/esi/groundmotion-processing/tree/main/gmprocess/waveform_processing)
 is the link to it in GitHub). 
 
 ```{Hint}
@@ -105,7 +105,7 @@ actual p-wave arrival, causing some of the shaking to be placed in the "noise" w
 which in tern causes the record to fail the signal-to-noise ratio test.
 
 Please post any questions or issues that you have regarding the config to the GitHub
-[issues](https://github.com/usgs/groundmotion-processing/issues) page. 
+[issues](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) page. 
 
 % Indices and tables
 

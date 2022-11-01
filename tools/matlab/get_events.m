@@ -1,7 +1,7 @@
 function events = get_events(h5file)
 %get_events Return information about events in ASDF workspace file.
 %
-% See: https://github.com/usgs/groundmotion-processing/#introduction
+% See: https://code.usgs.gov/ghsc/esi/groundmotion-processing/#introduction
 % 
 %   events = get_events(h5file)
 %   Inputs:
