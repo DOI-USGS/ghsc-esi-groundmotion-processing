@@ -8,7 +8,7 @@ of the code. The big picture rules are:
 
 - Before working on changes, it is best to talk to us first. This is best
   accomplished by opening an 
-  [issue](https://github.com/usgs/groundmotion-processing/issues)
+  [issue](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues)
   on Github and describing the what you are planning to accomplish.
 
 - We generally try to follow [pep8](https://www.python.org/dev/peps/pep-0008/)

@@ -1,7 +1,7 @@
 function peaks = get_waveform_metrics(h5file)
 % get_waveform_metrics Retrieve tables of peak ground motions.
 %
-% See: https://github.com/usgs/groundmotion-processing/#introduction
+% See: https://code.usgs.gov/ghsc/esi/groundmotion-processing/#introduction
 % 
 % Output tables are organized into tables by Intensity Measure Component
 % (IMC) - i.e., greater_of_two_horizontals, gmrotd, h1, h2, etc.

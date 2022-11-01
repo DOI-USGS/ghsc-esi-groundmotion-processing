@@ -80,7 +80,7 @@ announcement_html = """
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
         <img id="announcement_left_img" valign="middle" src="%s/_static/usgs.png""></a>
     Ground-Motion Processing Software
-    <a href='https://github.com/usgs/groundmotion-processing' style='text-decoration: none'>
+    <a href='https://code.usgs.gov/ghsc/esi/groundmotion-processing' style='text-decoration: none'>
         <img id="announcement_right_img" valign="middle"
             src="%s/_static/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png"></a>
 """ % (

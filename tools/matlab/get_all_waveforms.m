@@ -1,7 +1,7 @@
 function waveforms = get_all_waveforms(h5file)
 % get_all_waveforms  Retrieve all waveforms from gmprocess ASDF file.
 %
-% See: https://github.com/usgs/groundmotion-processing/#introduction
+% See: https://code.usgs.gov/ghsc/esi/groundmotion-processing/#introduction
 % 
 %   waveforms = get_all_waveforms(h5file)
 %   Inputs:
