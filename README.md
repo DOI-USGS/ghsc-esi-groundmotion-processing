@@ -12,5 +12,5 @@ Most of the extensions that we provide are to handle strong motion data and rela
 # Reference
 If you wish to cite this software, please use this reference:
 
-- Hearne, M., E. M. Thompson, H. Schovanec, J. Rekoske, B. T. Aagaard, and C. B. Worden (2019). USGS automated ground motion processing software, USGS Software Release, doi: [10.5066/P9ANQXN3] (https://dx.doi.org/10.5066/P9ANQXN3).
+- Hearne, M., E. M. Thompson, H. Schovanec, J. Rekoske, B. T. Aagaard, and C. B. Worden (2019). USGS automated ground motion processing software, USGS Software Release, doi: [10.5066/P9ANQXN3](https://dx.doi.org/10.5066/P9ANQXN3).
   
