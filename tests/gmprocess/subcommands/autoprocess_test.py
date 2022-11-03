@@ -36,7 +36,7 @@ def test_autoprocess(script_runner):
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
-        pattern = ["workspace.h5", ".png", ".csv", "_dat.json", "_metrics.json"]
+        pattern = ["workspace.h5", ".png", ".csv", ".html",  "_dat.json", "_metrics.json"]
         for root, _, files in os.walk(ddir):
             for file in files:
                 if any(file.endswith(ext) for ext in pattern):
