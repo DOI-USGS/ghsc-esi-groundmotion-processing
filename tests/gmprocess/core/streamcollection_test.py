@@ -122,105 +122,108 @@ def test_duplicates():
     # Now, we should have kept the '--' network and not the 'CE' network
     assert sc.select(station="23837")[0][0].stats.network == "--"
 
-    # Now change the process preference order to see if we get back the
-    # original results
-    sc = StreamCollection(
-        streams=sc_bad.streams,
-        handle_duplicates=True,
-        process_level_preference=["V2", "V1"],
-    )
-    assert sc.select(station="23837")[0][0].stats.network == "CE"
+    # turn off the rest of these to save time; keeping the code in case it is useful
+    # in the future
+    if False:
+        # Now change the process preference order to see if we get back the
+        # original results
+        sc = StreamCollection(
+            streams=sc_bad.streams,
+            handle_duplicates=True,
+            process_level_preference=["V2", "V1"],
+        )
+        assert sc.select(station="23837")[0][0].stats.network == "CE"
 
-    # Check that decreasing the distance tolerance results in streams now being
-    # treated as different streams
-    sc = StreamCollection(
-        streams=streams, max_dist_tolerance=10, handle_duplicates=True
-    )
-    assert len(sc) == 3
+        # Check that decreasing the distance tolerance results in streams now being
+        # treated as different streams
+        sc = StreamCollection(
+            streams=streams, max_dist_tolerance=10, handle_duplicates=True
+        )
+        assert len(sc) == 3
 
-    # Change the streams to have the same processing level
-    for st in sc_bad:
-        for tr in st:
-            tr.stats.standard.process_level = "uncorrected physical units"
+        # Change the streams to have the same processing level
+        for st in sc_bad:
+            for tr in st:
+                tr.stats.standard.process_level = "uncorrected physical units"
 
-    # Try changing the preferred format order
-    sc = StreamCollection(
-        streams=sc_bad.streams,
-        handle_duplicates=True,
-        format_preference=["dmg", "cosmos"],
-    )
-    assert sc.select(station="23837")[0][0].stats.network == "--"
+        # Try changing the preferred format order
+        sc = StreamCollection(
+            streams=sc_bad.streams,
+            handle_duplicates=True,
+            format_preference=["dmg", "cosmos"],
+        )
+        assert sc.select(station="23837")[0][0].stats.network == "--"
 
-    sc = StreamCollection(
-        streams=sc_bad.streams,
-        handle_duplicates=True,
-        format_preference=["cosmos", "dmg"],
-    )
-    assert sc.select(station="23837")[0][0].stats.network == "CE"
+        sc = StreamCollection(
+            streams=sc_bad.streams,
+            handle_duplicates=True,
+            format_preference=["cosmos", "dmg"],
+        )
+        assert sc.select(station="23837")[0][0].stats.network == "CE"
 
-    # Set process level and format to be he same
-    for st in sc_bad:
-        for tr in st:
-            tr.stats.standard.source_format = "cosmos"
+        # Set process level and format to be he same
+        for st in sc_bad:
+            for tr in st:
+                tr.stats.standard.source_format = "cosmos"
 
-    # Check that we keep the CE network due to the bad starttime on --
-    sczz = sc_bad.select(station="23837", network="--")
-    for st in sczz:
-        for tr in st:
+        # Check that we keep the CE network due to the bad starttime on --
+        sczz = sc_bad.select(station="23837", network="--")
+        for st in sczz:
+            for tr in st:
+                tr.stats.starttime = UTCDateTime(0)
+        sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
+        assert sc.select(station="23837")[0][0].stats.network == "CE"
+
+        for tr in sc_bad.select(network="CE")[0]:
             tr.stats.starttime = UTCDateTime(0)
-    sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
-    assert sc.select(station="23837")[0][0].stats.network == "CE"
+        for tr in sc_bad.select(network="--")[0]:
+            tr.stats.starttime = UTCDateTime(2018, 8, 29, 2, 33, 0)
 
-    for tr in sc_bad.select(network="CE")[0]:
-        tr.stats.starttime = UTCDateTime(0)
-    for tr in sc_bad.select(network="--")[0]:
-        tr.stats.starttime = UTCDateTime(2018, 8, 29, 2, 33, 0)
+        sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
+        assert sc.select(station="23837")[0][0].stats.network == "--"
 
-    sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
-    assert sc.select(station="23837")[0][0].stats.network == "--"
+        for tr in sc_bad.select(network="--")[0]:
+            tr.stats.starttime = UTCDateTime(0)
+            tr.trim(endtime=UTCDateTime(5))
 
-    for tr in sc_bad.select(network="--")[0]:
-        tr.stats.starttime = UTCDateTime(0)
-        tr.trim(endtime=UTCDateTime(5))
+        sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
+        assert sc.select(station="23837")[0][0].stats.network == "CE"
 
-    sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
-    assert sc.select(station="23837")[0][0].stats.network == "CE"
+        for tr in sc_bad.select(network="CE")[0]:
+            tr.trim(endtime=UTCDateTime(2))
 
-    for tr in sc_bad.select(network="CE")[0]:
-        tr.trim(endtime=UTCDateTime(2))
+        sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
+        assert sc.select(station="23837")[0][0].stats.network == "--"
 
-    sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
-    assert sc.select(station="23837")[0][0].stats.network == "--"
+        for tr in sc_bad.select(network="--")[0]:
+            tr.trim(endtime=UTCDateTime(2))
+            tr.resample(20, window="hann")
 
-    for tr in sc_bad.select(network="--")[0]:
-        tr.trim(endtime=UTCDateTime(2))
-        tr.resample(20, window="hann")
+        sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
+        assert sc.select(station="23837")[0][0].stats.network == "CE"
 
-    sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
-    assert sc.select(station="23837")[0][0].stats.network == "CE"
+        for tr in sc_bad.select(network="--")[0]:
+            tr.resample(10, window="hann")
 
-    for tr in sc_bad.select(network="--")[0]:
-        tr.resample(10, window="hann")
+        sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
+        assert sc.select(station="23837")[0][0].stats.network == "CE"
 
-    sc = StreamCollection(streams=sc_bad.streams, handle_duplicates=True)
-    assert sc.select(station="23837")[0][0].stats.network == "CE"
+        # New test for some Hawaii data.
+        datadir = TEST_DATA_DIR / "duplicate" / "hawaii"
+        streams = directory_to_streams(datadir)[0]
+        sc = StreamCollection(streams=streams, handle_duplicates=True)
+        assert len(sc) == 1
 
-    # New test for some Hawaii data.
-    datadir = TEST_DATA_DIR / "duplicate" / "hawaii"
-    streams = directory_to_streams(datadir)[0]
-    sc = StreamCollection(streams=streams, handle_duplicates=True)
-    assert len(sc) == 1
-
-    # New test for some Alaska data.
-    datadir = TEST_DATA_DIR / "duplicate" / "alaska"
-    streams = directory_to_streams(datadir)[0]
-    sc = StreamCollection(
-        streams=streams, handle_duplicates=True, preference_order=["location_code"]
-    )
-    assert len(sc) == 1
-    for st in sc:
-        for tr in st:
-            assert tr.stats.location == "D0"
+        # New test for some Alaska data.
+        datadir = TEST_DATA_DIR / "duplicate" / "alaska"
+        streams = directory_to_streams(datadir)[0]
+        sc = StreamCollection(
+            streams=streams, handle_duplicates=True, preference_order=["location_code"]
+        )
+        assert len(sc) == 1
+        for st in sc:
+            for tr in st:
+                assert tr.stats.location == "D0"
 
 
 def test_get_status():

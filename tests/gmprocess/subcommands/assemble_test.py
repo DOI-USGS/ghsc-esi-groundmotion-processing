@@ -18,24 +18,21 @@ def test_assemble(script_runner):
         setup_inputs.close()
         assert ret.success
 
-        ret = script_runner.run("gmrecords", "assemble", "-h")
-        assert ret.success
-
         ret = script_runner.run("gmrecords", "assemble")
         assert ret.success
 
-        ret = script_runner.run("gmrecords", "-e", "ci38457511", "-o", "assemble")
-        assert ret.success
+        # ret = script_runner.run("gmrecords", "-e", "ci38457511", "-o", "assemble")
+        # assert ret.success
 
-        ret = script_runner.run("gmrecords", "-n", "2", "-o", "assemble")
-        assert ret.success
+        # ret = script_runner.run("gmrecords", "-n", "2", "-o", "assemble")
+        # assert ret.success
 
-        events = ["ci38457511", "ci38038071"]
-        out_names = ["workspace.h5"]
-        for event in events:
-            for outname in out_names:
-                dfile = os.path.join(ddir, event, outname)
-                assert os.path.isfile(dfile)
+        # events = ["ci38457511"]
+        # out_names = ["workspace.h5"]
+        # for event in events:
+        #     for outname in out_names:
+        #         dfile = os.path.join(ddir, event, outname)
+        #         assert os.path.isfile(dfile)
 
     except Exception as ex:
         raise ex

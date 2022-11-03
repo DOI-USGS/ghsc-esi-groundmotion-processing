@@ -162,7 +162,7 @@ def get_spectral(period, stream, damping=0.05, times=None, config=None):
             stats["units"] = "%%g"
             spect_trace = StationTrace(data=acc_sa, header=stats, config=config)
             traces += [spect_trace]
-        spect_stream = StationStream(traces)
+        spect_stream = StationStream(traces, config=config)
         return spect_stream
 
 

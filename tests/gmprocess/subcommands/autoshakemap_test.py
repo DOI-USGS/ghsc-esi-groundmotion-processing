@@ -44,4 +44,5 @@ def test_autoshakemap(script_runner):
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_autoshakemap()

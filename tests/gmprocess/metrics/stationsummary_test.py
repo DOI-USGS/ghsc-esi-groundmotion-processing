@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import warnings
+import os
 
 import numpy as np
 from obspy.core.event import Origin
@@ -13,6 +14,7 @@ from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.base_utils import read_event_json_files
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.config import get_config
 
 
 def cmp_dicts(adict, bdict):
@@ -47,7 +49,6 @@ def test_stationsummary():
         stream_summary.stream = []
         final_stream = stream_summary.stream
         assert original_stream == final_stream
-        original_code = stream_summary.station_code
         np.testing.assert_array_equal(np.sort(stream_summary.components), target_imcs)
         np.testing.assert_array_equal(np.sort(stream_summary.imts), target_imts)
         np.testing.assert_almost_equal(
@@ -126,24 +127,10 @@ def test_stationsummary():
 
     # Test config use
     stream = read_geonet(datafile)[0]
-    stream_summary = StationSummary.from_config(stream)
-    target_imcs = np.sort(np.asarray(["GREATER_OF_TWO_HORIZONTALS", "H1", "H2", "Z"]))
-    target_imts = np.sort(
-        np.asarray(
-            [
-                "SA(1.000)",
-                "SA(2.000)",
-                "SA(3.000)",
-                "SA(0.300)",
-                "PGA",
-                "PGV",
-                "FAS(1.000)",
-                "FAS(2.000)",
-                "FAS(3.000)",
-                "FAS(0.300)",
-            ]
-        )
-    )
+    config = get_config()
+    config["metrics"]["sa"]["periods"]["defined_periods"] = [0.3, 1.0]
+    stream_summary = StationSummary.from_config(stream, config=config)
+    target_imcs = np.sort(np.asarray(["H1", "H2", "Z"]))
     assert stream_summary.smoothing == "konno_ohmachi"
     assert stream_summary.bandwidth == 20.0
     assert stream_summary.damping == 0.05
@@ -195,5 +182,6 @@ def test_allow_nans():
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_stationsummary()
     test_allow_nans()

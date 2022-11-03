@@ -31,7 +31,7 @@ def test_export_failures(script_runner):
             for file in files:
                 if pattern in file:
                     count += 1
-        assert count == 2
+        assert count == 1
 
     except Exception as ex:
         raise ex
