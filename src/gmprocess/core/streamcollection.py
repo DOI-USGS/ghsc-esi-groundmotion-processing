@@ -216,7 +216,7 @@ class StreamCollection(StreamArray):
                 # If so, loop over list of preferred instruments
                 group_insts = [self[g].get_inst() for g in group]
 
-                if large_dist:
+                if large_dist and large_dist["enabled"]:
                     tr = self[group[0]][0]
                     distance = (
                         gps2dist_azimuth(
