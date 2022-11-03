@@ -5,7 +5,7 @@ import io
 import shutil
 from gmprocess.utils import constants
 
-EVENTS = ["ci38038071", "ci38457511", "ci38457511_rupt"]
+EVENTS = ["ci38457511", "ci38457511_rupt"]
 
 
 def test_compute_station_metrics(script_runner):
@@ -34,8 +34,8 @@ def test_compute_station_metrics(script_runner):
         assert "Added station metrics to workspace files with" in ret.stderr
         assert "Calculating station metrics for CI.CCC.HN" in ret.stderr
 
-        ret = script_runner.run("gmrecords", "-o", "compute_station_metrics")
-        assert ret.success
+        # ret = script_runner.run("gmrecords", "-o", "compute_station_metrics")
+        # assert ret.success
 
     except Exception as ex:
         raise ex

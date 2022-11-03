@@ -15,7 +15,7 @@ def test_process_waveforms(script_runner):
         ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "process_waveforms")
 
         # Make a copy of the hdf files
-        events = ["ci38038071", "ci38457511"]
+        events = ["ci38457511"]
         for event in events:
             src = os.path.join(ddir, event, "workspace.h5")
             dst = os.path.join(ddir, event, "_workspace.h5")
@@ -31,9 +31,6 @@ def test_process_waveforms(script_runner):
 
         # No new files created, check stderr
         assert "Finished processing streams." in ret.stderr
-        assert "Adding waveforms for station AZ.HSSP" in ret.stderr
-        assert "Adding waveforms for station CE.23178" in ret.stderr
-        assert "Adding waveforms for station CE.23837" in ret.stderr
         assert "Adding waveforms for station CI.CCC" in ret.stderr
         assert "Adding waveforms for station CI.CLC" in ret.stderr
         assert "Adding waveforms for station CI.TOW2" in ret.stderr
@@ -48,7 +45,7 @@ def test_process_waveforms(script_runner):
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)
         # Move the hdf files back
-        events = ["ci38038071", "ci38457511"]
+        events = ["ci38457511"]
         for event in events:
             dst = os.path.join(ddir, event, "workspace.h5")
             src = os.path.join(ddir, event, "_workspace.h5")

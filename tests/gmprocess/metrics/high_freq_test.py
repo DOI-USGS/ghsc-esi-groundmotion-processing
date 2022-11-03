@@ -96,29 +96,12 @@ def test_high_freq_sa():
     h2 = read_at2(str(dfile), horient=90.0)
     st = StationStream([h1, h2])
 
-    periods = [
-        0.01,
-        0.02,
-        0.03,
-        0.05,
-        0.075,
-        0.1,
-        0.15,
-        0.2,
-        0.25,
-        0.3,
-        0.4,
-        0.5,
-        0.75,
-        1.0,
-        1.5,
-        2.0,
-        3.0,
-        4.0,
-        5.0,
-        7.5,
-        10.0,
-    ]
+    # shorten window to speed up tests
+    for tr in st:
+        # tr.data = tr.data[3000:12000]
+        tr.data = tr.data[5320:9260]
+
+    periods = [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2]
     imt_list = [f"sa{p}" for p in periods]
     station = StationSummary.from_stream(st, ["rotd50"], imt_list)
     # I believe that units are %g in the following table:
@@ -140,19 +123,6 @@ def test_high_freq_sa():
             0.0000026616,
             0.00000276549,
             0.00000308482,
-            0.00000380387,
-            0.00000391716,  # 0.3
-            0.00000576159,
-            0.00000772915,
-            0.00000817996,
-            0.00000768231,  # 1.0
-            0.00000492174,
-            0.00000556708,
-            0.00000213793,
-            0.00000126181,
-            0.00000127302,
-            0.000000430723,
-            0.000000277972,
         ],
         "test_sa": np.array(test_sa) / 100,
     }

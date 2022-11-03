@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import io
 import shutil
 
 from gmprocess.utils import constants
 
-EVENTS = ["ci38038071", "ci38457511", "ci38457511_rupt"]
+EVENTS = ["ci38457511", "ci38457511_rupt"]
 
 
 def test_compute_waveform_metrics(script_runner):
@@ -30,13 +31,12 @@ def test_compute_waveform_metrics(script_runner):
         assert ret.success
 
         assert "Adding waveform metrics to workspace files with" in ret.stderr
-        assert "Calculating waveform metrics for CE.23837.HN" in ret.stderr
-        assert "Calculating waveform metrics for CI.TOW2.HN" in ret.stderr
+        assert "Calculating waveform metrics for CI.CCC.HN" in ret.stderr
 
-        ret = script_runner.run(
-            "gmrecords", "-n", "2", "-o", "compute_waveform_metrics"
-        )
-        assert ret.success
+        # ret = script_runner.run(
+        #     "gmrecords", "-n", "2", "-o", "compute_waveform_metrics"
+        # )
+        # assert ret.success
 
     except Exception as ex:
         raise ex
@@ -50,4 +50,5 @@ def test_compute_waveform_metrics(script_runner):
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_compute_waveform_metrics()

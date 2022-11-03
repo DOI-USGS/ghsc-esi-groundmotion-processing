@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import re
 
 import numpy as np
@@ -10,6 +11,7 @@ from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.config import get_config
 
 
 def test_fas():
@@ -68,9 +70,14 @@ def test_fas():
     target_df = pd.read_pickle(fas_file)
     ind_vals = target_df.index.values
     per = np.unique([float(i[0].split(")")[0].split("(")[1]) for i in ind_vals])
+    # we don't need to do EVERY period for unit testing
+    per = per[[20, 85, 160]]
     freqs = 1 / per
     imts = ["fas" + str(p) for p in per]
-    summary = StationSummary.from_stream(stream, ["quadratic_mean"], imts, bandwidth=30)
+    config = get_config()
+    summary = StationSummary.from_stream(
+        stream, ["quadratic_mean"], imts, bandwidth=30, config=config
+    )
 
     pgms = summary.pgms
     for idx, f in enumerate(freqs):
@@ -81,4 +88,5 @@ def test_fas():
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_fas()

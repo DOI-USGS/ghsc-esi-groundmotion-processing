@@ -23,7 +23,7 @@ def test_export_shakemap(script_runner):
         assert ret.success
 
         # Check that output files are created
-        events = ["ci38457511", "ci38038071"]
+        events = ["ci38457511"]
         out_names = ["%s_metrics.json", "%s_groundmotions_dat.json"]
         for event in events:
             for outname in out_names:
@@ -35,7 +35,7 @@ def test_export_shakemap(script_runner):
     finally:
         shutil.rmtree(str(constants.CONFIG_PATH_TEST), ignore_errors=True)
         # Remove created files
-        events = ["ci38457511", "ci38038071"]
+        events = ["ci38457511"]
         out_names = ["%s_metrics.json", "%s_groundmotions_dat.json"]
         for event in events:
             for outname in out_names:

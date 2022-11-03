@@ -67,12 +67,13 @@ class StationStream(Stream):
     """
 
     def __init__(self, traces=None, inventory=None, config=None):
-        super(StationStream, self).__init__()
+        self.traces = []
+        self.config = config
         self.parameters = {}
-        if config is None:
-            config = get_config()
+        if self.config is None:
+            self.config = get_config()
         self.setStreamParam(
-            "any_trace_failures", config["check_stream"]["any_trace_failures"]
+            "any_trace_failures", self.config["check_stream"]["any_trace_failures"]
         )
 
         if len(traces):
@@ -170,6 +171,13 @@ class StationStream(Stream):
                     self.append(trace)
 
         self.validate()
+
+    def select(self, *args, **kwargs):
+        # super_self = super().select(*args, **kwargs)
+        super_self = Stream(self.traces).select(*args, **kwargs)
+        selected = self.copy()
+        selected.traces = super_self.traces
+        return selected
 
     def validate(self):
         """Validation checks for Traces within a StationStream."""

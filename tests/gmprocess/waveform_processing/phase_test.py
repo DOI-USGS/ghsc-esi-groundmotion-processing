@@ -110,16 +110,8 @@ def test_all_pickers():
 
     stations = df["Stream"].unique()
     cmpdict = {
-        "TW.ECU.BN": "kalkan",
-        "TW.ELD.BN": "power",
-        "TW.EGF.BN": "ar",
-        "TW.EAS.BN": "ar",
-        "TW.EDH.BN": "ar",
-        "TK.4304.HN": "ar",
-        "TK.0921.HN": "ar",
-        "TK.5405.HN": "ar",
-        "NZ.HSES.HN": "baer",
-        "NZ.WTMC.HN": "baer",
+        "NZ.HSES.HN": "power",
+        "NZ.WTMC.HN": "ar",
         "NZ.THZ.HN": "power",
     }
     for station in stations:
@@ -127,10 +119,7 @@ def test_all_pickers():
         max_snr = station_df["Mean_SNR"].max()
         maxrow = station_df[station_df["Mean_SNR"] == max_snr].iloc[0]
         method = maxrow["Method"]
-        try:
-            assert cmpdict[station] == method
-        except BaseException:
-            pass
+        assert cmpdict[station] == method
 
 
 def test_travel_time():
@@ -150,10 +139,10 @@ def test_travel_time():
 
 
 def get_streams():
-    datafiles1, _ = read_data_dir("cwb", "us1000chhc", "*.dat")
-    datafiles2, _ = read_data_dir("nsmn", "us20009ynd", "*.txt")
+    # datafiles1, _ = read_data_dir("cwb", "us1000chhc", "*.dat")
+    # datafiles2, _ = read_data_dir("nsmn", "us20009ynd", "*.txt")
     datafiles3, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    datafiles = datafiles1 + datafiles2 + datafiles3
+    datafiles = datafiles3  # + datafiles1 + datafiles2
     streams = []
     for datafile in datafiles:
         streams += read_data(datafile)

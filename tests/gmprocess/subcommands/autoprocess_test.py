@@ -19,7 +19,13 @@ def test_autoprocess(script_runner):
         assert ret.success
 
         ret = script_runner.run(
-            "gmrecords", "-e", "ci38457511", "autoprocess", "--no-download"
+            "gmrecords",
+            "-e",
+            "ci38457511",
+            "autoprocess",
+            "--no-download",
+            "--no-report",
+            "--no-maps",
         )
         assert ret.success
 
@@ -36,7 +42,14 @@ def test_autoprocess(script_runner):
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
-        pattern = ["workspace.h5", ".png", ".csv", ".html",  "_dat.json", "_metrics.json"]
+        pattern = [
+            "workspace.h5",
+            ".png",
+            ".csv",
+            ".html",
+            "_dat.json",
+            "_metrics.json",
+        ]
         for root, _, files in os.walk(ddir):
             for file in files:
                 if any(file.endswith(ext) for ext in pattern):
@@ -44,4 +57,5 @@ def test_autoprocess(script_runner):
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_autoprocess()

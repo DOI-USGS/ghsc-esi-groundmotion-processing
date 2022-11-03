@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import os
 
 import numpy as np
 import pandas as pd
@@ -10,6 +11,7 @@ from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.config import get_config
 
 
 def test_fas():
@@ -76,10 +78,12 @@ def test_fas():
     target_df = pd.read_pickle(fas_file)
     ind_vals = target_df.index.values
     per = np.unique([float(i[0].split(")")[0].split("(")[1]) for i in ind_vals])
+    per = per[[20, 85, 160]]
     freqs = 1 / per
     imts = ["fas" + str(p) for p in per]
+    config = get_config()
     summary = StationSummary.from_stream(
-        stream, ["arithmetic_mean"], imts, bandwidth=30
+        stream, ["arithmetic_mean"], imts, bandwidth=30, config=config
     )
 
     pgms = summary.pgms
@@ -92,4 +96,5 @@ def test_fas():
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_fas()

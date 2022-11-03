@@ -12,11 +12,16 @@ from gmprocess.utils.config import get_config
 
 def test_auto_fchp():
 
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
-    data_files.sort()
+    data_files, origin = read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V1A"
+    )
     streams = []
     for f in data_files:
         streams += read_data(f)
+
+    # Shorten window for testing
+    for tr in streams[0]:
+        tr.data = tr.data[7000:18000]
 
     sc = StreamCollection(streams)
     output_fchp = []
@@ -43,17 +48,7 @@ def test_auto_fchp():
             output_fchp.append(initial_corners["highpass"])
 
     target_fchp = np.array(
-        [
-            0.04756885461670714,
-            0.05322740789289438,
-            0.022405043462886798,
-            0.0211385211818825,
-            0.027003059746024995,
-            0.011545202155650471,
-            0.020770011875314163,
-            0.028055347383582833,
-            0.021513264791182107,
-        ]
+        [0.20188389843757404, 0.19428991918682328, 0.2558813590181579]
     )
 
     np.testing.assert_allclose(output_fchp, target_fchp, atol=1e-7)

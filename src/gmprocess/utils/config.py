@@ -3,6 +3,7 @@
 
 import os
 from pathlib import Path
+import logging
 
 from gmprocess.utils import constants
 from ruamel.yaml import YAML
@@ -287,8 +288,10 @@ def get_config(config_path=None):
     CONF_SCHEMA.validate(default_config)
 
     if config_path is None:
+        logging.info("Using default config.")
         return default_config
     else:
+        logging.info(f"Loading config from {config_path}")
         config = __conf_path_to_config(config_path, default_config)
 
         return config
