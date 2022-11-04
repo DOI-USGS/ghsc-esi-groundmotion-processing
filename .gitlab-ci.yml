@@ -13,7 +13,8 @@ run tests:
   script:
     - pip install .[test]
     - export PATH="/home/usgs-user/.local/bin:$PATH"
-    - pytest --cov=. --cov-report xml:coverage.xml --cov-report term
+    # - pytest --cov=. --cov-report xml:coverage.xml --cov-report term
+    - pytest --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term 
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:
