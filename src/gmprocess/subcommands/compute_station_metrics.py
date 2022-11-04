@@ -96,6 +96,8 @@ class ComputeStationMetricsModule(base.SubcommandModule):
         if isinstance(rupture_file, pathlib.Path):
             rupture_file = str(rupture_file)
         rupture = rupt.factory.get_rupture(origin, rupture_file)
+        if isinstance(rupture, rupt.point_rupture.PointRupture):
+            self._get_ps2ff_splines()
 
         self._get_labels()
 
@@ -132,7 +134,6 @@ class ComputeStationMetricsModule(base.SubcommandModule):
                 )
 
                 if isinstance(rupture, rupt.point_rupture.PointRupture):
-                    self._get_ps2ff_splines()
                     rjb_hat = self.rjb_spline(sta_repi)
                     rjb_mean = rjb_hat[0]
                     rjb_var = rjb_hat[1]
