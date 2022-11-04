@@ -6,9 +6,9 @@
         "status": "Development",
         "organization": "U.S. Geological Survey",
         "vcs": "git",
-        "repositoryUrl": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
+        "repositoryURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
         "homepageURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing",
-        "downloadURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/archive/v1.2.1/gmprocess-v1.2.1.zip",
+        "downloadURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/archive/v1.2.1/groundmotion-processing-v1.2.1.zip",
         "disclaimerURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/v1.2.1/DISCLAIMER.md",
         "permissions": {
             "licenses": [
@@ -20,7 +20,7 @@
             "usageType": "openSource",
             "exemptionText": null
         },
-        "laborHours": null,
+        "laborHours": 1,
         "languages": [
             "python",
             "c"
@@ -43,11 +43,11 @@
     {
         "name": "groundmotion-processing",
         "description": "Read and process ground motion waveform data",
-        "version": "v1.2.0",
+        "version": "release-1.2.0",
         "status": "Development",
         "organization": "U.S. Geological Survey",
         "vcs": "git",
-        "repositoryUrl": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
+        "repositoryURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
         "homepageURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing",
         "downloadURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/archive/release-1.2.0/groundmotion-processing-release-1.2.0.zip",
         "disclaimerURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/release-1.2.0/DISCLAIMER.md",
@@ -61,7 +61,7 @@
             "usageType": "openSource",
             "exemptionText": null
         },
-        "laborHours": null,
+        "laborHours": 1,
         "languages": [
             "python",
             "c"
@@ -88,7 +88,7 @@
         "status": "Production",
         "organization": "U.S. Geological Survey",
         "vcs": "git",
-        "repositoryUrl": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
+        "repositoryURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
         "homepageURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing",
         "downloadURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/archive/v1.0.0/gmprocess-v1.0.0.zip",
         "disclaimerURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/v1.0.0/DISCLAIMER.md",
@@ -102,7 +102,7 @@
             "usageType": "openSource",
             "exemptionText": null
         },
-        "laborHours": null,
+        "laborHours": 1,
         "languages": [
             "python",
             "c"
