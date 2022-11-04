@@ -21,9 +21,8 @@ def get_class(imc, ctype):
     modfile = (imc_directory / f"{imc}.py").resolve()
     if not modfile.is_file():
         return None
-    modname = ".".join(modfile.parts[modfile.parts.index("gmprocess") :]).replace(
-        ".py", ""
-    )
+    idx = max(loc for loc, val in enumerate(modfile.parts) if val == "gmprocess")
+    modname = ".".join(modfile.parts[idx:]).replace(".py", "")
     mod = importlib.import_module(modname)
     tclass = None
     for name, obj in inspect.getmembers(mod):

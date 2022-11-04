@@ -153,7 +153,8 @@ def find_fetchers(lat, lon):
     for mod_file in _walk(root):
         if str(mod_file).find("__") >= 0:
             continue
-        mod_tuple = mod_file.parts[mod_file.parts.index("gmprocess") :]
+        idx = max(loc for loc, val in enumerate(mod_file.parts) if val == "gmprocess")
+        mod_tuple = mod_file.parts[idx:]
         if mod_tuple[-1] in SKIP_MODS:
             continue
         mod_name = ".".join(mod_tuple)
