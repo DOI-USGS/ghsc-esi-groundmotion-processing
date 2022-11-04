@@ -26,7 +26,13 @@ def setup_logger(args=None, level="info", log_file=None):
             Path to send logging to.
 
     """
+    # Have the logger capture anything from the 'warnings' package,
+    # which many libraries use.
+    logging.captureWarnings(True)
 
+    if log_file == "external":
+        return
+    
     fmt = "%(levelname)s %(asctime)s | " "%(module)s.%(funcName)s: %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
     # create a console handler, with verbosity setting chosen by user
@@ -72,7 +78,3 @@ def setup_logger(args=None, level="info", log_file=None):
         }
         logdict["loggers"][""]["handlers"] = ["event_file"]
     logging.config.dictConfig(logdict)
-
-    # Have the logger capture anything from the 'warnings' package,
-    # which many libraries use.
-    logging.captureWarnings(True)
