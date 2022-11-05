@@ -26,10 +26,11 @@ from gmprocess.utils.config import get_config
 
 
 JST_OFFSET = 9 * 3600  # Japan standard time is UTC + 9
-SEARCH_URL = "http://www.kyoshin.bosai.go.jp/cgi-bin/kyoshin/quick/list_eqid_en.cgi?1+YEAR+QUARTER"
+SEARCH_URL = (
+    "http://www.kyoshin.bosai.go.jp/cgi-bin/kyoshin/quick/"
+    "list_eqid_en.cgi?1+YEAR+QUARTER"
+)
 RETRIEVE_URL = "http://www.kyoshin.bosai.go.jp/cgi-bin/kyoshin/auth/makearc"
-
-# http://www.kyoshin.bosai.go.jp/cgi-bin/kyoshin/auth/makearc?formattype=A&eqidlist=20180330081700%2C20180330000145%2C20180330081728%2C1%2C%2Fkyoshin%2Fpubdata%2Fall%2F1comp%2F2018%2F03%2F20180330081700%2F20180330081700.all_acmap.png%2C%2Fkyoshin%2Fpubdata%2Fknet%2F1comp%2F2018%2F03%2F20180330081700%2F20180330081700.knt_acmap.png%2C%2Fkyoshin%2Fpubdata%2Fkik%2F1comp%2F2018%2F03%2F20180330081700%2F20180330081700.kik_acmap.png%2CHPRL&datanames=20180330081700%3Balldata&datakind=all
 
 CGIPARAMS = OrderedDict()
 CGIPARAMS["formattype"] = "A"
@@ -430,7 +431,10 @@ class KNETFetcher(DataFetcher):
                 slat = stream[0].stats.coordinates.latitude
                 slon = stream[0].stats.coordinates.longitude
                 distance = geodetic_distance(self.lon, self.lat, slon, slat)
-                if distance <= threshold_distance:
+                if threshold_distance is not None:
+                    if distance <= threshold_distance:
+                        newstreams.append(stream)
+                else:
                     newstreams.append(stream)
 
             stream_collection = StreamCollection(

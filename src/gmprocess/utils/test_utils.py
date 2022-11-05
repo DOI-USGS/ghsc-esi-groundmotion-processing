@@ -3,9 +3,17 @@
 
 import os.path
 import glob
+import vcr as vcrpy
 
 from gmprocess.utils.base_utils import read_event_json_files
 from gmprocess.utils.constants import TEST_DATA_DIR
+
+vcr = vcrpy.VCR(
+    path_transformer=vcrpy.VCR.ensure_suffix(".yaml"),
+    cassette_library_dir=str(TEST_DATA_DIR / "vcr_cassettes"),
+    record_mode="once",
+    match_on=["uri", "method"],
+)
 
 
 def read_data_dir(file_format, eventid, files=None):
@@ -39,9 +47,11 @@ def read_data_dir(file_format, eventid, files=None):
         for dfile in allfiles:
             datafile = os.path.join(eventdir, dfile)
             datafiles.append(datafile)
-    elif isinstance(files, str):  # regex
+    elif isinstance(files, str):
+        # regex
         datafiles = glob.glob(os.path.join(eventdir, files))
-    else:  # this is just a list of filenames
+    else:
+        # this is just a list of filenames
         for tfile in files:
             fullfile = os.path.join(eventdir, tfile)
             if os.path.isfile(fullfile):
