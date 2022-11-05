@@ -123,7 +123,13 @@ moveout_page_tex = """
 
 
 def build_report_latex(
-    st_list, directory, origin, prefix="", config=None, gmprocess_version="unknown"
+    st_list,
+    directory,
+    origin,
+    prefix="",
+    config=None,
+    gmprocess_version="unknown",
+    build_latex=True,
 ):
     """
     Build latex summary report.
@@ -178,15 +184,16 @@ def build_report_latex(
 
     # sort list of streams:
     st_list.sort(key=lambda x: x.id)
+    event_id = origin.id.replace("smi:local/", "")
 
     for st in st_list:
         streamid = st.get_id()
         # Even on windows, latex needs the path to use linux-style forward slashs.
-        plot_path = f"plots/{origin.id}_{streamid}.png"
+        plot_path = f"plots/{event_id}_{streamid}.png"
         SB = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
         SB = SB.replace(
             "[EVENT]",
-            f"M {origin.magnitude} - {str_for_latex(origin.id)} - {timestr}",
+            f"M {origin.magnitude} - {str_for_latex(event_id)} - {timestr}",
         )
         SB = SB.replace("[STATION]", st.get_id())
         report += SB
@@ -231,7 +238,7 @@ def build_report_latex(
         os.chdir(directory)
 
         # File name relative to current location
-        file_base = f"{prefix}_report_{origin.id}"
+        file_base = f"{prefix}_report_{event_id}"
         tex_name = Path(f"{file_base}.tex")
         pdf_file = Path(f"{file_base}.pdf")
 
@@ -250,15 +257,18 @@ def build_report_latex(
                 flag = "-"
             pdflatex_options = f"{flag}interaction=nonstopmode {flag}halt-on-error"
             cmd = f"{pdflatex_bin} {pdflatex_options} {tex_name}"
-            res, stdout, stderr = get_command_output(cmd)
-            report_file = latex_file
-            if res:
-                if pdf_file.is_file():
-                    report_file = str(pdf_file)
-                    auxfiles = directory.glob(f"{file_base}*")
-                    for auxfile in auxfiles:
-                        if str(pdf_file) not in str(auxfile):
-                            auxfile.unlink(missing_ok=True)
+            if build_latex:
+                res, stdout, stderr = get_command_output(cmd)
+                report_file = latex_file
+                if res:
+                    if pdf_file.is_file():
+                        report_file = str(pdf_file)
+                        auxfiles = directory.glob(f"{file_base}*")
+                        for auxfile in auxfiles:
+                            if str(pdf_file) not in str(auxfile):
+                                auxfile.unlink(missing_ok=True)
+                    else:
+                        res = False
                 else:
                     res = False
             else:

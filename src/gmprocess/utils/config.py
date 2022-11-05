@@ -43,13 +43,6 @@ CONF_SCHEMA = Schema(
                 "station_radius": float,
                 "enabled": bool,
             },
-            "TurkeyFetcher": {
-                "radius": float,
-                "dt": float,
-                "ddepth": float,
-                "dmag": float,
-                "enabled": bool,
-            },
             "FDSNFetcher": {
                 "enabled": bool,
                 "domain": {

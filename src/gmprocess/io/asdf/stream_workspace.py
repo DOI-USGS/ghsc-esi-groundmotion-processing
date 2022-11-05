@@ -15,6 +15,7 @@ import scipy.interpolate as spint
 from obspy.core.utcdatetime import UTCDateTime
 import pandas as pd
 from h5py.h5py_warnings import H5pyDeprecationWarning
+from ruamel.yaml import YAML
 from esi_utils_rupture.factory import get_rupture
 from esi_utils_rupture.origin import Origin
 
@@ -33,7 +34,8 @@ from gmprocess.metrics.station_summary import StationSummary, XML_UNITS
 from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.tables import _get_table_row
 from gmprocess.utils.config import get_config
-
+from gmprocess.utils.config import update_dict
+from gmprocess.utils import constants
 
 TIMEPAT = "[0-9]{4}-[0-9]{2}-[0-9]{2}T"
 EVENT_TABLE_COLUMNS = [
@@ -535,6 +537,14 @@ class StreamWorkspace(object):
         if config is None:
             if hasattr(self, "config"):
                 config = self.config
+                default_config_file = (
+                    constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
+                )
+                with open(default_config_file, "r", encoding="utf-8") as f:
+                    yaml = YAML()
+                    yaml.preserve_quotes = True
+                    default_config = yaml.load(f)
+                update_dict(self.config, default_config)
             else:
                 config = get_config()
 
@@ -1331,6 +1341,7 @@ class StreamWorkspace(object):
             for ptag in provtags:
                 if label in ptag:
                     labeldict[label] = ptag
+        rows = []
         for label, ptag in labeldict.items():
             row = pd.Series(index=cols, dtype=object)
             row["Label"] = label
@@ -1341,7 +1352,8 @@ class StreamWorkspace(object):
             row["UserEmail"] = user["email"]
             row["Software"] = software["name"]
             row["Version"] = software["version"]
-            df = df.append(row, ignore_index=True)
+            rows.append(row)
+        df = pd.DataFrame(rows)
         return df
 
     def getInventory(self):
