@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="gmprocess.core.stationtrace" href="../stationtrace/index.html" /><link rel="prev" title="gmprocess.core" href="../index.html" />
 
-    <meta name="generator" content="sphinx-5.2.3, furo 2022.09.29"/>
-        <title>gmprocess.core.stationstream - gmprocess 1.2.2.dev41+gcec52751.d20221101 documentation</title>
+    <meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>gmprocess.core.stationstream - gmprocess 1.2.2.dev77+g0d4acac4.d20221106 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
@@ -123,7 +123,7 @@
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
         <img id="announcement_left_img" valign="middle" src="https://usgs.github.io/groundmotion-processing/_static/usgs.png""></a>
     Ground-Motion Processing Software
-    <a href='https://github.com/usgs/groundmotion-processing' style='text-decoration: none'>
+    <a href='https://code.usgs.gov/ghsc/esi/groundmotion-processing' style='text-decoration: none'>
         <img id="announcement_right_img" valign="middle"
             src="https://usgs.github.io/groundmotion-processing/_static/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png"></a>
  
@@ -139,7 +139,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">gmprocess 1.2.2.dev41+gcec52751.d20221101 documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">gmprocess 1.2.2.dev77+g0d4acac4.d20221106 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -586,6 +586,81 @@ the StationStream object.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="gmprocess.core.stationstream.StationStream.select">
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/gmprocess/core/stationstream.html#StationStream.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gmprocess.core.stationstream.StationStream.select" title="Permalink to this definition">#</a></dt>
+<dd><p>Return new Stream object only with these traces that match the given
+stats criteria (e.g. all traces with <code class="docutils literal notranslate"><span class="pre">channel=&quot;EHZ&quot;</span></code>).</p>
+<p>Alternatively, traces can be selected based on the content of an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Inventory</span></code> object: trace will
+be selected if the inventory contains a matching channel active at the
+trace start time.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">station</span><span class="o">=</span><span class="s2">&quot;R*&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">st2</span><span class="p">)</span>  
+<span class="go">3 Trace(s) in Stream:</span>
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples</span>
+<span class="go">BW.RJOB..EHN | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples</span>
+<span class="go">BW.RJOB..EHE | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;BW.RJOB..EHZ&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">st2</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">st2</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="s2">&quot;CZ&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">st2</span><span class="p">)</span>  
+<span class="go">0 Trace(s) in Stream:</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read_inventory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inv</span> <span class="o">=</span> <span class="n">read_inventory</span><span class="p">(</span><span class="s1">&#39;/path/to/BW_RJOB__EHZ.xml&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>  
+<span class="go">Inventory created at 2013-12-07T18:00:42.878000Z</span>
+<span class="go">        Created by: fdsn-stationxml-converter/1.0.0</span>
+<span class="go">                    http://www.iris.edu/fdsnstationconverter</span>
+<span class="go">        Sending institution: Erdbebendienst Bayern</span>
+<span class="go">        Contains:</span>
+<span class="go">                Networks (1):</span>
+<span class="go">                        BW</span>
+<span class="go">                Stations (1):</span>
+<span class="go">                        BW.RJOB (Jochberg, Bavaria, BW-Net)</span>
+<span class="go">                Channels (1):</span>
+<span class="go">                        BW.RJOB..EHZ</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">inventory</span><span class="o">=</span><span class="n">inv</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">st2</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>A new Stream object is returned but the traces it contains are
+just aliases to the traces of the original stream. Does not copy
+the data but only passes a reference.</p>
+</div>
+<p>All keyword arguments except for <code class="docutils literal notranslate"><span class="pre">component</span></code> are tested directly
+against the respective entry in the <code class="xref py py-class docutils literal notranslate"><span class="pre">Stats</span></code>
+dictionary.</p>
+<p>If a string for <code class="docutils literal notranslate"><span class="pre">component</span></code> is given (should be a single letter) it
+is tested against the last letter of the <code class="docutils literal notranslate"><span class="pre">Trace.stats.channel</span></code> entry.</p>
+<p>Alternatively, <code class="docutils literal notranslate"><span class="pre">channel</span></code> may have the last one or two letters
+wildcarded (e.g. <code class="docutils literal notranslate"><span class="pre">channel=&quot;EH*&quot;</span></code>) to select all components with a
+common band/instrument code.</p>
+<p>All other selection criteria that accept strings (network, station,
+location) may also contain Unix style wildcards (<code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">?</span></code>, …).</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="gmprocess.core.stationstream.StationStream.validate">
 <span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/gmprocess/core/stationstream.html#StationStream.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gmprocess.core.stationstream.StationStream.validate" title="Permalink to this definition">#</a></dt>
 <dd><p>Validation checks for Traces within a StationStream.</p>
@@ -826,6 +901,7 @@ if ALL of the constituent traces failed.</p></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream"><code class="docutils literal notranslate"><span class="pre">StationStream</span></code></a><ul>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.passed"><code class="docutils literal notranslate"><span class="pre">StationStream.passed</span></code></a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.num_horizontal"><code class="docutils literal notranslate"><span class="pre">StationStream.num_horizontal</span></code></a></li>
+<li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.select"><code class="docutils literal notranslate"><span class="pre">StationStream.select()</span></code></a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.validate"><code class="docutils literal notranslate"><span class="pre">StationStream.validate()</span></code></a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.__check_sample_rate"><code class="docutils literal notranslate"><span class="pre">StationStream.__check_sample_rate()</span></code></a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.__check_npts"><code class="docutils literal notranslate"><span class="pre">StationStream.__check_npts()</span></code></a></li>
@@ -853,6 +929,7 @@ if ALL of the constituent traces failed.</p></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream">StationStream</a><ul>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.passed">passed</a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.num_horizontal">num_horizontal</a></li>
+<li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.select">select</a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.validate">validate</a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.__check_sample_rate">__check_sample_rate</a></li>
 <li><a class="reference internal" href="#gmprocess.core.stationstream.StationStream.__check_npts">__check_npts</a></li>
