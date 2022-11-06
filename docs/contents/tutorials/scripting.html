@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Response Spectra Calculation and Comparison" href="response_spectra.html" /><link rel="prev" title="Command Line Interface" href="cli.html" />
 
-    <meta name="generator" content="sphinx-5.2.3, furo 2022.09.29"/>
-        <title>Scripting - gmprocess 1.2.2.dev41+gcec52751.d20221101 documentation</title>
+    <meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Scripting - gmprocess 1.2.2.dev77+g0d4acac4.d20221106 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -123,7 +123,7 @@
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
         <img id="announcement_left_img" valign="middle" src="https://usgs.github.io/groundmotion-processing/_static/usgs.png""></a>
     Ground-Motion Processing Software
-    <a href='https://github.com/usgs/groundmotion-processing' style='text-decoration: none'>
+    <a href='https://code.usgs.gov/ghsc/esi/groundmotion-processing' style='text-decoration: none'>
         <img id="announcement_right_img" valign="middle"
             src="https://usgs.github.io/groundmotion-processing/_static/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png"></a>
  
@@ -139,7 +139,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">gmprocess 1.2.2.dev41+gcec52751.d20221101 documentation</div></a>
+      <a href="../../index.html"><div class="brand">gmprocess 1.2.2.dev77+g0d4acac4.d20221106 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -497,18 +497,18 @@ The configuration files are in the <code class="docutils literal notranslate"><s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO 2022-11-01 09:15:57 | gmrecords._initialize: Logging level includes INFO.
-INFO 2022-11-01 09:15:57 | gmrecords._initialize: PROJECTS_PATH: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/.gmprocess
-INFO 2022-11-01 09:15:57 | projects.main: Running subcommand &#39;projects&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO 2022-11-05 21:12:15 | gmrecords._initialize: Logging level includes INFO.
+INFO 2022-11-05 21:12:15 | gmrecords._initialize: PROJECTS_PATH: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/.gmprocess
+INFO 2022-11-05 21:12:15 | projects.main: Running subcommand &#39;projects&#39;
 
-Project: cli-tutorial 
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/cli
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/cli
+Project: cli-tutorial **Current Project**
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/cli
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/cli
 
 
-Project: scripting-tutorial **Current Project**
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/scripting
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/scripting
+Project: scripting-tutorial 
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
 </pre></div>
 </div>
 </div>
@@ -522,14 +522,14 @@ Second, we use the <code class="docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO 2022-11-01 09:15:59 | gmrecords._initialize: Logging level includes INFO.
-INFO 2022-11-01 09:15:59 | gmrecords._initialize: PROJECTS_PATH: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/.gmprocess
-INFO 2022-11-01 09:15:59 | projects.main: Running subcommand &#39;projects&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO 2022-11-05 21:12:16 | gmrecords._initialize: Logging level includes INFO.
+INFO 2022-11-05 21:12:16 | gmrecords._initialize: PROJECTS_PATH: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/.gmprocess
+INFO 2022-11-05 21:12:16 | projects.main: Running subcommand &#39;projects&#39;
 
 Switched to project: 
 Project: scripting-tutorial **Current Project**
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/scripting
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/scripting
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
 </pre></div>
 </div>
 </div>
@@ -576,61 +576,60 @@ Consequently, we simply copy the data from <code class="docutils literal notrans
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Blue">data/scripting</span>
 └── <span class=" -Color -Color-Bold -Color-Bold-Blue">nc73291880</span>
     ├── event.json
-    ├── <span class=" -Color -Color-Bold -Color-Bold-Blue">raw</span>
-    │   ├── BK.BRIB.01.BHE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.BHN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.BHZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.HHE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.HHN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.HHZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.01.HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── BK.BRIB.xml
-    │   ├── CE.58360..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58360..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58360..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58360.xml
-    │   ├── CE.58369..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58369..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58369..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58369.xml
-    │   ├── CE.58442..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58442..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58442..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── CE.58442.xml
-    │   ├── NC.C010.01.HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.C010.01.HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.C010.01.HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.C010.xml
-    │   ├── NC.C018.01.HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.C018.01.HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.C018.01.HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.C018.xml
-    │   ├── NC.CRH..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.CRH..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.CRH..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.CRH.xml
-    │   ├── NC.CTA..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.CTA..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.CTA..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NC.CTA.xml
-    │   ├── NP.1691..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1691..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1691..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1691.xml
-    │   ├── NP.1844..HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1844..HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1844..HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1844.xml
-    │   ├── NP.1847.10.HNE__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1847.10.HNN__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1847.10.HNZ__20191015T053312Z__20191015T054042Z.mseed
-    │   ├── NP.1847.xml
-    │   └── read_failures.csv
-    └── workspace.h5
+    └── <span class=" -Color -Color-Bold -Color-Bold-Blue">raw</span>
+        ├── BK.BRIB.01.BHE__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.BHN__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.BHZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.HHE__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.HHN__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.HHZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.01.HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── BK.BRIB.xml
+        ├── CE.58360..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58360..HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58360..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58360.xml
+        ├── CE.58369..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58369..HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58369..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58369.xml
+        ├── CE.58442..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58442..HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58442..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── CE.58442.xml
+        ├── NC.C010.01.HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.C010.01.HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.C010.01.HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.C010.xml
+        ├── NC.C018.01.HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.C018.01.HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.C018.01.HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.C018.xml
+        ├── NC.CRH..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.CRH..HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.CRH..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.CRH.xml
+        ├── NC.CTA..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.CTA..HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.CTA..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── NC.CTA.xml
+        ├── NP.1691..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1691..HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1691..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1691.xml
+        ├── NP.1844..HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1844..HNN__20191015T053312Z__20191015T054042Z.mseed
 
-2 directories, 53 files
+        ├── NP.1844..HNZ__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1844.xml
+        ├── NP.1847.10.HNE__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1847.10.HNN__20191015T053312Z__20191015T054042Z.mseed
+        ├── NP.1847.10.HNZ__20191015T053312Z__20191015T054042Z.mseed
+        └── NP.1847.xml
+
+2 directories, 51 files
 </pre></div>
 </div>
 </div>
@@ -692,11 +691,13 @@ Consequently, we simply copy the data from <code class="docutils literal notrans
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running &#39;assemble&#39;...
-Logging output sent to: assemble.log
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logging output sent to: assemble.log
 --------------------------------------------------------------------------------
 Project: scripting-tutorial **Current Project**
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/scripting
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/scripting
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
@@ -704,8 +705,8 @@ Project: scripting-tutorial **Current Project**
 Logging output sent to: process_waveforms.log
 --------------------------------------------------------------------------------
 Project: scripting-tutorial **Current Project**
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/scripting
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/scripting
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
@@ -713,8 +714,8 @@ Project: scripting-tutorial **Current Project**
 Logging output sent to: compute_station_metrics.log
 --------------------------------------------------------------------------------
 Project: scripting-tutorial **Current Project**
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/scripting
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/scripting
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
@@ -722,11 +723,39 @@ Project: scripting-tutorial **Current Project**
 Logging output sent to: compute_waveform_metrics.log
 --------------------------------------------------------------------------------
 Project: scripting-tutorial **Current Project**
-	Conf Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/conf/scripting
-	Data Path: /Users/username/src/python/groundmotion-processing/doc_source/contents/tutorials/data/scripting
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running &#39;export_metric_tables&#39;...
+Logging output sent to: export_metric_tables.log
+--------------------------------------------------------------------------------
+Project: scripting-tutorial **Current Project**
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running &#39;generate_report&#39;...
+Logging output sent to: generate_report.log
+--------------------------------------------------------------------------------
+Project: scripting-tutorial **Current Project**
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running &#39;generate_station_maps&#39;...
+Logging output sent to: generate_station_maps.log
+--------------------------------------------------------------------------------
+Project: scripting-tutorial **Current Project**
+	Conf Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/conf/scripting
+	Data Path: /Users/username/src/usgs/gmprocess-dev/doc_source/contents/tutorials/data/scripting
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+<img alt="../../_images/e0efd6331a2857b84f96231ab5bf3fe8ab2990eebdd147a188351b5264912d23.png" src="../../_images/e0efd6331a2857b84f96231ab5bf3fe8ab2990eebdd147a188351b5264912d23.png" />
 </div>
 </div>
 <p>Running the script will produce CSV files with the waveform metrics in the <code class="docutils literal notranslate"><span class="pre">data/scripting</span></code> directory and reports in the <code class="docutils literal notranslate"><span class="pre">data/scripting/nc73291880</span></code> directory.</p>

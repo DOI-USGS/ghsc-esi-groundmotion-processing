@@ -89,6 +89,80 @@ Attributes
 
       Get the number of horizontal components in the StationStream.
 
+   .. py:method:: select(*args, **kwargs)
+
+      Return new Stream object only with these traces that match the given
+      stats criteria (e.g. all traces with ``channel="EHZ"``).
+
+      Alternatively, traces can be selected based on the content of an
+      :class:`~obspy.core.inventory.inventory.Inventory` object: trace will
+      be selected if the inventory contains a matching channel active at the
+      trace start time.
+
+      .. rubric:: Examples
+
+      >>> from obspy import read
+      >>> st = read()
+      >>> st2 = st.select(station="R*")
+      >>> print(st2)  # doctest: +ELLIPSIS
+      3 Trace(s) in Stream:
+      BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples
+      BW.RJOB..EHN | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples
+      BW.RJOB..EHE | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples
+
+      >>> st2 = st.select(id="BW.RJOB..EHZ")
+      >>> print(st2)  # doctest: +ELLIPSIS
+      1 Trace(s) in Stream:
+      BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples
+
+      >>> st2 = st.select(component="Z")
+      >>> print(st2)  # doctest: +ELLIPSIS
+      1 Trace(s) in Stream:
+      BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples
+
+      >>> st2 = st.select(network="CZ")
+      >>> print(st2)  # doctest: +NORMALIZE_WHITESPACE
+      0 Trace(s) in Stream:
+
+      >>> from obspy import read_inventory
+      >>> inv = read_inventory('/path/to/BW_RJOB__EHZ.xml')
+      >>> print(inv)  # doctest: +NORMALIZE_WHITESPACE
+      Inventory created at 2013-12-07T18:00:42.878000Z
+              Created by: fdsn-stationxml-converter/1.0.0
+                          http://www.iris.edu/fdsnstationconverter
+              Sending institution: Erdbebendienst Bayern
+              Contains:
+                      Networks (1):
+                              BW
+                      Stations (1):
+                              BW.RJOB (Jochberg, Bavaria, BW-Net)
+                      Channels (1):
+                              BW.RJOB..EHZ
+      >>> st2 = st.select(inventory=inv)
+      >>> print(st2)  # doctest: +ELLIPSIS
+      1 Trace(s) in Stream:
+      BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z ... | 100.0 Hz, 3000 samples
+
+      .. warning::
+          A new Stream object is returned but the traces it contains are
+          just aliases to the traces of the original stream. Does not copy
+          the data but only passes a reference.
+
+      All keyword arguments except for ``component`` are tested directly
+      against the respective entry in the :class:`~obspy.core.trace.Stats`
+      dictionary.
+
+      If a string for ``component`` is given (should be a single letter) it
+      is tested against the last letter of the ``Trace.stats.channel`` entry.
+
+      Alternatively, ``channel`` may have the last one or two letters
+      wildcarded (e.g. ``channel="EH*"``) to select all components with a
+      common band/instrument code.
+
+      All other selection criteria that accept strings (network, station,
+      location) may also contain Unix style wildcards (``*``, ``?``, ...).
+
+
    .. py:method:: validate()
 
       Validation checks for Traces within a StationStream.
