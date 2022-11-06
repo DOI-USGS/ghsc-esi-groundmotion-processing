@@ -29,13 +29,22 @@ class ExportFailureTablesModule(base.SubcommandModule):
                 '"number of records". net: Three column table where the '
                 'columns are "network", "number passed", and "number failed". '
                 'long: Two column table, where columns are "station ID" and '
-                '"failure reason".'
+                '"status" where status is "passed" or "failed" (with reason).'
             ),
             "type": str,
             "default": "short",
             "choices": ["short", "long", "net"],
         },
         arg_dicts.ARG_DICTS["output_format"],
+        {
+            "short_flag": "-l",
+            "long_flag": "--log-status",
+            "help": (
+                'Include failure information in INFO logging.'
+            ),
+            "action": "store_true",
+            "default": False,
+        }
     ]
 
     def main(self, gmrecords):
@@ -116,5 +125,8 @@ class ExportFailureTablesModule(base.SubcommandModule):
                 df_failures = df_failures.groupby(df_failures.index).sum()
                 df_failures.to_csv(comp_failures_path)
             self.append_file("Complete failures", comp_failures_path)
+
+        if self.gmrecords.args.log_status:
+            logging.info(str(status_info))
 
         self._summarize_files_created()

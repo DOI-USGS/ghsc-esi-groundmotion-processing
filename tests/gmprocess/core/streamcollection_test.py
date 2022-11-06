@@ -241,13 +241,13 @@ def test_get_status():
     assert (short == 1).all()
 
     long = sc.get_status("long")
-    assert long.at["AZ.BSAP.HN"] == "Failure 0"
-    assert long.at["AZ.BZN.HN"] == ""
-    assert long.at["AZ.CPE.HN"] == "Failure 1"
-    assert long.at["CI.MIKB.BN"] == ""
-    assert long.at["CI.MIKB.HN"] == "Failure 2"
-    assert long.at["CI.PSD.HN"] == ""
-    assert long.at["PG.PSD.HN"] == "Failure 3"
+    assert long.at["AZ.BSAP.HN"] == "failed (Failure 0)"
+    assert long.at["AZ.BZN.HN"] == "passed"
+    assert long.at["AZ.CPE.HN"] == "failed (Failure 1)"
+    assert long.at["CI.MIKB.BN"] == "passed"
+    assert long.at["CI.MIKB.HN"] == "failed (Failure 2)"
+    assert long.at["CI.PSD.HN"] == "passed"
+    assert long.at["PG.PSD.HN"] == "failed (Failure 3)"
 
     net = sc.get_status("net")
     assert net.at["AZ", "Number Passed"] == 1

@@ -9,6 +9,5 @@ ARG_DICTS = {
         "type": str,
         "default": "csv",
         "choices": ["excel", "csv"],
-        "metavar": "FORMAT",
     },
 }
