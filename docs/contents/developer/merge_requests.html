@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Adding New Data Readers" href="new_readers.html" /><link rel="prev" title="Release Steps" href="release.html" />
 
-    <meta name="generator" content="sphinx-5.2.3, furo 2022.09.29"/>
-        <title>Release Steps - gmprocess 1.2.2.dev41+gcec52751.d20221101 documentation</title>
+    <meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Merge Request Guidelines - gmprocess 1.2.2.dev77+g0d4acac4.d20221106 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -123,7 +123,7 @@
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
         <img id="announcement_left_img" valign="middle" src="https://usgs.github.io/groundmotion-processing/_static/usgs.png""></a>
     Ground-Motion Processing Software
-    <a href='https://github.com/usgs/groundmotion-processing' style='text-decoration: none'>
+    <a href='https://code.usgs.gov/ghsc/esi/groundmotion-processing' style='text-decoration: none'>
         <img id="announcement_right_img" valign="middle"
             src="https://usgs.github.io/groundmotion-processing/_static/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png"></a>
  
@@ -139,7 +139,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">gmprocess 1.2.2.dev41+gcec52751.d20221101 documentation</div></a>
+      <a href="../../index.html"><div class="brand">gmprocess 1.2.2.dev77+g0d4acac4.d20221106 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -150,7 +150,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -473,20 +473,59 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="release-steps">
-<h1>Release Steps<a class="headerlink" href="#release-steps" title="Permalink to this heading">#</a></h1>
+          <section id="merge-request-guidelines">
+<h1>Merge Request Guidelines<a class="headerlink" href="#merge-request-guidelines" title="Permalink to this heading">#</a></h1>
 <ol class="arabic simple">
+<li><p>Use concise, yet informative commit messages</p></li>
+<li><p>Rebase (if you know how) to provide an easy-to-follow history of changes in your branch</p></li>
 <li><p>Update the changelog (<code class="docutils literal notranslate"><span class="pre">doc_source/contents/developer/changelog.md</span></code>) for significant changes</p></li>
 <li><p>Update docs if relevant</p></li>
 <li><p>Add unit tests for any new features</p></li>
 <li><p>Run the unit tests (we use <code class="docutils literal notranslate"><span class="pre">pytest</span></code>) prior to sending in your changes.</p></li>
 </ol>
+<section id="commit-messages">
+<h2>Commit Messages<a class="headerlink" href="#commit-messages" title="Permalink to this heading">#</a></h2>
+<p>Commit messages should begin with a one line concise yet informative summary.
+A blank line should separate the one line summary from any additional information.
+We strongly recommend using the following templates:</p>
+<section id="commits-related-to-documentation">
+<h3>Commits related to documentation<a class="headerlink" href="#commits-related-to-documentation" title="Permalink to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DOCS</span><span class="p">:</span> <span class="p">[</span><span class="n">one</span> <span class="n">line</span> <span class="n">description</span><span class="p">]</span>
+
+<span class="p">[</span><span class="n">Optional</span> <span class="n">additional</span> <span class="n">information</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="commits-fixing-bugs">
+<h3>Commits fixing bugs<a class="headerlink" href="#commits-fixing-bugs" title="Permalink to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FIX</span><span class="p">:</span> <span class="p">[</span><span class="n">one</span> <span class="n">line</span> <span class="n">description</span><span class="p">]</span>
+
+<span class="p">[</span><span class="n">Optional</span> <span class="n">additional</span> <span class="n">information</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rebasing">
+<h2>Rebasing<a class="headerlink" href="#rebasing" title="Permalink to this heading">#</a></h2>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Rebasing can do permanent damage to your branch if you do not do it correctly.
+Practice on a scratch repository until you are comfortable with how rebasing works.</p>
+</div>
+<p>You can use rebasing to clean up the history of commits in a branch to make the changes easier to follow.
+Common reasons to rebase include:</p>
+<ul class="simple">
+<li><p>squashing (combining) several closely related commits into a single commit,</p></li>
+<li><p>reordering commits, especially to allow squashing, and</p></li>
+<li><p>dropping (removing) commits related to debugging.</p></li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -534,8 +573,32 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Merge Request Guidelines</a><ul>
+<li><a class="reference internal" href="#commit-messages">Commit Messages</a><ul>
+<li><a class="reference internal" href="#commits-related-to-documentation">Commits related to documentation</a></li>
+<li><a class="reference internal" href="#commits-fixing-bugs">Commits fixing bugs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rebasing">Rebasing</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
