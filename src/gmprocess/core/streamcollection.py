@@ -630,14 +630,13 @@ class StreamCollection(StreamArray):
             for st in self.streams:
                 if not st.passed:
                     first_failure = next(tr for tr in st if not tr.passed)
-                    failure_reasons.append(
-                        first_failure.getParameter("failure")["reason"]
-                    )
+                    first_reason = first_failure.getParameter("failure")["reason"]
+                    failure_reasons.append(f"failed ({first_reason})")
                 else:
-                    failure_reasons.append("")
+                    failure_reasons.append("passed")
             sta_ids = [st.id for st in self.streams]
             failure_srs = pd.Series(
-                index=sta_ids, data=failure_reasons, name="Failure reason"
+                index=sta_ids, data=failure_reasons, name="Status"
             )
             failure_srs.index.name = "StationID"
             return failure_srs
