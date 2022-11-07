@@ -126,31 +126,6 @@ def plot_regression(
     plt.savefig(filename)
 
 
-def get_time_from_percent(NIa, p, dt):
-    """
-    Find the closest value to the desired percent of Arias intensity and
-    calculate the duration time associated with the percent.
-
-    Args:
-        NIa (array):
-            Array of normalized Arias intensity values with respect to time.
-        p (float):
-            Percent (0 to 1) of Arias Intensity.
-        dt (float):
-            Time in between each record in s.
-
-    Returns:
-        time (float): Duration time to reach specified percent of Arias
-        intensity.
-    """
-
-    npts = len(NIa)
-    t = np.linspace(0, (npts - 1) * dt, num=npts)
-
-    time = t[np.argmin(np.abs(p - NIa))]
-    return time
-
-
 def plot_moveout(
     streams,
     epilat,
