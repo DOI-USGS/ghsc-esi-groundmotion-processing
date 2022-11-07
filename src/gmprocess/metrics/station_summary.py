@@ -49,7 +49,6 @@ class StationSummary(object):
         self._elevation = None
         self._distances = {}
         self._back_azimuth = None
-        self._vs30 = {}
         self._imts = None
         self._event = None
         self._pgms = None
@@ -385,9 +384,6 @@ class StationSummary(object):
         if self._distances is not None:
             for dist_type in self._distances:
                 columns.append(dist_type.upper() + "_DISTANCE")
-        if self._vs30 is not None:
-            for vs30_type in self._vs30:
-                columns.append(vs30_type.upper())
         # set meta_data
         row = np.zeros(len(columns), dtype=list)
         row[0] = self.station_code
@@ -618,14 +614,6 @@ class StationSummary(object):
             if element.tag == "distances":
                 for dist_type in element.iterchildren():
                     station._distances[dist_type.tag] = float(dist_type.text)
-            if element.tag == "vs30":
-                for vs30_type in element.iterchildren():
-                    station._vs30[vs30_type.tag] = {
-                        "value": float(vs30_type.text),
-                        "column_header": vs30_type.attrib["column_header"],
-                        "readme_entry": vs30_type.attrib["readme_entry"],
-                        "units": vs30_type.attrib["units"],
-                    }
             if element.tag == "back_azimuth":
                 station._back_azimuth = float(element.text)
 
@@ -633,7 +621,7 @@ class StationSummary(object):
 
     def compute_station_metrics(self, rupture=None):
         """
-        Computes station metrics (distances, vs30, back azimuth) for the
+        Computes station metrics (distances, back azimuth) for the
         StationSummary.
 
         Args:
@@ -795,21 +783,6 @@ class StationSummary(object):
                 element.text = (
                     METRICS_XML_FLOAT_STRING_FORMAT["distance"]
                     % self._distances[dist_type]
-                )
-
-        if self._vs30:
-            vs30 = etree.SubElement(root, "vs30")
-            for vs30_type in self._vs30:
-                element = etree.SubElement(
-                    vs30,
-                    vs30_type,
-                    units=self._vs30[vs30_type]["units"],
-                    column_header=self._vs30[vs30_type]["column_header"],
-                    readme_entry=self._vs30[vs30_type]["readme_entry"],
-                )
-                element.text = (
-                    METRICS_XML_FLOAT_STRING_FORMAT["vs30"]
-                    % self._vs30[vs30_type]["value"]
                 )
 
         return etree.tostring(root, pretty_print=True, encoding="unicode")

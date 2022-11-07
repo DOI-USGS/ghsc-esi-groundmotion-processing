@@ -161,10 +161,6 @@ def _get_table_row(stream, summary, event, imc):
     # Add the filter frequency information to the row
     row.update(filter_dict)
 
-    # Add the Vs30 values to the row
-    for vs30_dict in summary._vs30.values():
-        row[vs30_dict["column_header"]] = vs30_dict["value"]
-
     imt_frame = summary.pgms.xs(imc, level=1)
     row.update(imt_frame.Result.to_dict())
     return row

@@ -950,12 +950,6 @@ class StreamWorkspace(object):
                     imtlist = pgms.index.get_level_values("IMT").unique().tolist()
                     imtlist.sort(key=_natural_keys)
 
-                    # Add any Vs30 columns to the list of FLATFILE_COLUMNS
-                    for vs30_dict in summary._vs30.values():
-                        FLATFILE_COLUMNS[vs30_dict["column_header"]] = vs30_dict[
-                            "readme_entry"
-                        ]
-
                     for imc in imclist:
                         if imc not in imc_tables:
                             row = _get_table_row(stream, summary, event, imc)
