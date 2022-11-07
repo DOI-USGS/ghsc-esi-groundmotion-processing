@@ -17,7 +17,7 @@ M_TO_KM = 1.0 / 1000
 @ProcessingStep
 def fit_spectra(
     st,
-    origin,
+    event,
     kappa=0.035,
     RP=0.55,
     VHC=0.7071068,
@@ -34,9 +34,9 @@ def fit_spectra(
     Fit spectra vaying stress_drop and moment.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        origin (ScalarEvent):
+        event (gmprocess.utils.event.ScalarEvent):
              ScalarEvent object.
         kappa (float):
             Site diminution factor (sec). Typical value for active cruststal
@@ -76,9 +76,9 @@ def fit_spectra(
         if tr.hasCached("smooth_signal_spectrum") and tr.hasParameter(
             "corner_frequencies"
         ):
-            event_mag = origin.magnitude
-            event_lon = origin.longitude
-            event_lat = origin.latitude
+            event_mag = event.magnitude
+            event_lon = event.longitude
+            event_lat = event.latitude
             dist = (
                 gps2dist_azimuth(
                     lat1=event_lat,

@@ -8,7 +8,7 @@ from gmprocess.utils.test_utils import read_data_dir
 
 
 def test_nsmn():
-    datafiles, origin = read_data_dir("nsmn", "us20009ynd")
+    datafiles, _ = read_data_dir("nsmn", "us20009ynd")
 
     # make sure format checker works
     assert is_nsmn(datafiles[0])

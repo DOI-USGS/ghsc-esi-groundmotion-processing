@@ -23,11 +23,11 @@ from gmprocess.utils.plot import summary_plots
 def test_summary_plots():
     ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
     ws = StreamWorkspace.open(ddir / "workspace.h5")
-    origin = ws.getEvent("ci38457511")
+    event = ws.getEvent("ci38457511")
     st = ws.getStreams(eventid="ci38457511")[0]
     tdir = tempfile.mkdtemp()
     try:
-        summary_plots(st, tdir, origin)
+        summary_plots(st, tdir, event)
     except Exception as e:
         raise e
     finally:
@@ -56,7 +56,7 @@ def test_regression():
 
 def test_plot():
     # read in data
-    datafiles, origin = read_data_dir("cwb", "us1000chhc", "2-ECU.dat")
+    datafiles, _ = read_data_dir("cwb", "us1000chhc", "2-ECU.dat")
     st = read_data(datafiles[0])[0]
 
     # Moveout plots

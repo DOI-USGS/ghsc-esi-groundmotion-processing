@@ -5,16 +5,15 @@ import warnings
 import os
 
 import numpy as np
-from obspy.core.event import Origin
 
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.metrics.station_summary import StationSummary
-from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.waveform_processing.processing import process_streams
+from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.base_utils import read_event_json_files
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.config import get_config
+from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.waveform_processing.processing import process_streams
 
 
 def cmp_dicts(adict, bdict):
@@ -26,9 +25,10 @@ def cmp_dicts(adict, bdict):
 
 
 def test_stationsummary():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
+    datafiles, event = read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
+    )
     datafile = datafiles[0]
-    origin = Origin(latitude=42.6925, longitude=173.021944)
 
     target_imcs = np.sort(
         np.asarray(
@@ -43,7 +43,7 @@ def test_stationsummary():
             stream,
             ["greater_of_two_horizontals", "channels", "rotd50", "rotd100", "invalid"],
             ["sa1.0", "PGA", "pgv", "invalid"],
-            origin,
+            event,
         )
         original_stream = stream_summary.stream
         stream_summary.stream = []
@@ -158,8 +158,8 @@ def test_stationsummary():
 def test_allow_nans():
     datadir = TEST_DATA_DIR / "fdsn" / "uu60363602"
     sc = StreamCollection.from_directory(datadir)
-    origin = read_event_json_files([str(datadir / "event.json")])[0]
-    psc = process_streams(sc, origin)
+    event = read_event_json_files([str(datadir / "event.json")])[0]
+    psc = process_streams(sc, event)
     st = psc[0]
 
     ss = StationSummary.from_stream(

@@ -8,7 +8,7 @@ from gmprocess.utils.test_utils import read_data_dir
 
 
 def test_renadic():
-    datafiles, origin = read_data_dir("renadic", "official20100227063411530_30")
+    datafiles, _ = read_data_dir("renadic", "official20100227063411530_30")
 
     # make sure format checker works
     assert is_renadic(datafiles[0])

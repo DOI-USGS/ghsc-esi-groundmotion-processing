@@ -56,7 +56,7 @@ def test_sac_csn():
 
 def test_channel_exclusion():
     exclude_patterns = ["*.*.??.???"]
-    datafiles, origin = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -67,7 +67,7 @@ def test_channel_exclusion():
     assert len(streams) == 0
 
     exclude_patterns = ["*.*.??.LN?"]
-    datafiles, origin = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -78,7 +78,7 @@ def test_channel_exclusion():
     assert len(streams) == 0
 
     exclude_patterns = ["*.*.??.LN?"]
-    datafiles, origin = read_data_dir("fdsn", "nc72282711", "BK.CMB*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "nc72282711", "BK.CMB*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -89,7 +89,7 @@ def test_channel_exclusion():
     assert len(streams) == 3
 
     exclude_patterns = ["*.*.??.[BH]NZ"]
-    datafiles, origin = read_data_dir("fdsn", "ci38445975", "CI.MIKB*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "ci38445975", "CI.MIKB*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -100,7 +100,7 @@ def test_channel_exclusion():
     assert len(streams) == 4
 
     exclude_patterns = ["US.*.??.???"]
-    datafiles, origin = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -111,7 +111,7 @@ def test_channel_exclusion():
     assert len(streams) == 0
 
     exclude_patterns = ["*.LRAL.??.???"]
-    datafiles, origin = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -122,7 +122,7 @@ def test_channel_exclusion():
     assert len(streams) == 0
 
     exclude_patterns = ["*.*.40.???"]
-    datafiles, origin = read_data_dir("fdsn", "nc73300395", "BK.VALB*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "nc73300395", "BK.VALB*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -133,7 +133,7 @@ def test_channel_exclusion():
     assert len(streams) == 0
 
     exclude_patterns = ["US.LRAL.20.LNZ"]
-    datafiles, origin = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "se60247871", "US.LRAL*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -144,7 +144,7 @@ def test_channel_exclusion():
     assert len(streams) == 2
 
     exclude_patterns = ["*.*.??.BN?", "*.*.??.HN?"]
-    datafiles, origin = read_data_dir("fdsn", "ci38445975", "CI.MIKB*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "ci38445975", "CI.MIKB*.mseed")
     streams = []
     for datafile in datafiles:
         tstreams = read_obspy(datafile, exclude_patterns=exclude_patterns)
@@ -156,25 +156,25 @@ def test_channel_exclusion():
 
 
 def test_weird_sensitivity():
-    datafiles, origin = read_data_dir("fdsn", "us70008dx7", "SL.KOGS*.mseed")
+    datafiles, event = read_data_dir("fdsn", "us70008dx7", "SL.KOGS*.mseed")
     streams = []
     for datafile in datafiles:
         streams += read_obspy(datafile)
     sc = StreamCollection(streams)
-    psc = process_streams(sc, origin)
+    psc = process_streams(sc, event)
     channel = psc[0].select(component="E")[0]
     np.testing.assert_allclose(channel.data.max(), 63324.10197662897)
 
 
 def test():
-    datafiles, origin = read_data_dir("fdsn", "nc72282711", "BK.CMB*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "nc72282711", "BK.CMB*.mseed")
     streams = []
     for datafile in datafiles:
         streams += read_obspy(datafile)
 
     assert streams[0].get_id() == "BK.CMB.HN"
 
-    datafiles, origin = read_data_dir("fdsn", "nc72282711", "TA.M04C*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "nc72282711", "TA.M04C*.mseed")
     streams = []
     for datafile in datafiles:
         streams += read_obspy(datafile)
@@ -182,7 +182,7 @@ def test():
     assert streams[0].get_id() == "TA.M04C.HN"
 
     # test assignment of Z channel
-    datafiles, origin = read_data_dir("fdsn", "nc73300395", "BK.VALB*.mseed")
+    datafiles, _ = read_data_dir("fdsn", "nc73300395", "BK.VALB*.mseed")
     streams = []
     for datafile in datafiles:
         streams += read_obspy(datafile)
@@ -190,10 +190,6 @@ def test():
     # get all channel names
     channels = sorted([st[0].stats.channel for st in streams])
     assert channels == ["HN2", "HN3", "HNZ"]
-
-    # DEBUGGING
-    # sc = StreamCollection(streams)
-    # process_streams(sc, origin)
 
 
 if __name__ == "__main__":

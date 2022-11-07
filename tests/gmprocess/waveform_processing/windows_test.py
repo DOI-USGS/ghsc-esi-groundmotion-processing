@@ -107,22 +107,22 @@ def _test_signal_split():
 
 
 def test_signal_end():
-    datafiles, origin = read_data_dir("fdsn", "ci38457511", "*.mseed")
+    datafiles, event = read_data_dir("fdsn", "ci38457511", "*.mseed")
     streams = []
     for datafile in datafiles:
         streams.append(read_data(datafile)[0][0])
     old_durations = []
     for tr in streams:
         old_durations.append((tr.stats.npts - 1) * tr.stats.delta)
-    new_streams = signal_split(streams, origin=origin)
+    new_streams = signal_split(streams, event=event)
 
     # Method = none
     new_streams = signal_end(
         new_streams,
-        event_time=UTCDateTime(origin.time),
-        event_lon=origin.longitude,
-        event_lat=origin.latitude,
-        event_mag=origin.magnitude,
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
         method="none",
     )
     new_durations = []
@@ -135,10 +135,10 @@ def test_signal_end():
     # Method = magnitude
     new_streams = signal_end(
         new_streams,
-        event_time=UTCDateTime(origin.time),
-        event_lon=origin.longitude,
-        event_lat=origin.latitude,
-        event_mag=origin.magnitude,
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
         method="magnitude",
     )
     new_durations = []
@@ -152,10 +152,10 @@ def test_signal_end():
     # Method = velocity
     new_streams = signal_end(
         new_streams,
-        event_time=UTCDateTime(origin.time),
-        event_lon=origin.longitude,
-        event_lat=origin.latitude,
-        event_mag=origin.magnitude,
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
         method="velocity",
     )
     new_durations = []
@@ -169,10 +169,10 @@ def test_signal_end():
     # Method = model
     new_streams = signal_end(
         new_streams,
-        event_time=UTCDateTime(origin.time),
-        event_lon=origin.longitude,
-        event_lat=origin.latitude,
-        event_mag=origin.magnitude,
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
         method="model",
     )
     new_durations = []
@@ -185,14 +185,14 @@ def test_signal_end():
 
 
 def test_signal_split2():
-    datafiles, origin = read_data_dir("knet", "us2000cnnl", "AOM0011801241951*")
+    datafiles, event = read_data_dir("knet", "us2000cnnl", "AOM0011801241951*")
     streams = []
     for datafile in datafiles:
         streams += read_data(datafile)
 
     streams = StreamCollection(streams)
     stream = streams[0]
-    signal_split(stream, origin)
+    signal_split(stream, event)
 
     cmpdict = {
         "split_time": UTCDateTime(2018, 1, 24, 10, 51, 38, 841483),
@@ -223,7 +223,7 @@ def test_signal_split2():
 def _test_trim_multiple_events():
     datadir = TEST_DATA_DIR / "multiple_events"
     sc = StreamCollection.from_directory(str(datadir / "ci38457511"))
-    origin = get_event_object("ci38457511")
+    event = get_event_object("ci38457511")
     df, catalog = create_travel_time_dataframe(
         sc, datadir / "catalog.csv", 5, 0.1, "iasp91"
     )
@@ -233,19 +233,19 @@ def _test_trim_multiple_events():
         st = corner_frequencies.from_constant(st)
         lowpass_filter(st)
         highpass_filter(st)
-        signal_split(st, origin)
+        signal_split(st, event)
         signal_end(
             st,
-            origin.time,
-            origin.longitude,
-            origin.latitude,
-            origin.magnitude,
+            event.time,
+            event.longitude,
+            event.latitude,
+            event.magnitude,
             method="model",
             model="AS16",
         )
         cut(st, 2)
         trim_multiple_events(
-            st, origin, catalog, df, 0.2, 0.7, "B14", {"vs30": 760}, {"rake": 0}
+            st, event, catalog, df, 0.2, 0.7, "B14", {"vs30": 760}, {"rake": 0}
         )
 
     num_failures = sum([1 if not st.passed else 0 for st in sc])

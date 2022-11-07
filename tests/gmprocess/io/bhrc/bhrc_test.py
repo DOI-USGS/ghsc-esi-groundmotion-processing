@@ -7,7 +7,7 @@ from gmprocess.utils.test_utils import read_data_dir
 
 
 def test_bhrc():
-    datafiles, origin = read_data_dir("bhrc", "usp000jq5p")
+    datafiles, _ = read_data_dir("bhrc", "usp000jq5p")
 
     # make sure format checker works
     assert is_bhrc(datafiles[0])

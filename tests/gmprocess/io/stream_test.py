@@ -20,7 +20,7 @@ def test():
     # Test for channel grouping with three unique channels
     streams = []
     # datadir = os.path.join(homedir, '..', 'data', 'knet', 'us2000cnnl')
-    datafiles, origin = read_data_dir("knet", "us2000cnnl", "AOM0031801241951*")
+    datafiles, _ = read_data_dir("knet", "us2000cnnl", "AOM0031801241951*")
     for datafile in datafiles:
         streams += read_knet(datafile)
     grouped_streams = StreamCollection(streams)
@@ -28,7 +28,7 @@ def test():
     assert grouped_streams[0].count() == 3
 
     # Test for channel grouping with more file types
-    datafiles, origin = read_data_dir(
+    datafiles, _ = read_data_dir(
         "geonet", "us1000778i", "20161113_110313_THZ_20.V2A"
     )
     datafile = datafiles[0]
@@ -39,7 +39,7 @@ def test():
     assert grouped_streams[1].count() == 3
 
     # Test for warning for one channel streams
-    datafiles, origin = read_data_dir("knet", "us2000cnnl", "AOM0071801241951.UD")
+    datafiles, _ = read_data_dir("knet", "us2000cnnl", "AOM0071801241951.UD")
     datafile = datafiles[0]
     streams += read_knet(datafile)
 

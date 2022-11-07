@@ -33,7 +33,7 @@ def test_nnet():
     }
     update_dict(conf, update)
 
-    data_files, origin = read_data_dir(
+    data_files, event = read_data_dir(
         "geonet", "us1000778i", "20161113_110300_HSES_20.V1A"
     )
     streams = []
@@ -41,7 +41,7 @@ def test_nnet():
         streams += read_data(f)
 
     sc = StreamCollection(streams)
-    test = process_streams(sc, origin, conf)
+    test = process_streams(sc, event, conf)
     nnet_dict = test[0].getStreamParam("nnet_qa")
     np.testing.assert_allclose(nnet_dict["score_HQ"], 0.9996686646819085, rtol=1e-3)
 

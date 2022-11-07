@@ -16,12 +16,12 @@ def test_report():
         ws_file = eventdir / "workspace.h5"
         ws = StreamWorkspace.open(ws_file)
         sc = ws.getStreams("ci38457511")
-        origin = ws.getEvent("ci38457511")
+        event = ws.getEvent("ci38457511")
 
         report.build_report_latex(
             st_list=sc.streams,
             directory=tmp_dir,
-            origin=origin,
+            event=event,
             prefix="pytest",
             build_latex=False,
         )

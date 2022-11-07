@@ -10,7 +10,7 @@ from gmprocess.waveform_processing.instrument_response import remove_response
 
 
 def test_cosmos():
-    one_channel, event = read_data_dir(
+    one_channel, _ = read_data_dir(
         "cosmos", "ci14155260", ["Cosmos12TimeSeriesTest.v1"]
     )
     two_channels, _ = read_data_dir(
@@ -77,10 +77,10 @@ def test_cosmos():
     # converted unit
     failed = False
     try:
-        stream2 = read_cosmos(two_channels)[0]
+        read_cosmos(two_channels)[0]
     except BaseException:
         failed = True
-    assert failed == True
+    assert failed is True
     # test that reading a file that is a valid station type returns a
     # stream with traces
     building_code = 10
@@ -104,18 +104,18 @@ def test_cosmos():
 
 
 def test_channel_in_filename():
-    datafiles, origin = read_data_dir("cosmos", "us1000hyfh")
+    datafiles, _ = read_data_dir("cosmos", "us1000hyfh")
     dfile = datafiles[0]
     # TODO: Fix this problem, or get the data fixed?
     try:
-        streams = read_cosmos(dfile)
+        read_cosmos(dfile)
 
     except BaseException:
         pass
 
 
 def test_v0():
-    datafiles, origin = read_data_dir("cosmos", "ftbragg")
+    datafiles, _ = read_data_dir("cosmos", "ftbragg")
     dfile = datafiles[0]
     # TODO: Fix this problem, or get the data fixed?
     assert is_cosmos(dfile)
@@ -132,12 +132,12 @@ def test_v0():
         tstream.detrend(type="demean")
 
         np.testing.assert_almost_equal(tstream[0].data, pstream[0].data)
-    except Exception as e:
+    except Exception:
         pass
 
 
 def test_orientation_relative():
-    dfiles, event = read_data_dir(
+    dfiles, _ = read_data_dir(
         "cosmos", "ak018fcnsk91", ["NP8040-n.1000hyfh.HNE.01.V0c"]
     )
     streams = read_cosmos(dfiles[0])
