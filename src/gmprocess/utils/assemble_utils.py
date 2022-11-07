@@ -67,9 +67,9 @@ def assemble(event, config, directory, gmprocess_version):
     logging.debug(streams)
 
     if config["read"]["use_streamcollection"]:
-        stream_array = StreamCollection(streams, **config["duplicate"])
+        stream_array = StreamCollection(streams, **config["duplicate"], config=config)
     else:
-        stream_array = StreamArray(streams)
+        stream_array = StreamArray(streams, config=config)
 
     logging.info(stream_array.describe_string())
 
