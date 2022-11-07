@@ -275,7 +275,7 @@ colocated:
         # Enable separate channel preferences at large distances?
         enabled: True
 
-        preference: [BH?, HH?, HN?, BN?]
+        preference: [HH?, BH?, HN?, BN?]
         mag: [3, 4, 5, 6, 7]
         dist: [20, 50,100, 300, 600]
 
