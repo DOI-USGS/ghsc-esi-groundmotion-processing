@@ -17,8 +17,9 @@ DEFAULT_IMTS = ["PGA", "PGV", "SA(0.3)", "SA(1.0)", "SA(3.0)"]
 DEFAULT_IMCS = ["GREATER_OF_TWO_HORIZONTALS", "CHANNELS"]
 
 
-def directory_to_dataframe(directory, imcs=None, imts=None, origin=None, process=True):
+def directory_to_dataframe(directory, imcs=None, imts=None, event=None, process=True):
     """Extract peak ground motions from list of Stream objects.
+
     Note: The PGM columns underneath each channel will be variable
     depending on the units of the Stream being passed in (velocity
     sensors can only generate PGV) and on the imtlist passed in by
@@ -32,7 +33,7 @@ def directory_to_dataframe(directory, imcs=None, imts=None, origin=None, process
             Strings designating desired components to create in table.
         imts (list):
             Strings designating desired PGMs to create in table.
-        origin (obspy.core.event.Origin):
+        event (gmprocess.utils.event.ScalarEvent):
             Defines the focal time and geographical location of an earthquake
             hypocenter. Default is None.
         process (bool):
@@ -82,7 +83,7 @@ def directory_to_dataframe(directory, imcs=None, imts=None, origin=None, process
     grouped_streams = StreamCollection(streams)
 
     dataframe = streams_to_dataframe(
-        grouped_streams, imcs=imcs, imts=imts, origin=origin
+        grouped_streams, imcs=imcs, imts=imts, event=event
     )
     return dataframe
 

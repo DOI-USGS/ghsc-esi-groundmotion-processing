@@ -13,7 +13,7 @@ from gmprocess.utils.event import get_event_object
 def test_check_clipping():
     data_files, _ = read_data_dir("clipping_samples", "hv70907436", "*.mseed")
     data_files.sort()
-    origin = get_event_object("hv70907436")
+    event = get_event_object("hv70907436")
     streams = []
     for f in data_files:
         streams += read_data(f)
@@ -27,7 +27,7 @@ def test_check_clipping():
             if tcode == code:
                 traces.append(ss[0])
         st = StationStream(traces)
-        check_clipping(st, origin)
+        check_clipping(st, event)
         passed.append(st.passed)
 
     assert np.all(~np.array(passed))

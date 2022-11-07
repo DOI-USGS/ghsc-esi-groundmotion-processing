@@ -11,7 +11,6 @@ import re
 import logging
 
 from obspy import UTCDateTime
-from obspy.core.event import Origin
 from obspy.geodetics import gps2dist_azimuth
 import pandas as pd
 import numpy as np
@@ -141,7 +140,7 @@ class StreamCollection(StreamArray):
             raise ValueError("Only one label allowed within a StreamCollection.")
 
     def select_colocated(
-        self, preference=["HN?", "BN?", "HH?", "BH?"], large_dist=None, origin=None
+        self, preference=["HN?", "BN?", "HH?", "BH?"], large_dist=None, event=None
     ):
         """Detect colocated instruments, return preferred instrument type.
 
@@ -175,14 +174,14 @@ class StreamCollection(StreamArray):
                             dist_thresh = d
                     ```
 
-            origin (Origin):
-                Origin object.
+            event (gmprocess.utils.event.ScalarEvent):
+                A ScalarEvent object.
         """
         # Do we have different large distnce preference?
         if large_dist is not None and large_dist["enabled"]:
             dist_thresh = large_dist["dist"][0]
             for m, d in zip(large_dist["mag"], large_dist["dist"]):
-                if origin.magnitude > m:
+                if event.magnitude > m:
                     dist_thresh = d
 
         # Create a list of streams with matching id (combo of net and station).
@@ -222,8 +221,8 @@ class StreamCollection(StreamArray):
                         gps2dist_azimuth(
                             tr.stats.coordinates.latitude,
                             tr.stats.coordinates.longitude,
-                            origin.latitude,
-                            origin.longitude,
+                            event.latitude,
+                            event.longitude,
                         )[0]
                         / 1000.0
                     )
@@ -301,7 +300,7 @@ class StreamCollection(StreamArray):
         streams = [StationStream([tr], config=config) for tr in traces]
         return cls(streams, config=config)
 
-    def to_dataframe(self, origin, imcs=None, imts=None):
+    def to_dataframe(self, event, imcs=None, imts=None):
         """Get a summary dataframe of streams.
 
         Note: The PGM columns underneath each channel will be variable
@@ -313,14 +312,8 @@ class StreamCollection(StreamArray):
         Args:
             directory (str):
                 Directory of ground motion files (streams).
-            origin_dict (obspy):
-                Dictionary with the following keys:
-                - id
-                - magnitude
-                - time (UTCDateTime object)
-                - lon
-                - lat
-                - depth
+            event (gmprocess.utils.event.ScalarEvent):
+                A ScalarEvent object.
             imcs (list):
                 Strings designating desired components to create in table.
             imts (list):
@@ -364,14 +357,6 @@ class StreamCollection(StreamArray):
                     - SA(3.0) Pseudo-spectral acceleration at 3.0 seconds (%g).
         """
         streams = self.streams
-        # dept for an origin object should be stored in meters
-        origin = Origin(
-            resource_id=origin["id"],
-            latitude=origin["lat"],
-            longitude=origin["lon"],
-            time=origin["time"],
-            depth=origin["depth"] * 1000,
-        )
 
         if imcs is None:
             station_summary_imcs = DEFAULT_IMCS
@@ -398,7 +383,7 @@ class StreamCollection(StreamArray):
             # if len(stream) < 3:
             #     continue
             stream_summary = StationSummary.from_stream(
-                stream, station_summary_imcs, station_summary_imts, origin
+                stream, station_summary_imcs, station_summary_imts, event
             )
             summary = stream_summary.summary
             subdfs += [summary]
@@ -635,9 +620,7 @@ class StreamCollection(StreamArray):
                 else:
                     failure_reasons.append("passed")
             sta_ids = [st.id for st in self.streams]
-            failure_srs = pd.Series(
-                index=sta_ids, data=failure_reasons, name="Status"
-            )
+            failure_srs = pd.Series(index=sta_ids, data=failure_reasons, name="Status")
             failure_srs.index.name = "StationID"
             return failure_srs
         else:

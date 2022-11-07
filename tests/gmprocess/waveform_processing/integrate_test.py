@@ -12,7 +12,7 @@ from gmprocess.utils.config import get_config
 
 def test_get_disp():
 
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
     data_files.sort()
     streams = []
     for f in data_files:
@@ -73,7 +73,7 @@ def test_get_disp():
 
 
 def test_get_vel():
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
     data_files.sort()
     streams = []
     for f in data_files:
@@ -108,7 +108,7 @@ def test_get_vel():
 
 
 def test_integrate_taper():
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
     data_files.sort()
     streams = []
     for f in data_files:

@@ -329,7 +329,7 @@ def plot_moveout(
     return (fig, ax)
 
 
-def summary_plots(st, directory, origin, config=None):
+def summary_plots(st, directory, event, config=None):
     """Stream summary plot.
 
     Args:
@@ -337,8 +337,8 @@ def summary_plots(st, directory, origin, config=None):
             Stream of data.
         directory (str):
             Directory for saving plots.
-        origin (ScalarEvent):
-            Flattened subclass of Obspy Event.
+        event (gmprocess.utils.event.ScalarEvent):
+            Flattened subclass of Obspy's Event.
         config (dict):
             Configuration dictionary (or None). See get_config().
 
@@ -364,13 +364,13 @@ def summary_plots(st, directory, origin, config=None):
     logging.debug(f"passed: {st.passed}")
     if st.passed:
         plt.suptitle(
-            f"M{origin.magnitude} {origin.id} | {stream_id} (passed)",
+            f"M{event.magnitude} {event.id} | {stream_id} (passed)",
             x=0.5,
             y=1.02,
         )
     else:
         plt.suptitle(
-            f"M{origin.magnitude} {origin.id} | {stream_id} (failed)",
+            f"M{event.magnitude} {event.id} | {stream_id} (failed)",
             color="red",
             x=0.5,
             y=1.02,
@@ -673,7 +673,7 @@ def summary_plots(st, directory, origin, config=None):
     file_name = None
     if "CALLED_FROM_PYTEST" not in os.environ:
         plt.subplots_adjust(left=0.08, right=0.97, hspace=0.3, wspace=0.25, top=0.97)
-        file_name = os.path.join(directory, origin.id + "_" + stream_id + ".png")
+        file_name = os.path.join(directory, event.id + "_" + stream_id + ".png")
         plt.savefig(fname=file_name)
         plt.close("all")
 

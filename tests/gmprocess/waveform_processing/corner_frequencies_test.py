@@ -21,7 +21,7 @@ from gmprocess.waveform_processing.snr import compute_snr, snr_check
 def test_corner_frequencies():
     # Default config has 'constant' corner frequency method, so the need
     # here is to force the 'snr' method.
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
     streams = []
     for f in data_files:
         streams += read_data(f)
@@ -36,21 +36,17 @@ def test_corner_frequencies():
     for st in processed_streams:
         if st.passed:
             # Estimate noise/signal split time
-            event_time = origin.time
-            event_lon = origin.longitude
-            event_lat = origin.latitude
-            st = signal_split(st, origin)
+            st = signal_split(st, event)
 
             # Estimate end of signal
             end_conf = window_conf["signal_end"]
-            event_mag = origin.magnitude
             print(st)
             st = signal_end(
                 st,
-                event_time=event_time,
-                event_lon=event_lon,
-                event_lat=event_lat,
-                event_mag=event_mag,
+                event_time=event.time,
+                event_lon=event.longitude,
+                event_lat=event.latitude,
+                event_mag=event.magnitude,
                 **end_conf
             )
             wcheck_conf = window_conf["window_checks"]
@@ -63,14 +59,14 @@ def test_corner_frequencies():
     for stream in processed_streams:
         stream = compute_snr(stream)
     for stream in processed_streams:
-        stream = snr_check(stream, mag=origin.magnitude)
+        stream = snr_check(stream, mag=event.magnitude)
 
     lp = []
     hp = []
     for stream in processed_streams:
         if not stream.passed:
             continue
-        stream = get_corner_frequencies(stream, origin, method="snr")
+        stream = get_corner_frequencies(stream, event, method="snr")
         if stream[0].hasParameter("corner_frequencies"):
             cfdict = stream[0].getParameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
@@ -90,7 +86,7 @@ def test_corner_frequencies():
     for stream in processed_streams:
         if not stream.passed:
             continue
-        stream = get_corner_frequencies(stream, origin, method="snr")
+        stream = get_corner_frequencies(stream, event, method="snr")
         if stream[0].hasParameter("corner_frequencies"):
             cfdict = stream[0].getParameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
@@ -112,7 +108,7 @@ def test_corner_frequencies():
 def test_corner_frequencies_magnitude():
     # Default config has 'constant' corner frequency method, so the need
     # here is to force the 'magnitude' method.
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
     streams = []
     for f in data_files:
         streams += read_data(f)
@@ -127,14 +123,14 @@ def test_corner_frequencies_magnitude():
     for st in processed_streams:
         if st.passed:
             # Estimate noise/signal split time
-            event_time = origin.time
-            event_lon = origin.longitude
-            event_lat = origin.latitude
-            st = signal_split(st, origin)
+            event_time = event.time
+            event_lon = event.longitude
+            event_lat = event.latitude
+            st = signal_split(st, event)
 
             # Estimate end of signal
             end_conf = window_conf["signal_end"]
-            event_mag = origin.magnitude
+            event_mag = event.magnitude
             print(st)
             st = signal_end(
                 st,
@@ -156,7 +152,7 @@ def test_corner_frequencies_magnitude():
     for stream in processed_streams:
         if not stream.passed:
             continue
-        stream = get_corner_frequencies(stream, origin, method="magnitude")
+        stream = get_corner_frequencies(stream, event, method="magnitude")
         if stream[0].hasParameter("corner_frequencies"):
             cfdict = stream[0].getParameter("corner_frequencies")
             lp.append(cfdict["lowpass"])

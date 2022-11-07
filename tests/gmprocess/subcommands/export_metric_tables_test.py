@@ -5,6 +5,9 @@ import io
 import os
 import shutil
 
+import numpy as np
+import pandas as pd
+
 from gmprocess.utils import constants
 
 
@@ -30,6 +33,21 @@ def test_export_metric_tables(script_runner):
                 if pattern in file:
                     count += 1
         assert count == 8
+        # Check contents of one file
+        h1df = pd.read_csv(os.path.join(ddir, "test_default_metrics_h1.csv"))
+        for i in range(h1df.shape[0]):
+            assert h1df["EarthquakeId"][i] == "ci38457511"
+        np.testing.assert_allclose(
+            h1df["EarthquakeLatitude"],
+            np.full_like(h1df["EarthquakeLatitude"], 35.7695),
+        )
+        np.testing.assert_allclose(
+            h1df["EarthquakeLongitude"],
+            np.full_like(h1df["EarthquakeLongitude"], -117.59933),
+        )
+        np.testing.assert_allclose(
+            h1df["EarthquakeDepth"], np.full_like(h1df["EarthquakeDepth"], 8.0)
+        )
 
     except Exception as ex:
         raise ex

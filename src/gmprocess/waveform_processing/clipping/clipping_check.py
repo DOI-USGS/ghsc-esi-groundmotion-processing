@@ -15,16 +15,16 @@ M_TO_KM = 1.0 / 1000
 
 
 @ProcessingStep
-def check_clipping(st, origin, threshold=0.2, config=None):
+def check_clipping(st, event, threshold=0.2, config=None):
     """Apply clicking check.
 
     Lower thresholds will pass fewer streams but will give less false negatives
     (i.e., streams in which clipping actually occurred but were missed).
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
            Trace of data.
-        origin (ScalarEvent):
+        event (gmprocess.utils.event.ScalarEvent):
             ScalarEvent object.
         threshold (float):
             Threshold probability.
@@ -44,9 +44,9 @@ def check_clipping(st, origin, threshold=0.2, config=None):
     if not st.passed:
         return st
 
-    event_mag = origin.magnitude
-    event_lon = origin.longitude
-    event_lat = origin.latitude
+    event_mag = event.magnitude
+    event_lon = event.longitude
+    event_lat = event.latitude
     dist = (
         gps2dist_azimuth(
             lat1=event_lat,

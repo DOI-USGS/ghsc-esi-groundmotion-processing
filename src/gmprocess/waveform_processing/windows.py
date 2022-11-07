@@ -127,7 +127,7 @@ def window_checks(st, min_noise_duration=0.5, min_signal_duration=5.0):
     return st
 
 
-def signal_split(st, origin, model=None, config=None):
+def signal_split(st, event, model=None, config=None):
     """
     This method tries to identifies the boundary between the noise and signal
     for the waveform. The split time is placed inside the
@@ -141,7 +141,7 @@ def signal_split(st, origin, model=None, config=None):
     Args:
         st (StationStream):
             Stream of data.
-        origin (ScalarEvent):
+        event (ScalarEvent):
             ScalarEvent object.
         model (TauPyModel):
             TauPyModel object for computing travel times.
@@ -156,7 +156,7 @@ def signal_split(st, origin, model=None, config=None):
         config = get_config()
     picker_config = config["pickers"]
 
-    loc, mean_snr = pick_travel(st, origin, model)
+    loc, mean_snr = pick_travel(st, event, model)
     if loc > 0:
         tsplit = st[0].stats.starttime + loc
         preferred_picker = "travel_time"
@@ -363,7 +363,7 @@ def signal_end(
 @ProcessingStep
 def trim_multiple_events(
     st,
-    origin,
+    event,
     catalog,
     travel_time_df,
     pga_factor,
@@ -396,7 +396,7 @@ def trim_multiple_events(
     Args:
         st (StationStream):
             Stream of data.
-        origin (ScalarEvent):
+        event (ScalarEvent):
             ScalarEvent object associated with the StationStream.
         catalog (list):
             List of ScalarEvent objects.
@@ -449,8 +449,8 @@ def trim_multiple_events(
     ]
 
     # Make sure we remove the arrival that corresponds to the event of interest
-    if origin.id in arrivals.index:
-        arrivals.drop(index=origin.id, inplace=True)
+    if event.id in arrivals.index:
+        arrivals.drop(index=event.id, inplace=True)
 
     if arrivals.empty:
         return st

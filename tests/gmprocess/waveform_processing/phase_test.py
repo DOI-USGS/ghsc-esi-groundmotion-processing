@@ -123,7 +123,7 @@ def test_all_pickers():
 
 
 def test_travel_time():
-    datafiles, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    datafiles, event = read_data_dir("geonet", "us1000778i", "*.V1A")
     streams = []
     for datafile in datafiles:
         streams += read_data(datafile)
@@ -134,15 +134,13 @@ def test_travel_time():
         "NZ.THZ.HN": 42.016420026730088,
     }
     for stream in streams:
-        minloc, _ = pick_travel(stream, origin)
+        minloc, _ = pick_travel(stream, event)
         np.testing.assert_almost_equal(minloc, cmps[stream.get_id()])
 
 
 def get_streams():
-    # datafiles1, _ = read_data_dir("cwb", "us1000chhc", "*.dat")
-    # datafiles2, _ = read_data_dir("nsmn", "us20009ynd", "*.txt")
     datafiles3, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    datafiles = datafiles3  # + datafiles1 + datafiles2
+    datafiles = datafiles3
     streams = []
     for datafile in datafiles:
         streams += read_data(datafile)

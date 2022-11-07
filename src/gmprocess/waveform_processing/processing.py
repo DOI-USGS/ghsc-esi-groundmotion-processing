@@ -21,9 +21,8 @@ from gmprocess.waveform_processing.processing_step import collect_processing_ste
 
 all_processing_steps = collect_processing_steps()
 
-# List of processing steps that require an origin
-# besides the arguments in the conf file.
-REQ_ORIGIN = [
+# List of processing steps that require an event besides the arguments in the conf file.
+REQ_EVENT = [
     "fit_spectra",
     "trim_multiple_events",
     "check_clipping",
@@ -31,7 +30,7 @@ REQ_ORIGIN = [
 ]
 
 
-def process_streams(streams, origin, config=None, old_streams=None):
+def process_streams(streams, event, config=None, old_streams=None):
     """Run processing steps from the config file.
 
     This method looks in the 'processing' config section and loops over those
@@ -43,7 +42,7 @@ def process_streams(streams, origin, config=None, old_streams=None):
     Args:
         streams (StreamCollection):
             A StreamCollection object of unprocessed streams.
-        origin (ScalarEvent):
+        event (ScalarEvent):
             ScalarEvent object.
         config (dict):
             Configuration dictionary (or None). See get_config().
@@ -61,9 +60,9 @@ def process_streams(streams, origin, config=None, old_streams=None):
     if config is None:
         config = get_config()
 
-    event_time = origin.time
-    event_lon = origin.longitude
-    event_lat = origin.latitude
+    event_time = event.time
+    event_lon = event.longitude
+    event_lat = event.latitude
 
     # -------------------------------------------------------------------------
     # Compute a travel-time matrix for interpolation later in the
@@ -79,11 +78,11 @@ def process_streams(streams, origin, config=None, old_streams=None):
     for st in streams:
         logging.debug(f"Checking stream {st.get_id()}...")
         # Estimate noise/signal split time
-        st = signal_split(st, origin, model, config=config)
+        st = signal_split(st, event, model, config=config)
 
         # Estimate end of signal
         end_conf = window_conf["signal_end"]
-        event_mag = origin.magnitude
+        event_mag = event.magnitude
         st = signal_end(
             st,
             event_time=event_time,
@@ -135,15 +134,15 @@ def process_streams(streams, origin, config=None, old_streams=None):
             if step_name not in all_processing_steps:
                 raise ValueError(f"Processing step {step_name} is not valid.")
 
-            # Origin is required by some steps and has to be handled specially.
+            # Event is required by some steps and has to be handled specially.
             # There must be a better solution for this...
-            if step_name in REQ_ORIGIN:
-                step_args = _add_step_arg(step_args, "origin", origin)
+            if step_name in REQ_EVENT:
+                step_args = _add_step_arg(step_args, "event", event)
             if step_name == "trim_multiple_events":
                 step_args["catalog"] = catalog
                 step_args["travel_time_df"] = travel_time_df
             if step_name == "snr_check":
-                step_args = _add_step_arg(step_args, "mag", origin.magnitude)
+                step_args = _add_step_arg(step_args, "mag", event.magnitude)
 
             if step_args is None:
                 stream = all_processing_steps[step_name](stream, config=config)
@@ -158,7 +157,7 @@ def process_streams(streams, origin, config=None, old_streams=None):
         colocated_conf = config["colocated"].copy()
         colocated_conf.pop("enabled")
         if isinstance(streams, StreamCollection):
-            streams.select_colocated(**colocated_conf, origin=origin)
+            streams.select_colocated(**colocated_conf, event=event)
 
     for st in streams:
         for tr in st:

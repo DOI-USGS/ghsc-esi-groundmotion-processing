@@ -125,7 +125,7 @@ moveout_page_tex = """
 def build_report_latex(
     st_list,
     directory,
-    origin,
+    event,
     prefix="",
     config=None,
     gmprocess_version="unknown",
@@ -139,7 +139,7 @@ def build_report_latex(
             List of streams.
         directory (str or pathlib.Path):
             Directory for saving report.
-        origin (ScalarEvent):
+        event (ScalarEvent):
             ScalarEvent object.
         prefix (str):
             String to prepend to report file name.
@@ -163,7 +163,7 @@ def build_report_latex(
 
     # Initialize report string with PREAMBLE
     report = PREAMBLE
-    timestr = origin.time.strftime("%m/%d/%Y %H:%M:%S")
+    timestr = event.time.strftime("%m/%d/%Y %H:%M:%S")
 
     # Does the map exist?
     map_file = directory / "stations_map.png"
@@ -184,7 +184,7 @@ def build_report_latex(
 
     # sort list of streams:
     st_list.sort(key=lambda x: x.id)
-    event_id = origin.id.replace("smi:local/", "")
+    event_id = event.id.replace("smi:local/", "")
 
     for st in st_list:
         streamid = st.get_id()
@@ -193,7 +193,7 @@ def build_report_latex(
         SB = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
         SB = SB.replace(
             "[EVENT]",
-            f"M {origin.magnitude} - {str_for_latex(event_id)} - {timestr}",
+            f"M {event.magnitude} - {str_for_latex(event_id)} - {timestr}",
         )
         SB = SB.replace("[STATION]", st.get_id())
         report += SB

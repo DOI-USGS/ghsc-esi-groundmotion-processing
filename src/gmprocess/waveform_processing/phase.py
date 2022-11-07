@@ -162,7 +162,7 @@ def PowerPicker(
     """Pick P-wave arrival time.
 
     Args:
-        tr (StationTrace):
+        tr (gmprocess.core.stationtrace.StationTrace):
             StationTrace containing waveform to be picked.
         highpass (float):
             Frequency of the high-pass filter.
@@ -192,7 +192,7 @@ def PowerPicker(
             P-wave pick time as number of seconds after start of trace.
     """
     tr_copy = tr.copy()
-    tr_copy.resample(20, window='hann')
+    tr_copy.resample(20, window="hann")
     tr_copy.detrend()
     data = tr_copy.data
     sps = tr_copy.stats.sampling_rate
@@ -222,7 +222,7 @@ def pick_kalkan(stream, picker_config=None, config=None):
     """Wrapper around the Kalkan P-phase picker.
 
     Args:
-        stream (StationStream):
+        stream (gmprocess.core.stationstream.StationStream):
             Stream containing waveforms that need to be picked.
         picker_config (dict):
             Dictionary with parameters for Kalkan P-phase picker.
@@ -264,7 +264,7 @@ def pick_ar(stream, picker_config=None, config=None):
     """Wrapper around the AR P-phase picker.
 
     Args:
-        stream (StationStream):
+        stream (gmprocess.core.stationstream.StationStream):
             Stream containing waveforms that need to be picked.
         picker_config (dict):
             Dictionary with parameters for AR P-phase picker. See picker.yml.
@@ -308,7 +308,7 @@ def pick_baer(stream, picker_config=None, config=None):
     """Wrapper around the Baer P-phase picker.
 
     Args:
-        stream (StationStream):
+        stream (gmprocess.core.stationstream.StationStream):
             Stream containing waveforms that need to be picked.
         picker_config (dict):
             Dictionary with parameters for Baer P-phase picker. See picker.yml.
@@ -346,13 +346,13 @@ def pick_baer(stream, picker_config=None, config=None):
     return (minloc, mean_snr)
 
 
-def pick_travel(stream, origin, model=None, picker_config=None):
+def pick_travel(stream, event, model=None, picker_config=None):
     """Use TauP travel time model to find P-Phase arrival time.
 
     Args:
-        stream (StationStream):
+        stream (gmprocess.core.stationstream.StationStream):
             StationStream containing 1 or more channels of waveforms.
-        origin (ScalarEvent):
+        event (ScalarEvent):
             Event origin/magnitude information.
         model (TauPyModel):
             TauPyModel object for computing travel times.
@@ -367,12 +367,12 @@ def pick_travel(stream, origin, model=None, picker_config=None):
         model = TauPyModel(picker_config["travel_time"]["model"])
     if stream[0].stats.starttime == NAN_TIME:
         return (-1, 0)
-    lat = origin.latitude
-    lon = origin.longitude
-    depth = origin.depth_km
+    lat = event.latitude
+    lon = event.longitude
+    depth = event.depth_km
     if depth < 0:
         depth = 0
-    etime = origin.time
+    etime = event.time
     slat = stream[0].stats.coordinates.latitude
     slon = stream[0].stats.coordinates.longitude
 
@@ -736,7 +736,7 @@ def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     for most cases.
 
     Args:
-        streams (StreamCollection):
+        streams (gmprocess.core.streamcollection.StreamCollection):
             Streams to calculate travel times for.
         catalog_file (str):
             The path to the CSV file (from ComCat) which contains event info.

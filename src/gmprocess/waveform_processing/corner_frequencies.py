@@ -20,7 +20,7 @@ TAPER_SIDE = "both"
 @ProcessingStep
 def get_corner_frequencies(
     st,
-    origin,
+    event,
     method="snr",
     constant={"highpass": 0.08, "lowpass": 20.0},
     snr={"same_horiz": True},
@@ -35,9 +35,9 @@ def get_corner_frequencies(
     Select corner frequencies.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        origin (ScalarEvent):
+        event (gmprocess.utils.event.ScalarEvent):
             ScalarEvent object.
         method (str):
             Which method to use; currently allowed "snr" or "constant".
@@ -58,7 +58,7 @@ def get_corner_frequencies(
     if method == "constant":
         st = from_constant(st, **constant)
     elif method == "magnitude":
-        st = from_magnitude(st, origin, **magnitude)
+        st = from_magnitude(st, event, **magnitude)
     elif method == "snr":
         st = from_snr(st, **snr)
         # Constrain the two horizontals to have the same corner frequencies?
@@ -113,7 +113,7 @@ def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
     Cap lowpass corner as a fraction of the Nyquist.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         fn_fac (float):
             Factor to be multiplied by the Nyquist to cap the lowpass filter.
@@ -157,7 +157,7 @@ def from_constant(st, highpass=0.08, lowpass=20.0):
     """Use constant corner frequencies across all records.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         highpass (float):
             Highpass corner frequency (Hz).
@@ -177,7 +177,7 @@ def from_constant(st, highpass=0.08, lowpass=20.0):
 
 def from_magnitude(
     st,
-    origin,
+    event,
     minmag=[-999.0, 3.5, 5.5],
     highpass=[0.5, 0.3, 0.1],
     lowpass=[25.0, 35.0, 40.0],
@@ -185,9 +185,9 @@ def from_magnitude(
     """Use constant corner frequencies across all records.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        origin (ScalarEvent):
+        event (gmprocess.utils.event.ScalarEvent):
             ScalarEvent object.
         highpass (float):
             Highpass corner frequency (Hz).
@@ -197,7 +197,7 @@ def from_magnitude(
     Returns:
         stream: stream with selected corner frequencies appended to records.
     """
-    mag = origin.magnitude
+    mag = event.magnitude
     max_idx = np.max(np.where(mag > np.array(minmag))[0])
     hp_select = highpass[max_idx]
     lp_select = lowpass[max_idx]

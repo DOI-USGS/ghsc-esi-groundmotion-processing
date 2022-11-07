@@ -6,11 +6,8 @@ from json.decoder import JSONDecodeError
 
 from gmprocess.utils.download_utils import get_event_data
 
-# from libcomcat.search import get_event_by_id
 from obspy.core.event.event import Event
 from obspy.core.event.magnitude import Magnitude
-
-# third party imports
 from obspy.core.event.origin import Origin
 from obspy.core.utcdatetime import UTCDateTime
 
@@ -28,9 +25,6 @@ class ScalarEvent(Event):
         # copy the arrays
         for origin in event.origins:
             eventobj.origins.append(origin.copy())
-        #            oldid = eventobj.origins[-1].resource_id.id
-        #            eventobj.origins[-1].resource_id.id = oldid.replace(
-        #                'smi:local/', '')
         for magnitude in event.magnitudes:
             eventobj.magnitudes.append(magnitude.copy())
         for station_magnitude in event.station_magnitudes:

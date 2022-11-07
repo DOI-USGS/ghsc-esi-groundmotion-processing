@@ -22,7 +22,7 @@ setup_logger()
 def test_process_streams():
     # Loma Prieta test station (nc216859)
 
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
     streams = []
     for f in data_files:
         streams += read_data(f)
@@ -33,7 +33,7 @@ def test_process_streams():
 
     config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
 
-    test = process_streams(sc, origin, config=config)
+    test = process_streams(sc, event, config=config)
 
     logging.info(f"Testing trace: {test[0][1]}")
 
@@ -56,14 +56,14 @@ def test_process_streams():
 
 
 def test_free_field():
-    data_files, origin = read_data_dir("kiknet", "usp000hzq8")
+    data_files, event = read_data_dir("kiknet", "usp000hzq8")
     raw_streams = []
     for dfile in data_files:
         raw_streams += read_data(dfile)
 
     sc = StreamCollection(raw_streams)
 
-    processed_streams = process_streams(sc, origin)
+    processed_streams = process_streams(sc, event)
 
     # all of these streams should have failed for different reasons
     npassed = np.sum([pstream.passed for pstream in processed_streams])
@@ -82,7 +82,7 @@ def test_free_field():
 
 
 def test_check_instrument():
-    data_files, origin = read_data_dir("fdsn", "nc51194936", "*.mseed")
+    data_files, event = read_data_dir("fdsn", "nc51194936", "*.mseed")
     streams = []
     for f in data_files:
         streams += read_data(f)
@@ -91,7 +91,7 @@ def test_check_instrument():
     sc.describe()
 
     config = update_config(str(TEST_DATA_DIR / "config_test_check_instr.yml"), CONFIG)
-    test = process_streams(sc, origin, config=config)
+    test = process_streams(sc, event, config=config)
 
     for sta, expected in [("CVS", True), ("GASB", True), ("SBT", False)]:
         st = test.select(station=sta)[0]

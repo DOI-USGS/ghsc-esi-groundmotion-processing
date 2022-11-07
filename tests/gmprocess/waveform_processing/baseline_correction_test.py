@@ -12,7 +12,7 @@ from gmprocess.utils.config import get_config
 
 def test_correct_baseline():
 
-    data_files, origin = read_data_dir("geonet", "us1000778i", "*.V1A")
+    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
     data_files.sort()
     streams = []
     for f in data_files:
