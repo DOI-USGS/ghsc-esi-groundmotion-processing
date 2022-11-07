@@ -6,6 +6,7 @@ build
 .ipynb_checkpoints/
 .cache
 .coverage
+.coverage.*
 coverage.xml
 htmlcov
 **/gmprocess.egg-info/
