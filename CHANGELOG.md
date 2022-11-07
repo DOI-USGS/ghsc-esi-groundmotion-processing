@@ -12,6 +12,7 @@
 - Note that moving the `label` argument to gmrecords from the subcommands means that the short flag `-l` conflicts with `log` so the short flag for log has been removed.
 - Include "passed" or "failed" for each station in export_failure_tables in addition to failure reason.
 - Moved location of the changelog (this file) from doc_source/contents/developer/changelog.md to CHANGELOG.md.
+- Bugfix in `assemble` where the project conf file was not getting used while constructing the StreamCollection/StreamArray. 
 
 ## 1.2.1 / 2022-10-04
 
