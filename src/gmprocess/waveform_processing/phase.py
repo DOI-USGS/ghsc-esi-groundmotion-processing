@@ -326,6 +326,11 @@ def pick_baer(stream, picker_config=None, config=None):
         picker_config = CONFIG["pickers"]
     min_noise_dur = CONFIG["windows"]["window_checks"]["min_noise_duration"]
     params = picker_config["baer"]
+    # fix some param types
+    params["tdownmax"] = int(params["tdownmax"])
+    params["tupevent"] = int(params["tupevent"])
+    params["preset_len"] = int(params["preset_len"])
+    params["p_dur"] = int(params["p_dur"])
     locs = []
     for trace in stream:
         pick_sample = pk_baer(trace.data, trace.stats.sampling_rate, **params)[0]
@@ -338,9 +343,8 @@ def pick_baer(stream, picker_config=None, config=None):
     else:
         minloc = -1
     if minloc < min_noise_dur:
-        fmt = "Noise window (%.1f s) less than minimum (%.1f)"
-        tpl = (minloc, min_noise_dur)
-        raise ValueError(fmt % tpl)
+        minloc = -1
+        mean_snr = 0
     mean_snr = calc_snr(stream, minloc)
 
     return (minloc, mean_snr)
@@ -478,38 +482,6 @@ def pick_power(stream, picker_config=None, config=None):
     mean_snr = calc_snr(stream, minloc)
 
     return (minloc, mean_snr)
-
-
-def calc_snr2(stream, loc):
-    snr_values = []
-    for trace in stream:
-        data = trace.data
-        pidx = int(loc * trace.stats.sampling_rate)
-        snr_i = sub_calc_snr(data, pidx)
-        snr_values.append(snr_i)
-
-    mean_snr = np.mean(snr_values)
-    return mean_snr
-
-
-def sub_calc_snr(data, pidx):
-    signal = data[pidx:]
-    noise = data[0:pidx]
-    aps = np.mean(np.power(signal, 2))  # average power of signal
-    apn = np.mean(np.power(noise, 2))  # average power of noise
-    aps /= len(signal)
-    apn /= len(noise)
-    if apn == 0:
-        apn = 0.00001
-    if aps == 0:
-        aps = 0.00001
-    # signal-to-noise ratio in decibel
-    try:
-        snr = 10 * np.math.log10(aps / apn)
-    except ValueError as ve:
-        raise (ve)
-
-    return snr
 
 
 def calc_snr(stream, minloc):

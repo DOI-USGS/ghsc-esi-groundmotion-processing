@@ -1,33 +1,34 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gmprocess.waveform_processing.phase import (
-    PowerPicker,
-    pphase_pick,
-    pick_ar,
-    pick_kalkan,
-    pick_power,
-    pick_baer,
-    pick_yeck,
-    pick_travel,
-    create_travel_time_dataframe,
-)
-from gmprocess.io.read import read_data
-from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils.config import get_config
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.core.streamcollection import StreamCollection
-from obspy import read, UTCDateTime
-from obspy.core.trace import Trace
-from obspy.core.stream import Stream
-from obspy.geodetics import locations2degrees
-from obspy.taup import TauPyModel
 from scipy.io import loadmat
 import numpy as np
 import os
 import pandas as pd
 
+from obspy import read, UTCDateTime
+from obspy.core.trace import Trace
+from obspy.core.stream import Stream
+from obspy.geodetics import locations2degrees
+from obspy.taup import TauPyModel
+
+from gmprocess.waveform_processing import phase
+from gmprocess.io.read import read_data
+from gmprocess.core.streamcollection import StreamCollection
+from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.config import get_config
+from gmprocess.utils.constants import TEST_DATA_DIR
+
 CONFIG = get_config()
+
+
+def test_baer():
+    datadir = TEST_DATA_DIR / "process"
+    # Testing a strong motion channel
+    st = read(str(datadir / "ALCTENE.UW..sac"))
+    ppick = phase.pick_baer(st, CONFIG["pickers"])
+    target = np.array([20.740000000000002, 59.54533997798557])
+    np.testing.assert_allclose(ppick, target)
 
 
 def test_p_pick():
@@ -35,20 +36,20 @@ def test_p_pick():
     # Testing a strong motion channel
     tr = read(str(datadir / "ALCTENE.UW..sac"))[0]
     chosen_ppick = UTCDateTime("2001-02-28T18:54:47")
-    ppick = PowerPicker(tr)
+    ppick = phase.PowerPicker(tr)
     ptime = tr.times("utcdatetime")[0] + ppick
     assert (abs(chosen_ppick - ptime)) < 0.2
 
     # Testing a broadband channel
     tr = read(str(datadir / "HAWABHN.US..sac"))[0]
     chosen_ppick = UTCDateTime("2003-01-15T03:42:12.5")
-    ppick = PowerPicker(tr)
+    ppick = phase.PowerPicker(tr)
     ptime = tr.times("utcdatetime")[0] + ppick
     assert (abs(chosen_ppick - ptime)) < 0.2
 
     # Test a Northridge file that should fail to return a P-pick
     tr = read_data(datadir / "017m30ah.m0a")[0][0]
-    ppick = PowerPicker(tr)
+    ppick = phase.PowerPicker(tr)
     assert ppick == -1
 
 
@@ -71,10 +72,10 @@ def test_pphase_picker():
     period = 0.01
     damping = 0.6
     nbins = 200
-    loc = pphase_pick(
+    loc = phase.pphase_pick(
         stream[0], period=period, damping=damping, nbins=nbins, peak_selection=True
     )
-    assert loc == 26.035
+    np.testing.assert_allclose(loc, 26.035)
 
 
 def test_all_pickers():
@@ -85,20 +86,16 @@ def test_all_pickers():
     for stream in streams:
         print(stream.get_id())
         for method in methods:
-            try:
-                if method == "ar":
-                    loc, mean_snr = pick_ar(stream, picker_config=picker_config)
-                elif method == "baer":
-                    loc, mean_snr = pick_baer(stream, picker_config=picker_config)
-                elif method == "power":
-                    loc, mean_snr = pick_power(stream, picker_config=picker_config)
-                elif method == "kalkan":
-                    loc, mean_snr = pick_kalkan(stream, picker_config=picker_config)
-                elif method == "yeck":
-                    loc, mean_snr = pick_yeck(stream)
-            except BaseException:
-                loc = -1
-                mean_snr = np.nan
+            if method == "ar":
+                loc, mean_snr = phase.pick_ar(stream, picker_config=picker_config)
+            elif method == "baer":
+                loc, mean_snr = phase.pick_baer(stream, picker_config=picker_config)
+            elif method == "power":
+                loc, mean_snr = phase.pick_power(stream, picker_config=picker_config)
+            elif method == "kalkan":
+                loc, mean_snr = phase.pick_kalkan(stream, picker_config=picker_config)
+            elif method == "yeck":
+                loc, mean_snr = phase.pick_yeck(stream)
             row = {
                 "Stream": stream.get_id(),
                 "Method": method,
@@ -110,8 +107,8 @@ def test_all_pickers():
 
     stations = df["Stream"].unique()
     cmpdict = {
-        "NZ.HSES.HN": "power",
-        "NZ.WTMC.HN": "ar",
+        "NZ.HSES.HN": "baer",
+        "NZ.WTMC.HN": "baer",
         "NZ.THZ.HN": "power",
     }
     for station in stations:
@@ -134,7 +131,7 @@ def test_travel_time():
         "NZ.THZ.HN": 42.016420026730088,
     }
     for stream in streams:
-        minloc, _ = pick_travel(stream, event)
+        minloc, _ = phase.pick_travel(stream, event)
         np.testing.assert_almost_equal(minloc, cmps[stream.get_id()])
 
 
@@ -155,10 +152,10 @@ def test_get_travel_time_df():
     sc2 = StreamCollection.from_directory(str(datadir / "ci38461735"))
     scs = [sc1, sc2]
 
-    df1, catalog = create_travel_time_dataframe(
+    df1, catalog = phase.create_travel_time_dataframe(
         sc1, str(datadir / "catalog_test_traveltimes.csv"), 5, 0.1, "iasp91"
     )
-    df2, catalog = create_travel_time_dataframe(
+    df2, catalog = phase.create_travel_time_dataframe(
         sc2, str(datadir / "catalog_test_traveltimes.csv"), 5, 0.1, "iasp91"
     )
 
@@ -192,3 +189,4 @@ if __name__ == "__main__":
     test_p_pick()
     test_travel_time()
     test_get_travel_time_df()
+    test_baer()
