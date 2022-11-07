@@ -34,20 +34,10 @@ def test_cwb_gather():
         proj_str = proj_str.replace("[datadir]", str(data_dir))
         with proj_conf.open("w", encoding="utf-8") as f:
             f.write(proj_str)
-        print("proj_conf exists?")
-        print(proj_conf.is_file())
-        print("contents of proj_conf:")
         with open(proj_conf, "r") as f:
             print(f.read())
         cmd = f"cwb_gather {eqid} {seedfile} {tarball}"
         rc, so, se = get_command_output(cmd)
-        print("-" * 80)
-        print("Standard output:")
-        print(so.decode())
-        print("-" * 80)
-        print("Standard error:")
-        print(se.decode())
-        print("-" * 80)
         assert rc
     finally:
         shutil.rmtree(PROJ_PATH, ignore_errors=True)
