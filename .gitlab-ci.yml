@@ -11,10 +11,10 @@ stages:
 run tests:
   stage: test
   script:
-    - pip install .[test]
+    - pip install --no-warn-script-location -e .[test]
     - export PATH="/home/usgs-user/.local/bin:$PATH"
-    # - pytest --cov=. --cov-report xml:coverage.xml --cov-report term
-    - pytest --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term 
+    - pwd
+    - pytest -rx --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:

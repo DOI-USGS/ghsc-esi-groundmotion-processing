@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # stdlib imports
+import os
 import argparse
 import sys
 import json
@@ -111,7 +112,10 @@ def main():
     args = parser.parse_args()
 
     stations = read_stations()
-    CONF_PATH = pathlib.Path.home() / ".gmprocess"
+    if "CALLED_FROM_PYTEST" in os.environ:
+        CONF_PATH = pathlib.Path(".") / ".gmprocess"
+    else:
+        CONF_PATH = pathlib.Path.home() / ".gmprocess"
     PROJECTS_FILE = CONF_PATH / "projects.conf"
     projects_conf = configobj.ConfigObj(str(PROJECTS_FILE), encoding="utf-8")
     project = projects_conf["project"]

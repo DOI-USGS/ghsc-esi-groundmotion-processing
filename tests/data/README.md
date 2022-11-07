@@ -61,6 +61,9 @@ cwb/us1000chhc
   - tests/gmprocess/utils/plot_test.py
   - tests/gmprocess/waveform_processing/phase_test.py
 
+## cwb_gather/ [168K]
+  - tests/gmprocess/bin/cwb_gather_test.py
+
 ## demo/ [4.0M]
 demo/ci38038071
   - tests/gmprocess/subcommands/assemble_test.py
