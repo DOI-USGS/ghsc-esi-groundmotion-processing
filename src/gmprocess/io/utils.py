@@ -5,6 +5,7 @@ import zipfile
 import tarfile
 from pathlib import Path
 import os
+import logging
 
 import numpy as np
 
@@ -144,7 +145,7 @@ def flatten_directory(directory):
         has_zips = _walk_and_unzip(directory)
 
     # -------------------------------------------------------------------------
-    # Flatten directoreis by crawling subdirectories and move files up to base
+    # Flatten directories by crawling subdirectories and move files up to base
     # directory, renaming them while trying to avoid any name collisions.
     # -------------------------------------------------------------------------
     for path in _walk(directory):
@@ -161,10 +162,13 @@ def _walk_and_unzip(directory):
         is_zip = zipfile.is_zipfile(path)
         is_tar = tarfile.is_tarfile(path)
         if is_zip:
-            has_zips = True
-            with zipfile.ZipFile(path, "r") as zip:
-                for m in zip.namelist():
-                    zip.extract(m, str(path.parent))
+            try:
+                has_zips = True
+                with zipfile.ZipFile(path, "r") as zip:
+                    for m in zip.namelist():
+                        zip.extract(m, str(path.parent))
+            except zipfile.BadZipFile as err:
+                logging.warning(f"Could not unzip {path}. {str(err)}")
             path.unlink()
         elif is_tar:
             has_zips = True
