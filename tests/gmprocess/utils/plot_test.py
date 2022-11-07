@@ -5,18 +5,19 @@
 import os.path
 import tempfile
 import shutil
+from pathlib import Path
 
 # third party imports
-from gmprocess.io.read import read_data
-from gmprocess.utils.plot import (
-    plot_moveout,
-    plot_regression,
-    summary_plots,
-)
 import pandas as pd
-from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils import constants
+
+from gmprocess.io.read import read_data
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
+from gmprocess.utils import constants
+from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.plot import plot_oscillators
+from gmprocess.utils.plot import plot_moveout
+from gmprocess.utils.plot import plot_regression
+from gmprocess.utils.plot import summary_plots
 
 
 def test_summary_plots():
@@ -73,8 +74,23 @@ def test_plot():
     )
 
 
+def test_plot_oscillators():
+    ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
+    ws = StreamWorkspace.open(ddir / "workspace.h5")
+    st = ws.getStreams(eventid="ci38457511")[0]
+    tdir = Path(tempfile.mkdtemp())
+    filepath = tdir / "oscillator_plot.png"
+    try:
+        plot_oscillators(st, file=filepath)
+    except Exception as e:
+        raise e
+    finally:
+        shutil.rmtree(tdir, ignore_errors=True)
+
+
 if __name__ == "__main__":
     os.environ["CALLED_FROM_PYTEST"] = "True"
     test_regression()
     test_plot()
     test_summary_plots()
+    test_plot_oscillators()
