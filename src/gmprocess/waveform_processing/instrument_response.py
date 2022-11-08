@@ -57,7 +57,7 @@ def remove_response(
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: Instrument-response-corrected stream.
+        StationStream: With instrument response correction applied.
     """
     output = "ACC"
 

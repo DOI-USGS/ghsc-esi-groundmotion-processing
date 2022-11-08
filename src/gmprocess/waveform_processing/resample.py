@@ -22,7 +22,7 @@ def resample(st, new_sampling_rate=None, method=None, a=None, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: Resampled stream.
+        StationStream: With resampling applied.
     """
     if not st.passed:
         return st

@@ -56,7 +56,7 @@ def cut(st, sec_before_split=2.0, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        stream: cut streams.
+        StationStream: With the cut applied.
     """
     if not st.passed:
         return st
@@ -425,7 +425,7 @@ def trim_multiple_events(
             Dictionary of rupture parameters to input to the GMPE.
 
     Returns:
-        StationStream: Processed stream.
+        StationStream: Trimmed for multiple events.
 
     """
 
