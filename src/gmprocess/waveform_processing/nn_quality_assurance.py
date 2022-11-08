@@ -13,7 +13,8 @@ from gmprocess.waveform_processing.processing_step import ProcessingStep
 
 @ProcessingStep
 def NNet_QA(st, acceptance_threshold, model_name, config=None):
-    """
+    """Apply the neural network QA algorithm by Bellagamba et al. (2019),
+
     Assess the quality of a stream by analyzing its two horizontal components
     as described in Bellagamba et al. (2019). Performs three steps:
     1) Compute the quality metrics (see paper for more info)
@@ -27,7 +28,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
     -   model_name = 'CantWell'
 
     Args:
-        st (list of traces):
+        st (StationStream):
             The ground motion record to analyze. Should contain at least 2
             orthogonal  horizontal traces.
         acceptance_threshold (float):

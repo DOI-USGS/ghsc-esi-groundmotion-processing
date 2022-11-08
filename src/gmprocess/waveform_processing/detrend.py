@@ -9,8 +9,7 @@ from gmprocess.waveform_processing.baseline_correction import correct_baseline
 
 @ProcessingStep
 def detrend(st, detrending_method=None, config=None):
-    """
-    Detrend stream.
+    """Detrend stream.
 
     Args:
         st (StationStream):

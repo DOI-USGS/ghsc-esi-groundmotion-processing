@@ -13,8 +13,7 @@ from gmprocess.waveform_processing.processing_step import ProcessingStep
 
 @ProcessingStep
 def min_sample_rate(st, min_sps=20.0, config=None):
-    """
-    Discard records if the sample rate doers not exceed minimum.
+    """Require a minimum sample rate.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):
@@ -41,8 +40,7 @@ def min_sample_rate(st, min_sps=20.0, config=None):
 
 @ProcessingStep
 def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
-    """
-    Test the channels of the station.
+    """Test the channels of the station.
 
     The purpose of the maximum limit is to skip over stations with muliple
     strong motion instruments, which can occur with downhole or structural
@@ -95,8 +93,7 @@ def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
 
 @ProcessingStep
 def check_free_field(st, reject_non_free_field=True, config=None):
-    """
-    Checks free field status of stream.
+    """Checks free field status of stream.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):
@@ -121,9 +118,9 @@ def check_free_field(st, reject_non_free_field=True, config=None):
 
 @ProcessingStep
 def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=None):
-    """
-    Checks that the maximum STA/LTA ratio for AT LEAST ONE of the stream's
-    traces is above a certain threshold.
+    """Apply STA/LTA ratio criteria.
+
+    Checks that the maximum STA/LTA ratio of the stream's traces is above a threshold.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):
@@ -165,9 +162,11 @@ def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=Non
 
 @ProcessingStep
 def check_max_amplitude(st, min=5, max=2e6, config=None):
-    """
-    Checks that the maximum amplitude of the traces in the stream are ALL
-    within a defined range. Only applied to counts/raw data.
+    """Check the maximum amplitude of the traces.
+
+    Checks that the maximum amplitude of the traces in the stream are within a defined
+    range. Only applied to counts/raw data. This is a simple way to screen for clipped
+    records, but we now recommend/prefer the `check_clipping` method.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):
@@ -198,8 +197,7 @@ def check_max_amplitude(st, min=5, max=2e6, config=None):
 
 @ProcessingStep
 def max_traces(st, n_max=3, config=None):
-    """
-    Reject a stream if it has more than n_max traces.
+    """Reject a stream if it has more than n_max traces.
 
     The purpose of this is to skip over stations with muliple strong motion
     instruments, which can occur with downhole or structural arrays since our

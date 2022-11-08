@@ -7,8 +7,7 @@ from gmprocess.waveform_processing.processing_step import ProcessingStep
 
 @ProcessingStep
 def check_zero_crossings(st, min_crossings=0.1, config=None):
-    """
-    Check for a large enough density.
+    """Requires a minimum zero crossing rate.
 
     This is intended to screen out instrumental failures or resetting.
     Value determined empirically from observations on the GeoNet network

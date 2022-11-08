@@ -6,8 +6,7 @@ from gmprocess.waveform_processing.processing_step import ProcessingStep
 
 @ProcessingStep
 def resample(st, new_sampling_rate=None, method=None, a=None, config=None):
-    """
-    Resample stream.
+    """Resample stream.
 
     Args:
         st (StationStream):
