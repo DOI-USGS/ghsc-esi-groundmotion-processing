@@ -1,12 +1,10 @@
 # stdlib imports
-import logging
 import re
 
 # third party imports
 from lxml import etree
 import numpy as np
 import pandas as pd
-from obspy.core.stream import Stream
 from obspy.geodetics.base import gps2dist_azimuth
 from openquake.hazardlib.geo.geodetic import distance
 from esi_utils_rupture.point_rupture import PointRupture
@@ -509,30 +507,6 @@ class StationSummary(object):
         """
         return self._stream
 
-    @stream.setter
-    def stream(self, stream):
-        """
-        Helper method to set the stream attribute.
-
-        Args:
-            stream (obspy.core.stream.Stream): Stream for one station.
-        """
-        if self.stream is not None:
-            logging.warning(
-                "Setting failed: the stream object cannot be "
-                "changed. A new instance of StationSummary must be created."
-            )
-        else:
-            if not isinstance(stream, Stream):
-                logging.warning("Setting failed: not a stream object.")
-            elif stream[0].stats["station"].upper() != self.station_code.upper():
-                logging.warning(
-                    "Setting failed: stream station does not match "
-                    "StationSummary.station_code."
-                )
-            else:
-                self._stream = stream
-
     @property
     def summary(self):
         """
@@ -787,29 +761,6 @@ class StationSummary(object):
 
         return etree.tostring(root, pretty_print=True, encoding="unicode")
 
-    def toSeries(self):
-        """Render StationSummary as a Pandas Series object.
-
-        Returns:
-            Series:
-                Multi-Indexed Pandas Series where IMTs are top-level indices
-                and components are sub-indices.
-        """
-        imts = self.imts
-        imcs = self.components
-        index = pd.MultiIndex.from_product([imts, imcs])
-        data = []
-        for imt in imts:
-            for imc in imcs:
-                idx = (self.pgms.IMT == imt) & (self.pgms.IMC == imc)
-                vals = self.pgms[idx].Result.tolist()
-                if len(vals) == 0:
-                    value = np.nan
-                else:
-                    value = vals[0]
-                data.append(value)
-        series = pd.Series(data, index)
-        return series
 
     def get_imc_dict(self, imc=None):
         """Get an IMC table.
