@@ -1,5 +1,7 @@
 ## main
 
+## 1.2.2 / 2022-11-08
+
 - Adding "Merge Request Guidelines" and "Release Steps" sections to developer resources. 
 - Improve projects subcommand.
   - Always prompt for names of 'data' and 'conf' directories with reasonable defaults.
