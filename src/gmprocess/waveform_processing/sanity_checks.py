@@ -41,7 +41,7 @@ def check_tail(st, duration=5.0, max_vel_ratio=0.3, max_dis_ratio=0.9, config=No
             Configuration dictionary (or None). See get_config().
 
     Returns:
-
+        StationStream: With QA checks applied.
     """
     if not st.passed:
         return st

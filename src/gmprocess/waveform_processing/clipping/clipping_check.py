@@ -32,7 +32,7 @@ def check_clipping(st, event, threshold=0.2, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream checked for clipping.
+        StationStream: With clipping check applied.
 
     """
     # Don't bother with test for strong motion instruments

@@ -23,7 +23,8 @@ def check_zero_crossings(st, min_crossings=0.1, config=None):
         config (dict):
             Configuration dictionary (or None). See get_config().
 
-
+    Returns:
+        StationStream: With zero crossing rate criteria applied.
     """
 
     zero_count_tr = []

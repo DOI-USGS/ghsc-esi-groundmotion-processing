@@ -38,8 +38,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        st: stream of traces tagged with quality scores and flags,
-        used model name and acceptance threshold
+        StationStream: With QA analysis applied.
     """
 
     # This check only works if we have two horizontal components in the stream

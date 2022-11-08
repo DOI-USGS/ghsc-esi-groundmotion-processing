@@ -29,7 +29,7 @@ def compute_snr(st, bandwidth=20.0, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream with SNR dictionaries added as trace parameters.
+        StationStream: With SNR dictionaries added as trace parameters.
     """
     for tr in st:
         # Do we have estimates of the signal split time?

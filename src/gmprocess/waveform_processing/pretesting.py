@@ -17,7 +17,7 @@ def min_sample_rate(st, min_sps=20.0, config=None):
     Discard records if the sample rate doers not exceed minimum.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         min_sps (float):
             Minimum samples per second.
@@ -53,7 +53,7 @@ def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
     channels are required for subsequent intensity measures such as ROTD.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         n_max (int):
             Maximum allowed number of streams; default to 3.
@@ -65,7 +65,7 @@ def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        Stream with adjusted failed fields.
+        StationStream: With instrument criteria applied.
     """
     if not st.passed:
         return st
@@ -99,7 +99,7 @@ def check_free_field(st, reject_non_free_field=True, config=None):
     Checks free field status of stream.
 
     Args:
-        st (obspy.core.stream.Stream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         reject_non_free_field (bool):
             Should non free-field stations be failed?
@@ -107,7 +107,7 @@ def check_free_field(st, reject_non_free_field=True, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        Stream that has been checked for free field status.
+        StationStream: That has been checked for free field status.
     """
     if not st.passed:
         return st
@@ -126,7 +126,7 @@ def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=Non
     traces is above a certain threshold.
 
     Args:
-        st (obspy.core.stream.Stream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         sta_length (float):
             Length of time window for STA (seconds).
@@ -138,7 +138,7 @@ def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=Non
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        Stream that has been checked for sta/lta requirements.
+        StationStream: That has been checked for sta/lta requirements.
     """
     if not st.passed:
         return st
@@ -170,7 +170,7 @@ def check_max_amplitude(st, min=5, max=2e6, config=None):
     within a defined range. Only applied to counts/raw data.
 
     Args:
-        st (obspy.core.stream.Stream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         min (float):
             Minimum amplitude for the acceptable range. Default is 5.
@@ -180,7 +180,7 @@ def check_max_amplitude(st, min=5, max=2e6, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        Stream that has been checked for maximum amplitude criteria.
+        StationStream: That has been checked for maximum amplitude criteria.
     """
     if not st.passed:
         return st
@@ -206,7 +206,7 @@ def max_traces(st, n_max=3, config=None):
     code currently is not able to reliably group by location within an array.
 
     Args:
-        st (StationStream):
+        st (gmprocess.core.stationstream.StationStream):
             Stream of data.
         n_max (int):
             Maximum allowed number of streams; default to 3.
@@ -214,7 +214,7 @@ def max_traces(st, n_max=3, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        Stream with adjusted failed fields.
+        StationStream: Stream with max number of traces criteria applied.
     """
     logging.warning(
         "This function is deprecated. Please replace with "

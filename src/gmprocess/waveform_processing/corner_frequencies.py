@@ -51,7 +51,7 @@ def get_corner_frequencies(
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        strea: Stream with selected corner frequencies added.
+        StationStream: With selected corner frequencies added.
     """
 
     logging.debug("Setting corner frequencies...")
@@ -123,7 +123,7 @@ def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: Resampled stream.
+        StationStream: With lowpass frequency adjustment applied.
     """
 
     def _cap_lowpass(fc):

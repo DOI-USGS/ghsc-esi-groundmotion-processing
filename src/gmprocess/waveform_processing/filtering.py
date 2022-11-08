@@ -25,7 +25,7 @@ def highpass_filter(
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: Filtered streams.
+        StationStream: With highpass filter applied.
     """
     if not st.passed:
         return st
@@ -39,7 +39,6 @@ def highpass_filter(
     return st
 
 
-@ProcessingStep
 def highpass_filter_trace(
     tr, frequency_domain=True, filter_order=5, number_of_passes=1, config=None
 ):
@@ -58,7 +57,7 @@ def highpass_filter_trace(
             Number of passes.
 
     Returns:
-        StationTrace: Filtered trace.
+        StationTrace: With highpass filter applied.
     """
     if number_of_passes == 1:
         zerophase = False
@@ -119,7 +118,6 @@ def lowpass_filter(
     return st
 
 
-@ProcessingStep
 def lowpass_filter_trace(
     tr, frequency_domain, filter_order=5, number_of_passes=1, config=None
 ):

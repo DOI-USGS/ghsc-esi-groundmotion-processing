@@ -87,7 +87,7 @@ class GMrecordsApp(object):
             if self.args.subcommand not in subcmds_noinit:
                 self._initialize()
 
-            subcmds_quiet = ["init", "projects", "proj"]
+            subcmds_quiet = ["init", "projects", "proj", "processing_steps"]
             if self.args.subcommand not in subcmds_quiet and not self.args.quiet:
                 # Print the current project information to avoid confusion
                 proj = Project.from_config(self.projects_conf, self.project_name)

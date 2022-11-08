@@ -53,8 +53,7 @@ def adjust_highpass_corner(
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream.
-
+        StationStream: With highpass corner frequency adjusted using Dawood method.
     """
 
     for tr in st:

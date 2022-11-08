@@ -43,7 +43,7 @@ def taper(st, type="hann", width=0.05, side="both", config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        stream: tapered streams.
+        StationStream: With the taper applied.
     """
     if not st.passed:
         return st
