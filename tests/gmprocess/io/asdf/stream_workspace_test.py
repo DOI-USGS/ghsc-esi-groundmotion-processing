@@ -3,6 +3,10 @@
 import os
 import shutil
 import tempfile
+import pytest
+from pathlib import Path
+
+import pandas as pd
 
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -17,22 +21,55 @@ import numpy as np
 CONFIG = get_config()
 
 
+def test_stream_workspace_methods():
+    tdir = Path(tempfile.mkdtemp())
+    try:
+        eventid = "usb000syza"
+        datafiles, event = read_data_dir("knet", eventid, "*")
+        datadir = Path(datafiles[0]).parent
+        raw_streams = StreamCollection.from_directory(datadir)
+
+        ws = StreamWorkspace.create(tdir / "workspace.h5")
+        with pytest.raises(KeyError):
+            ws.calcMetrics(eventid)
+
+        ws.addEvent(event)
+        tabs = ws.getTables(label="raw", config=CONFIG)
+        assert isinstance(tabs[0], pd.core.frame.DataFrame)
+        assert tabs[1] == {}
+        assert tabs[2] == {}
+
+        ws.addStreams(event, raw_streams, label="raw", overwrite=True)
+
+        sm = ws.getStreamMetrics(eventid, "CI", "XX", "raw")
+        assert sm is None
+
+        ws.close()
+        with pytest.raises(OSError):
+            StreamWorkspace.open(tdir / "nonexistance_file.h5")
+
+    except BaseException as e:
+        raise e
+    finally:
+        shutil.rmtree(tdir, ignore_errors=True)
+
+
 def test_stream_workspace():
     CONFIG["metrics"]["output_imcs"] = ["channels"]
     eventid = "usb000syza"
     datafiles, event = read_data_dir("knet", eventid, "*")
-    datadir = os.path.split(datafiles[0])[0]
+    datadir = Path(datafiles[0]).parent
     raw_streams = StreamCollection.from_directory(datadir)
-    config = update_config(os.path.join(datadir, "config_min_freq_0p2.yml"), CONFIG)
+    config = update_config(datadir / "config_min_freq_0p2.yml", CONFIG)
     newconfig = config.copy()
     newconfig["processing"].append(
         {"NNet_QA": {"acceptance_threshold": 0.5, "model_name": "CantWell"}}
     )
     processed_streams = process_streams(raw_streams.copy(), event, config=newconfig)
 
-    tdir = tempfile.mkdtemp()
+    tdir = Path(tempfile.mkdtemp())
     try:
-        tfile = os.path.join(tdir, "test.hdf")
+        tfile = tdir / "test.hdf"
         workspace = StreamWorkspace(tfile)
         workspace.addEvent(event)
         workspace.addStreams(event, raw_streams, label="raw")
@@ -106,3 +143,4 @@ if __name__ == "__main__":
     test_stream_workspace()
     test_stream_workspace_ucla_review()
     test_getStreamMetrics()
+    test_stream_workspace_methods()

@@ -4,7 +4,6 @@ import re
 import copy
 import warnings
 import logging
-import sys
 from pathlib import Path
 
 # third party imports
@@ -211,7 +210,7 @@ class StreamWorkspace(object):
 
     @classmethod
     def create(cls, filename, compression=None):
-        """Load from existing ASDF file.
+        """Create a new ASDF file.
 
         Args:
             filename (str or pathlib.Path):
@@ -924,8 +923,8 @@ class StreamWorkspace(object):
                     config=config,
                 )
                 if not len(streams):
-                    logging.info("No matching streams found. Exiting.")
-                    sys.exit()
+                    logging.info("No matching streams found. Continuing.")
+                    continue
 
                 for stream in streams:
                     if not stream.passed:

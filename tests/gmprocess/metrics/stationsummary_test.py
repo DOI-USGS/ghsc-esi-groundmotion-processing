@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import warnings
 import os
 
 import numpy as np
@@ -37,46 +36,39 @@ def test_stationsummary():
     )
     target_imts = np.sort(np.asarray(["SA(1.000)", "PGA", "PGV"]))
     stream = read_geonet(datafile)[0]
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        stream_summary = StationSummary.from_stream(
-            stream,
-            ["greater_of_two_horizontals", "channels", "rotd50", "rotd100", "invalid"],
-            ["sa1.0", "PGA", "pgv", "invalid"],
-            event,
+    stream_summary = StationSummary.from_stream(
+        stream,
+        ["greater_of_two_horizontals", "channels", "rotd50", "rotd100", "invalid"],
+        ["sa1.0", "PGA", "pgv", "invalid"],
+        event,
+    )
+    stream_summary.starttime
+    np.testing.assert_array_equal(np.sort(stream_summary.components), target_imcs)
+    np.testing.assert_array_equal(np.sort(stream_summary.imts), target_imts)
+    np.testing.assert_almost_equal(
+        stream_summary.get_pgm("PGA", "H1"), 99.3173469387755, decimal=1
+    )
+    target_available = np.sort(
+        np.asarray(
+            [
+                "greater_of_two_horizontals",
+                "geometric_mean",
+                "arithmetic_mean",
+                "channels",
+                "gmrotd",
+                "rotd",
+                "quadratic_mean",
+                "radial_transverse",
+            ]
         )
-        original_stream = stream_summary.stream
-        stream_summary.stream = []
-        final_stream = stream_summary.stream
-        assert original_stream == final_stream
-        np.testing.assert_array_equal(np.sort(stream_summary.components), target_imcs)
-        np.testing.assert_array_equal(np.sort(stream_summary.imts), target_imts)
-        np.testing.assert_almost_equal(
-            stream_summary.get_pgm("PGA", "H1"), 99.3173469387755, decimal=1
-        )
-        target_available = np.sort(
-            np.asarray(
-                [
-                    "greater_of_two_horizontals",
-                    "geometric_mean",
-                    "arithmetic_mean",
-                    "channels",
-                    "gmrotd",
-                    "rotd",
-                    "quadratic_mean",
-                    "radial_transverse",
-                ]
-            )
-        )
-        imcs = stream_summary.available_imcs
-        np.testing.assert_array_equal(np.sort(imcs), target_available)
-        target_available = np.sort(
-            np.asarray(
-                ["pga", "pgv", "sa", "arias", "fas", "duration", "sorted_duration"]
-            )
-        )
-        imts = stream_summary.available_imts
-        np.testing.assert_array_equal(np.sort(imts), target_available)
+    )
+    imcs = stream_summary.available_imcs
+    np.testing.assert_array_equal(np.sort(imcs), target_available)
+    target_available = np.sort(
+        np.asarray(["pga", "pgv", "sa", "arias", "fas", "duration", "sorted_duration"])
+    )
+    imts = stream_summary.available_imts
+    np.testing.assert_array_equal(np.sort(imts), target_available)
     test_pgms = {
         "PGV": {
             "ROTD(100.0)": 114.24894584734818,
@@ -117,6 +109,7 @@ def test_stationsummary():
         stream,
         ["greater_of_two_horizontals", "channels", "geometric_mean"],
         ["sa1.0", "PGA", "pgv", "fas2.0"],
+        event,
     )
     target_imcs = np.sort(
         np.asarray(["GEOMETRIC_MEAN", "GREATER_OF_TWO_HORIZONTALS", "H1", "H2", "Z"])
@@ -129,7 +122,7 @@ def test_stationsummary():
     stream = read_geonet(datafile)[0]
     config = get_config()
     config["metrics"]["sa"]["periods"]["defined_periods"] = [0.3, 1.0]
-    stream_summary = StationSummary.from_config(stream, config=config)
+    stream_summary = StationSummary.from_config(stream, event=event, config=config)
     target_imcs = np.sort(np.asarray(["H1", "H2", "Z"]))
     assert stream_summary.smoothing == "konno_ohmachi"
     assert stream_summary.bandwidth == 20.0
@@ -139,10 +132,20 @@ def test_stationsummary():
     stream = read_geonet(datafile)[0]
     imclist = ["greater_of_two_horizontals", "channels", "rotd50.0", "rotd100.0"]
     imtlist = ["sa1.0", "PGA", "pgv", "fas2.0", "arias"]
-    stream_summary = StationSummary.from_stream(stream, imclist, imtlist)
+    stream_summary = StationSummary.from_stream(stream, imclist, imtlist, event=event)
     xmlstr = stream_summary.get_metric_xml()
 
     xml_station = stream_summary.get_station_xml()
+
+    imc_dict = stream_summary.get_imc_dict("H2")
+    assert list(imc_dict.keys()) == ["H2"]
+    assert len(imc_dict["H2"]) == 29
+
+    sa_array = stream_summary.get_sa_arrays("H1")
+    assert list(sa_array.keys()) == ["H1"]
+    assert "period" in sa_array["H1"].keys()
+    assert "sa" in sa_array["H1"].keys()
+    assert len(sa_array["H1"]["sa"]) == 2
 
     stream2 = StationSummary.from_xml(xmlstr, xml_station)
     cmp1 = np.sort(
