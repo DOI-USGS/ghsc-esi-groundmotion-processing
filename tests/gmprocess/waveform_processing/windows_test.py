@@ -1,109 +1,85 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gmprocess.io.read import read_data
-from gmprocess.waveform_processing.windows import (
-    signal_split,
-    signal_end,
-    trim_multiple_events,
-    cut,
-)
 import os
 import numpy as np
+import copy
 from obspy import UTCDateTime
 
+from gmprocess.core.stationstream import StationStream
+from gmprocess.core.streamcollection import StreamCollection
+from gmprocess.io.read import read_data
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.waveform_processing.instrument_response import remove_response
-from gmprocess.utils.event import get_event_object
-from gmprocess.waveform_processing.phase import create_travel_time_dataframe
-from gmprocess.waveform_processing import corner_frequencies
-from gmprocess.waveform_processing.filtering import lowpass_filter, highpass_filter
+from gmprocess.waveform_processing import windows
+
 
 PICKER_CONFIG = get_config()["pickers"]
 
 data_path = TEST_DATA_DIR / "process"
 
 
-def _test_signal_split():
-
-    st1 = read_data(str(data_path / "AOM0170806140843.EW"))[0]
-    st2 = read_data(str(data_path / "AOM0170806140843.NS"))[0]
-    st3 = read_data(str(data_path / "AOM0170806140843.UD"))[0]
-    st = st1 + st2 + st3
-
-    # Test the AR pick
-    PICKER_CONFIG["order_of_preference"] = ["ar", "baer", "cwb"]
-    signal_split(st, method="p_arrival", picker_config=PICKER_CONFIG)
-
-    known_arrival = UTCDateTime(2008, 6, 13, 23, 44, 17)
-    for tr in st:
-        picker_arrival = tr.getParameter("signal_split")["split_time"]
-        assert abs(picker_arrival - known_arrival) < 1
-
-    # Test the AR pick without 3 components - defaulting to Baer picker
-    # reset the processing parameters...
-    for trace in st:
-        trace.stats.parameters = []
-    st[0].stats.channel = "--"
-    signal_split(st, method="p_arrival", picker_config=PICKER_CONFIG)
-
-    for tr in st:
-        signal_split_info = tr.getParameter("signal_split")
-        picker_arrival = signal_split_info["split_time"]
-        assert abs(picker_arrival - known_arrival) < 1
-        assert signal_split_info["picker_type"] == "baer"
-
-    # Test CWB picker
-    # reset the processing parameters...
-
-    # TODO - uncomment this and fix!!
-    # for trace in st:
-    #     trace.stats.parameters = []
-    # PICKER_CONFIG['order_of_preference'][0] = 'cwb'
-    # signal_split(st, method='p_arrival', picker_config=PICKER_CONFIG)
-    # for tr in st:
-    #     signal_split_info = tr.getParameter('signal_split')
-    #     picker_arrival = signal_split_info['split_time']
-    #     assert abs(picker_arrival - known_arrival) < 1
-    #     assert signal_split_info['picker_type'] == 'cwb'
-
-    # Test velocity split
-    # reset the processing parameters...
-    for trace in st:
-        trace.stats.parameters = []
-    signal_split(
+def test_windows():
+    datafiles, event = read_data_dir("fdsn", "ci38457511", "*.mseed")
+    trace_list = []
+    for datafile in datafiles:
+        trace_list.append(read_data(datafile)[0][0])
+    st = StationStream(copy.deepcopy(trace_list))
+    st = windows.signal_split(st, event=event)
+    st = windows.signal_end(
         st,
-        event_time=UTCDateTime("2008-06-13 23:43:45"),
-        event_lon=140.881,
-        event_lat=39.030,
-        method="velocity",
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
+        method="magnitude",
     )
-    for tr in st:
-        signal_split_info = tr.getParameter("signal_split")
-        assert signal_split_info["method"] == "velocity"
-        assert signal_split_info["picker_type"] is None
+    windows.cut(st)
+    assert st.passed is True
+    assert st[0].stats.endtime == "2019-07-06T03:22:55.998300Z"
+    st_fail = st.copy()
+    windows.cut(st_fail, sec_before_split=-10000)
+    assert st_fail.passed is False
 
-    # Test an invalid picker type
-    PICKER_CONFIG["order_of_preference"][0] = "invalid"
-    success = False
-    try:
-        signal_split(st, method="p_arrival", picker_config=PICKER_CONFIG)
-        success = True
-    except ValueError:
-        pass
-    assert success is False
+    st2 = StationStream(copy.deepcopy(trace_list))
+    windows.window_checks(st2)
+    assert (
+        st2[0].getParameter("failure")["reason"]
+        == "Cannot check window because no split time available."
+    )
 
-    # Test an invalid split method
-    success = False
-    try:
-        signal_split(st, method="invalid")
-        success = True
-    except ValueError:
-        pass
-    assert success is False
+    st3 = StationStream(copy.deepcopy(trace_list))
+    st3 = windows.signal_split(st3, event=event)
+    st3 = windows.signal_end(
+        st3,
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
+        method="magnitude",
+    )
+    windows.window_checks(st3, min_noise_duration=100)
+    assert (
+        st3[0].getParameter("failure")["reason"]
+        == "Failed noise window duration check."
+    )
+
+    st4 = StationStream(copy.deepcopy(trace_list))
+    st4 = windows.signal_split(st4, event=event)
+    st4 = windows.signal_end(
+        st4,
+        event_time=UTCDateTime(event.time),
+        event_lon=event.longitude,
+        event_lat=event.latitude,
+        event_mag=event.magnitude,
+        method="magnitude",
+    )
+    windows.window_checks(st4, min_signal_duration=1000)
+    assert (
+        st4[0].getParameter("failure")["reason"]
+        == "Failed signal window duration check."
+    )
 
 
 def test_signal_end():
@@ -114,10 +90,10 @@ def test_signal_end():
     old_durations = []
     for tr in streams:
         old_durations.append((tr.stats.npts - 1) * tr.stats.delta)
-    new_streams = signal_split(streams, event=event)
+    new_streams = windows.signal_split(streams, event=event)
 
     # Method = none
-    new_streams = signal_end(
+    new_streams = windows.signal_end(
         new_streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
@@ -133,7 +109,7 @@ def test_signal_end():
     np.testing.assert_allclose(new_durations, old_durations)
 
     # Method = magnitude
-    new_streams = signal_end(
+    new_streams = windows.signal_end(
         new_streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
@@ -150,7 +126,7 @@ def test_signal_end():
     np.testing.assert_allclose(new_durations, target)
 
     # Method = velocity
-    new_streams = signal_end(
+    new_streams = windows.signal_end(
         new_streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
@@ -167,7 +143,7 @@ def test_signal_end():
     np.testing.assert_allclose(new_durations, target)
 
     # Method = model
-    new_streams = signal_end(
+    new_streams = windows.signal_end(
         new_streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
@@ -192,7 +168,7 @@ def test_signal_split2():
 
     streams = StreamCollection(streams)
     stream = streams[0]
-    signal_split(stream, event)
+    windows.signal_split(stream, event)
 
     cmpdict = {
         "split_time": UTCDateTime(2018, 1, 24, 10, 51, 38, 841483),
@@ -220,53 +196,8 @@ def test_signal_split2():
             assert v1 == value
 
 
-def _test_trim_multiple_events():
-    datadir = TEST_DATA_DIR / "multiple_events"
-    sc = StreamCollection.from_directory(str(datadir / "ci38457511"))
-    event = get_event_object("ci38457511")
-    df, catalog = create_travel_time_dataframe(
-        sc, datadir / "catalog.csv", 5, 0.1, "iasp91"
-    )
-    for st in sc:
-        st.detrend("demean")
-        remove_response(st, None, None)
-        st = corner_frequencies.from_constant(st)
-        lowpass_filter(st)
-        highpass_filter(st)
-        signal_split(st, event)
-        signal_end(
-            st,
-            event.time,
-            event.longitude,
-            event.latitude,
-            event.magnitude,
-            method="model",
-            model="AS16",
-        )
-        cut(st, 2)
-        trim_multiple_events(
-            st, event, catalog, df, 0.2, 0.7, "B14", {"vs30": 760}, {"rake": 0}
-        )
-
-    num_failures = sum([1 if not st.passed else 0 for st in sc])
-    assert num_failures == 2
-
-    failure = sc.select(station="WRV2")[0][0].getParameter("failure")
-    assert failure["module"] == "trim_multiple_events"
-    assert failure["reason"] == (
-        "A significant arrival from another event "
-        "occurs within the first 70.0 percent of the "
-        "signal window"
-    )
-
-    for tr in sc.select(station="JRC2")[0]:
-        np.testing.assert_almost_equal(
-            tr.stats.endtime, UTCDateTime("2019-07-06T03:20:56.368300Z")
-        )
-
-
 if __name__ == "__main__":
     os.environ["CALLED_FROM_PYTEST"] = "True"
     test_signal_split2()
     test_signal_end()
-    # test_trim_multiple_events()
+    test_windows()
