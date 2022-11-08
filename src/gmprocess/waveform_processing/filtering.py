@@ -8,8 +8,7 @@ from gmprocess.waveform_processing.processing_step import ProcessingStep
 def highpass_filter(
     st, frequency_domain=True, filter_order=5, number_of_passes=1, config=None
 ):
-    """
-    Highpass filter.
+    """Apply the highpass filter.
 
     Args:
         st (StationStream):
@@ -87,8 +86,7 @@ def highpass_filter_trace(
 def lowpass_filter(
     st, frequency_domain=True, filter_order=5, number_of_passes=1, config=None
 ):
-    """
-    Lowpass filter.
+    """Apply the lowpass filter.
 
     Args:
         st (StationStream):

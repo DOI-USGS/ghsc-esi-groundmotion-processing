@@ -31,8 +31,11 @@ def get_corner_frequencies(
     },
     config=None,
 ):
-    """
-    Select corner frequencies.
+    """Select corner frequencies.
+
+    Note that this step only selects the highpass and lowpass corners. The results can
+    be modifed by other steps (such as `lowpass_max_frequency`) and then the filters
+    are applied with the `lowpass_filter` and `highpass_filter` steps.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):
@@ -109,8 +112,9 @@ def get_corner_frequencies(
 
 @ProcessingStep
 def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
-    """
-    Cap lowpass corner as a fraction of the Nyquist.
+    """Cap lowpass corner frequency.
+
+    Options on this include a constant maximum, or as a fraction of the Nyquist.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):

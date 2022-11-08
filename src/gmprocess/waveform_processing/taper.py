@@ -27,8 +27,7 @@ TAPER_TYPES = {
 
 @ProcessingStep
 def taper(st, type="hann", width=0.05, side="both", config=None):
-    """
-    Taper streams.
+    """Taper streams.
 
     Args:
         st (StationStream):

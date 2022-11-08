@@ -35,9 +35,10 @@ The big picture guidelines are:
 
 Commit messages should begin with a one line concise yet informative summary.
 A blank line should separate the one line summary from any additional information.
-We strongly recommend using the following templates.
+We strongly recommend using the following templates, in which the first starts with
+a commit type (in all caps) that indicates the type of changes in the commit.
 
-For commits related to documentation:
+For example, a commit related to documentation would look like:
 
 ```
 DOCS: [one line description]
@@ -45,13 +46,17 @@ DOCS: [one line description]
 [Optional additional information]
 ```
 
-For commits fixing bugs:
+We use the set of commit types from the [angular][9] project:
+* **build**: Changes that affect the build system or external dependencies (e.g., pyrpoject.toml)
+* **ci**: Changes to our CI configuration files and scripts (e.g., .gitlab-ci.yml)
+* **docs**: Documentation only changes
+* **feat**: A new feature
+* **fix**: A bug fix
+* **perf**: A code change that improves performance
+* **refactor**: A code change that neither fixes a bug nor adds a feature
+* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+* **test**: Adding missing tests or correcting existing tests
 
-```
-FIX: [one line description]
-
-[Optional additional information]
-```
 
 ### Rebasing
 
@@ -70,38 +75,46 @@ Common reasons to rebase include:
 
 ## Releases
 
-1. Create a branch with a name related to the release version like `v121`.
-2. Update version in `setup.cfg`.
+1. Create a release candidate branch with a name related to the release version like `rc-v121`.
+2. Update version in `pyproject.toml`.
 3. Add new section to `code.json`; update "metadataLastUpdated" date and the urls that include the version.
 4. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
 5. Rebuild docs (see instructions below for more details).
 6. Create tag locally with
-   ```term
+   ```
    git tag v1.2.1
    ```
 7. Push tag to upstream/main
-   ```term
+   ```
    git push origin v1.2.1
    ```
 8. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
 9. Copy/paste the relevant part of the changelog into the "describe this release" section.
 
+Note that the command line program `repotag` from the `esi-utils-io` repository will
+help automate these steps. 
 
 ## Build Documentation
 
 Some additional packages are required to build the documentation, which can be included
 with the `doc` install option, e.g.,
 
-```term
+```
 pip install .[doc]
 ```
 
 Then the docs are built with
 
-```term
+```
 cd doc_source/
 ./makedocs.sh
 ```
+
+Note that the script includes the follow arguments:
+ - `rebuild` - Build documentation from a clean starting point.
+ - `update` - Incremental build of the documentation. No cleaning.
+ - `clean_data` - Remove all temporary data files generated when building the documentation.
+ - `clean_all` - Remove all temporary data files and generated documentation.
 
 The docs can then be previewed by opening `docs/index.html` in a browser.
 
@@ -122,3 +135,4 @@ Notes:
 [6]: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 [7]: https://github.com/psf/black
 [8]: https://docs.python.org/3.8/library/exceptions.html#built-in-exceptions
+[9]: https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type

@@ -26,12 +26,12 @@ def remove_response(
     inv=None,
     config=None,
 ):
-    """
-    Performs instrument response correction. If the response information is
-    not already attached to the stream, then an inventory object must be
-    provided. If the instrument is a strong-motion accelerometer, then
-    tr.remove_sensitivity() will be used. High-gain seismometers will use
-    tr.remove_response() with the defined pre-filter and water level.
+    """Perform the instrument response correction.
+
+    If the response information is not already attached to the stream, then an
+    inventory object must be provided. If the instrument is a strong-motion
+    accelerometer, then tr.remove_sensitivity() will be used. High-gain seismometers
+    will use tr.remove_response() with the defined pre-filter and water level.
 
     If f3 is Null it will be set to 0.9*fn, if f4 is Null it will be set to fn.
 

@@ -30,8 +30,7 @@ def fit_spectra(
     max_stress=10000,
     config=None,
 ):
-    """
-    Fit spectra vaying stress_drop and moment.
+    """Fit spectra vaying stress_drop and moment.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):

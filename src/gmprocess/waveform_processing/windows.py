@@ -32,8 +32,7 @@ M_TO_KM = 1.0 / 1000
 
 @ProcessingStep
 def cut(st, sec_before_split=2.0, config=None):
-    """
-    Cut/trim the record.
+    """Cut/trim the record.
 
     This method minimally requires that the windows.signal_end method has been
     run, in which case the record is trimmed to the end of the signal that
@@ -372,7 +371,8 @@ def trim_multiple_events(
     site_parameters,
     rupture_parameters,
 ):
-    """
+    """Trim record windows based on local event catalog and travel times.
+
     Uses a catalog (list of ScalarEvents) to handle cases where a trace might
     contain signals from multiple events. The catalog should contain events
     down to a low enough magnitude in relation to the events of interest.
