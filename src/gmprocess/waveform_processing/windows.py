@@ -109,7 +109,7 @@ def window_checks(st, min_noise_duration=0.5, min_signal_duration=5.0):
     for tr in st:
         if tr.passed:
             if not tr.hasParameter("signal_split"):
-                if st.passed:
+                if tr.passed:
                     tr.fail("Cannot check window because no split time available.")
                 continue
             # Split the noise and signal into two separate traces
