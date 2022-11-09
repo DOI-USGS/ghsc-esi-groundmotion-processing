@@ -27,7 +27,7 @@ run build:
     - pip install .[build]
     - export PATH="/home/usgs-user/.local/bin:$PATH"
     - python -m build
-    - python3 -m twine upload dist/*
+    - python -m twine upload dist/*
   stage: build
   rules:
     # Run this job when a tag is created manually
