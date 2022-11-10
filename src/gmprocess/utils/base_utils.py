@@ -87,7 +87,7 @@ def events_from_directory(dir):
     if len(eventfiles):
         events = read_event_json_files(eventfiles)
     else:
-        eventids = [f for f in os.listdir(dir) if not f.startswith(".")]
+        eventids = sorted([f for f in os.listdir(dir) if not f.startswith(".")])
         for eventid in eventids:
             try:
                 event = get_event_object(eventid)
@@ -118,10 +118,7 @@ def get_event_files(directory):
     Returns:
         List of event.json files.
     """
-    eventfiles = []
-    for filename in directory.glob("**/event.json"):
-        eventfiles.append(filename)
-    return eventfiles
+    return sorted([filename for filename in directory.glob("**/event.json")])
 
 
 def parse_event_file(eventfile):
