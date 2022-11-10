@@ -240,6 +240,43 @@ def _validate_steps(step_sets, data_type):
         assert steps["Reduction"] == row["Reduction"].iloc[0]
 
 
+def test_metrics_arrays():
+    homedir = TEST_DATA_DIR / "geonet"
+    datafile_v2 = str(homedir / "us1000778i" / "20161113_110259_WTMC_20.V2A")
+    stream_v2 = read_geonet(datafile_v2)[0]
+    conf = config.copy()
+
+    # SA arrays
+    conf["metrics"]["output[_imcs"] = ["channels"]
+    conf["metrics"]["output_imts"] = ["SA"]
+    conf["metrics"]["sa"]["periods"]["use_array"] = True
+    conf["metrics"]["sa"]["periods"]["start"] = 0.01
+    conf["metrics"]["sa"]["periods"]["stop"] = 0.1
+    conf["metrics"]["sa"]["periods"]["num"] = 3
+    conf["metrics"]["sa"]["periods"]["spacing"] = "linspace"
+    m = MetricsController.from_config(stream_v2, config=conf)
+    periods = [m._parse_period(imt) for imt in m.imts]
+    assert periods == ["0.010", "0.055", "0.100"]
+    conf["metrics"]["sa"]["periods"]["spacing"] = "logspace"
+    m = MetricsController.from_config(stream_v2, config=conf)
+    periods = [m._parse_period(imt) for imt in m.imts]
+    assert periods == ["0.010", "0.032", "0.100"]
+
+    # FAS arrays
+    conf["metrics"]["output_imts"] = ["FAS"]
+    m = MetricsController.from_config(stream_v2, config=conf)
+    period = [m._parse_period(imt) for imt in m.imts]
+    assert period == ["1.000", "2.000", "3.000"]
+    conf["metrics"]["fas"]["periods"]["spacing"] = "logspace"
+    m = MetricsController.from_config(stream_v2, config=conf)
+    period = [m._parse_period(imt) for imt in m.imts]
+    assert period == ["1.000", "1.732", "3.000"]
+    conf["metrics"]["fas"]["periods"]["use_array"] = False
+    m = MetricsController.from_config(stream_v2, config=conf)
+    period = [m._parse_period(imt) for imt in m.imts]
+    assert period == ["0.300"]
+
+
 def test_exceptions():
     homedir = TEST_DATA_DIR / "geonet"
     datafile_v2 = str(homedir / "us1000778i" / "20161113_110259_WTMC_20.V2A")

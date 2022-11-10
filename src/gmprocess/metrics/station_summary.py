@@ -761,7 +761,6 @@ class StationSummary(object):
 
         return etree.tostring(root, pretty_print=True, encoding="unicode")
 
-
     def get_imc_dict(self, imc=None):
         """Get an IMC table.
 

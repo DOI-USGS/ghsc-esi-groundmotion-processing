@@ -1,5 +1,7 @@
 ## main
 
+- Bugfix for how period arrays are defined when using start/stop values in the config file along with the logspace option.
+
 ## 1.2.2 / 2022-11-08
 
 - Adding "Merge Request Guidelines" and "Release Steps" sections to developer resources. 

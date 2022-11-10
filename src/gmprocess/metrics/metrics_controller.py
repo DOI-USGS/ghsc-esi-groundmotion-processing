@@ -197,7 +197,7 @@ class MetricsController(object):
                     stop = metrics["sa"]["periods"]["stop"]
                     num = metrics["sa"]["periods"]["num"]
                     if metrics["sa"]["periods"]["spacing"] == "logspace":
-                        periods = np.logspace(start, stop, num=num)
+                        periods = np.logspace(np.log10(start), np.log10(stop), num=num)
                     else:
                         periods = np.linspace(start, stop, num=num)
                     for period in periods:
@@ -211,7 +211,7 @@ class MetricsController(object):
                     stop = metrics["fas"]["periods"]["stop"]
                     num = metrics["fas"]["periods"]["num"]
                     if metrics["fas"]["periods"]["spacing"] == "logspace":
-                        periods = np.logspace(start, stop, num=num)
+                        periods = np.logspace(np.log10(start), np.log10(stop), num=num)
                     else:
                         periods = np.linspace(start, stop, num=num)
                     for period in periods:
