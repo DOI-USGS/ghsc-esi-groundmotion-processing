@@ -47,15 +47,15 @@ DOCS: [one line description]
 ```
 
 We use the set of commit types from the [angular][9] project:
-* **build**: Changes that affect the build system or external dependencies (e.g., pyrpoject.toml)
-* **ci**: Changes to our CI configuration files and scripts (e.g., .gitlab-ci.yml)
-* **docs**: Documentation only changes
-* **feat**: A new feature
-* **fix**: A bug fix
-* **perf**: A code change that improves performance
-* **refactor**: A code change that neither fixes a bug nor adds a feature
-* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-* **test**: Adding missing tests or correcting existing tests
+* **BUILD**: Changes that affect the build system or external dependencies (e.g., pyrpoject.toml)
+* **CI**: Changes to our CI configuration files and scripts (e.g., .gitlab-ci.yml)
+* **DOCS**: Documentation only changes
+* **FEAT**: A new feature
+* **FIX**: A bug fix
+* **PERF**: A code change that improves performance
+* **REFACTOR**: A code change that neither fixes a bug nor adds a feature
+* **STYLE**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+* **TEST**: Adding missing tests or correcting existing tests
 
 
 ### Rebasing
