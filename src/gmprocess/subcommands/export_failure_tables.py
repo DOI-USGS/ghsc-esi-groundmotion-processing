@@ -126,7 +126,7 @@ class ExportFailureTablesModule(base.SubcommandModule):
                 df_failures.to_csv(comp_failures_path)
             self.append_file("Complete failures", comp_failures_path)
 
-        if self.gmrecords.args.log_status:
-            logging.info(str(status_info))
+            if self.gmrecords.args.log_status:
+                logging.info(str(status_info))
 
         self._summarize_files_created()
