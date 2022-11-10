@@ -90,8 +90,8 @@ deleting it's entry.
 
 To see the available arguments for each step and their default values, you can look
 up the function in the `gmprocess/waveform_processing` directory 
-([here](https://code.usgs.gov/ghsc/esi/groundmotion-processing/tree/main/gmprocess/waveform_processing)
-is the link to it in GitHub). 
+([here](https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/tree/main/src/gmprocess/waveform_processing)
+is the link to it). 
 
 ```{Hint}
 If you are familiar with python, you'll note that each available processing step is
@@ -104,8 +104,8 @@ are collecting data in a region where the travel time picks are often later than
 actual p-wave arrival, causing some of the shaking to be placed in the "noise" window,
 which in tern causes the record to fail the signal-to-noise ratio test.
 
-Please post any questions or issues that you have regarding the config to the GitHub
-[issues](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) page. 
+Please post any questions or issues that you have regarding the config to the GitLab
+[issues](https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/issues) page. 
 
 % Indices and tables
 
