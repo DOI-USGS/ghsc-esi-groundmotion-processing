@@ -5,8 +5,13 @@ Most of the extensions that we provide are to handle strong motion data and rela
 
 # Documentation
 - Please note, we are in the process of improving the documentation and that there are some incomplete sections.
-- The full documentation can be viewed locally if you clone this repository and open up `docs/index.html` in a browser.
-- We hope to have the documentation hosted on the web soon.
+- The full documentation can be viewed locally py running the `doc_source/makedocs.sh` script.
+- The documentation is also available [here](https://gmprocess-docs.readthedocs.io/en/latest/index.html).
+
+# Contact
+Issues are the best way to ask questions, but at this time creating an account at code.usgs.gov is required to interact with the issues.
+We hope to have a better system soon.
+The developers can be reached at [gmprocess@usgs.gov](mailto:gmprocess@usgs.gov).
 
 
 # Reference
