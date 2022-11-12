@@ -11,12 +11,33 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-import os
+from pathlib import Path
 import sys
 import importlib.metadata
+from gmprocess.apps.gmrecords import GMrecordsApp
 
-sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, str(Path(__file__).parent / ".."))
 
+
+# -- Create processing steps markdown ----------------------------------------
+app = GMrecordsApp()
+app.load_subcommands()
+args = {
+    "debug": False,
+    "quiet": True,
+    "eventid": None,
+    "textfile": None,
+    "overwrite": False,
+    "num_processes": 0,
+    "label": None,
+    "subcommand": "processing_steps",
+    "func": app.classes["processing_steps"]["class"],
+    "log": None,
+    "output_markdown": str(
+        Path(__file__).parent / "contents" / "manual" / "processing_steps_output.md"
+    ),
+}
+app.main(**args)
 
 # -- Project information -----------------------------------------------------
 
@@ -61,7 +82,7 @@ templates_path = ["_templates"]
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-html_static_path = [os.path.abspath("_static")]
+html_static_path = [str(Path("_static").resolve())]
 
 todo_include_todos = True
 

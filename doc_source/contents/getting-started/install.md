@@ -38,15 +38,13 @@ conda.
 :class: note
 
 ```{tab} Linux
-- A C compiler (typically gcc).
-- Bash shell, git.
+- Bash shell, git, pip.
 
 Most Linux distributions include these tools in the default installation.
 ```
 
 ```{tab} macOS
-- A C compiler.
-- Bash shell, git.
+- Bash shell, git, pip.
 
 The easiest way to install these tools is to install the XCode Command Line Tools.
 Simply run `git`, and instructions for installing the Command Line Tools will be displayed if it is not installed.
@@ -59,8 +57,6 @@ Building the `fiona` package from source requires `GDAL`, which is a C++ library
 ```{tab} Windows
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers) 
   (recommended) or [anaconda](https://www.anaconda.com/products/distribution).
-- A C compiler. We have had success following 
-  [these instructions](https://wiki.python.org/moin/WindowsCompilers).
 - Git and some kind of console.
 
 There is one dependency ([fiona](https://pypi.org/project/Fiona/)) that we have not been able to install with pip on Windows systems. So we rely on conda for this.

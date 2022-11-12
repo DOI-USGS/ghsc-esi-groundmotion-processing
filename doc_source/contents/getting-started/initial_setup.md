@@ -26,7 +26,7 @@ If you do not wish to share your personal information, we recommend using an ins
 
 To create a directory projects configuration, use the gmrecords `init` subcommand in the directory where you would like to host projects.
 
-```{code-block} console]
+```{code-block}
 $ gmrecords init
 Please enter a project title: [default]
 Please enter the conf: [./conf]

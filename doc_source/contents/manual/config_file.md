@@ -29,7 +29,7 @@ In many cases, you may want to turn off or turn on specific fetchers. This is do
 with the `enabled` key within each fetcher. For example, to turn off the a fetcher 
 you would need to add the following code to a `*.yml` in the project conf directory:
 
-```
+```yaml
 fetchers:
     KNETFetcher:
         enabled: False
