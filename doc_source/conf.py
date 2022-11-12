@@ -13,7 +13,7 @@
 
 import os
 import sys
-from setuptools_scm import get_version
+import importlib.metadata
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -24,8 +24,7 @@ project = "gmprocess"
 copyright = "Unlicense"
 
 # The full version, including alpha/beta/rc tags
-base_dir = os.path.join(os.path.dirname(__file__), os.pardir)
-release = get_version(root=os.path.join(base_dir))
+release = importlib.metadata.version("gmprocess")
 version = release
 
 # -- General configuration ---------------------------------------------------
@@ -74,15 +73,17 @@ todo_include_todos = True
 html_theme = "furo"
 html_logo = "_static/gmprocess_logo.png"
 
-base_url = "https://code.usgs.gov/ghsc/esi/groundmotion-processing"
+base_url = (
+    "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/main/doc_source/"
+)
 
 announcement_html = """
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
-        <img id="announcement_left_img" valign="middle" src="%s/_static/usgs.png""></a>
+        <img id="announcement_left_img" valign="middle" src="%s_static/usgs.png""></a>
     Ground-Motion Processing Software
     <a href='https://code.usgs.gov/ghsc/esi/groundmotion-processing' style='text-decoration: none'>
         <img id="announcement_right_img" valign="middle"
-            src="%s/_static/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png"></a>
+            src="%s_static/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png"></a>
 """ % (
     base_url,
     base_url,
