@@ -83,7 +83,7 @@ class GMrecordsApp(object):
             self.parser.print_help()
             sys.exit()
         else:
-            subcmds_noinit = ["init"]
+            subcmds_noinit = ["init", "processing_steps"]
             if self.args.subcommand not in subcmds_noinit:
                 self._initialize()
 
