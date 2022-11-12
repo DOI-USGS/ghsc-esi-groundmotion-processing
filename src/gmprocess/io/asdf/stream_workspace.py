@@ -1205,7 +1205,7 @@ class StreamWorkspace(object):
             network (str):
                 Network to return metrics from.
             station (str):
-                Station to return metrics from.
+                Station to return metrics from, not including the network code.
             label (str):
                 Processing label to return metrics from.
             streams (StreamCollection):
@@ -1219,7 +1219,6 @@ class StreamWorkspace(object):
         Returns:
             StationSummary: Object containing all stream metrics or None.
         """
-
         # ----------------------------------------------------------- #
         # Waveform Metrics
         if "WaveFormMetrics" not in self.dataset.auxiliary_data:
