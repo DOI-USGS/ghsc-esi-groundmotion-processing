@@ -39,9 +39,11 @@ def compute_and_smooth_spectrum(tr, bandwidth, section, window=None, nfft=None):
         nfft = next_pow_2(tr.stats.npts)
     if window is None:
         window = tr
-
+    lowest_usable_freq = 1 / tr.stats.delta / tr.stats.npts
     spec_raw, freqs_raw = compute_fft(window, nfft)
+    spec_raw[freqs_raw < lowest_usable_freq] = np.nan
     spec_smooth, freqs_smooth = smooth_spectrum(spec_raw, freqs_raw, nfft, bandwidth)
+    spec_smooth[freqs_smooth < lowest_usable_freq] = np.nan
 
     raw_dict = {"spec": spec_raw, "freq": freqs_raw}
     smooth_dict = {"spec": spec_smooth, "freq": freqs_smooth}
