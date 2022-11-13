@@ -1,5 +1,6 @@
 ## main
 
+- Modified the signal-to-noise-ratio calculation to normalize the spectra by duration.
 - Bugfix for how period arrays are defined when using start/stop values in the config file along with the logspace option.
 
 ## 1.2.2 / 2022-11-08

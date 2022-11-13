@@ -37,7 +37,7 @@ class Duration(Reduction):
             smoothing (string):
                 Smoothing type. Default is None.
             interval (list):
-                List of length 2 with the quantiles (0-1) for duration interval
+                List of length 2 with the percentiles (0-100) for duration interval
                 calculation.
             config (dict):
                 Config dictionary.

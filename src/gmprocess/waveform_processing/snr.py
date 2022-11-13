@@ -4,6 +4,7 @@
 import numpy as np
 from obspy.signal.util import next_pow_2
 
+from gmprocess.metrics.reduction.duration import Duration
 from gmprocess.waveform_processing.fft import compute_and_smooth_spectrum
 from gmprocess.waveform_processing.spectrum import brune_f0, moment_from_magnitude
 from gmprocess.waveform_processing.processing_step import ProcessingStep
@@ -170,17 +171,28 @@ def compute_snr_trace(tr, bandwidth=20.0):
         tr.setCached(
             "smooth_signal_spectrum",
             {
-                "spec": (
-                    tr.getCached("smooth_signal_spectrum")["spec"]
-                    - tr.getCached("smooth_noise_spectrum")["spec"]
-                ),
+                "spec": (tr.getCached("smooth_signal_spectrum")["spec"]),
                 "freq": tr.getCached("smooth_signal_spectrum")["freq"],
             },
         )
 
         smooth_signal_spectrum = tr.getCached("smooth_signal_spectrum")["spec"]
         smooth_noise_spectrum = tr.getCached("smooth_noise_spectrum")["spec"]
-        snr = smooth_signal_spectrum / smooth_noise_spectrum
+
+        # Need to normalize for duration (D). Assumptions:
+        #  - Noise amplitudes scale as sqrt(D)
+        #  - Ground motions at these frequencies are approximately white noise, and thus
+        #    also scale as sqrt(D)
+        #  - Noise is stationary and so D is the full length of the window
+        #  - Ground motion is not stationary, so we'll use the 5-95% significant
+        #    duration.
+        dur_noise = noise.stats.endtime - noise.stats.starttime
+        d595 = Duration([signal], interval=[5.0, 95.0]).result
+        dur_signal = d595[signal.stats.channel]
+        smooth_signal_spectrum = smooth_signal_spectrum / np.sqrt(dur_noise)
+        smooth_signal_spectrum = smooth_signal_spectrum / np.sqrt(dur_signal)
+
+        snr = (smooth_signal_spectrum - smooth_noise_spectrum) / smooth_noise_spectrum
 
         snr_dict = {"snr": snr, "freq": tr.getCached("smooth_signal_spectrum")["freq"]}
         tr.setCached("snr", snr_dict)
