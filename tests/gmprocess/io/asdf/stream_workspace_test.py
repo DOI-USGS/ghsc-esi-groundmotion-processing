@@ -86,7 +86,7 @@ def test_stream_workspace():
         stream1 = raw_streams[0]
         # Get metrics from station summary for raw streams
         config["metrics"]["sa"]["periods"]["defined_periods"] = [0.3, 1.0, 3.0]
-        summary1 = StationSummary.from_config(stream1, config=config)
+        summary1 = StationSummary.from_config(stream1, config=config, event=event)
         s1_df_in = summary1.pgms.sort_values(["IMT", "IMC"])
         array1 = s1_df_in["Result"].to_numpy()
 

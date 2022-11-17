@@ -6,17 +6,16 @@ from lxml import etree
 import numpy as np
 import pandas as pd
 from obspy.geodetics.base import gps2dist_azimuth
-from openquake.hazardlib.geo.geodetic import distance
+from openquake.hazardlib.geo import geodetic as oqgeo
 from esi_utils_rupture.point_rupture import PointRupture
+from esi_utils_rupture.origin import Origin
+import ps2ff
 
 # local imports
 from gmprocess.utils.config import get_config
 from gmprocess.metrics.gather import gather_pgms
 from gmprocess.metrics.metrics_controller import MetricsController
-from gmprocess.utils.constants import (
-    ELEVATION_FOR_DISTANCE_CALCS,
-    METRICS_XML_FLOAT_STRING_FORMAT,
-)
+from gmprocess.utils import constants
 from gmprocess.utils.tables import _get_table_row, find_float
 
 XML_UNITS = {
@@ -35,11 +34,20 @@ M_PER_KM = 1000
 
 
 class StationSummary(object):
-    """
-    Class for returning pgm values for specific components.
+    """Class for storing/organizing station metrics.
+
+    Note that this class is effecitvely a container for distance a waveform metric
+    info for a given station. Thus, it calls the MetricsController class, which
+    handles all of the actual calculations. But the distance calculations, which are
+    much simpler, are done within this class.
+
+    It also handles some difficult things like constructing itself from the XML
+    that is stored in the workspace HDF5 file and provides a few different ways to
+    summarize it's contents.
     """
 
     def __init__(self):
+        """Initialize the StationSummary class."""
         self._bandwidth = None
         self._components = None
         self._coordinates = None
@@ -48,19 +56,20 @@ class StationSummary(object):
         self._distances = {}
         self._back_azimuth = None
         self._imts = None
-        self._event = None
+        self.event = None
         self._pgms = None
         self._smoothing = None
         self._starttime = None
         self._station_code = None
         self._stream = None
         self._summary = None
+        self.rrup_interp = None
+        self.rjb_interp = None
         self.channel_dict = {}
 
     @property
     def available_imcs(self):
-        """
-        Helper method for getting a list of components.
+        """Helper method for getting a list of components.
 
         Returns:
             list: List of available components (str).
@@ -69,8 +78,7 @@ class StationSummary(object):
 
     @property
     def available_imts(self):
-        """
-        Helper method for getting a list of measurement types.
+        """Helper method for getting a list of measurement types.
 
         Returns:
             list: List of available measurement types (str).
@@ -79,8 +87,7 @@ class StationSummary(object):
 
     @property
     def bandwidth(self):
-        """
-        Helper method for getting the defined bandwidth.
+        """Helper method for getting the defined bandwidth.
 
         Returns:
             float: Bandwidth used in smoothing.
@@ -89,8 +96,7 @@ class StationSummary(object):
 
     @property
     def components(self):
-        """
-        Helper method returning a list of requested/calculated components.
+        """Helper method returning a list of requested/calculated components.
 
         Returns:
             list: List of requested/calculated components (str).
@@ -99,8 +105,7 @@ class StationSummary(object):
 
     @property
     def coordinates(self):
-        """
-        Helper method returning the coordinates of the station.
+        """Helper method returning the coordinates of the station.
 
         Returns:
             list: List of coordinates (str).
@@ -109,9 +114,7 @@ class StationSummary(object):
 
     @property
     def damping(self):
-        """
-        Helper method for getting the damping used in the spectral amplitude
-        calculation.
+        """Helper method for getting SA damping.
 
         Returns:
             float: Damping used in SA calculation.
@@ -120,8 +123,7 @@ class StationSummary(object):
 
     @property
     def elevation(self):
-        """
-        Helper method for getting the station elevation.
+        """Helper method for getting the station elevation.
 
         Returns:
             float: Station elevation
@@ -130,8 +132,7 @@ class StationSummary(object):
 
     @property
     def distances(self):
-        """
-        Helper method for getting the distances.
+        """Helper method for getting the distances.
 
         Returns:
             dict: Dictionary of distance measurements.
@@ -142,27 +143,32 @@ class StationSummary(object):
     def from_config(
         cls,
         stream,
+        event,
         config=None,
-        event=None,
         calc_waveform_metrics=True,
         calc_station_metrics=True,
         rupture=None,
+        rrup_interp=None,
+        rjb_interp=None,
     ):
         """
         Args:
             stream (obspy.core.stream.Stream):
                 Strong motion timeseries for one station.
-            config (dictionary):
-                Configuration dictionary.
             event (ScalarEvent):
                 Object containing latitude, longitude, depth, and magnitude.
+            config (dictionary):
+                Configuration dictionary.
             calc_waveform_metrics (bool):
                 Whether to calculate waveform metrics. Default is True.
             calc_station_metrics (bool):
                 Whether to calculate station metrics. Default is True.
             rupture (PointRupture or QuadRupture):
                 esi-utils-rupture rupture object. Default is None.
-
+            rrup_interp (dict):
+                Rrup adjustment interpolation data.
+            rjb_interp (dict):
+                Rjb adjustment interpolation data.
         Returns:
             class: StationSummary class.
 
@@ -178,12 +184,15 @@ class StationSummary(object):
         smoothing = config["metrics"]["fas"]["smoothing"]
         bandwidth = config["metrics"]["fas"]["bandwidth"]
 
+        station.rrup_interp = rrup_interp
+        station.rjb_interp = rjb_interp
         station._damping = damping
         station._smoothing = smoothing
         station._bandwidth = bandwidth
         station._stream = stream
         station.event = event
-        station.set_metadata()
+        station.rupture = rupture
+        station.set_metadata_from_stream()
 
         if stream.passed and calc_waveform_metrics:
             metrics = MetricsController.from_config(stream, config=config, event=event)
@@ -202,7 +211,7 @@ class StationSummary(object):
                 station._imts = set(pgms.index.get_level_values("IMT"))
                 station.pgms = pgms
         if calc_station_metrics:
-            station.compute_station_metrics(rupture)
+            station.compute_station_metrics()
 
         return station
 
@@ -264,7 +273,7 @@ class StationSummary(object):
         stream,
         components,
         imts,
-        event=None,
+        event,
         damping=None,
         smoothing=None,
         bandwidth=None,
@@ -307,59 +316,43 @@ class StationSummary(object):
             Assumes a processed stream with units of gal (1 cm/s^2).
             No processing is done by this class.
         """
-        if config is None:
-            config = get_config()
         station = cls()
-        imts = np.sort(imts)
-        components = np.sort(components)
+        station.rupture = rupture
+
+        if config is None:
+            station.config = get_config()
+        else:
+            station.config = config
+
+        station._imts = np.sort(imts)
+        station._components = np.sort(components)
 
         if damping is None:
-            damping = config["metrics"]["sa"]["damping"]
+            damping = station.config["metrics"]["sa"]["damping"]
         if smoothing is None:
-            smoothing = config["metrics"]["fas"]["smoothing"]
+            smoothing = station.config["metrics"]["fas"]["smoothing"]
         if bandwidth is None:
-            bandwidth = config["metrics"]["fas"]["bandwidth"]
+            bandwidth = station.config["metrics"]["fas"]["bandwidth"]
         if allow_nans is None:
-            allow_nans = config["metrics"]["fas"]["allow_nans"]
+            allow_nans = station.config["metrics"]["fas"]["allow_nans"]
 
         station._damping = damping
         station._smoothing = smoothing
         station._bandwidth = bandwidth
+        station._allow_nans = allow_nans
         station._stream = stream
         station.event = event
-        station.set_metadata()
+
+        station.set_metadata_from_stream()
 
         if stream.passed and calc_waveform_metrics:
-            metrics = MetricsController(
-                imts,
-                components,
-                stream,
-                bandwidth=bandwidth,
-                allow_nans=allow_nans,
-                damping=damping,
-                event=event,
-                smooth_type=smoothing,
-            )
-            station.channel_dict = metrics.channel_dict.copy()
-            pgms = metrics.pgms
-
-            if pgms.empty:
-                station._components = metrics.imcs
-                station._imts = metrics.imts
-                station.pgms = pd.DataFrame.from_dict(
-                    {"IMT": [], "IMC": [], "Result": []}
-                )
-            else:
-                station._components = set(pgms.index.get_level_values("IMC"))
-                station._imts = set(pgms.index.get_level_values("IMT"))
-                station.pgms = pgms
+            station.compute_waveform_metrics()
         if calc_station_metrics:
-            station.compute_station_metrics(rupture)
+            station.compute_station_metrics()
         return station
 
     def get_pgm(self, imt, imc):
-        """
-        Finds the imt/imc value requested.
+        """Finds the imt/imc value requested.
 
         Args:
             imt (str):
@@ -415,9 +408,7 @@ class StationSummary(object):
 
     @property
     def imts(self):
-        """
-        Helper method returning a list of requested/calculated measurement
-        types.
+        """Helper method returning a list of requested/calculated measurement types.
 
         Returns:
             list: List of requested/calculated measurement types (str).
@@ -426,8 +417,7 @@ class StationSummary(object):
 
     @property
     def pgms(self):
-        """
-        Helper method returning a station's pgms.
+        """Helper method returning a station's pgms.
 
         Returns:
             dictionary: Pgms for each imt and imc.
@@ -436,18 +426,15 @@ class StationSummary(object):
 
     @pgms.setter
     def pgms(self, pgms):
-        """
-        Helper method to set the pgms attribute.
+        """Helper method to set the pgms attribute.
 
         Args:
             pgms (list): Dictionary of pgms for each imt and imc.
         """
         self._pgms = pgms
 
-    def set_metadata(self):
-        """
-        Set the metadata for the station
-        """
+    def set_metadata_from_stream(self):
+        """Set the metadata for the station."""
         stats = self.stream[0].stats
         self._starttime = stats.starttime
         self._station_code = stats.station
@@ -579,11 +566,14 @@ class StationSummary(object):
                     tdict[imc] = value
 
                 pgms[imt] = tdict
+
         station = cls.from_pgms(station_code, pgms)
+
         station._damping = damping
         station.channel_dict = channel_dict.copy()
         # extract info from station metrics, fill in metadata
         root = etree.fromstring(xml_station)  # station metrics element
+        station._distances = {}
         for element in root.iterchildren():
             if element.tag == "distances":
                 for dist_type in element.iterchildren():
@@ -593,72 +583,152 @@ class StationSummary(object):
 
         return station
 
-    def compute_station_metrics(self, rupture=None):
-        """
-        Computes station metrics (distances, back azimuth) for the
-        StationSummary.
-
-        Args:
-            rupture (PointRupture or QuadRupture):
-                esi-utils-rupture rupture object. Default is None.
-        """
+    def compute_station_metrics(self):
+        """Calculate station metrics"""
         lat, lon = self.coordinates
         elev = self.elevation
+
+        if self.rrup_interp is None or self.rjb_interp is None:
+            self.rrup_interp, self.rjb_interp = get_ps2ff_interpolation(self.event)
+
         if self.event is not None:
             event = self.event
-            dist, baz, _ = gps2dist_azimuth(lat, lon, event.latitude, event.longitude)
-            self._distances["epicentral"] = dist / M_PER_KM
-            self._back_azimuth = baz
-            if event.depth is not None:
-                self._distances["hypocentral"] = distance(
-                    lon,
-                    lat,
-                    -elev / M_PER_KM,
-                    event.longitude,
-                    event.latitude,
-                    event.depth / M_PER_KM,
-                )
+            geo_tuple = gps2dist_azimuth(lat, lon, event.latitude, event.longitude)
+            sta_repi = geo_tuple[0] / M_PER_KM
+            sta_baz = geo_tuple[1]
+            sta_rhyp = oqgeo.distance(
+                lon,
+                lat,
+                -elev / M_PER_KM,
+                event.longitude,
+                event.longitude,
+                event.depth,
+            )
 
-        if rupture is not None:
-            lon = np.array([lon])
-            lat = np.array([lat])
-            elev = np.array([ELEVATION_FOR_DISTANCE_CALCS])
-
-            rrup, rrup_var = rupture.computeRrup(lon, lat, elev)
-            rjb, rjb_var = rupture.computeRjb(lon, lat, elev)
-            gc2_dict = rupture.computeGC2(lon, lat, elev)
-
-            if not isinstance(rupture, PointRupture):
-                rrup_var = np.full_like(rrup, np.nan)
-                rjb_var = np.full_like(rjb, np.nan)
-
-                # If we don't have a point rupture, then back azimuth needs
-                # to be calculated to the closest point on the rupture
-                dists = []
-                bazs = []
-                for quad in rupture._quadrilaterals:
-                    P0, P1, P2, P3 = quad
-                    for point in [P0, P1]:
-                        dist, az, baz = gps2dist_azimuth(point.y, point.x, lat, lon)
-                        dists.append(dist)
-                        bazs.append(baz)
-                self._back_azimuth = bazs[np.argmin(dists)]
-            else:
-                gc2_dict = {x: [np.nan] for x in gc2_dict}
-
-            self._distances.update(
+        if self.rupture is None:
+            origin = Origin(
                 {
-                    "rupture": rrup[0],
-                    "rupture_var": rrup_var[0],
-                    "joyner_boore": rjb[0],
-                    "joyner_boore_var": rjb_var[0],
-                    "gc2_rx": gc2_dict["rx"][0],
-                    "gc2_ry": gc2_dict["ry"][0],
-                    "gc2_ry0": gc2_dict["ry0"][0],
-                    "gc2_U": gc2_dict["U"][0],
-                    "gc2_T": gc2_dict["T"][0],
+                    "id": "",
+                    "netid": "",
+                    "network": "",
+                    "lat": event.latitude,
+                    "lon": event.longitude,
+                    "depth": event.depth,
+                    "locstring": "",
+                    "mag": event.magnitude,
+                    "time": "",
+                    "mech": "",
+                    "productcode": "",
                 }
             )
+            self.rupture = PointRupture(origin)
+
+        if isinstance(self.rupture, PointRupture):
+            rjb_mean = np.interp(
+                sta_repi,
+                self.rjb_interp["repi"],
+                self.rjb_interp["rjb_hat"],
+            )
+            rjb_var = np.interp(
+                sta_repi,
+                self.rjb_interp["repi"],
+                self.rjb_interp["rjb_var"],
+            )
+            rrup_mean = np.interp(
+                sta_repi,
+                self.rrup_interp["repi"],
+                self.rrup_interp["rrup_hat"],
+            )
+            rrup_var = np.interp(
+                sta_repi,
+                self.rrup_interp["repi"],
+                self.rrup_interp["rrup_var"],
+            )
+            gc2_rx = np.full_like(rjb_mean, np.nan)
+            gc2_ry = np.full_like(rjb_mean, np.nan)
+            gc2_ry0 = np.full_like(rjb_mean, np.nan)
+            gc2_U = np.full_like(rjb_mean, np.nan)
+            gc2_T = np.full_like(rjb_mean, np.nan)
+        else:
+            rrup_mean, rrup_var = self.rupture.computeRrup(
+                np.array([lon]),
+                np.array([lat]),
+                constants.ELEVATION_FOR_DISTANCE_CALCS,
+            )
+            rjb_mean, rjb_var = self.rupture.computeRjb(
+                np.array([lon]),
+                np.array([lat]),
+                constants.ELEVATION_FOR_DISTANCE_CALCS,
+            )
+            rrup_var = np.full_like(rrup_mean, np.nan)
+            rjb_var = np.full_like(rjb_mean, np.nan)
+            gc2_dict = self.rupture.computeGC2(
+                np.array([lon]),
+                np.array([lat]),
+                constants.ELEVATION_FOR_DISTANCE_CALCS,
+            )
+            gc2_rx = gc2_dict["rx"]
+            gc2_ry = gc2_dict["ry"]
+            gc2_ry0 = gc2_dict["ry0"]
+            gc2_U = gc2_dict["U"]
+            gc2_T = gc2_dict["T"]
+
+            # If we don't have a point rupture, then back azimuth needs
+            # to be calculated to the closest point on the rupture
+            dists = []
+            bazs = []
+            for quad in self.rupture._quadrilaterals:
+                P0, P1, _, _ = quad
+                for point in [P0, P1]:
+                    dist, _, baz = gps2dist_azimuth(
+                        point.y,
+                        point.x,
+                        lat,
+                        lon,
+                    )
+                    dists.append(dist)
+                    bazs.append(baz)
+                sta_baz = bazs[np.argmin(dists)]
+
+        self._distances = {
+            "epicentral": sta_repi,
+            "hypocentral": sta_rhyp,
+            "rupture": rrup_mean,
+            "rupture_var": rrup_var,
+            "joyner_boore": rjb_mean,
+            "joyner_boore_var": rjb_var,
+            "gc2_rx": gc2_rx,
+            "gc2_ry": gc2_ry,
+            "gc2_ry0": gc2_ry0,
+            "gc2_U": gc2_U,
+            "gc2_T": gc2_T,
+        }
+        self._back_azimuth = sta_baz
+
+    def compute_waveform_metrics(self):
+        """Calculate waveform metrics"""
+        if self.stream.passed:
+            metrics = MetricsController(
+                self.imts,
+                self.components,
+                self.stream,
+                bandwidth=self.bandwidth,
+                allow_nans=self._allow_nans,
+                damping=self.damping,
+                event=self.event,
+                smooth_type=self.smoothing,
+            )
+
+            self.channel_dict = metrics.channel_dict.copy()
+            self.pgms = metrics.pgms
+            if not len(self.pgms):
+                self._components = metrics.imcs
+                self._imts = metrics.imts
+                self.pgms = pd.DataFrame.from_dict({"IMT": [], "IMC": [], "Result": []})
+            else:
+                self._components = set(self.pgms.index.get_level_values("IMC"))
+                self._imts = set(self.pgms.index.get_level_values("IMT"))
+                self.pgms = self.pgms
 
     def get_metric_xml(self):
         """Return waveform metrics XML as defined for our ASDF implementation.
@@ -697,7 +767,9 @@ class StationSummary(object):
             if imtstr.startswith("sa") or imtstr.startswith("fas"):
                 period = float(re.search(FLOAT_MATCH, imtstr).group())
                 attdict = {
-                    "period": (METRICS_XML_FLOAT_STRING_FORMAT["period"] % period),
+                    "period": (
+                        constants.METRICS_XML_FLOAT_STRING_FORMAT["period"] % period
+                    ),
                     "units": units,
                 }
                 if imtstr.startswith("sa"):
@@ -706,7 +778,7 @@ class StationSummary(object):
                     if damping is None:
                         damping = DEFAULT_DAMPING
                     attdict["damping"] = (
-                        METRICS_XML_FLOAT_STRING_FORMAT["damping"] % damping
+                        constants.METRICS_XML_FLOAT_STRING_FORMAT["damping"] % damping
                     )
                 else:
                     imtstr = "fas"
@@ -729,14 +801,12 @@ class StationSummary(object):
                     value = self.pgms.Result.loc[imt, imc]
                 except KeyError:
                     value = np.nan
-                imc_tag.text = METRICS_XML_FLOAT_STRING_FORMAT["pgm"] % value
+                imc_tag.text = constants.METRICS_XML_FLOAT_STRING_FORMAT["pgm"] % value
         xmlstr = etree.tostring(root, pretty_print=True, encoding="unicode")
         return xmlstr
 
     def get_station_xml(self):
-        """
-        Return XML for station metrics as defined for our ASDF
-        implementation.
+        """Return XML for station metrics as defined for our ASDF implementation.
 
         Returns:
             str: XML in the form specified by format.
@@ -747,7 +817,8 @@ class StationSummary(object):
         if self._back_azimuth is not None:
             back_azimuth = etree.SubElement(root, "back_azimuth")
             back_azimuth.text = (
-                METRICS_XML_FLOAT_STRING_FORMAT["back_azimuth"] % self._back_azimuth
+                constants.METRICS_XML_FLOAT_STRING_FORMAT["back_azimuth"]
+                % self._back_azimuth
             )
 
         if self._distances:
@@ -755,7 +826,7 @@ class StationSummary(object):
             for dist_type in self._distances:
                 element = etree.SubElement(distances, dist_type, units="km")
                 element.text = (
-                    METRICS_XML_FLOAT_STRING_FORMAT["distance"]
+                    constants.METRICS_XML_FLOAT_STRING_FORMAT["distance"]
                     % self._distances[dist_type]
                 )
 
@@ -817,3 +888,51 @@ class StationSummary(object):
             idx = np.argsort(period)
             sa_arrays[imc_key] = {"period": period[idx], "sa": sa[idx]}
         return sa_arrays
+
+
+def get_ps2ff_interpolation(event):
+    """Construct interpolation data for approximating Rrup and Rjb.
+
+    Args:
+        event (gmprocess.utils.event.ScalarEvent):
+            A ScalarEvent object.
+
+    Returns:
+        tuple: Rrup spline, Rjb spline
+    """
+    # TODO: Make these options configurable in config file.
+    mscale = ps2ff.constants.MagScaling.WC94
+    smech = ps2ff.constants.Mechanism.A
+    aspect = 1.7
+    mindip_deg = 10.0
+    maxdip_deg = 90.0
+    mindip = mindip_deg * np.pi / 180.0
+    maxdip = maxdip_deg * np.pi / 180.0
+    repi, Rjb_hat, Rrup_hat, Rjb_var, Rrup_var = ps2ff.run.single_event_adjustment(
+        event.magnitude,
+        event.depth,
+        ar=aspect,
+        mechanism=smech,
+        mag_scaling=mscale,
+        n_repi=30,
+        min_repi=0.01,
+        max_repi=2000,
+        nxny=7,
+        n_theta=19,
+        n_dip=4,
+        min_dip=mindip,
+        max_dip=maxdip,
+        n_eps=5,
+        trunc=2,
+    )
+    rjb_interp = {
+        "repi": repi,
+        "rjb_hat": Rjb_hat,
+        "rjb_var": Rjb_var,
+    }
+    rrup_interp = {
+        "repi": repi,
+        "rrup_hat": Rrup_hat,
+        "rrup_var": Rrup_var,
+    }
+    return rrup_interp, rjb_interp

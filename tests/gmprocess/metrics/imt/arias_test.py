@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import json
 
 import numpy as np
@@ -11,6 +12,7 @@ from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_arias():
@@ -61,7 +63,19 @@ def test_arias():
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.setProvenance("remove_response", response)
 
-    station = StationSummary.from_stream(stream, ["ARITHMETIC_MEAN"], ["arias"])
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=24.0,
+        lon=120.0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
+    station = StationSummary.from_stream(
+        stream, ["ARITHMETIC_MEAN"], ["arias"], event=event
+    )
     pgms = station.pgms
     Ia = pgms.loc["ARIAS", "ARITHMETIC_MEAN"].Result
     # the target has only one decimal place and is in cm/s/s
@@ -81,10 +95,12 @@ def test_arias():
             "ARITHMETIC_MEAN",
         ],
         ["arias"],
+        event=event,
     )
-    stream = StationSummary.from_stream(stream, ["gmrotd50"], ["arias"])
+    stream = StationSummary.from_stream(stream, ["gmrotd50"], ["arias"], event=event)
     assert stream.pgms.Result.tolist() == []
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_arias()

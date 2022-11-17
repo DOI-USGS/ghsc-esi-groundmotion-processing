@@ -12,6 +12,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.event import ScalarEvent
 
 
 def read_at2(dfile, horient=0.0):
@@ -84,6 +85,11 @@ def read_at2(dfile, horient=0.0):
 
 
 def test_high_freq_sa():
+    # Dummy event
+    event = ScalarEvent()
+    event.fromParams(
+        id="", time="20001-01 00:00:00", lat=0, lon=0, depth=0, magnitude=0
+    )
     t1 = time.time()
     datadir = TEST_DATA_DIR / "high_freq_sa"
     fnames = [
@@ -98,12 +104,11 @@ def test_high_freq_sa():
 
     # shorten window to speed up tests
     for tr in st:
-        # tr.data = tr.data[3000:12000]
         tr.data = tr.data[5320:9260]
 
     periods = [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2]
     imt_list = [f"sa{p}" for p in periods]
-    station = StationSummary.from_stream(st, ["rotd50"], imt_list)
+    station = StationSummary.from_stream(st, ["rotd50"], imt_list, event=event)
     # I believe that units are %g in the following table:
     pgmdf = station.pgms
     imt_strs = [f"SA({p:.3f})" for p in periods]
@@ -126,18 +131,6 @@ def test_high_freq_sa():
         ],
         "test_sa": np.array(test_sa) / 100,
     }
-
-    # For visualization... not testing:
-    if False:
-        import matplotlib.pyplot as plt
-
-        # %matplotlib osx
-
-        plt.loglog(test_data["periods"], test_data["target_sa"], "o-", label="PEER")
-        plt.loglog(test_data["periods"], test_data["test_sa"], "o-", label="gmprocess")
-        plt.xlabel("Period, sec")
-        plt.ylabel("PSA, g")
-        plt.legend()
 
     np.testing.assert_allclose(test_data["target_sa"], test_data["test_sa"], rtol=0.1)
     t2 = time.time()

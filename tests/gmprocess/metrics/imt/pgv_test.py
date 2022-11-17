@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # stdlib imports
-import os.path
+import os
 import warnings
 
 # third party imports
@@ -12,6 +12,7 @@ import numpy as np
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_pgv():
@@ -29,13 +30,23 @@ def test_pgv():
     pgv_target["H1"] = pgv_target["HN1"]
     pgv_target["H2"] = pgv_target["HN2"]
     pgv_target["Z"] = pgv_target["HNZ"]
-
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=0,
+        lon=0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         station_summary = StationSummary.from_stream(
             stream_v2,
             ["channels", "greater_of_two_horizontals", "gmrotd50"],
             ["pgv", "sa1.0", "saincorrect"],
+            event=event,
         )
     pgv_df = station_summary.pgms.loc["PGV"]
     HN1 = pgv_df.loc["H1"].Result
@@ -47,4 +58,5 @@ def test_pgv():
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_pgv()

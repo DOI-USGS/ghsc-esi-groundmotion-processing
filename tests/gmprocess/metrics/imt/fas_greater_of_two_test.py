@@ -12,6 +12,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.config import get_config
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_fas():
@@ -74,12 +75,23 @@ def test_fas():
     freqs = 1 / per
     imts = ["fas" + str(p) for p in per]
     config = get_config()
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=33.0,
+        lon=-120.0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
     summary = StationSummary.from_stream(
         stream,
         ["greater_of_two_horizontals"],
         imts,
         bandwidth=30,
         config=config,
+        event=event,
     )
 
     pgms = summary.pgms

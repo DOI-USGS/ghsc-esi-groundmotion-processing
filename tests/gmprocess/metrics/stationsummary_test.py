@@ -15,14 +15,6 @@ from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.waveform_processing.processing import process_streams
 
 
-def cmp_dicts(adict, bdict):
-    for pgm, channels in adict.items():
-        for channel, avalue in channels.items():
-            bvalue = bdict[pgm][channel]
-            print(f"Comparing {pgm}->{channel}...")
-            np.testing.assert_almost_equal(avalue, bvalue)
-
-
 def test_stationsummary():
     datafiles, event = read_data_dir(
         "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
@@ -30,11 +22,9 @@ def test_stationsummary():
     datafile = datafiles[0]
 
     target_imcs = np.sort(
-        np.asarray(
-            ["GREATER_OF_TWO_HORIZONTALS", "H1", "H2", "Z", "ROTD(50.0)", "ROTD(100.0)"]
-        )
+        ["GREATER_OF_TWO_HORIZONTALS", "H1", "H2", "Z", "ROTD(50.0)", "ROTD(100.0)"]
     )
-    target_imts = np.sort(np.asarray(["SA(1.000)", "PGA", "PGV"]))
+    target_imts = np.sort(["SA(1.000)", "PGA", "PGV"])
     stream = read_geonet(datafile)[0]
     stream_summary = StationSummary.from_stream(
         stream,
@@ -49,23 +39,21 @@ def test_stationsummary():
         stream_summary.get_pgm("PGA", "H1"), 99.3173469387755, decimal=1
     )
     target_available = np.sort(
-        np.asarray(
-            [
-                "greater_of_two_horizontals",
-                "geometric_mean",
-                "arithmetic_mean",
-                "channels",
-                "gmrotd",
-                "rotd",
-                "quadratic_mean",
-                "radial_transverse",
-            ]
-        )
+        [
+            "greater_of_two_horizontals",
+            "geometric_mean",
+            "arithmetic_mean",
+            "channels",
+            "gmrotd",
+            "rotd",
+            "quadratic_mean",
+            "radial_transverse",
+        ]
     )
     imcs = stream_summary.available_imcs
     np.testing.assert_array_equal(np.sort(imcs), target_available)
     target_available = np.sort(
-        np.asarray(["pga", "pgv", "sa", "arias", "fas", "duration", "sorted_duration"])
+        ["pga", "pgv", "sa", "arias", "fas", "duration", "sorted_duration"]
     )
     imts = stream_summary.available_imts
     np.testing.assert_array_equal(np.sort(imts), target_available)
@@ -112,9 +100,9 @@ def test_stationsummary():
         event,
     )
     target_imcs = np.sort(
-        np.asarray(["GEOMETRIC_MEAN", "GREATER_OF_TWO_HORIZONTALS", "H1", "H2", "Z"])
+        ["GEOMETRIC_MEAN", "GREATER_OF_TWO_HORIZONTALS", "H1", "H2", "Z"]
     )
-    target_imts = np.sort(np.asarray(["SA(1.000)", "PGA", "PGV", "FAS(2.000)"]))
+    target_imts = np.sort(["SA(1.000)", "PGA", "PGV", "FAS(2.000)"])
     np.testing.assert_array_equal(np.sort(stream_summary.components), target_imcs)
     np.testing.assert_array_equal(np.sort(stream_summary.imts), target_imts)
 
@@ -123,7 +111,7 @@ def test_stationsummary():
     config = get_config()
     config["metrics"]["sa"]["periods"]["defined_periods"] = [0.3, 1.0]
     stream_summary = StationSummary.from_config(stream, event=event, config=config)
-    target_imcs = np.sort(np.asarray(["H1", "H2", "Z"]))
+    target_imcs = np.sort(["H1", "H2", "Z"])
     assert stream_summary.smoothing == "konno_ohmachi"
     assert stream_summary.bandwidth == 20.0
     assert stream_summary.damping == 0.05
@@ -139,7 +127,7 @@ def test_stationsummary():
 
     imc_dict = stream_summary.get_imc_dict("H2")
     assert list(imc_dict.keys()) == ["H2"]
-    assert len(imc_dict["H2"]) == 29
+    assert len(imc_dict["H2"]) == 38
 
     sa_array = stream_summary.get_sa_arrays("H1")
     assert list(sa_array.keys()) == ["H1"]
@@ -171,6 +159,7 @@ def test_allow_nans():
         imts=["FAS(4.0)"],
         bandwidth=300,
         allow_nans=True,
+        event=event,
     )
     assert np.isnan(ss.pgms.Result).all()
 
@@ -180,6 +169,7 @@ def test_allow_nans():
         imts=["FAS(4.0)"],
         bandwidth=189,
         allow_nans=False,
+        event=event,
     )
     assert ~np.isnan(ss.pgms.Result).all()
 

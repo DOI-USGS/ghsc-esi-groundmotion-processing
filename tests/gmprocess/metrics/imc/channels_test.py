@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# stdlib imports
-import os.path
-
 # third party imports
 import numpy as np
 
@@ -14,10 +11,14 @@ from gmprocess.utils.test_utils import read_data_dir
 
 
 def test_channels():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
+    datafiles, event = read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
+    )
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
-    station_summary = StationSummary.from_stream(stream_v2, ["channels"], ["pga"])
+    station_summary = StationSummary.from_stream(
+        stream_v2, ["channels"], ["pga"], event=event
+    )
     pgms = station_summary.pgms
     np.testing.assert_almost_equal(
         pgms.loc["PGA", "H2"].Result, 81.28979591836733, decimal=1
