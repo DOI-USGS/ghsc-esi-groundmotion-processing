@@ -11,28 +11,32 @@ from gmprocess.metrics.station_summary import StationSummary
 
 
 def test_gmrotd():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
+    datafiles, event = read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
+    )
     datafile_v2 = datafiles[0]
 
     stream_v2 = read_geonet(datafile_v2)[0]
     station_summary = StationSummary.from_stream(
-        stream_v2, ["gmrotd0", "gmrotd50", "gmrotd100"], ["pga"]
+        stream_v2, ["gmrotd0", "gmrotd50", "gmrotd100"], ["pga"], event=event
     )
     pgms = station_summary.pgms
     assert "GMROTD(50.0)" in pgms.index.get_level_values(1)
 
 
 def test_exceptions():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
+    datafiles, event = read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
+    )
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
     stream1 = stream_v2.select(channel="HN1")
-    pgms = StationSummary.from_stream(stream1, ["gmrotd50"], ["pga"]).pgms
+    pgms = StationSummary.from_stream(stream1, ["gmrotd50"], ["pga"], event=event).pgms
     assert np.isnan(pgms.Result.iloc[0])
 
     for trace in stream_v2:
         stream1.append(trace)
-    pgms = StationSummary.from_stream(stream1, ["gmrotd50"], ["pga"]).pgms
+    pgms = StationSummary.from_stream(stream1, ["gmrotd50"], ["pga"], event=event).pgms
     assert np.isnan(pgms.Result.iloc[0])
 
 

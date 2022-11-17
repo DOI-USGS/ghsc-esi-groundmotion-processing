@@ -25,7 +25,7 @@ def test_get_peak_time():
     event = ScalarEvent()
     event.fromParams(
         id="us1000778i",
-        lat=42.6925,
+        lat=-42.6925,
         lon=173.021944,
         depth=0,
         magnitude=5.0,

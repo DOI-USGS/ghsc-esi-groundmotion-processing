@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # stdlib imports
+import os
 import warnings
 
 # third party imports
@@ -11,6 +12,7 @@ import numpy as np
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_sa():
@@ -22,6 +24,16 @@ def test_sa():
         vtrace = trace.copy()
         vtrace.integrate()
         sa_target[vtrace.stats["channel"]] = np.abs(vtrace.max())
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=0,
+        lon=0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         station_summary = StationSummary.from_stream(
@@ -36,6 +48,7 @@ def test_sa():
                 "channels",
             ],
             ["sa1.0", "sa0.01", "saincorrect"],
+            event=event,
         )
     pgms = station_summary.pgms
     assert "SA(1.000)" in pgms.index.get_level_values(0)
@@ -60,4 +73,5 @@ def test_sa():
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_sa()

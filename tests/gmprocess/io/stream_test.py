@@ -28,9 +28,7 @@ def test():
     assert grouped_streams[0].count() == 3
 
     # Test for channel grouping with more file types
-    datafiles, _ = read_data_dir(
-        "geonet", "us1000778i", "20161113_110313_THZ_20.V2A"
-    )
+    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110313_THZ_20.V2A")
     datafile = datafiles[0]
     streams += read_geonet(datafile)
     grouped_streams = StreamCollection(streams)
@@ -148,14 +146,23 @@ def test_to_dataframe():
         [
             "ELEVATION",
             "EPICENTRAL_DISTANCE",
+            "GC2_RX_DISTANCE",
+            "GC2_RY0_DISTANCE",
+            "GC2_RY_DISTANCE",
+            "GC2_T_DISTANCE",
+            "GC2_U_DISTANCE",
             "GREATER_OF_TWO_HORIZONTALS",
             "H1",
             "H2",
             "HYPOCENTRAL_DISTANCE",
+            "JOYNER_BOORE_DISTANCE",
+            "JOYNER_BOORE_VAR_DISTANCE",
             "LAT",
             "LON",
             "NAME",
             "NETID",
+            "RUPTURE_DISTANCE",
+            "RUPTURE_VAR_DISTANCE",
             "SOURCE",
             "STATION",
             "Z",
@@ -166,119 +173,6 @@ def test_to_dataframe():
     header2 = set(df1.columns.levels[1])
     assert header1 == cmp1
     assert header2 == cmp2
-    # idx = 0
-    # for s in df1.columns.levels:
-    #     for col in s:
-    #         try:
-    #             assert col == target_levels[idx]
-    #         except Exception as e:
-    #             x = 1
-    #         idx += 1
-
-    # This was previously not being tested
-    """imts = ['PGA', 'PGV', 'SA(0.3)', 'SA(1.0)', 'SA(3.0)']
-    imcs = ['GREATER_OF_TWO_HORIZONTALS', 'CHANNELS']
-    homedir = os.path.dirname(os.path.abspath(__file__))
-
-    datapath = os.path.join('data', 'testdata', 'knet')
-    knet_dir = pkg_resources.resource_filename('gmprocess', datapath)
-    # make dataframe
-    knet_dataframe = directory_to_dataframe(knet_dir)
-
-    # read and group streams
-    streams = []
-    for filepath in glob.glob(os.path.join(knet_dir, "*")):
-        streams += read_data(filepath)
-    grouped_streams = StreamCollection(streams)
-    for idx, stream in enumerate(grouped_streams):
-        stream = process_streams(stream)
-        # set meta_data
-        station = stream[0].stats['station']
-        name_str = stream[0].stats['standard']['station_name']
-        source = stream[0].stats.standard['source']
-        network = stream[0].stats['network']
-        latitude = stream[0].stats['coordinates']['latitude']
-        longitude = stream[0].stats['coordinates']['longitude']
-        # metadata from the dataframe
-        knet_station = knet_dataframe.iloc[
-            idx, knet_dataframe.columns.get_level_values(0) == 'STATION'][0]
-        knet_name_str = knet_dataframe.iloc[
-            idx, knet_dataframe.columns.get_level_values(0) == 'NAME'][0]
-        knet_source = knet_dataframe.iloc[
-            idx, knet_dataframe.columns.get_level_values(0) == 'SOURCE'][0]
-        knet_network = knet_dataframe.iloc[
-            idx, knet_dataframe.columns.get_level_values(0) == 'NETID'][0]
-        knet_latitude = knet_dataframe.iloc[
-            idx, knet_dataframe.columns.get_level_values(0) == 'LAT'][0]
-        knet_longitude = knet_dataframe.iloc[
-            idx, knet_dataframe.columns.get_level_values(0) == 'LON'][0]
-        assert knet_station == station
-        assert knet_name_str == name_str
-        assert knet_source == source
-        assert knet_network == network
-        assert knet_latitude == latitude
-        assert knet_longitude == longitude
-        stream_summary = StationSummary.from_stream(stream, imcs, imts)
-        pgms = stream_summary.pgms
-        for imt in pgms:
-            for imc in pgms[imt]:
-                multi_idx = np.logical_and(
-                    knet_dataframe.columns.get_level_values(1) == imt,
-                    knet_dataframe.columns.get_level_values(0) == imc)
-                dataframe_value = knet_dataframe.iloc[idx, multi_idx].to_list()[
-                    0]
-                streamsummary_value = pgms[imt][imc]
-                assert dataframe_value == streamsummary_value
-
-    datapath = os.path.join('data', 'testdata', 'cwb')
-    cwb_dir = pkg_resources.resource_filename('gmprocess', datapath)
-    # make dataframe
-    cwb_dataframe = directory_to_dataframe(cwb_dir, lat=24.14, lon=121)
-
-    # read and group streams
-    streams = []
-    for filepath in glob.glob(os.path.join(cwb_dir, "*")):
-        streams += read_data(filepath)
-    grouped_streams = StreamCollection(streams)
-    for idx, stream in enumerate(grouped_streams):
-        stream = process_streams(stream)
-        # set meta_data
-        station = stream[0].stats['station']
-        name_str = stream[0].stats['standard']['station_name']
-        source = stream[0].stats.standard['source']
-        network = stream[0].stats['network']
-        latitude = stream[0].stats['coordinates']['latitude']
-        longitude = stream[0].stats['coordinates']['longitude']
-        # metadata from the dataframe
-        cwb_station = cwb_dataframe.iloc[
-            idx, cwb_dataframe.columns.get_level_values(0) == 'STATION'][0]
-        cwb_name_str = cwb_dataframe.iloc[
-            idx, cwb_dataframe.columns.get_level_values(0) == 'NAME'][0]
-        cwb_source = cwb_dataframe.iloc[
-            idx, cwb_dataframe.columns.get_level_values(0) == 'SOURCE'][0]
-        cwb_network = cwb_dataframe.iloc[
-            idx, cwb_dataframe.columns.get_level_values(0) == 'NETID'][0]
-        cwb_latitude = cwb_dataframe.iloc[
-            idx, cwb_dataframe.columns.get_level_values(0) == 'LAT'][0]
-        cwb_longitude = cwb_dataframe.iloc[
-            idx, cwb_dataframe.columns.get_level_values(0) == 'LON'][0]
-        assert cwb_station == station
-        assert cwb_name_str == name_str
-        assert cwb_source == source
-        assert cwb_network == network
-        assert cwb_latitude == latitude
-        assert cwb_longitude == longitude
-        stream_summary = StationSummary.from_stream(stream, imcs, imts)
-        pgms = stream_summary.pgms
-        for imt in pgms:
-            for imc in pgms[imt]:
-                multi_idx = np.logical_and(
-                    cwb_dataframe.columns.get_level_values(1) == imt,
-                    cwb_dataframe.columns.get_level_values(0) == imc)
-                dataframe_value = cwb_dataframe.iloc[idx, multi_idx].to_list()[
-                    0]
-                streamsummary_value = pgms[imt][imc]
-                assert dataframe_value == streamsummary_value"""
 
 
 if __name__ == "__main__":

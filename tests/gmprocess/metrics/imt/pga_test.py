@@ -3,6 +3,7 @@
 
 # stdlib imports
 import warnings
+import os
 
 # third party imports
 import numpy as np
@@ -11,12 +12,23 @@ import numpy as np
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_pga():
     datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=0,
+        lon=0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         station_summary = StationSummary.from_stream(
@@ -32,6 +44,7 @@ def test_pga():
                 "arithmetic_mean",
             ],
             ["pga", "sa1.0", "saincorrect"],
+            event=event,
         )
     pga_df = station_summary.pgms.loc["PGA"]
     AM = pga_df.loc["ARITHMETIC_MEAN"].Result
@@ -58,4 +71,5 @@ def test_pga():
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_pga()

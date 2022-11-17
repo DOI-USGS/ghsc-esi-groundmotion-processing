@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 
 import io
 import shutil
@@ -32,7 +33,7 @@ def test_compute_station_metrics(script_runner):
 
         # No new files created, check stderr
         assert "Added station metrics to workspace files with" in ret.stderr
-        assert "Calculating station metrics for CI.CCC.HN" in ret.stderr
+        assert "Computing station metrics" in ret.stderr
 
         # ret = script_runner.run("gmrecords", "-o", "compute_station_metrics")
         # assert ret.success
@@ -49,4 +50,5 @@ def test_compute_station_metrics(script_runner):
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_compute_station_metrics()

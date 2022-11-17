@@ -9,6 +9,7 @@ from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_rotd():
@@ -24,6 +25,11 @@ def test_rotd():
             "channel": "HN1",
             "delta": 0.01,
             "npts": 24001,
+            "coordinates": {
+                "latitude": 44.5,
+                "longitude": -122.3,
+                "elevation": 0.0,
+            },
             "standard": {
                 "corner_frequency": np.nan,
                 "station_name": "",
@@ -53,6 +59,11 @@ def test_rotd():
             "channel": "HN2",
             "delta": 0.01,
             "npts": 24001,
+            "coordinates": {
+                "latitude": 44.5,
+                "longitude": -122.3,
+                "elevation": 0.0,
+            },
             "standard": {
                 "corner_frequency": np.nan,
                 "station_name": "",
@@ -87,8 +98,19 @@ def test_rotd():
     target_pgv50 = 6.2243050413999645
     target_sa0350 = 10.091461811808575
     target_sa3050 = 1.1232860465386469
+    # Dummy event
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=44.0,
+        lon=-123.0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
     station = StationSummary.from_stream(
-        st, ["rotd50"], ["pga", "pgv", "sa0.3", "sa1.0", "sa3.0"]
+        st, ["rotd50"], ["pga", "pgv", "sa0.3", "sa1.0", "sa3.0"], event=event
     )
 
     pgms = station.pgms
@@ -105,11 +127,13 @@ def test_rotd():
 
 
 def test_exceptions():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
+    datafiles, event = read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
+    )
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
     stream1 = stream_v2.select(channel="HN1")
-    pgms = StationSummary.from_stream(stream1, ["rotd50"], ["pga"]).pgms
+    pgms = StationSummary.from_stream(stream1, ["rotd50"], ["pga"], event=event).pgms
     assert np.isnan(pgms.loc["PGA", "ROTD(50.0)"].Result)
 
 

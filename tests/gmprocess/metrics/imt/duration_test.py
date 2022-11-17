@@ -12,6 +12,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.reduction.duration import Duration
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.event import ScalarEvent
 
 
 def test_duration():
@@ -61,8 +62,19 @@ def test_duration():
     for tr in stream:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.setProvenance("remove_response", response)
-
-    station = StationSummary.from_stream(stream, ["ARITHMETIC_MEAN"], ["duration5-95"])
+    event = ScalarEvent()
+    event.fromParams(
+        id="",
+        lat=24.0,
+        lon=120.0,
+        depth=0,
+        magnitude=0.0,
+        mag_type="",
+        time="2000-01-01 00:00:00",
+    )
+    station = StationSummary.from_stream(
+        stream, ["ARITHMETIC_MEAN"], ["duration5-95"], event=event
+    )
     pgms = station.pgms
     d595 = pgms.loc["DURATION5-95", "ARITHMETIC_MEAN"].Result
 
@@ -82,6 +94,7 @@ def test_duration():
             "geometric_mean",
         ],
         ["duration5-95"],
+        event=event,
     )
     # Currently disallowed
     assert "gmrotd" not in station.pgms.index.get_level_values(1)
