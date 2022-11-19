@@ -65,7 +65,6 @@ doc = [
     "nbsphinx",
     "recommonmark",
     "sphinx-autoapi",
-    "setuptools_scm",
     "sphinx-copybutton",
     "sphinx-inline-tabs",
     "sphinxcontrib-programoutput",
@@ -88,7 +87,6 @@ requires = [
   "setuptools>=42",
   "wheel",
   "setuptools_scm[toml]>=3.4",
-  "Cython>=0.29.23",
   "numpy",
 ]
 build-backend = "setuptools.build_meta"
