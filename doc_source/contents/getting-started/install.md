@@ -1,36 +1,36 @@
 # Installation
 
 :::{important}
-Previously we used `conda` to manage dependencies but that was creating some difficulties, so we are now relying on `pip` as much as possible.
-
 Our development team is not proficient with Windows systems, so our ability to support Windows installs is limited.
 We have done our best to provide instructions to support Windows build.
 :::
 
-:::{danger}
-There is an old gmprocess package available via conda.
-Please do not install it!
-It is very out of date and won't work.
-:::
 
-We recommend installing gmprocess into a virtual environment to isolate your code from other projects that might create conflicts.
+We recommend installing gmprocess into a virtual environment to isolate your code from other projects that might create conflicts in the dependencies.
 You can use the Python3 [`venv`](https://docs.python.org/3/library/venv.html) module or [conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) to create and manage virtual environments.
 Conda generally uses more space on your filesystem, but it can install more dependencies.
 
-Releases gmprocess can be installed from pypi or you can install from the development
-veresion of the code from source. In either case, it is a good idea to review the 
-[changelog](../developer/changelog) to keep track of any changes that you should be
-aware of. 
+Releases of gmprocess are available from [pypi](https://pypi.org/project/gmprocess/) and [conda forge](https://anaconda.org/conda-forge/gmprocess). 
+The development veresion of gmprocess can be installed by cloning this repository. 
+In either case, it is a good idea to review the [changelog](../developer/changelog) to keep track of any changes that you should be aware of. 
 
-## Installing pypi releases
+## Installing gmprocess releases
+
+### From pypi
 
 ```
 pip install gmprocess
 ```
 
-Note that pypi wheels for the `fiona` dependency are not yet available for Windows and
-macOS arm64 architecture. For these platforms, we recommend installing `fiona` with
-conda.
+Note that pypi wheels for the `fiona` dependency are not available for Windows and macOS arm64 architecture at the time this writing. 
+For these platforms, we recommend installing with conda because it can provide `fiona` builds.
+
+
+### From conda
+
+```
+conda install -c conda-forge gmprocess
+```
 
 ## Installing from source
 
