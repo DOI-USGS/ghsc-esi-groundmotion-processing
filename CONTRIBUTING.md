@@ -79,17 +79,16 @@ Common reasons to rebase include:
 2. Update version in `pyproject.toml`.
 3. Add new section to `code.json`; update "metadataLastUpdated" date and the urls that include the version.
 4. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
-5. Rebuild docs (see instructions below for more details).
-6. Create tag locally with
+5. Create tag locally with
    ```
    git tag v1.2.1
    ```
-7. Push tag to upstream/main
+6. Push tag to upstream/main
    ```
    git push origin v1.2.1
    ```
-8. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
-9. Copy/paste the relevant part of the changelog into the "describe this release" section.
+7. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
+8. Copy/paste the relevant part of the changelog into the "describe this release" section.
 
 Note that the command line program `repotag` from the `esi-utils-io` repository will
 help automate these steps. 
@@ -116,10 +115,9 @@ Note that the script includes the follow arguments:
  - `clean_data` - Remove all temporary data files generated when building the documentation.
  - `clean_all` - Remove all temporary data files and generated documentation.
 
-The docs can then be previewed by opening `docs/index.html` in a browser.
 
 Notes:
- - Never edit the contents of `docs`, only edit the files in `doc_source`.
+ - Never commit the built documentation files.
  - Remember that the notebooks run gmprocess code when you build the docs, 
    so please be sure to check that the tutorials ran sucessfully. 
  - The result of the tutorials will depend on your config file options, 
