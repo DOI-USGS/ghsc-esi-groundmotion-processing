@@ -189,7 +189,7 @@ def compute_snr_trace(tr, bandwidth=20.0):
         dur_noise = noise.stats.endtime - noise.stats.starttime
         d595 = Duration([signal], interval=[5.0, 95.0]).result
         dur_signal = d595[signal.stats.channel]
-        smooth_signal_spectrum = smooth_signal_spectrum / np.sqrt(dur_noise)
+        smooth_noise_spectrum = smooth_noise_spectrum / np.sqrt(dur_noise)
         smooth_signal_spectrum = smooth_signal_spectrum / np.sqrt(dur_signal)
 
         snr = (smooth_signal_spectrum - smooth_noise_spectrum) / smooth_noise_spectrum

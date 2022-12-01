@@ -126,12 +126,13 @@ def test_travel_time():
         streams += read_data(datafile)
 
     cmps = {
-        "NZ.HSES.HN": 42.126519010847467,
-        "NZ.WTMC.HN": 40.7867451470294,
-        "NZ.THZ.HN": 42.016420026730088,
+        "NZ.HSES.HN": 42.12651866051254,
+        "NZ.WTMC.HN": 40.78674514049763,
+        "NZ.THZ.HN": 42.016659723287404,
     }
     for stream in streams:
         minloc, _ = phase.pick_travel(stream, event)
+        # print(stream, minloc)
         np.testing.assert_almost_equal(minloc, cmps[stream.get_id()])
 
 
