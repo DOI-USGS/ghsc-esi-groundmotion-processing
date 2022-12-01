@@ -71,16 +71,18 @@ def test_corner_frequencies():
             cfdict = stream[0].getParameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
-    np.testing.assert_allclose(np.sort(hp), [0.02437835, 0.06223441], atol=1e-5)
+    np.testing.assert_allclose(
+        np.sort(hp), [0.02431315, 0.02437835, 0.02513194], atol=1e-5
+    )
 
     st = processed_streams.select(station="THZ")[0]
     lps = [tr.getParameter("corner_frequencies")["lowpass"] for tr in st]
     hps = [tr.getParameter("corner_frequencies")["highpass"] for tr in st]
     np.testing.assert_allclose(
-        np.sort(lps), [21.76376408, 21.76376408, 42.04482076], atol=1e-6
+        np.sort(lps), [57.43491775, 57.43491775, 100.0], atol=1e-6
     )
     np.testing.assert_allclose(
-        np.sort(hps), [0.02437835, 0.02437835, 0.0345267], atol=1e-5
+        np.sort(hps), [0.02437835, 0.02437835, 0.02437835], atol=1e-5
     )
 
     lp = []
@@ -94,17 +96,17 @@ def test_corner_frequencies():
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
 
-    np.testing.assert_allclose(np.sort(hp), [0.02437835, 0.06223441], atol=1e-5)
+    np.testing.assert_allclose(
+        np.sort(hp), [0.02431315, 0.02437835, 0.02513194], atol=1e-5
+    )
 
     st = processed_streams.select(station="HSES")[0]
     lps = [tr.getParameter("corner_frequencies")["lowpass"] for tr in st]
     hps = [tr.getParameter("corner_frequencies")["highpass"] for tr in st]
 
+    np.testing.assert_allclose(np.sort(lps), [100.0, 100.0, 100.0], atol=1e-6)
     np.testing.assert_allclose(
-        np.sort(lps), [35.35533906, 36.6021424, 36.6021424], atol=1e-6
-    )
-    np.testing.assert_allclose(
-        np.sort(hps), [0.04882812, 0.06223441, 0.06223441], atol=1e-5
+        np.sort(hps), [0.02431315, 0.02431315, 0.02431315], atol=1e-5
     )
 
 
