@@ -1,0 +1,1177 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: GET
+    uri: https://seis.gsi.gov.il/fdsnws/dataselect/1/application.wadl
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+VUTY/aMBA9w6+w0nPjBNhDUcJKlapedtVK7KFXbzxs3MZO1p4Q+Pe1nUDCEkQX
+        taceDJqPN+/FnpnkficLsgVtRKnSIA6j4H41TVhVFSJjaJ3EJiiz3BmRBjlitaS0aZqwmYelfqGz
+        KIrpj8eHdZaDZB+FMshUBsF0MrGIpfHuh7It1RYwpxXW9bMUxtHThvHC/4Q7w32Jjppfpz6m96mu
+        EIdt+JNtWagAHeITjWbBajpJNJiy1hkY8swMpAHdcKMaQzlDaxeQIY1dYp9JKoZ5GrzWoPc+Mkkk
+        YF5ykmvYpMEHH/n65SmgF6Pfv627cEIPdS+SsBrzf03UvfwpjWLS3ogj8G4PqkploDWdXVkXKGw7
+        RAIX7GlfWRDCDmlVMKE6cS1/j05oS3Jd2qAHQ/eWf03joDC1LfNeob1hnHWmhwjePeBBndVibYNt
+        3YppJrt8Oy0aUUgIiMF9AYf2IuiV2s5f2oaEJ5dBz+Gg+O1gOxFNqX9dBhvUQr2MQU17qbdAi24X
+        3ILNcqYUFLdAX2tWCNy/hXLYsLrANPh8aKOy8u2yZUUNzk1H/Y8HDupJzvk2pZYMryrtBUihhAHg
+        4zqO0Su0qnT76zKtUDjgnEWLcToXGP/wxTEy0OAm4tjgx0Ekrktq46pF3ez+2UxuFQ/dNg5l/8mn
+        wznGsSCLKLIntmduj7Vj+x8vyJ3130Xzqxre7q4TzsE6OB15v2n7mffmf3EPCR2IXU1/AzY3H7JK
+        CAAA
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '573'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:00 GMT
+      Last-Modified:
+      - Mon, 10 Oct 2022 13:26:49 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044b900f355c5c2cdbe13e96d86ae635875c4717aea76ca9524ec918c04408ab2e90609efd4c28cfd9489b5eb006e788079;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: GET
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query?starttime=2008-04-01T17%3A49%3A30.000000&endtime=2008-04-01T17%3A57%3A00.000000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=32.07635498&longitude=35.47344589&minradius=0.0&maxradius=3.0&format=text
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '2147'
+      Content-Type:
+      - text/plain
+      Date:
+      - Thu, 22 Dec 2022 00:22:02 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0444f71b9b41629a2f8dd2d0febeb271268a314a6559c12a5f4ec4ae0f9974f1e644545a7bc64fdac46b26970443110b248;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'AA ASH -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ASH -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ASH -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA EIL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA EIL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA EIL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA GOS -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA GOS -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA GOS -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HAR -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HAR -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HAR -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HATZ -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HATZ -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HATZ -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HIFA -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HIFA -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HIFA -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HLN -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HLN -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HLN -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KAZ -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KAZ -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KAZ -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KIT -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KIT -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KIT -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA LOD -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA LOD -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA LOD -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAN -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAN -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAN -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAS -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAS -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAS -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MDBI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MDBI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MDBI -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MEF -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MEF -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MEF -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA NTY -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA NTY -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA NTY -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROD -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROD -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROD -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '3408'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/dataselect/1/query
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Date:
+      - Thu, 22 Dec 2022 00:22:04 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0444bbfedeeea2246ae29781f9f040b8bd3ef6ac87cbe84e357f7eaa3c68dbd25641fc7825c8f89a5a1670ac103954d249f;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: 'LR NAQL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR NAQL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR NAQL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QRWL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QRWL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QRWL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QSB -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QSB -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QSB -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR RCY -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR RCY -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR RCY -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR SHBL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR SHBL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR SHBL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR ZAHL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR ZAHL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR ZAHL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '1235'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/dataselect/1/query
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Date:
+      - Thu, 22 Dec 2022 00:22:06 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0448b9e8c1ef49e29704ff877476a364ae80a7185b42ad03c16ff25b3bd67d5201e0203f84f1891c6257a20ec54af175462;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: 'level=response
+
+      IS EIL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS EIL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS EIL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '218'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1Z32+jOBB+v78C8XT3EGwMIaFyWeWStBcpTaOSVqu8scRJ0YLJgWmv/etvbCC/
+        q/a6Pd1eRYUUMzP+PDOesT8V+uWvJNYeWJZHKT/XTQPrGuNhuoj46ly/nV20uvoXj14M/IkvAgFG
+        X6/GGszh+bl+L8T6DKHHx0djuci5kWYrBCqUl5bI1LU8vGdJcLfFJ7pH/bTIQub5LMr7aTKlqBJQ
+        n/EFy7xLfwSyckz7GQsEW3gEE9IySYuQGcZnhJyZlmFbNsbdOUW1EZ0w8Zhm3zWIgJ3rIx88EEEm
+        BqCF1d0ubmETHgmhnrmuZSwXWRTCdBlhAXGla8bBzQHLwyxay1C8UZ4FLNaky0kUatUyFO3a0CpD
+        1eLD0fhHVh8DligWzCOu4XSIjdsUbWR0nPJVObRsw20T7Lqg3gjpMGYPyhmP2DBx+0r9SIB+EiTM
+        G0ZxILRZwTmLKVIiyLvSq4SCvXTdO+V5lfPahPbvAwlTxf77H5P3x67FaaiQ+wrrX8zFgK3FvYfl
+        NsoB7T1HSVFK6iEdRGtlAT/UD5J1zG5kwDbIdl53VDcSHDJcJN9YVopzZb4vqQ1YmPJF7pkbfSXY
+        ha8g+5CY74MsWgrp0c6bbJw8zWRCVSeNFud6KULQNibuYoK7Fia24eB2F5JoOpDV2dOaebc8eAig
+        Dr7FjCIl2av7PfVesV/B5sT7+lKkWheWBqBABON0tWL7nklxrMQnvLPbpmHaOvLoDcvXKc/BoRGH
+        OikSxoVEjkT0EIknj94FccG8Nq7/KCol9CJjfxZwij152MCEou07QK0LccsjkVc9cIX8uvR3w7tj
+        kF1YRYu4dsUEnF/aFMIoN+cgE2gX9LoQByv0r28ns80iaM8AvRAa9MOKaVwVBHQPbNY0haKZsyzN
+        93JZJ2namx8n08G2bZgdXeOwtDwNDTiTDOhNQ/ajgTEc97h89P8kNXenszJ9nmUBz5csuyh4KJFU
+        YY5703GvP9R+vekNRr2Jj/xh/3oy+I2iFybQSZolQRw9q3a/CEIBVelglSPZjye0B1MOCukFJZX7
+        stmtti5rN4hlj6pfOkqCVcSD7EmKti8UyXkHs51/OlsWxmY2rme3wGGrg7F9jFKrTGcfTgIdwJlv
+        gHs7GtmgEWhyy3o1wBMY1gbDtKB6T4VnOx2DuK8i2a8ivQyEtt1Y9eplEPH6RDLbbzuL0M7McnzY
+        +DJj/ZQtl1EYwRGRn2jSbQu9/xTqL0+2z2B0OZr1xnDTnNaDYs+3AQujpLpZlTM79yOu/Nu9MquW
+        g5uvbr7r5TJn6nKrRoAZB0/lDS0HkI0sY8oFdQVu36TFdvmjPbFN17ZO7sqrW4K2FxGqWM4x3Zl/
+        JrrTcj8T4bHbXccwzZ+U8Fiu2zHchu98BN+xuw6QR3LEd+YN32n4TsN3Gr7T8J2P4jvD/zPfcT/z
+        /3c6mHQN8rPSHccxO3AbN3znI/hOh1hwYh/znWHDdxq+0/Cdhu80fOe9fAdV3/JgVH3rg9H+V1Dv
+        l78BagzWfT0dAAA=
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1151'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:13 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044502c1bd5f84036a018327ebca7c7940546b1b1f400befab666d8267ecf4f79935001e970ffc6a9af31ad0078d9525eb0;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS HRFI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS HRFI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS HRFI -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '221'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1ZXU/jOBR9318R5WlX2sZO0oYWmYy6KYVKpVSkoBFvntQt0SRO13Fg4dfvtZP0
+        iyJYhtXOoqBK2Pf6Hvte+9hHCvnyV5oY90zkccZPTNvCpsF4lM1jvjwxr2fDVtf84pPhIJyEkkoY
+        9PVibEAMz0/MOylXxwg9PDxYi3nOrUwsEbhQXo5Etmnk0R1L6c0G3zF9EmaFiJgfsjgPsnRKUGUg
+        IeNzJvyzcAS2sk0Cwahkc9/BjtOynZbjzDA+dpxju231XNd2nFuC6kFkwuRDJr4bkAE7MUchrEBS
+        IQfghdl7XdzCNvwUhP7dmoZguRRxBOEqwwLyylaMwzIHLI9EvFKp+KNcUJYYaslpHBnVNARtjyFV
+        harJz6+Gox+Zfgxgspgz38UWdj3XcQla28g448vK3QH3EXY8cK+N5DRh93o1ftuDwE2XhLEE/4Sm
+        zD+nIl78bpTJEaRtJMgKLsWjvzbXBtgTHaqLDVAqK/9QUtV+1ENIcEc5h+qVdfnj/Pb9ZTGSLNLI
+        gcb6F8s0YCt552O1xapB+k9xWpSWukkG8cpv9dQYaJCQpquEXamUHbBtdbdcVwoeyl+k35gozbke
+        vmupB7Ao4/Pct9f+yrANX0EGUJrvA9hQqda41VO0yjOhSqp5NpqfmKUJAals3MUO7rrY7Vluu9N2
+        u9YRlHX2uGL+Naf3NE7ot4QRpC07pNhx7zDhAnYn2fWXJs1rmBmAqKTjbLlkuwtT5kSbDyzO6XQt
+        z0Q+uWL5KuM5rGfE4ZwUKeNSAccyvo8lHNUbmhTM9+wO1n8ElQYyFOzPAi64Rx9Oi0PQpg9Iq0Je
+        81jmFTsuUFhzYju5GwalhUmMmBsXTMLVZkwhiXJn9uqAtkEvC7k3Q3B5PZmtJ0E7A9ALmQEdlszg
+        +jQAeWCrphmcmFsmsnynknWNpv3bA6XsdDyraxocZlb3pKVuKwuoaSk6WhjDS4DLn/mflObmcFWm
+        TzNBeb5gYljwSCHpYznuT8f94NT49ao/GPUnIQpPg8vJ4DeCXgggk0ykNImfNNuHNJJwJj2sa6TI
+        eMC7F7J3kF5wErUv693qmOro0kQRVP8no5QuY07hdgXTpkOQituL9v5ptDoY62hcR7ewvghx+zlK
+        7bK9XTgFtAdnvwHu7WjOGs3p2JbrvprgAQx3jWG7cHoPpdf2jiyn9ypS+1Wkl4HQho0VV89ozOsL
+        Sd1Hb7mL0FZk2d4nvqpYkLHFIo5iuCLyAyTdUOj9t1CwOEifwehsNOuP4Zk57FeiYXttAxbFafWw
+        6sXsvZX7NlJxDt69mn2Xi0XO9NNWtQA0oY/lC60aUA4hmF6DfgA3PTViM/+zTWnbLz0Rr+4J2jxE
+        qFI5z+XO5DPJnU8ldnpd17Ltn1Xt9OARtnEjdz5A7ni4DbV0nuudSaN3Gr3T6J1G7zR658P0zun/
+        We/0PrPg8VyvY9mdn1TweK4SPO1G8HyE4GnbPcv2ngue00bwNIKnETyN4GkEz7sFD6o+9EGr+hAI
+        rd1PpP4vfwPC8GVDWh0AAA==
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1156'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:14 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044bf7bce666a281c6e0d5615b6c8c40a1368c4281754930ee8ce926c7da3ffc1a5e3ebe5de6293012b3d8841e787b6f6e7;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMB2 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3008'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:16 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0447660e8e2896bffb700ea67fff70e021e3c1643d029f879a597b3c2f186983a147eae033e0705056a00a66cd4a44a810a;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMB3 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3021'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:17 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044f6fe43570c7f872a8b9733ade470c6bf6faa7aef45057fca899fb7bec78b0c84a3cb25bb27d9f39e5846f71d81f1d321;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMC4 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+        UgAA
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3024'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:19 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044a1666f35c6450affc3dc266416ca4de33c89261e4b28812df64e1414cf35ee3139baa9893caac89072e3396e4c632289;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMC5 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3021'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:20 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0448284ac2d00c1bb90ce3d3fd734b66ed2578866a4bf08c2356eda3ed9bada1e489dfc74b9e92f7f591fede2304567a640;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMC7 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.1-x86_64-i386-64bit, Python 3.10.8)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+        AA==
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3022'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 22 Dec 2022 00:22:22 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044270f217b2e6887e1bc830c796581a65799fbbc8a973db6cab9e3c5222f340c75c4169e6ecd38c5a6cdcbf013d77cfdec;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+  response:
+    body:
+      string: 'Error 404: Not Found
+
+
+        Not Found
+
+
+        Usage details are available from https://earthquake.usgs.gov/fdsnws/event/1
+
+
+        Request:
+
+        /fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+
+
+        Request Submitted:
+
+        2022-12-22T00:22:23+00:00
+
+
+        Service version:
+
+        1.13.6'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '250'
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Date:
+      - Thu, 22 Dec 2022 00:22:23 GMT
+      Expires:
+      - Thu, 22 Dec 2022 00:23:23 GMT
+      Last-Modified:
+      - Thu, 22 Dec 2022 00:22:23 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 776fbf9a4fc4b393f157f9f75dd29a06.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - Tw5QREHJvUvFjYpfDdsAqCI2I11IfIMDWXiVe04l1wTBO0Diu_ARaQ==
+      X-Amz-Cf-Pop:
+      - IAD55-P5
+      X-Cache:
+      - Error from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+  response:
+    body:
+      string: 'Error 404: Not Found
+
+
+        Not Found
+
+
+        Usage details are available from https://earthquake.usgs.gov/fdsnws/event/1
+
+
+        Request:
+
+        /fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+
+
+        Request Submitted:
+
+        2022-12-22T00:22:23+00:00
+
+
+        Service version:
+
+        1.13.6'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '250'
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Date:
+      - Thu, 22 Dec 2022 00:22:23 GMT
+      Expires:
+      - Thu, 22 Dec 2022 00:23:23 GMT
+      Last-Modified:
+      - Thu, 22 Dec 2022 00:22:23 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 ccabfbceff64477665e33f03003a399c.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - 1mVG744j5FB7I1VG9NJoFKd_hatocffXNCzpdzoSfaylyhJHP9HcIg==
+      X-Amz-Cf-Pop:
+      - IAD55-P5
+      X-Cache:
+      - Error from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 404
+      message: Not Found
+version: 1

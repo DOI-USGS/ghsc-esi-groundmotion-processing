@@ -90,6 +90,12 @@ fetchers:
             # existing station will not be downloaded.
             minimum_interstation_distance_in_m: 0.0
 
+        providers:
+            # Example:
+            # - IRIS:
+            # - IS: 
+            #     url: https://seis.gsi.gov.il/
+            # - NCEDC: 
 
         # authentication:
             # For each of the FDSN providers, a username and password

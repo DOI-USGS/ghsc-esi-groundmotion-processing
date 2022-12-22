@@ -1,5 +1,7 @@
 ## main
 
+- Add support to specify specific FDSN providers and URLs in config file.
+- Improve documentation of config file.
 - Modified the signal-to-noise-ratio calculation to normalize the spectra by duration.
 - Bugfix for how period arrays are defined when using start/stop values in the config file along with the logspace option.
 
