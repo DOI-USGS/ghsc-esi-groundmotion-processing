@@ -267,9 +267,10 @@ class GMrecordsApp(object):
             type=str,
             default=None,
             help=(
-                "CSV file containing either: (1) a single column in which that column "
-                "contains ComCat event IDs, or (2) six columns in which those columns "
-                "are: id (string, no spaces), time (any ISO standard for date/time), "
+                "A CSV file without column headers. The columns can be either: "
+                "(1) a single column with ComCat event IDs, or "
+                "(2) six columns in which those columns are: "
+                "id (string, no spaces), time (any ISO standard for date/time), "
                 "latitutde (float, decimal degrees), longitude (float, decimal "
                 "degrees), depth (float, km), magnitude (float)."
             ),

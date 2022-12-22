@@ -190,6 +190,10 @@ def read_event_json_files(eventfiles):
                 origintime = datetime.fromtimestamp(
                     event["properties"]["time"] / 1000.0, pytz.utc
                 )
+                if "magType" in event["properties"]:
+                    mag_type = event["properties"]["magType"]
+                else:
+                    mag_type = "unknown"
                 evdict = {
                     "id": event["id"],
                     "time": origintime.strftime("%Y-%m-%dT%H:%M:%S.%f"),
@@ -197,7 +201,7 @@ def read_event_json_files(eventfiles):
                     "lon": event["geometry"]["coordinates"][0],
                     "depth": event["geometry"]["coordinates"][2],
                     "magnitude": event["properties"]["mag"],
-                    "magnitude_type": event["properties"]["magType"],
+                    "magnitude_type": mag_type,
                 }
                 event = get_event_object(evdict)
 

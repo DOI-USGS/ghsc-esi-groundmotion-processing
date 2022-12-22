@@ -78,6 +78,7 @@ CONF_SCHEMA = Schema(
                     Optional("channel_priorities"): list,
                     Optional("location_priorities"): list,
                 },
+                "providers": Or(None, dict),
                 Optional("authentication"): dict,
             },
         },

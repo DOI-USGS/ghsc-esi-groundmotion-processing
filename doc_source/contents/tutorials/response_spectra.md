@@ -79,11 +79,11 @@ From the `describe` output, you can see that none of the stations failed
 the QA checks that are applied during the `process_streams` command. 
 
 We now compute the response spectral with the StationSummary class for 
-the third stream (CI.CCC)
+station CI.CCC
 
 ```{code-cell} ipython3
 # Compute response spectra for one of the processed streams
-summary = StationSummary.from_config(psc[2], event=event, config=conf)
+summary = StationSummary.from_config(psc.select(station="CCC")[0], event=event, config=conf)
 print(summary.pgms)
 ```
 

@@ -181,12 +181,49 @@ class FDSNFetcher(DataFetcher):
 
         debug = logging.getLevelName(root.level) == "DEBUG"
 
+        selected_providers = {}
+        providers_conf = fdsn_conf["providers"]
+        if providers_conf is not None:
+            for poviders_dict in providers_conf:
+                key_list = list(poviders_dict.keys())
+
+                if len(key_list) != 1:
+                    raise ValueError("Each provider must contain exactly one key.")
+
+                provider_name = key_list[0]
+
+                if poviders_dict[provider_name] is None:
+                    # User has not provided a conf dict for this provider, thus the
+                    # provider must be in obspy's list of providers
+                    if provider_name in providers:
+                        provider_url = providers[provider_name]
+                    else:
+                        raise ValueError(
+                            f"No info provided for fdsn provider {provider_name} and "
+                            "this provider is not found in URL_MAPPINGS."
+                        )
+                else:
+                    # User has provided a conf dict for this provider
+                    if "url" in poviders_dict[provider_name]:
+                        # Use url provided by conf
+                        provider_url = poviders_dict[provider_name]["url"]
+                    elif provider_name in providers:
+                        provider_url = providers[provider_name]
+                    else:
+                        raise ValueError(
+                            f"No url provided for fdsn provider {provider_name} and "
+                            "this provider is not found in URL_MAPPINGS."
+                        )
+                selected_providers[provider_name] = provider_url
+        else:
+            selected_providers = providers
+
         # For each of the providers, check if we have a username and password provided
         # in the config. If we do, initialize the client with the username and password.
         # Otherwise, use default initalization.
 
         client_list = []
-        for provider_str in providers.keys():
+        for provider_str in selected_providers.keys():
             if provider_str == GEO_NET_ARCHIVE_KEY:
                 dt = UTCDateTime.utcnow() - UTCDateTime(self.time)
                 if dt < GEONET_ARCHIVE_DAYS:
@@ -201,7 +238,7 @@ class FDSNFetcher(DataFetcher):
                         debug=debug,
                     )
                 else:
-                    client = Client(provider_str, debug=debug)
+                    client = Client(selected_providers[provider_str], debug=debug)
                 client_list.append(client)
             # If the FDSN service is down, then an FDSNException is raised
             except FDSNException:
