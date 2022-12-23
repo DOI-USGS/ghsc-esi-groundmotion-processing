@@ -21,6 +21,5 @@ doc_source/contents/tutorials/data
 doc_source/contents/tutorials/*.log
 .vscode/
 dask-worker-space/
-MANIFEST.in
 # Vim tags
 tags
