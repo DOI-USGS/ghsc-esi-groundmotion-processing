@@ -1,0 +1,4 @@
+prune tests
+prune doc_source
+prune notebooks
+prune src/gmprocess/data/asdf

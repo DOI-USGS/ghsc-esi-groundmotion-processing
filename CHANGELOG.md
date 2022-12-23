@@ -1,5 +1,6 @@
 ## main
 
+- Add MANIFEST.in and removed some unused files.
 - Add support to specify specific FDSN providers and URLs in config file.
 - Improve documentation of config file.
 - Modified the signal-to-noise-ratio calculation to normalize the spectra by duration.
