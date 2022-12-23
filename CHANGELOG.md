@@ -1,4 +1,4 @@
-## main
+## 1.2.3 / 2022-12-23
 
 - Add MANIFEST.in and removed some unused files.
 - Add support to specify specific FDSN providers and URLs in config file.
