@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from scipy.io import loadmat
-import numpy as np
 import os
+
+import numpy as np
 import pandas as pd
-
-from obspy import read, UTCDateTime
-from obspy.core.trace import Trace
-from obspy.core.stream import Stream
-from obspy.geodetics import locations2degrees
-from obspy.taup import TauPyModel
-
-from gmprocess.waveform_processing import phase
-from gmprocess.io.read import read_data
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.io.read import read_data
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.waveform_processing import phase
+from obspy import UTCDateTime, read
+from obspy.core.stream import Stream
+from obspy.core.trace import Trace
+from obspy.geodetics import locations2degrees
+from obspy.taup import TauPyModel
+from scipy.io import loadmat
 
 CONFIG = get_config()
 
@@ -133,7 +132,7 @@ def test_travel_time():
     for stream in streams:
         minloc, _ = phase.pick_travel(stream, event)
         # print(stream, minloc)
-        np.testing.assert_almost_equal(minloc, cmps[stream.get_id()])
+        np.testing.assert_almost_equal(minloc, cmps[stream.get_id()], decimal=3)
 
 
 def get_streams():

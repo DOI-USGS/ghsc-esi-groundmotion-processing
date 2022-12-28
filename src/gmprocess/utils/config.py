@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 from pathlib import Path
-import logging
 
 from gmprocess.utils import constants
 from ruamel.yaml import YAML
@@ -205,6 +205,12 @@ CONF_SCHEMA = Schema(
                 "threshRestart": float,
             },
             "travel_time": {"model": str},
+        },
+        "error_notification": {
+            "mail_host": Or("None", str),
+            "subject": Or("None", str),
+            "from_address": Or("None", str),
+            "to_addresses": Or("None", str),
         },
     }
 )

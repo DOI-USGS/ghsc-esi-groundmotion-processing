@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
+import argparse
 import copy
 import importlib
-import pkgutil
-import inspect
-import argparse
-import logging
-import shutil
 import importlib.metadata
-
+import inspect
+import logging
+import os
+import pkgutil
+import shutil
+import sys
 from pathlib import Path
 
 from gmprocess.subcommands.projects import Project
+
 from ..subcommands.lazy_loader import LazyLoader
 
 VERSION = importlib.metadata.version("gmprocess")
@@ -99,7 +99,12 @@ class GMrecordsApp(object):
             # at the command line and hands off the GmpApp object ("self") as
             # the only argument to func.
             # -----------------------------------------------------------------
-            self.args.func().main(self)
+            try:
+                self.args.func().main(self)
+            except Exception as e:
+                # if using error notification, this should generate an email to
+                # define list of users
+                logging.critical(f"Critical error running gmrecords: {str(e)}.")
 
     def load_subcommands(self):
         """Load information for subcommands."""
@@ -154,7 +159,13 @@ class GMrecordsApp(object):
         log_file = self.args.log or None
         if log_file and not self.args.quiet:
             print(f"Logging output sent to: {log_file}")
-        log_utils.setup_logger(self.args, log_file=log_file)
+
+        # get the email error notification portion of config, if present
+        error_dict = {}
+        if self.conf is not None and self.conf["error_notification"] is not None:
+            error_dict = dict(self.conf["error_notification"])
+
+        log_utils.setup_logger(self.args, log_file=log_file, error_dict=error_dict)
         logging.info("Logging level includes INFO.")
         logging.debug("Logging level includes DEBUG.")
         logging.info(f"PROJECTS_PATH: {self.projects_path}")

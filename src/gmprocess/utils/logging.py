@@ -5,7 +5,7 @@ import logging
 import logging.config
 
 
-def setup_logger(args=None, level="info", log_file=None):
+def setup_logger(args=None, level="info", log_file=None, error_dict={}):
     """Setup the logger options.
 
     This is written to handle a few different situations. It is called by
@@ -32,7 +32,7 @@ def setup_logger(args=None, level="info", log_file=None):
 
     if log_file == "external":
         return
-    
+
     fmt = "%(levelname)s %(asctime)s | " "%(module)s.%(funcName)s: %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
     # create a console handler, with verbosity setting chosen by user
@@ -77,4 +77,23 @@ def setup_logger(args=None, level="info", log_file=None):
             }
         }
         logdict["loggers"][""]["handlers"] = ["event_file"]
-    logging.config.dictConfig(logdict)
+
+    # handle smtp logging
+    if "mail_host" in error_dict and error_dict["mail_host"] is not None:
+        smtp_handler_key = "error_notification"
+        smtp_handler = {
+            "level": "CRITICAL",
+            "formatter": "standard",
+            "class": "logging.handlers.SMTPHandler",
+            "mailhost": error_dict["mail_host"],
+            "fromaddr": error_dict["from_address"],
+            "toaddrs": error_dict["to_addresses"],
+            "subject": error_dict["subject"],
+        }
+        logdict["handlers"][smtp_handler_key] = smtp_handler
+        logdict["loggers"][""]["handlers"].append(smtp_handler_key)
+
+    try:
+        logging.config.dictConfig(logdict)
+    except Exception as e:
+        x = 1
