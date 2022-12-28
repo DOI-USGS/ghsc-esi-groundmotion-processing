@@ -532,3 +532,8 @@ pickers:
         # list of models can be found here:
         # https://docs.obspy.org/packages/obspy.taup.html#basic-usage
         model: iasp91
+error_notification:
+    mail_host: None
+    subject: None
+    from_address: None
+    to_addresses: None 

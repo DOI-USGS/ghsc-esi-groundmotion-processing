@@ -363,3 +363,19 @@ Please see the default config file for additional details.
 % * :ref:`modindex`
 
 % * :ref:`search`
+
+## The "error_notification" section 
+
+This section will allow for automated exception emails to be sent to a specified list of users. This is most 
+likely useful for situations where gmrecords is set to run automatically on a server. When using this configuration,
+any un-handled exceptions generated at any level in gmprocess modules will cause emails to be sent to the configured list
+of users.
+
+```
+mail_host: smtp.generic.org # contact your IT department for details
+  subject: "Error in gmprocess" # the subject line for all error emails
+  from_address: gmprocess@generic.org # the reply address for the emails
+  to_addresses: # list of user addresses to which exception emails should be sent
+    - user1@generic.org
+    - user2@generic.org
+```
