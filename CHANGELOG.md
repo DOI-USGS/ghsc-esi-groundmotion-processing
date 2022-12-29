@@ -1,3 +1,7 @@
+## main
+
+ - Add config option to send email on errors.
+
 ## 1.2.3 / 2022-12-23
 
 - Add MANIFEST.in and removed some unused files.
