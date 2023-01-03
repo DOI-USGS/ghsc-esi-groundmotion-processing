@@ -167,7 +167,7 @@ def _walk_and_unzip(directory):
                 with zipfile.ZipFile(path, "r") as zip:
                     for m in zip.namelist():
                         zip.extract(m, str(path.parent))
-            except zipfile.BadZipFile as err:
+            except Exception as err:
                 logging.warning(f"Could not unzip {path}. {str(err)}")
             path.unlink()
         elif is_tar:
