@@ -79,7 +79,7 @@ def setup_logger(args=None, level="info", log_file=None, error_dict={}):
         logdict["loggers"][""]["handlers"] = ["event_file"]
 
     # handle smtp logging
-    if "mail_host" in error_dict and error_dict["mail_host"] is not None:
+    if "mail_host" in error_dict and error_dict["mail_host"] != "None":
         smtp_handler_key = "error_notification"
         smtp_handler = {
             "level": "CRITICAL",
@@ -93,7 +93,4 @@ def setup_logger(args=None, level="info", log_file=None, error_dict={}):
         logdict["handlers"][smtp_handler_key] = smtp_handler
         logdict["loggers"][""]["handlers"].append(smtp_handler_key)
 
-    try:
-        logging.config.dictConfig(logdict)
-    except Exception as e:
-        x = 1
+    logging.config.dictConfig(logdict)
