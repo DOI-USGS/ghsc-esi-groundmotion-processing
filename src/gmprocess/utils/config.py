@@ -207,10 +207,10 @@ CONF_SCHEMA = Schema(
             "travel_time": {"model": str},
         },
         "error_notification": {
-            "mail_host": Or("None", str),
-            "subject": Or("None", str),
-            "from_address": Or("None", str),
-            "to_addresses": Or("None", str),
+            "mail_host": Or(None, str),
+            "subject": Or(None, str),
+            "from_address": Or(None, str),
+            "to_addresses": Or(None, str),
         },
     }
 )
