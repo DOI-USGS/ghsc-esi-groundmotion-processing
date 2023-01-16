@@ -57,7 +57,7 @@ def test_corner_frequencies():
             )
 
     for stream in processed_streams:
-        stream = compute_snr(stream)
+        stream = compute_snr(stream, event)
     for stream in processed_streams:
         stream = snr_check(stream, mag=event.magnitude)
 
@@ -79,7 +79,7 @@ def test_corner_frequencies():
     lps = [tr.getParameter("corner_frequencies")["lowpass"] for tr in st]
     hps = [tr.getParameter("corner_frequencies")["highpass"] for tr in st]
     np.testing.assert_allclose(
-        np.sort(lps), [57.43491775, 57.43491775, 100.0], atol=1e-6
+        np.sort(lps), [50.0, 50.0, 100.0], atol=1e-6
     )
     np.testing.assert_allclose(
         np.sort(hps), [0.02437835, 0.02437835, 0.02437835], atol=1e-5
