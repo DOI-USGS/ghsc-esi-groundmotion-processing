@@ -36,7 +36,7 @@ class Histogram(ClipDetection):
         self, st, num_bins=6200, min_width=7, search_width_bins=700, test_all=False
     ):
         """
-        Constructs all neccessary attributes for the Histogram class.
+        Constructs all necessary attributes for the Histogram class.
 
         Args:
             st (StationStream):
@@ -93,6 +93,8 @@ class Histogram(ClipDetection):
             peaks (list):
                 List of determined peaks in the data
         """
+        MAX_NPEAKS = 100
+
         peaks = []
         for idx in range(1, len(signal) - 1):
             cur_x = signal[idx]
@@ -103,7 +105,9 @@ class Histogram(ClipDetection):
                     peaks.append((cur_x, idx))
         # Sort descending
         if should_sort:
-            peaks.sort(key=lambda tup: tup[0])
+            peaks.sort(key=lambda tup: tup[0], reverse=True)
+        if len(peaks) > MAX_NPEAKS:
+            peaks = peaks[0:MAX_NPEAKS]
         return peaks
 
     def _merge_intervals(self, clip_intervals, max_distance_apart):
@@ -167,7 +171,7 @@ class Histogram(ClipDetection):
         clip_intervals.sort(key=lambda tup: tup[0])
         return clip_intervals
 
-    def _get_clip_intervals(self, signal, peaks, thresh):
+    def _get_clip_interval(self, signal, peaks, thresh):
         """
         Helper function to obtain clipping intervals
 
@@ -175,16 +179,16 @@ class Histogram(ClipDetection):
             signal (StationTrace.data):
                 Data signal suspected to feature clipping
             peaks (list):
-                List of critical data points
+                List of critical data points in order from largest amplitude to smallest.
             thresh (float):
                 Threshold for difference between a point and the average of
                 points around it.
 
         Returns:
-             clip_intervals (list):
-                List of sorted tuples corresponding to where signal is clipped
+             clip_interval (tuple):
+                Tuple corresponding to first location (largest peak amplitude) where signal is clipped.
         """
-        clip_intervals = []
+        clip_interval = None
         for _, cur_peak_loc in peaks:
             # Descend left.
             working_avg = abs(signal[cur_peak_loc])
@@ -235,9 +239,9 @@ class Histogram(ClipDetection):
                     break
                 right_idx = right_idx + 1
             if start_idx != stop_idx:
-                clip_intervals.append((start_idx, stop_idx))
-        clip_intervals = self._merge_intervals(clip_intervals, 1)
-        return clip_intervals
+                clip_interval = (start_idx, stop_idx)
+                break
+        return clip_interval
 
     def _clean_trace(self, tr):
         """
@@ -363,23 +367,24 @@ class Histogram(ClipDetection):
             positive_upper = edges[positive_clip_upper_idx + 1]
             positive_width = (positive_upper - positive_thresh) / 2
         # Now to find the clipping intervals based on the clipping levels.
-        negative_clip_intervals = []
+
+        clip_intervals = [None, None]
         if has_negative_clip:
             invert_x = self._signal_scale(tr.data, -1)
             valleys = self._find_peaks(invert_x, abs(negative_thresh), True)
-            negative_clip_intervals = self._get_clip_intervals(
+            clip_intervals[0] = self._get_clip_interval(
                 tr.data, valleys, negative_width
             )
-        positive_clip_intervals = []
         if has_positive_clip:
             peaks = self._find_peaks(tr.data, positive_thresh, True)
-            positive_clip_intervals = self._get_clip_intervals(
+            clip_intervals[1] = self._get_clip_interval(
                 tr.data, peaks, positive_width
             )
         # Aggregate the positive and negative clipping intervals.
-        clip_intervals = negative_clip_intervals + positive_clip_intervals
-        clip_intervals = self._merge_intervals(clip_intervals, 1)
-        num_clip_intervals = len(clip_intervals)
+        num_clip_intervals = 0
+        for interval in clip_intervals:
+            if not interval is None:
+                num_clip_intervals += 1
         if self.test_all:
             self.num_clip_intervals.append(num_clip_intervals)
         else:
