@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 
 import numpy as np
 from obspy.signal.util import next_pow_2
@@ -42,7 +43,7 @@ def compute_snr(st, bandwidth=20.0, config=None):
 def snr_check(
     st,
     mag,
-    threshold=3.0,
+    threshold=2.0,
     min_freq="f0",
     max_freq=5.0,
     f0_options={"stress_drop": 10, "shear_vel": 3.7, "ceiling": 2.0, "floor": 0.1},
@@ -50,7 +51,7 @@ def snr_check(
 ):
     """Check signal-to-noise ratio.
 
-    Requires noise/singal windowing to have succeeded.
+    Requires noise/signal windowing to have succeeded.
 
     Args:
         st (StationStream):
@@ -100,7 +101,8 @@ def snr_check(
                 min_snr = 0
 
             if min_snr < threshold:
-                tr.fail("Failed SNR check; SNR less than threshold.")
+                logging.debug(f"{tr.id} failed SNR check {min_snr:.2f} < {threshold:.2f}.")
+                tr.fail(f"SNR check: SNR {min_snr:.2f} < {threshold:.2f}")
         snr_conf = {"threshold": threshold, "min_freq": min_freq, "max_freq": max_freq}
         tr.setParameter("snr_conf", snr_conf)
     return st
@@ -114,91 +116,132 @@ def compute_snr_trace(tr, bandwidth=20.0):
             Konno-Omachi smoothing bandwidth parameter.
 
     """
+    def _compute_event_spectra(preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event):
+        """Compute noise and signal spectra from event spectrum using pre-event noise spectrum
+        to estimate the event noise spectrum.
+
+        Assumptions:
+          - Noise amplitudes scale as sqrt(duration)
+          - Noise is stationary and so duration is the length of the prevent window (prevent_noise) and
+            and event window (event noise).
+
+        event_spectrum = event_noise_spectrum + event_signal_spectrum
+
+        Noise is stationary => noise spectra normalized by duration are equal ->
+        pre-event noise spectrum / sqrt(pre-event duration) = event noise spectra / sqrt(event duration)
+        """
+        event_noise_spectrum = preevent_noise_spectrum * np.sqrt(dur_event) / np.sqrt(dur_preevent)
+        signal_spectrum = event_spectrum - event_noise_spectrum
+        return (event_noise_spectrum, signal_spectrum)
+
     if tr.hasParameter("signal_split"):
+
         # Split the noise and signal into two separate traces
         split_prov = tr.getParameter("signal_split")
         if isinstance(split_prov, list):
             split_prov = split_prov[0]
         split_time = split_prov["split_time"]
-        noise = tr.copy().trim(endtime=split_time)
-        signal = tr.copy().trim(starttime=split_time)
+        preevent_noise = tr.copy().trim(endtime=split_time)
+        event = tr.copy().trim(starttime=split_time)
 
-        tr.setCached("noise_trace", {"times": noise.times(), "data": noise.data})
+        tr.setCached("preevent_noise_trace", {"times": preevent_noise.times(), "data": preevent_noise.data})
 
-        noise.detrend("demean")
-        signal.detrend("demean")
+        preevent_noise.detrend("demean")
+        event.detrend("demean")
 
         # Taper both windows
-        noise.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
-        signal.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
+        preevent_noise.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
+        event.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
 
         # Check that there are a minimum number of points in the noise window
-        if noise.stats.npts < MIN_POINTS_IN_WINDOW:
-            # Fail the trace, but still compute the signal spectra
+        if preevent_noise.stats.npts < MIN_POINTS_IN_WINDOW:
+            # Fail the trace, but still compute the event spectra
             # ** only fail here if it hasn't already failed; we do not yet
             # ** support tracking multiple fail reasons and I think it is
             # ** better to know the FIRST reason if I have to pick one.
             if tr.passed:
-                tr.fail("Failed SNR check; Not enough points in noise window.")
-            compute_and_smooth_spectrum(tr, bandwidth, "signal")
+                tr.fail("SNR check; Not enough points in noise window")
+            compute_and_smooth_spectrum(tr, bandwidth, "event")
             return tr
 
-        # Check that there are a minimum number of points in the noise window
-        if signal.stats.npts < MIN_POINTS_IN_WINDOW:
-            # Fail the trace, but still compute the signal spectra
+        # Check that there are a minimum number of points in the event window
+        if event.stats.npts < MIN_POINTS_IN_WINDOW:
+            # Fail the trace, but still compute the event spectra
             if tr.passed:
-                tr.fail("Failed SNR check; Not enough points in signal window.")
-            compute_and_smooth_spectrum(tr, bandwidth, "signal")
+                tr.fail("SNR check; Not enough points in event window")
+            compute_and_smooth_spectrum(tr, bandwidth, "event")
             return tr
 
-        nfft = max(next_pow_2(signal.stats.npts), next_pow_2(noise.stats.npts))
+        nfft = max(next_pow_2(event.stats.npts), next_pow_2(preevent_noise.stats.npts))
+        compute_and_smooth_spectrum(tr, bandwidth, "noise", preevent_noise, nfft)
+        compute_and_smooth_spectrum(tr, bandwidth, "event", event, nfft)
 
-        compute_and_smooth_spectrum(tr, bandwidth, "noise", noise, nfft)
-        compute_and_smooth_spectrum(tr, bandwidth, "signal", signal, nfft)
+        # Noise, event, and signal durations.
+        #
+        # - Pre-event noise duration is the pre-event window duration.
+        # - Event noise duration is the event window duration.
+        # - Ground motions at these frequencies are approximately white noise, and thus
+        #   also scale as sqrt(duration); ground motion is not stationary, so we'll use
+        #   the duration estimated from the earthquake magnitude.
+        dur_preevent = preevent_noise.stats.endtime - preevent_noise.stats.starttime
+        dur_event = event.stats.endtime - event.stats.starttime
+        d595 = Duration([event], interval=[5.0, 95.0]).result
+        dur_shaking = d595[event.stats.channel]
 
-        # For both the raw and smoothed spectra, subtract the noise spectrum
-        # from the signal spectrum
+        # Compute noise and signal spectra.
+        preevent_noise_spectrum = tr.getCached("noise_spectrum")["spec"]
+        event_spectrum = tr.getCached("event_spectrum")["spec"]
+        event_noise_spectrum, signal_spectrum = _compute_event_spectra(
+            preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event)
+        tr.setCached(
+            "noise_spectrum",
+            {
+                "spec": event_noise_spectrum,
+                "freq": tr.getCached("noise_spectrum")["freq"],
+                "duration": dur_event,
+            },
+        )
         tr.setCached(
             "signal_spectrum",
             {
-                "spec": (
-                    tr.getCached("signal_spectrum")["spec"]
-                    - tr.getCached("noise_spectrum")["spec"]
-                ),
-                "freq": tr.getCached("signal_spectrum")["freq"],
+                "spec": signal_spectrum,
+                "freq": tr.getCached("event_spectrum")["freq"],
+                "duration": dur_shaking,
+            },
+        )
+
+        # Compute smooth noise and signal.
+        smooth_preevent_noise_spectrum = tr.getCached("smooth_noise_spectrum")["spec"]
+        smooth_event_spectrum = tr.getCached("smooth_event_spectrum")["spec"]
+        smooth_event_noise_spectrum, smooth_signal_spectrum = _compute_event_spectra(
+            smooth_preevent_noise_spectrum, smooth_event_spectrum, dur_preevent, dur_event)
+        tr.setCached(
+            "smooth_noise_spectrum",
+            {
+                "spec": smooth_event_noise_spectrum,
+                "freq": tr.getCached("smooth_noise_spectrum")["freq"],
+                "duration": dur_event,
             },
         )
         tr.setCached(
             "smooth_signal_spectrum",
             {
-                "spec": (tr.getCached("smooth_signal_spectrum")["spec"]),
-                "freq": tr.getCached("smooth_signal_spectrum")["freq"],
+                "spec": smooth_signal_spectrum,
+                "freq": tr.getCached("smooth_event_spectrum")["freq"],
+                "duration": dur_shaking,
             },
         )
-
-        smooth_signal_spectrum = tr.getCached("smooth_signal_spectrum")["spec"]
-        smooth_noise_spectrum = tr.getCached("smooth_noise_spectrum")["spec"]
-
-        # Need to normalize for duration (D). Assumptions:
-        #  - Noise amplitudes scale as sqrt(D)
-        #  - Ground motions at these frequencies are approximately white noise, and thus
-        #    also scale as sqrt(D)
-        #  - Noise is stationary and so D is the full length of the window
-        #  - Ground motion is not stationary, so we'll use the 5-95% significant
-        #    duration.
-        dur_noise = noise.stats.endtime - noise.stats.starttime
-        d595 = Duration([signal], interval=[5.0, 95.0]).result
-        dur_signal = d595[signal.stats.channel]
-        smooth_noise_spectrum = smooth_noise_spectrum / np.sqrt(dur_noise)
-        smooth_signal_spectrum = smooth_signal_spectrum / np.sqrt(dur_signal)
-
-        snr = (smooth_signal_spectrum - smooth_noise_spectrum) / smooth_noise_spectrum
-
-        snr_dict = {"snr": snr, "freq": tr.getCached("smooth_signal_spectrum")["freq"]}
-        tr.setCached("snr", snr_dict)
+ 
+        smooth_event_noise_normspectrum = smooth_event_noise_spectrum / np.sqrt(dur_event)
+        smooth_signal_normspectrum = smooth_signal_spectrum / np.sqrt(dur_shaking)
+        snr = smooth_signal_normspectrum / smooth_event_noise_normspectrum
+        snr_dict = tr.setCached("snr", {
+            "snr": snr,
+            "freq": tr.getCached("smooth_event_spectrum")["freq"],
+            })
 
     else:
-        # We do not have an estimate of the signal split time for this trace
-        compute_and_smooth_spectrum(tr, bandwidth, "signal")
+        # We do not have an estimate of the event split time for this trace
+        compute_and_smooth_spectrum(tr, bandwidth, "event")
 
     return tr
