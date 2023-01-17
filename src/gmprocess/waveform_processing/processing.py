@@ -26,6 +26,7 @@ REQ_EVENT = [
     "fit_spectra",
     "trim_multiple_events",
     "check_clipping",
+    "compute_snr",
     "get_corner_frequencies",
 ]
 

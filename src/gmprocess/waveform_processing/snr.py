@@ -9,6 +9,7 @@ from gmprocess.metrics.reduction.duration import Duration
 from gmprocess.waveform_processing.fft import compute_and_smooth_spectrum
 from gmprocess.waveform_processing.spectrum import brune_f0, moment_from_magnitude
 from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.windows import duration_from_magnitude
 
 
 # Options for tapering noise/signal windows
@@ -19,12 +20,14 @@ MIN_POINTS_IN_WINDOW = 10
 
 
 @ProcessingStep
-def compute_snr(st, bandwidth=20.0, config=None):
+def compute_snr(st, event, bandwidth=20.0, config=None):
     """Compute SNR dictionaries for a stream, looping over all traces.
 
     Args:
         st (StationStream):
            Trace of data.
+        event_magnitude (float):
+           Earthquake magnitude.
         bandwidth (float):
            Konno-Omachi smoothing bandwidth parameter.
         config (dict):
@@ -35,7 +38,7 @@ def compute_snr(st, bandwidth=20.0, config=None):
     """
     for tr in st:
         # Do we have estimates of the signal split time?
-        compute_snr_trace(tr, bandwidth)
+        compute_snr_trace(tr, event.magnitude, bandwidth)
     return st
 
 
@@ -108,10 +111,12 @@ def snr_check(
     return st
 
 
-def compute_snr_trace(tr, bandwidth=20.0):
+def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
     """Compute SNR dictionaries for a trace.
 
     Args:
+        event_magnitude (float):
+            Earthquake magnitude.
         bandwidth (float):
             Konno-Omachi smoothing bandwidth parameter.
 
@@ -185,8 +190,7 @@ def compute_snr_trace(tr, bandwidth=20.0):
         #   the duration estimated from the earthquake magnitude.
         dur_preevent = preevent_noise.stats.endtime - preevent_noise.stats.starttime
         dur_event = event.stats.endtime - event.stats.starttime
-        d595 = Duration([event], interval=[5.0, 95.0]).result
-        dur_shaking = d595[event.stats.channel]
+        dur_shaking = duration_from_magnitude(event_magnitude)
 
         # Compute noise and signal spectra.
         preevent_noise_spectrum = tr.getCached("noise_spectrum")["spec"]
@@ -198,17 +202,17 @@ def compute_snr_trace(tr, bandwidth=20.0):
             {
                 "spec": event_noise_spectrum,
                 "freq": tr.getCached("noise_spectrum")["freq"],
-                "duration": dur_event,
             },
         )
+        tr.setParameter("noise_spectrum", {"duration": dur_event})
         tr.setCached(
             "signal_spectrum",
             {
                 "spec": signal_spectrum,
                 "freq": tr.getCached("event_spectrum")["freq"],
-                "duration": dur_shaking,
             },
         )
+        tr.setParameter("signal_spectrum", {"duration": dur_shaking})
 
         # Compute smooth noise and signal.
         smooth_preevent_noise_spectrum = tr.getCached("smooth_noise_spectrum")["spec"]
@@ -220,7 +224,6 @@ def compute_snr_trace(tr, bandwidth=20.0):
             {
                 "spec": smooth_event_noise_spectrum,
                 "freq": tr.getCached("smooth_noise_spectrum")["freq"],
-                "duration": dur_event,
             },
         )
         tr.setCached(
@@ -228,7 +231,6 @@ def compute_snr_trace(tr, bandwidth=20.0):
             {
                 "spec": smooth_signal_spectrum,
                 "freq": tr.getCached("smooth_event_spectrum")["freq"],
-                "duration": dur_shaking,
             },
         )
  

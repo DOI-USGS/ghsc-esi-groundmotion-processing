@@ -562,19 +562,32 @@ def summary_plots(st, directory, event, config=None):
 
         # ---------------------------------------------------------------------
         # Spectral plot
+        signal_norm_factor = tr.getParameter("signal_spectrum")["duration"]**0.5 if tr.hasParameter("signal_spectrum") else 1.0
+        noise_norm_factor = tr.getParameter("noise_spectrum")["duration"]**0.5 if tr.hasParameter("noise_spectrum") else 1.0
 
         # Raw signal spec
         if (signal_dict is not None) and np.any(signal_dict["spec"] > 0):
             ax[j + 3 * ntrace].loglog(
-                signal_dict["freq"], signal_dict["spec"], color="lightblue"
+                signal_dict["freq"], signal_dict["spec"] / signal_norm_factor,
+                color="lightblue",
+                alpha=0.5
+            )
+
+        # Raw noise spec
+        if (noise_dict is not None) and np.any(noise_dict["spec"] > 0):
+            ax[j + 3 * ntrace].loglog(
+                noise_dict["freq"], noise_dict["spec"] / noise_norm_factor,
+                color="salmon",
+                alpha=0.5
             )
 
         # Smoothed signal spec
         if (smooth_signal_dict is not None) and np.any(smooth_signal_dict["spec"] > 0):
             ax[j + 3 * ntrace].loglog(
                 smooth_signal_dict["freq"],
-                smooth_signal_dict["spec"],
+                smooth_signal_dict["spec"] / signal_norm_factor,
                 color="blue",
+                alpha=0.8,
                 label="Signal",
             )
 
@@ -588,8 +601,9 @@ def summary_plots(st, directory, event, config=None):
         if (smooth_noise_dict is not None) and np.any(smooth_noise_dict["spec"] > 0):
             ax[j + 3 * ntrace].loglog(
                 smooth_noise_dict["freq"],
-                smooth_noise_dict["spec"],
+                smooth_noise_dict["spec"] / noise_norm_factor,
                 color="red",
+                alpha=0.8,
                 label="Noise",
             )
 
@@ -597,7 +611,7 @@ def summary_plots(st, directory, event, config=None):
             # Model spec
             ax[j + 3 * ntrace].loglog(
                 smooth_signal_dict["freq"],
-                model_spec,
+                model_spec / signal_norm_factor,
                 color="black",
                 linestyle="dashed",
             )
@@ -609,7 +623,7 @@ def summary_plots(st, directory, event, config=None):
 
         ax[j + 3 * ntrace].set_xlabel("Frequency (Hz)")
         if j == 0:
-            ax[j + 3 * ntrace].set_ylabel("Amplitude (cm/s)")
+            ax[j + 3 * ntrace].set_ylabel("Normalized Amplitude (cm*s$^{-1.5}$)")
 
         # ---------------------------------------------------------------------
         # Signal-to-noise ratio plot

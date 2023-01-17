@@ -63,7 +63,7 @@ def get_corner_frequencies(
     elif method == "magnitude":
         st = from_magnitude(st, event, **magnitude)
     elif method == "snr":
-        st = from_snr(st, **snr)
+        st = from_snr(st, event, **snr)
         # Constrain the two horizontals to have the same corner frequencies?
         if snr["same_horiz"] and st.passed and st.num_horizontal > 1:
             hlps = [
@@ -213,7 +213,7 @@ def from_magnitude(
     return st
 
 
-def from_snr(st, same_horiz=True, bandwidth=20):
+def from_snr(st, event, same_horiz=True, bandwidth=20):
     """Set corner frequencies from SNR.
 
     Args:
@@ -231,7 +231,7 @@ def from_snr(st, same_horiz=True, bandwidth=20):
     for tr in st:
         # Check for prior calculation of 'snr'
         if not tr.hasCached("snr"):
-            tr = compute_snr_trace(tr, bandwidth)
+            tr = compute_snr_trace(tr, event.magnitude, bandwidth)
 
         # If the SNR doesn't exist then it must have failed because it didn't
         # have enough points in the noise or signal windows
