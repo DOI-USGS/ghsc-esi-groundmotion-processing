@@ -2,7 +2,9 @@
 
  - Add config option to send email on errors.
  - Handle unexpected exception zip checking in `assemble` subcommand
- - Bugfix to account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
+ - Bugfixes
+   - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
+   - Limit histogram clipping algorithm to 100 largest peaks and stop algorithm once we find one clipping region (positive and negative).
 
 ## 1.2.3 / 2022-12-23
 
