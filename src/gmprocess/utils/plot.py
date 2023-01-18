@@ -567,6 +567,7 @@ def summary_plots(st, directory, event, config=None):
 
         # Raw signal spec
         if (signal_dict is not None) and np.any(signal_dict["spec"] > 0):
+            norm_factor = signal_dict["duration"] if "duration" in signal_dict else 1.0
             ax[j + 3 * ntrace].loglog(
                 signal_dict["freq"], signal_dict["spec"] / signal_norm_factor,
                 color="lightblue",
@@ -591,14 +592,9 @@ def summary_plots(st, directory, event, config=None):
                 label="Signal",
             )
 
-        # Raw noise spec
-        if (noise_dict is not None) and np.any(noise_dict["spec"] > 0):
-            ax[j + 3 * ntrace].loglog(
-                noise_dict["freq"], noise_dict["spec"], color="salmon"
-            )
-
         # Smoothed noise spec
         if (smooth_noise_dict is not None) and np.any(smooth_noise_dict["spec"] > 0):
+            norm_factor = signal_dict["duration"] if "duration" in signal_dict else 1.0
             ax[j + 3 * ntrace].loglog(
                 smooth_noise_dict["freq"],
                 smooth_noise_dict["spec"] / noise_norm_factor,
@@ -622,6 +618,8 @@ def summary_plots(st, directory, event, config=None):
             )
 
         ax[j + 3 * ntrace].set_xlabel("Frequency (Hz)")
+        ax[j + 3 * ntrace].autoscale(enable=True, axis='x', tight=True)
+        xlim = ax[j + 3 * ntrace].get_xlim()
         if j == 0:
             ax[j + 3 * ntrace].set_ylabel("Normalized Amplitude (cm*s$^{-1.5}$)")
 
@@ -655,6 +653,7 @@ def summary_plots(st, directory, event, config=None):
         if j == 0:
             ax[j + 4 * ntrace].set_ylabel("SNR")
         ax[j + 4 * ntrace].set_xlabel("Frequency (Hz)")
+        ax[j + 4 * ntrace].set_xlim(xlim)
 
     stream_id = st.get_id()
 
