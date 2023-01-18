@@ -63,7 +63,7 @@ def get_corner_frequencies(
     elif method == "magnitude":
         st = from_magnitude(st, event, **magnitude)
     elif method == "snr":
-        st = from_snr(st, **snr)
+        st = from_snr(st, event, **snr)
         # Constrain the two horizontals to have the same corner frequencies?
         if snr["same_horiz"] and st.passed and st.num_horizontal > 1:
             hlps = [
@@ -213,7 +213,7 @@ def from_magnitude(
     return st
 
 
-def from_snr(st, same_horiz=True, bandwidth=20):
+def from_snr(st, event, same_horiz=True, bandwidth=20):
     """Set corner frequencies from SNR.
 
     Args:
@@ -231,10 +231,10 @@ def from_snr(st, same_horiz=True, bandwidth=20):
     for tr in st:
         # Check for prior calculation of 'snr'
         if not tr.hasCached("snr"):
-            tr = compute_snr_trace(tr, bandwidth)
+            tr = compute_snr_trace(tr, event.magnitude, bandwidth)
 
         # If the SNR doesn't exist then it must have failed because it didn't
-        # have nough points in the noise or signal windows
+        # have enough points in the noise or signal windows
         if tr.passed:
             snr_conf = tr.getParameter("snr_conf")
             threshold = snr_conf["threshold"]
@@ -266,7 +266,7 @@ def from_snr(st, same_horiz=True, bandwidth=20):
                         continue
                 else:
                     if snr[idx] < threshold:
-                        highs.append(f)
+                        highs.append(freq[idx-1])
                         have_low = False
                     else:
                         continue
@@ -298,7 +298,7 @@ def from_snr(st, same_horiz=True, bandwidth=20):
                 low_corner = max(1 / duration, low_corner)
 
                 # Make sure highpass is greater than min freq of noise spectrum
-                n_noise = len(tr.getCached("noise_trace")["data"])
+                n_noise = len(tr.getCached("preevent_noise_trace")["data"])
                 min_freq_noise = 1.0 / n_noise / tr.stats.delta
                 freq_hp = max(low_corner, min_freq_noise)
 

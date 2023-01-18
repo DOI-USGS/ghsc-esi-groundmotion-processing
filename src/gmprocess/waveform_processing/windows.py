@@ -30,6 +30,20 @@ from gmprocess.waveform_processing.processing_step import ProcessingStep
 M_TO_KM = 1.0 / 1000
 
 
+def duration_from_magnitude(event_magnitude):
+    """Compute shaking duration in seconds from earthquake magnitude.
+    
+    From Hamid Haddadi, generic ground-motion record duration, (including 30s pre-event window:
+    Duration (minutes) = earthquake magnitude / 2.0 .
+
+    Args:
+        event_magnitude (float):
+            Earthquake magnitude.
+    Returns:
+        Duration of earthquake shaking in seconds.
+    """
+    return event_magnitude / 2.0 * 60.0 - 30.0
+
 @ProcessingStep
 def cut(st, sec_before_split=2.0, config=None):
     """Cut/trim the record.
@@ -333,11 +347,7 @@ def signal_end(
             split_time = tr.getParameter("signal_split")["split_time"]
             end_time = split_time + float(duration)
         elif method == "magnitude":
-            # According to Hamid:
-            #     duration is {mag}/2 minutes starting 30 seconds
-            #     before the origin time
-            duration = event_mag / 2.0 * 60.0
-            end_time = event_time + duration - 30.0
+            end_time = event_time + duration_from_magnitude(event_mag)
         elif method == "none":
             # need defaults
             end_time = tr.stats.endtime
