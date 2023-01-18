@@ -266,7 +266,7 @@ def from_snr(st, event, same_horiz=True, bandwidth=20):
                         continue
                 else:
                     if snr[idx] < threshold:
-                        highs.append(f)
+                        highs.append(freq[idx-1])
                         have_low = False
                     else:
                         continue
