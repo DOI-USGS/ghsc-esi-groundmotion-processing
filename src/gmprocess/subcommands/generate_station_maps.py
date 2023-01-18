@@ -69,7 +69,7 @@ class GenerateHTMLMapModule(base.SubcommandModule):
                 )
                 if not len(streams):
                     logging.error(
-                        "No matching streams found for {station_id} for {event.id}."
+                        f"No matching streams found for {station_id} for {event.id}."
                     )
                     continue
 
