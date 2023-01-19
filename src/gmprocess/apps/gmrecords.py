@@ -6,12 +6,14 @@ import copy
 import importlib
 import importlib.metadata
 import inspect
+import io
 import logging
 import os
+from pathlib import Path
 import pkgutil
 import shutil
 import sys
-from pathlib import Path
+import traceback
 
 from gmprocess.subcommands.projects import Project
 
@@ -104,7 +106,17 @@ class GMrecordsApp(object):
             except Exception as e:
                 # if using error notification, this should generate an email to
                 # define list of users
-                logging.critical(f"Critical error running gmrecords: {str(e)}.")
+                tb_string = io.StringIO()
+                traceback.print_exc(file=tb_string)
+                msg = "%s\n%s" % (str(e), tb_string.getvalue())
+                msg = msg + "\n\nArgs: \n"
+                for arg in vars(self.args):
+                    msg = msg + f"    {arg}: {getattr(self.args, arg)}\n"
+                msg = msg + f"Project Name: {self.project_name}\n"
+                msg = msg + f"Conf Path: {self.conf_path}\n"
+                msg = msg + f"Data Path: {self.data_path}\n"
+                logging.critical(msg)
+                raise e
 
     def load_subcommands(self):
         """Load information for subcommands."""
