@@ -2,9 +2,12 @@
 
  - Add config option to send email on errors.
  - Handle unexpected exception zip checking in `assemble` subcommand
+ - Limit histogram clipping algorithm to 100 largest peaks and stop algorithm once we find one clipping region (positive and negative).
+ - Improved email alert error message.
  - Bugfixes
    - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
-   - Limit histogram clipping algorithm to 100 largest peaks and stop algorithm once we find one clipping region (positive and negative).
+   - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
+
 
 ## 1.2.3 / 2022-12-23
 
