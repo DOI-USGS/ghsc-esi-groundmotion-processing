@@ -9,10 +9,12 @@ Most of the extensions that we provide are to handle strong motion data and rela
 - The documentation is also available [here](https://gmprocess-docs.readthedocs.io/en/latest/index.html).
 
 # Contact
-Issues are the best way to ask questions, but at this time creating an account at code.usgs.gov is required to interact with the issues.
-We hope to have a better system soon.
 The developers can be reached at [gmprocess@usgs.gov](mailto:gmprocess@usgs.gov).
 
+If you would like to post an issue to ask a question, request a new feature, or report a bug, you can do so at the [github mirror](https://github.com/DOI-USGS/ghsc-esi-groundmotion-processing) of this repository. 
+
+If you would like to contribute merge requests to this repository, please let us know and we can add you as a collaborator. 
+This will require that you create an account at code.usgs.gov, which is a more involved process than creating a personal account at gitub.com and posting to the issues on the github mirror.
 
 # Reference
 If you wish to cite this software, please use this reference:
