@@ -30,6 +30,7 @@ dependencies = [
     "numpy>=1.21",
     "obspy>=1.4.0",
     "openpyxl>=3.0.8",
+    "openquake.engine>=3.14",
     "pandas>=1.0",
     "ps2ff>=1.5.2",
     "pyasdf>=0.7",
