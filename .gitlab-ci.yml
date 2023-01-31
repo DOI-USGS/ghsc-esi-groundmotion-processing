@@ -6,6 +6,11 @@ default:
   before_script:
     - python --version
     - export PATH="/home/usgs-user/.local/bin:$PATH"
+    - mini_conda_url=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    - curl -L $mini_conda_url -o miniconda.sh
+    - bash miniconda.sh -f -b -p $HOME/miniconda
+    - . $HOME/miniconda/etc/profile.d/conda.sh
+    - conda install -c conda-forge -y tree make
 
 stages:
   - test
@@ -15,6 +20,7 @@ stages:
 run tests:
   stage: test
   script:
+    - uname -a
     - pip install -e .[test]
     - pytest -rx .
   rules:
