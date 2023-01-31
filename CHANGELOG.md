@@ -4,6 +4,7 @@
  - Handle unexpected exception zip checking in `assemble` subcommand
  - Limit histogram clipping algorithm to 100 largest peaks and stop algorithm once we find one clipping region (positive and negative).
  - Improved email alert error message.
+ - Removed unnecessary loops from corner frequency method.
  - Bugfixes
    - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
    - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
