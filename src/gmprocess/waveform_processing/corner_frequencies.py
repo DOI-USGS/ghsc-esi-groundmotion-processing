@@ -253,41 +253,33 @@ def from_snr(st, event, same_horiz=True, bandwidth=20):
             snr = snr_dict["snr"]
             freq = snr_dict["freq"]
 
-            # Loop through frequencies to find low corner and high corner
-            lows = []
-            highs = []
-            have_low = False
-            for idx, f in enumerate(freq):
-                if not have_low:
-                    if snr[idx] >= threshold:
-                        lows.append(f)
-                        have_low = True
-                    else:
-                        continue
-                else:
-                    if snr[idx] < threshold:
-                        highs.append(freq[idx-1])
-                        have_low = False
-                    else:
-                        continue
+            sign_diff = np.diff(np.sign(snr - threshold))
+            np.nan_to_num(sign_diff, copy=False, nan=0.0, posinf=None, neginf=None)
+            zero_crossings_idx = np.where(sign_diff != 0)[0]
+            zero_crossing_grad = sign_diff[zero_crossings_idx]
+            lows = freq[zero_crossings_idx[zero_crossing_grad > 0] + 1]
+            highs = freq[zero_crossings_idx[zero_crossing_grad < 0]]
+            if snr[~np.isnan(snr)][0] - threshold > 0:
+                lows = np.insert(lows, 0, freq[0], axis=0)
 
             # If we didn't find any corners
-            if not lows:
+            if len(lows) == 0:
                 tr.fail("SNR not greater than required threshold.")
                 continue
 
             # If we find an extra low, add another high for the maximum
             # frequency
             if len(lows) > len(highs):
-                highs.append(max(freq))
+                highs = np.append(highs, max(freq))
 
             # Check if any of the low/high pairs are valid
             found_valid = False
             for idx, val in enumerate(lows):
-                if val <= min_freq and highs[idx] > max_freq:
-                    low_corner = val
-                    high_corner = highs[idx]
-                    found_valid = True
+                if idx < len(highs):
+                    if val <= min_freq and highs[idx] > max_freq:
+                        low_corner = val
+                        high_corner = highs[idx]
+                        found_valid = True
 
             if found_valid:
                 # Check to make sure that the highpass corner frequency is not
