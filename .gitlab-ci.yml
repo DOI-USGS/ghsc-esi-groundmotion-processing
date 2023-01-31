@@ -6,6 +6,8 @@ default:
   before_script:
     - python --version
     - export PATH="/home/usgs-user/.local/bin:$PATH"
+    - source /home/usgs-user/miniconda/etc/profile.d/conda.sh
+    - conda install -y tree make
 
 stages:
   - test
@@ -15,6 +17,7 @@ stages:
 run tests:
   stage: test
   script:
+    - uname -a
     - pip install -e .[test]
     - pytest -rx .
   rules:
