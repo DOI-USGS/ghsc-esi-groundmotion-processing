@@ -56,11 +56,17 @@ pages:
   script:
     - pip install -e .[doc]
     - cd doc_source
+    - . $HOME/miniconda/etc/profile.d/conda.sh
+    - conda activate base
+    - which conda
+    - which make
     - bash makedocs.sh
+    - cd ..
+    - mv docs public
   artifacts:
     paths:
       # The folder that contains the files to be exposed at the Page URL
-      - docs
+      - public
   rules:
     # This ensures that only pushes to the default branch will trigger
     # a pages deploy
