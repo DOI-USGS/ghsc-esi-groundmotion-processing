@@ -14,7 +14,9 @@ default:
 
 # repository rules
 .fork: &fork
-  if: $CI_PROJECT_PATH != 'ghsc/esi/groundmotion-processing'
+  if: >
+    $CI_PROJECT_PATH != 'ghsc/esi/groundmotion-processing'
+    && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   variables:
     ENVIRONMENT: development
 
@@ -44,7 +46,7 @@ run tests and coverage:
     - *upstream
   script:
     - pip install -e .[test]
-    - pytest -rx --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term
+    - pytest -rx --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
     - coverage xml
   stage: test
 
@@ -72,10 +74,7 @@ pages:
   script:
     - pip install -e .[doc]
     - cd doc_source
-    - . $HOME/miniconda/etc/profile.d/conda.sh
     - conda activate base
-    - which conda
-    - which make
     - bash makedocs.sh
     - cd ..
     - mv docs public

@@ -12,7 +12,7 @@ vcr = vcrpy.VCR(
     path_transformer=vcrpy.VCR.ensure_suffix(".yaml"),
     cassette_library_dir=str(TEST_DATA_DIR / "vcr_cassettes"),
     record_mode="once",
-    match_on=["uri", "method"],
+    match_on=["uri"],
 )
 
 
