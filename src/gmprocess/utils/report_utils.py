@@ -204,7 +204,7 @@ def draw_stations_map(pstreams, event, event_dir):
         event.magnitude,
         event.latitude,
         event.longitude,
-        (event.depth / 1000.0),
+        event.depth_km,
     )
     event_popup = folium.Popup(event_info, min_width=180, max_width=180)
 

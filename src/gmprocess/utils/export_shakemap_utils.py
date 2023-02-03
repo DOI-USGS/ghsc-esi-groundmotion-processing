@@ -145,7 +145,7 @@ def create_json(
         "location": "",
         "latitude": event.latitude,
         "longitude": event.longitude,
-        "depth": event.depth,
+        "depth": event.depth_km * 1000.0,
         "magnitude": event.magnitude,
     }
     feature_dict = {

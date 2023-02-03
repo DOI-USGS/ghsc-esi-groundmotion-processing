@@ -137,12 +137,6 @@ class ScalarEvent(Event):
         return origin.longitude
 
     @property
-    def depth(self):
-        """Return the origin depth."""
-        origin = self._get_origin()
-        return origin.depth
-
-    @property
     def depth_km(self):
         """Return the origin depth."""
         origin = self._get_origin()

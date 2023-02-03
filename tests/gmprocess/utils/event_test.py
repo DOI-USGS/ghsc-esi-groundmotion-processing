@@ -105,7 +105,6 @@ def test_event():
         assert event.time == tdict["time"]
         assert event.latitude == tdict["lat"]
         assert event.longitude == tdict["lon"]
-        assert event.depth == tdict["depth"] * 1000
         assert event.depth_km == tdict["depth"]
 
 

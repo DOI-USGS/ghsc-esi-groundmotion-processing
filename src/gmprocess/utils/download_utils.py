@@ -103,7 +103,7 @@ def create_event_file(event, event_dir):
             },
             "geometry": {
                 "type": "Point",
-                "coordinates": [event.longitude, event.latitude, event.depth / 1000.0],
+                "coordinates": [event.longitude, event.latitude, event.depth_km],
             },
             "id": eventid,
         }
