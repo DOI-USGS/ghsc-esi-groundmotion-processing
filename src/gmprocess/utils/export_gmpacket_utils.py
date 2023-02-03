@@ -62,7 +62,7 @@ class GroundMotionPacketWriter(object):
             scalar_event.magnitude,
             scalar_event.latitude,
             scalar_event.longitude,
-            scalar_event.depth / 1000,
+            scalar_event.depth_km,
         )
         return gmp_event
 
