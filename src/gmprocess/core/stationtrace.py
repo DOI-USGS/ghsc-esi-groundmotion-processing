@@ -1,27 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import copy
+import getpass
+import inspect
+
 # stdlib imports
 import json
-import copy
 import logging
-from datetime import datetime
-import getpass
 import re
-import inspect
+from datetime import datetime
 
 # third party imports
 import numpy as np
-from obspy.core.trace import Trace
+import pandas as pd
 import prov
 import prov.model
-from obspy.core.utcdatetime import UTCDateTime
-import pandas as pd
-from scipy.integrate import cumtrapz
+from gmprocess.io.cosmos.data_structures import BUILDING_TYPES
+from gmprocess.io.seedname import get_units_type
 
 # local imports
 from gmprocess.utils.config import get_config
-from gmprocess.io.seedname import get_units_type
+from obspy.core.trace import Trace
+from obspy.core.utcdatetime import UTCDateTime
+from scipy.integrate import cumtrapz
 
 UNITS = {"acc": "cm/s^2", "vel": "cm/s"}
 REVERSE_UNITS = {
@@ -72,6 +74,7 @@ STANDARD_KEYS = {
     "sensor_serial_number": {"type": str, "required": False, "default": ""},
     "instrument": {"type": str, "required": False, "default": ""},
     "structure_type": {"type": str, "required": False, "default": ""},
+    "structure_cosmos_code": {"type": int, "required": False, "default": 999},
     "corner_frequency": {"type": float, "required": False, "default": np.nan},
     "units": {"type": str, "required": True, "default": ""},
     "units_type": {"type": str, "required": True, "default": ""},
@@ -329,6 +332,18 @@ class StationTrace(Trace):
                 "Number of points in header does not match the number of "
                 "points in the data."
             )
+
+        # set the cosmos structure code from the structure type field, if possible
+        if "structure_cosmos_code" not in self.stats.standard:
+            inverse_btypes = {v: k for k, v in BUILDING_TYPES.items()}
+            if self.stats.standard.structure_type == "":
+                self.stats.standard["structure_cosmos_code"] = 999
+            elif self.stats.standard.structure_type in inverse_btypes:
+                self.stats.standard["structure_cosmos_code"] = inverse_btypes[
+                    self.stats.standard.structure_type
+                ]
+            else:
+                self.stats.standard["structure_cosmos_code"] = 999
 
         if "remove_response" not in self.getProvenanceKeys():
             self.stats.standard.units = "raw counts"
