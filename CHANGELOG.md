@@ -7,7 +7,7 @@
  - Bugfixes
    - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
    - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
-
+ - Added command to create [ground motion packet](https://github.com/SCEDC/ground-motion-packet/#description-of-gmp-a-geojson-specification-for-ground-motion-metrics) files.
 
 ## 1.2.3 / 2022-12-23
 
