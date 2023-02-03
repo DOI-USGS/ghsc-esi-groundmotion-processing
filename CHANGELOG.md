@@ -6,6 +6,7 @@
  - Improved email alert error message.
  - Removed unnecessary loops from corner frequency method.
  - Bugfixes
+   - Use event depth in km, not m, in hypocentral and rupture distance calculations. Bug was introduced in v1.2.3.
    - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
    - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
 

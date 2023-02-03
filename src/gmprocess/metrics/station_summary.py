@@ -601,8 +601,8 @@ class StationSummary(object):
                 lat,
                 -elev / M_PER_KM,
                 event.longitude,
-                event.longitude,
-                event.depth,
+                event.latitude,
+                event.depth_km,
             )
 
         if self.rupture is None:
@@ -613,7 +613,7 @@ class StationSummary(object):
                     "network": "",
                     "lat": event.latitude,
                     "lon": event.longitude,
-                    "depth": event.depth,
+                    "depth": event.depth_km,
                     "locstring": "",
                     "mag": event.magnitude,
                     "time": "",
@@ -910,7 +910,7 @@ def get_ps2ff_interpolation(event):
     maxdip = maxdip_deg * np.pi / 180.0
     repi, Rjb_hat, Rrup_hat, Rjb_var, Rrup_var = ps2ff.run.single_event_adjustment(
         event.magnitude,
-        event.depth,
+        event.depth_km,
         ar=aspect,
         mechanism=smech,
         mag_scaling=mscale,
