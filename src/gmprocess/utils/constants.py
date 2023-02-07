@@ -6,7 +6,7 @@ import pathlib
 
 DATA_DIR = (pathlib.Path(__file__).parent / ".." / "data").resolve()
 TEST_DATA_DIR = (
-    pathlib.Path(__file__).parent / ".." / ".." / ".." / "tests" / "data"
+    pathlib.Path(".").parent / "tests" / "data"
 ).resolve()
 
 PROJ_CONF_DIR = ".gmprocess"
