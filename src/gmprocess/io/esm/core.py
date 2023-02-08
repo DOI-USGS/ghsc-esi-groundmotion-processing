@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 
 # stdlib imports
-from datetime import datetime
-import os
 import logging
+import os
+from datetime import datetime
+
+import numpy as np
+from gmprocess.core.stationstream import StationStream
+
+# local imports
+from gmprocess.core.stationtrace import PROCESS_LEVELS, StationTrace
+from gmprocess.io.utils import is_binary
 
 # third party
 from obspy.core.trace import Stats
-import numpy as np
-
-# local imports
-from gmprocess.core.stationtrace import StationTrace, PROCESS_LEVELS
-from gmprocess.core.stationstream import StationStream
-from gmprocess.io.utils import is_binary
-
 
 TEXT_HDR_ROWS = 64
 # 20190728_160919.870
 TIMEFMT = "%Y%m%d_%H%M%S.%f"
 TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
+TIMEFMT3 = "%Y/%m/%d %H:%M:%S.%f"
 
 
 SRC = "ORFEUS Engineering Strong Motion Database"
@@ -104,7 +105,10 @@ def read_esm(filename, config=None, **kwargs):
     stats["calib"] = 1.0
     stats["npts"] = int(header["NDATA"])
     stimestr = header["DATE_TIME_FIRST_SAMPLE_YYYYMMDD_HHMMSS"]
-    stats["starttime"] = datetime.strptime(stimestr, TIMEFMT)
+    try:
+        stats["starttime"] = datetime.strptime(stimestr, TIMEFMT)
+    except Exception:
+        stats["starttime"] = datetime.strptime(stimestr[0:26], TIMEFMT3)
 
     # fill in standard fields
     head, tail = os.path.split(filename)
@@ -124,7 +128,10 @@ def read_esm(filename, config=None, **kwargs):
         standard["instrument_damping"] = np.nan
 
     ptimestr = header["DATA_TIMESTAMP_YYYYMMDD_HHMMSS"]
-    ptime = datetime.strptime(ptimestr, TIMEFMT).strftime(TIMEFMT2)
+    try:
+        ptime = datetime.strptime(ptimestr, TIMEFMT).strftime(TIMEFMT2)
+    except Exception:
+        ptime = ""
     standard["process_time"] = ptime
     standard["process_level"] = PROCESS_LEVELS["V1"]
     instr_str = header["INSTRUMENT"]
@@ -169,15 +176,14 @@ def read_esm(filename, config=None, **kwargs):
         highfreq = np.nan
     if not np.isnan(lowfreq) and not np.isnan(lowfreq):
         filter_att = {
-            "bandpass_filter": {
-                "filter_type": ftype,
-                "lower_corner_frequency": lowfreq,
-                "higher_corner_frequency": highfreq,
-                "filter_order": forder,
-            }
+            "filter_type": ftype,
+            "lower_corner_frequency": lowfreq,
+            "higher_corner_frequency": highfreq,
+            "filter_order": forder,
         }
-        trace.setProvenance("lowpass_filter", filter_att)
-    detrend_att = {"detrend": {"detrending_method": "baseline"}}
+
+        trace.setProvenance("bandpass_filter", filter_att)
+    detrend_att = {"detrending_method": "baseline"}
     if "NOT REMOVED" not in header["BASELINE_CORRECTION"]:
         trace.setProvenance("detrend", detrend_att)
     stream = StationStream(traces=[trace], config=config)

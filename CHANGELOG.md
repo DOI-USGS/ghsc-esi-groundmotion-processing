@@ -11,6 +11,7 @@
    - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
  - Added command to create [ground motion packet](https://github.com/SCEDC/ground-motion-packet/#description-of-gmp-a-geojson-specification-for-ground-motion-metrics) files.
  - Alter how TEST_DATA_DIR is constructed in constanst.py to facilitate running local tests with PyTest against a Conda-Forge or PyPi installed gmprocess distribution 
+ - Updated reader for the Engineering Strong Motion (ESM) ascii format.
 
 ## 1.2.3 / 2022-12-23
 
