@@ -1,6 +1,6 @@
 [project]
 name = "gmprocess"
-version = "1.2.3"
+version = "1.2.4"
 description = "USGS Automated Ground Motion Processing Software"
 authors = [
     {name = "Eric Thompson", email="emthompsone@usgs.gov"},

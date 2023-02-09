@@ -1,4 +1,4 @@
-## main
+## 1.2.4 / 2023-02-09
 
  - Add config option to send email on errors.
  - Handle unexpected exception zip checking in `assemble` subcommand
