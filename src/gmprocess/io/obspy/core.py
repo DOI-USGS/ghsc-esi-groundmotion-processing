@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 
 # stdlib imports
-import os
-import logging
 import glob
+import logging
+import os
+import pathlib
 import re
 
-# third party
-from obspy.core.stream import read
-from obspy import read_inventory
+from gmprocess.core.stationstream import StationStream
 
 # local imports
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.core.stationstream import StationStream
 from gmprocess.utils.config import get_config
+
+from obspy import read_inventory
+
+# third party
+from obspy.core.stream import read
 
 IGNORE_FORMATS = ["KNET"]
 EXCLUDE_PATTERNS = ["*.*.??.LN?"]
@@ -87,7 +90,12 @@ def _get_station_file(filename, stream, metadata_directory):
         logging.info(f"Using 'metadata_directory': {metadata_directory}")
         xmlfiles = glob.glob(os.path.join(metadata_directory, pattern))
     if len(xmlfiles) != 1:
-        return "None"
+        filebase, fname = os.path.split(filename)
+        fname_base, ext = os.path.splitext(fname)
+        pattern = f"{fname_base}.xml"
+        xmlfiles = glob.glob(os.path.join(filebase, pattern))
+        if len(xmlfiles) != 1:
+            return "None"
     xmlfile = xmlfiles[0]
     return xmlfile
 
