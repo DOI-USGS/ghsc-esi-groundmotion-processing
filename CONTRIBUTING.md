@@ -75,23 +75,18 @@ Common reasons to rebase include:
 
 ## Releases
 
-1. Create a release candidate branch with a name related to the release version like `rc-v121`.
-2. Update version in `pyproject.toml`.
-3. Add new section to `code.json`; update "metadataLastUpdated" date and the urls that include the version.
-4. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
-5. Create tag locally with
+1. Create a release candidate branch with a name related to the release version like `v1.2.1-rc0`.
+2. Add new section to `code.json` for this release; update "metadataLastUpdated" date and the urls that include the version.
+3. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
+4. Create an annotated tag and push the release candidate upstream
    ```
-   git tag v1.2.1
+   git tag -a v1.2.1 -m "Version 1.2.1"
+   git push upstream v1.2.1-rc0
    ```
-6. Push tag to upstream/main
-   ```
-   git push origin v1.2.1
-   ```
-7. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
-8. Copy/paste the relevant part of the changelog into the "describe this release" section.
+5. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
+6. Copy/paste the relevant part of the changelog into the "describe this release" section.
+7. Merge the release candidate back into main. 
 
-Note that the command line program `repotag` from the `esi-utils-io` repository will
-help automate these steps. 
 
 ## Build Documentation
 
