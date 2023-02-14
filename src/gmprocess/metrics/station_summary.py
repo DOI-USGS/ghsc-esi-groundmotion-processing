@@ -1,22 +1,23 @@
 # stdlib imports
 import re
 
-# third party imports
-from lxml import etree
 import numpy as np
 import pandas as pd
-from obspy.geodetics.base import gps2dist_azimuth
-from openquake.hazardlib.geo import geodetic as oqgeo
-from esi_utils_rupture.point_rupture import PointRupture
-from esi_utils_rupture.origin import Origin
 import ps2ff
-
-# local imports
-from gmprocess.utils.config import get_config
+from esi_utils_rupture.origin import Origin
+from esi_utils_rupture.point_rupture import PointRupture
 from gmprocess.metrics.gather import gather_pgms
 from gmprocess.metrics.metrics_controller import MetricsController
 from gmprocess.utils import constants
+
+# local imports
+from gmprocess.utils.config import get_config
 from gmprocess.utils.tables import _get_table_row, find_float
+
+# third party imports
+from lxml import etree
+from obspy.geodetics.base import gps2dist_azimuth
+from openquake.hazardlib.geo import geodetic as oqgeo
 
 XML_UNITS = {
     "pga": "%g",
@@ -677,7 +678,7 @@ class StationSummary(object):
             # to be calculated to the closest point on the rupture
             dists = []
             bazs = []
-            for quad in self.rupture._quadrilaterals:
+            for quad in self.rupture.getQuadrilaterals():
                 P0, P1, _, _ = quad
                 for point in [P0, P1]:
                     dist, _, baz = gps2dist_azimuth(
