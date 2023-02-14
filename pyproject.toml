@@ -1,6 +1,6 @@
 [project]
 name = "gmprocess"
-version = "1.2.3"
+dynamic = ["version"]
 description = "USGS Automated Ground Motion Processing Software"
 authors = [
     {name = "Eric Thompson", email="emthompsone@usgs.gov"},
@@ -97,3 +97,5 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 include = ["gmprocess*"]
 exclude = ["tests*"]
+
+[tool.setuptools_scm]

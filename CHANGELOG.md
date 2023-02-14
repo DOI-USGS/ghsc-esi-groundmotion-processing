@@ -1,4 +1,9 @@
 ## main
+ - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
+ - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
+
+
+## 1.2.4 / 2023-02-09
 
  - Add config option to send email on errors.
  - Handle unexpected exception zip checking in `assemble` subcommand
@@ -12,8 +17,6 @@
  - Added command to create [ground motion packet](https://github.com/SCEDC/ground-motion-packet/#description-of-gmp-a-geojson-specification-for-ground-motion-metrics) files.
  - Alter how TEST_DATA_DIR is constructed in constanst.py to facilitate running local tests with PyTest against a Conda-Forge or PyPi installed gmprocess distribution 
  - Updated reader for the Engineering Strong Motion (ESM) ascii format.
- - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
- - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
 
 ## 1.2.3 / 2022-12-23
 
