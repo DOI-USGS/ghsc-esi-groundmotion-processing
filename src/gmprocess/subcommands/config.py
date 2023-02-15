@@ -46,11 +46,11 @@ class ConfigModule(base.SubcommandModule):
             "short_flag": "-u",
             "long_flag": "--update",
             "help": (
-                "Replace the config in the workspace files with the config."
-                "in the current project."
+                "Replace the config in the workspace files with the config "
+                "in the current project (no argument) or with a config.yml "
+                "in the directory specified. Do not specify the path to the config file!"
             ),
-            "default": False,
-            "action": "store_true",
+            "default": "default",
         },
         {
             "short_flag": "-s",
@@ -76,9 +76,6 @@ class ConfigModule(base.SubcommandModule):
         self._get_events()
 
         logging.info(f"Number of events: {len(self.events)}")
-
-        # Grab the config from the project on the file system
-        proj_config = confmod.get_config(gmrecords.conf_path)
 
         for event in self.events:
             event_dir = self.gmrecords.data_path / event.id
@@ -113,8 +110,16 @@ class ConfigModule(base.SubcommandModule):
                         self.append_file("Config", fname)
                     else:
                         logging.info(f"No config in workspace for event {event.id}.")
-                if self.gmrecords.args.update:
+                if self.gmrecords.args.update is not None:
+                    if self.gmrecords.args.update == "default":
+                        # Grab the config from the project on the file system
+                        proj_config = confmod.get_config(gmrecords.conf_path)
+                    else:
+                        proj_config = confmod.get_config(
+                            Path(self.gmrecords.args.update)
+                        )
                     # Write project config to workspace
                     logging.info(f"Adding config {event.id} workspace file.")
                     workspace.addConfig(config=proj_config, force=True)
+
         self._summarize_files_created()
