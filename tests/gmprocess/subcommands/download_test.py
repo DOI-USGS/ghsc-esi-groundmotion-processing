@@ -95,7 +95,53 @@ def download_provider_url(script_runner):
         shutil.rmtree(constants.CONFIG_PATH_TEST)
 
 
+@vcr.use_cassette()
+def download_provider_url_bounds(script_runner):
+    # This test is to specify a single provider and it's URL
+    try:
+        # Need to create profile first.
+        cdir = constants.CONFIG_PATH_TEST
+        ddir = str(cdir / "data")
+        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
+        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
+        setup_inputs.close()
+        assert ret.success
+
+        # Copy over relevant config
+        test_conf_file = (
+            constants.TEST_DATA_DIR / "config_download_provider_url_bounds.yml"
+        )
+        shutil.copy(test_conf_file, constants.CONFIG_PATH_TEST / "user.yml")
+        event_file = constants.TEST_DATA_DIR / "israel_event_test.csv"
+
+        ret = script_runner.run("gmrecords", "-t", str(event_file), "download")
+        assert ret.success
+
+        raw_dir = Path(ddir) / "gsi200801041549" / "raw"
+        assert raw_dir.exists()
+
+        tfile = list(
+            raw_dir.glob("IS.MMA3..BHZ__20080401T174930Z__20080401T175700Z.mseed")
+        )
+        assert len(tfile) == 1
+
+        ret = script_runner.run("gmrecords", "-e hv73325052", "download")
+        assert ret.success
+
+        raw_dir = Path(ddir) / "hv73325052" / "raw"
+        assert raw_dir.exists()
+
+        tfile = list(raw_dir.glob("*.mseed"))
+        assert len(tfile) == 0
+
+    except Exception as ex:
+        raise ex
+    finally:
+        shutil.rmtree(constants.CONFIG_PATH_TEST)
+
+
 if __name__ == "__main__":
     download()
     download_single_provider()
     download_provider_url()
+    download_provider_url_bounds()

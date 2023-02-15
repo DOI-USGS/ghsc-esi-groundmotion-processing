@@ -1,7 +1,8 @@
 ## main
- - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
  - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
-
+ - Add support for bounds in FDSN providers.
+ - Bugfixes
+   - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
 
 ## 1.2.4 / 2023-02-09
 
