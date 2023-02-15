@@ -116,7 +116,7 @@ def test_filters():
             target_dict[filter_type + "_freq"],
             atol=1e-7,
         )
-        np.testing.assert_allclose(git che
+        np.testing.assert_allclose(
             filter_dict[filter_type + "_time"],
             target_dict[filter_type + "_time"],
             atol=1e-7,
