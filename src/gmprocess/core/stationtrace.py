@@ -523,6 +523,8 @@ class StationTrace(Trace):
         self,
         type="highpass",
         freq=0.05,
+        freqmin=0.1,
+        freqmax=20,
         corners=5.0,
         zerophase=False,
         config=None,
@@ -533,9 +535,13 @@ class StationTrace(Trace):
 
         Args:
             type (str):
-                What type of filter? "highpass" or "lowpass".
+                What type of filter? "highpass" or "lowpass" or "bandpass" or "bandstop".
             freq (float):
-                Corner frequency (Hz).
+                Corner frequency (Hz) used for "highpass" or "lowpass".
+            freqmin (float):
+                Low corner frequency (Hz) used for "bandpass" or "bandstop".
+            freqmax (float):
+                High corner frequency (Hz) used for "bandpass" or "bandstop".
             corners (float):
                 Number of poles.
             zerophase (bool):
@@ -576,23 +582,9 @@ class StationTrace(Trace):
                         "even if number of passes is 2"
                     )
 
-                # compute fft
-                dt = self.stats.delta
-                orig_npts = self.stats.npts
-                signal_spec = np.fft.rfft(self.data, n=orig_npts)
-                signal_freq = np.fft.rfftfreq(orig_npts, dt)
-                signal_freq[0] = 1.0
-
-                # apply filter
-                filter = np.sqrt(1.0 + (signal_freq / freq) ** (2.0 * corners))
-                filtered_spec = signal_spec / filter
-                filtered_spec[0] = 0.0
-                signal_freq[0] = 0
-
-                # inverse fft to time domain
-                filtered_trace = np.fft.irfft(filtered_spec, n=orig_npts)
-                # get rid of padded zeros
-                self.data = filtered_trace
+                self.__compute_fft()
+                filter = np.sqrt(1.0 + (self.signal_freq / freq) ** (2.0 * corners))
+                self.__apply_filter(filter)
 
                 self.setProvenance(
                     "lowpass_filter",
@@ -604,7 +596,7 @@ class StationTrace(Trace):
                     },
                 )
 
-        if type == "highpass":
+        elif type == "highpass":
             if not frequency_domain:
                 self.setProvenance(
                     "highpass_filter",
@@ -630,23 +622,9 @@ class StationTrace(Trace):
                         "even if number of passes is 2"
                     )
 
-                # compute fft
-                dt = self.stats.delta
-                orig_npts = self.stats.npts
-                signal_spec = np.fft.rfft(self.data, n=orig_npts)
-                signal_freq = np.fft.rfftfreq(orig_npts, dt)
-                signal_freq[0] = 1.0
-
-                # apply filter
-                filter = np.sqrt(1.0 + (freq / signal_freq) ** (2.0 * corners))
-                filtered_spec = signal_spec / filter
-                filtered_spec[0] = 0.0
-                signal_freq[0] = 0
-
-                # inverse fft to time domain
-                filtered_trace = np.fft.irfft(filtered_spec, n=orig_npts)
-                # get rid of padded zeros
-                self.data = filtered_trace
+                self.__compute_fft()
+                filter = np.sqrt(1.0 + (freq / self.signal_freq) ** (2.0 * corners))
+                self.__apply_filter(filter)
 
                 self.setProvenance(
                     "highpass_filter",
@@ -657,6 +635,99 @@ class StationTrace(Trace):
                         "corner_frequency": freq,
                     },
                 )
+
+        elif type == "bandpass":
+            if not frequency_domain:
+                self.setProvenance(
+                    "bandpass",
+                    {
+                        "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
+                        "filter_type": "Butterworth ObsPy",
+                        "filter_order": corners,
+                        "number_of_passes": number_of_passes,
+                        "lower_corner_frequency": freqmin,
+                        "upper_corner_frequency": freqmax,
+                    },
+                )
+                return super().filter(
+                    type,
+                    freqmin=freqmin,
+                    freqmax=freqmax,
+                    corners=corners,
+                    zerophase=zerophase,
+                    **options,
+                )
+
+            else:
+                if zerophase:
+                    logging.warning(
+                        "Filter is only applied once in frequency domain, "
+                        "even if number of passes is 2"
+                    )
+                self.__compute_fft()
+                filter = np.sqrt(1.0 + (freqmin / self.signal_freq) ** (2.0 * corners))
+                filter *= np.sqrt(1.0 + (self.signal_freq / freqmax) ** (2.0 * corners))
+                self.__apply_filter(filter)
+
+                self.setProvenance(
+                    "bandpass",
+                    {
+                        "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
+                        "filter_type": "Butterworth gmrocess",
+                        "filter_order": corners,
+                        "number_of_passes": number_of_passes,
+                        "lower_corner_frequency": freqmin,
+                        "upper_corner_frequency": freqmax,
+                    },
+                )
+        elif type == "bandstop":
+            if not frequency_domain:
+                self.setProvenance(
+                    "bandstop",
+                    {
+                        "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
+                        "filter_type": "Butterworth ObsPy",
+                        "filter_order": corners,
+                        "number_of_passes": number_of_passes,
+                        "lower_corner_frequency": freqmin,
+                        "upper_corner_frequency": freqmax,
+                    },
+                )
+                return super().filter(
+                    type,
+                    freqmin=freqmin,
+                    freqmax=freqmax,
+                    corners=corners,
+                    zerophase=zerophase,
+                    **options,
+                )
+
+            else:
+                if zerophase:
+                    logging.warning(
+                        "Filter is only applied once in frequency domain, "
+                        "even if number of passes is 2"
+                    )
+
+                self.__compute_fft()
+                filter = np.sqrt(1.0 + (freq / self.signal_freq) ** (2.0 * corners))
+                filter *= np.sqrt(1.0 + (self.signal_freq / freq) ** (2.0 * corners))
+                filter = 1 - filter
+                self.__apply_filter(filter)
+
+                self.setProvenance(
+                    "bandstop",
+                    {
+                        "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
+                        "filter_type": "Butterworth gmprocess",
+                        "filter_order": corners,
+                        "number_of_passes": number_of_passes,
+                        "lower_corner_frequency": freqmin,
+                        "upper_corner_frequency": freqmax,
+                    },
+                )
+        else:
+            raise TypeError(f"Unsupported filter type: {type}")
 
         return self
 
@@ -994,6 +1065,20 @@ class StationTrace(Trace):
         ind_str = " " * indent
         return ind_str + trace_id + out % (self.stats)
 
+    def __compute_fft(self):
+        self.signal_spec = np.fft.rfft(self.data, n=self.stats.npts)
+        self.signal_freq = np.fft.rfftfreq(self.stats.npts, self.stats.delta)
+        self.signal_freq[0] = 1.0
+
+    def __apply_filter(self, filter):
+        filtered_spec = self.signal_spec / filter
+        filtered_spec[0] = 0.0
+        self.signal_freq[0] = 0
+
+        # inverse fft to time domain
+        filtered_trace = np.fft.irfft(filtered_spec, n=self.stats.npts)
+        self.data = filtered_trace
+
 
 def _stats_from_inventory(data, inventory, seed_id, start_time):
     if len(inventory.source):
@@ -1162,7 +1247,7 @@ def _stats_from_header(header, config):
         standard["volts_to_counts"] = np.nan
         response = None
     else:
-        raise Exception("Format unsuppored without StationXML file.")
+        raise Exception("Format unsupported without StationXML file.")
 
     return (response, standard, coords, format_specific)
 
