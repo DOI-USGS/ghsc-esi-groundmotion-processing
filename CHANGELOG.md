@@ -2,10 +2,11 @@
  - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
  - Added support for passing in a config directory to `gmrecords config -u`
  - Add support for bounds in FDSN providers.
+ - Added bandpass and bandstop filter types for StationTrace. Improved modularity of low/high pass filter code.
+ - Added unit tests for the StationTrace filter types.
  - Bugfixes
-   - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
-
-
+  - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
+  - Fixed bug in StationTrace filters where the bandpass option was not implemented and no warning was given.
 
 ## 1.2.4 / 2023-02-09
 
