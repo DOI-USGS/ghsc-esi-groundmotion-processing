@@ -1,0 +1,1486 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: GET
+    uri: https://seis.gsi.gov.il/fdsnws/dataselect/1/application.wadl
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+VUTY/aMBA9w6+w0nPjBNhDUcJKlapedtVK7KFXbzxs3MZO1p4Q+Pe1nUDCEkQX
+        taceDJqPN+/FnpnkficLsgVtRKnSIA6j4H41TVhVFSJjaJ3EJiiz3BmRBjlitaS0aZqwmYelfqGz
+        KIrpj8eHdZaDZB+FMshUBsF0MrGIpfHuh7It1RYwpxXW9bMUxtHThvHC/4Q7w32Jjppfpz6m96mu
+        EIdt+JNtWagAHeITjWbBajpJNJiy1hkY8swMpAHdcKMaQzlDaxeQIY1dYp9JKoZ5GrzWoPc+Mkkk
+        YF5ykmvYpMEHH/n65SmgF6Pfv627cEIPdS+SsBrzf03UvfwpjWLS3ogj8G4PqkploDWdXVkXKGw7
+        RAIX7GlfWRDCDmlVMKE6cS1/j05oS3Jd2qAHQ/eWf03joDC1LfNeob1hnHWmhwjePeBBndVibYNt
+        3YppJrt8Oy0aUUgIiMF9AYf2IuiV2s5f2oaEJ5dBz+Gg+O1gOxFNqX9dBhvUQr2MQU17qbdAi24X
+        3ILNcqYUFLdAX2tWCNy/hXLYsLrANPh8aKOy8u2yZUUNzk1H/Y8HDupJzvk2pZYMryrtBUihhAHg
+        4zqO0Su0qnT76zKtUDjgnEWLcToXGP/wxTEy0OAm4tjgx0Ekrktq46pF3ez+2UxuFQ/dNg5l/8mn
+        wznGsSCLKLIntmduj7Vj+x8vyJ3130Xzqxre7q4TzsE6OB15v2n7mffmf3EPCR2IXU1/AzY3H7JK
+        CAAA
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '573'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:03 GMT
+      Last-Modified:
+      - Thu, 01 Dec 2022 11:03:07 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0440fd24aabb970803147f7baa4c0c1e0b42aa562d56239938ee6f4b0c4766f74a8d8609ca80da7da8593ffd32c5f64eb01;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: GET
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query?starttime=2008-04-01T17%3A49%3A30.000000&endtime=2008-04-01T17%3A57%3A00.000000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=32.07635498&longitude=35.47344589&minradius=0.0&maxradius=3.0&format=text
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '2147'
+      Content-Type:
+      - text/plain
+      Date:
+      - Wed, 15 Feb 2023 18:03:06 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0445fd86981b13693a59140f73b2285ff06cc7d905819847888f068177e7c74ac4ed02aebd8a88c39c979e0b76102aec76b;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'AA ASH -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ASH -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ASH -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA EIL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA EIL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA EIL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA GOS -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA GOS -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA GOS -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HAR -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HAR -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HAR -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HATZ -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HATZ -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HATZ -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HIFA -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HIFA -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HIFA -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HLN -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HLN -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA HLN -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KAZ -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KAZ -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KAZ -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KIT -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KIT -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA KIT -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA LOD -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA LOD -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA LOD -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAN -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAN -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAN -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAS -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAS -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MAS -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MDBI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MDBI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MDBI -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MEF -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MEF -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA MEF -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA NTY -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA NTY -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA NTY -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROD -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROD -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROD -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      AA ROI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '3408'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/dataselect/1/query
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Date:
+      - Wed, 15 Feb 2023 18:03:08 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff04477756146f30ff701f328374b3ad92772f687b6a1157ac6459474e05cbe5b0fa1c13889b939b880818f0d1a73cc5d365a;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: 'LR NAQL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR NAQL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR NAQL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QRWL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QRWL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QRWL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QSB -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QSB -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR QSB -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR RCY -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR RCY -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR RCY -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR SHBL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR SHBL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR SHBL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR ZAHL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR ZAHL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      LR ZAHL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '1235'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/dataselect/1/query
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Date:
+      - Wed, 15 Feb 2023 18:03:09 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044206b08a37f3ec816527de46084edd69600d50421b5ead7ca59bbc115c19c40fd3529c26a1ed181f08ddc50e445541277;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: 'level=response
+
+      IS EIL -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS EIL -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS EIL -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '218'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1ZXW+rOBB931+BeNp9CLaBkFC5XGWT9G6kNI1KWq36xiVOii6YrDHttr9+x3wk
+        IUnVbrervVtRIdXMjI9nxjP2UaBf/kxi7YGJLEr5uU4MrGuMh+ky4utz/WZx0enrXzx6MfJnvgwk
+        GP1+OdVgDs/O9XspN2cIPT4+Gqtlxo1UrBGoUFZaIqJrWXjPkuB2h2/qHvXTXITM81mUDdNkTlEl
+        oD7jSya8r/4EZOWYDgULJFt6JjatDjY7pLsg/TNsnRHLILZJnDuKahs6Y/IxFd81CICd6xMfHJCB
+        kCPQwuJuH3cwgWeB8Vnx3OmaYJkUUQjTVYA5hJVuGAcvRywLRbRRkXiTTAQs1pTHSRRq1TIU7dvQ
+        KkHV4uPJ9J+sPgUsmS+ZZ7qG0zNt3KVoK6PTlK/LoWUbbtfErgvqrZCOY/ZQOOOZNkzcvVI/kqCf
+        BQnzxlEcSG2Rc85iigoRpL3QFwkFe+W6d8rzKue1CR3eBwqmiv3X3+7eH7sWp2GBPCyw/sVcjNhG
+        3ntYbaMa0MFzlOSlpB7SUbTxOq6ygQH1g2QTs2sVsg2yvdc91bWChxznyTcmSnFWmDcltQELU77M
+        PLLVV4J9+ApyCKn5PhLRSiof995U52SpUCktWmmyPNdLEYK+IbiPTdy3sGkbDra7fccgBPK6eNow
+        74YHDwFUwreYUVRIGpXfUDfK/RK2J27qS1HRu7A0AAUymKbrNWt6psRxIT72znLdnuHqyKPXLNuk
+        PAN/JhwKJU8Ylwo4ktFDJJ88ehvEOfO6uP6jqJTQC8H+yOEUe/KwgU2Kdu8AtcnlDY9kVjXBJfLr
+        2t+P7pZBcmEVLeLaJZNwfmlziKLcm4NEoH3Qq1werDC8upkttoughgF6ITRoiDXTeFEP0D6wV/MU
+        auaOiTRrpLJO0nxwd2Kn+w4xiKlrHJZWx6EBh5IBzWmohjQwhuMel4/+n6Tm9nRW5s8LEfBsxcRF
+        zkOFVNTldDCfDoZj7efrwWgymPnIHw+vZqNfKHphAp2lIgni6Lno94sglFCUDi5ypNrxhPZgykEh
+        vaCkal+2u9XVVe0GsWrR4j+dJME64oF4UqLdC0Vq3sFs5+/OVoWxnY3r2R1w2OphbB+j1CriNOEU
+        0AEceQPc29HMLZrZJYZlvRrgCQxri0EsqN5T4dlOzzDdV5HsV5FeBkK7bqx69WsQ8fpEIt23nUVo
+        b2Y5Pmx8lbFhylarKIzgiMhONOmuhd5/Cg1XJ9tnNPk6WQymcNGc1oOi4duIhVFSXa2FM3vXI678
+        278xq5aDi69uvqvVKmPF3VaNADMOnsorWg0gG0KwwoXiBty9KYvd8kd7YhPXtk7uyqtbgnYXEapo
+        zjHfmX0mvvOZ2E63D0kkzg/Kdro2nITEbunOR9AdIDy2QXpHdGfW0p2W7rR0p6U7Ld35KLoz/j/T
+        Hfcz850eNvuG+aP+uuM4pAe3cct3PoLv9EwLTuzjn3fGLd9p+U7Ld1q+0/Kd9/IdVH3Lg1H1rQ9G
+        zY+g3k9/ATnDx088HQAA
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1155'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:13 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0443dee4e7fb9db896a3f3a034b8bd83334f7906406fc1b30a7418b8cdefc9d7e6ab8ce7929066771fc113fa00154d9796e;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS HRFI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS HRFI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS HRFI -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '221'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1ZXW+jOBR931+BeNqVNthAoEnlMsqSpo2UplFIq1HePMRJ0YDJgmm3/fV7bSBf
+        TdVup6udrYiQYu71Pfa99rGPBPnyVxJr9yzLo5Sf6aaBdY3xMF1EfHWm38wGrY7+xSODfjAOBBXQ
+        6evVSIMYnp/pd0KsTxF6eHgwloucG2m2QuBCedkTmbqWh3csobdbfEv3SJAWWci8gEW5nyYTgioD
+        CRhfsMy7CIZgK9vEzxgVbOFZ2LJb2GqZzszsnGL71Gwbjt0xcXtOUN2JjJl4SLPvGmTAzvRhADMQ
+        NBN98MLo3Q5uYROeGcan6pnrWsZykUUhhMsMC8grXTMO0+yzPMyitUzFG+YZZbEmp5xEoVYNQ9Bu
+        H1JVqBr8cjoY/sjwIwATxYJ5Njaw7dqWTdDGRkYpX1VuB9wn2HLBvTGS85jdq9l4bRcCt68kiAT4
+        xzRh3iXNouXvWpkcQcpG/LTgInv0NubaAGuiQlWxAUpm5R1LqlqPugvx7yjnUL2yLn9cnr+/LFqc
+        hgrZV1j/Ypn6bC3uPCyXWDZI7ylKCmh0wVS3ST9aqy7wRwKarGM2lRlbYNt53XFNJTpUv0i+saw0
+        56r7vqXuwMKUL3LP3Pgrwy58BelDZb73YT2FnNHOm2RVnmayoopmw8WZXpoQcMrEHWzhjo3trmFD
+        DVzHMB0o6+xxzbwbTu9pFNNvMSNIWfZIsefeY8IVrE687y9NitcwNABRQUfpasX2ZybNsTIfmx02
+        DbOtI49MWb5OeQ4TGnLYKEXCuJDIkYjuIwF79ZbGBfNc08HqR1BpIIOM/VnACffowXaxCNq+A9K6
+        EDc8EnlFjysU1KTYze6WQXFhEC3i2hUTcLZpE8iiXJuDQqBd0OtCHIzgX9+MZ5tB0F4H9EJmwIcV
+        07jaD8AeWKtJCntmzrI03ytlXaNJb36klm2za5iurnEYWp6UhjyvDCCnIQlpYCg1xuWj/ye1uT1e
+        lsnTLKM8X7JsUPBQIqmNOepNRj3/XPt12usPe+MABef+9bj/G0EvBJBxmiU0jp4U3wc0FLArXayK
+        JPl4xHsQcrCTXnASuTCb5ZLUmjIaS46qfzJM6CriFM5XMG1fCJJxB9HuP42WO2MTjevoFlZHIW4/
+        R6ldprsPJ4EO4Mw3wL0dzdqgWY5p2ParCR7BsDcYpg2791h6bffEsLqvIrVfRXoZCG3pWJH1gka8
+        PpHkgfSWwwjtRJbtQ+bLivkpWy6jMIIzIj9C0i2F3n8M+cuj9OkPL4az3ghumuN+KRt259ZnYZRU
+        V6uazMF1eWgjFefg6qvZd71c5kzdblULQGP6WN7RsgHlyDKm5qDuwO2b7LEd/9mitM2X7ohX1wRt
+        byJU6Zzngmf8fxY8n1nvON2ObZjmT6p3nK7UO7jROx+hd3Abamk91zvjRu80eqfRO43eafTOh+md
+        +WfSO63up1I8bbtjnPysgsdyOobb6J0P0DuO47hG57ncmTdyp5E7jdxp5E4jd94td1D1oQ9a1YdA
+        aO1/IvV++RtVdi4KWh0AAA==
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1156'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:14 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff044aeb585cfe32489a676651ee0a7c3f348065927b1d26520276ec5e3d55e521d4cb29fec4eb696a04277c5e26a5a2170a3;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMA4 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3347'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:16 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0440e39bf7c07bdfc93669506afe998715e787d6c3807713fb2b3e4b488831cf102109a7b5f3b75ac59bc86dfbf4a82dfb8;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMB1 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA81cXVMbOxJ9319BsS+7D5bVarU+UhPf4uKQpYoAhUlqKy9bXjMQ18U2a5tkk1+/
+        rRkbAzEh3dmbSooK9swcqdVSt053a6h+++/keudjPV+MZ9OXu2Ds7k49Hc0uxtOrl7tvzw86afe3
+        XnXQHxwPlsMlP/TPN0c7jJkuXu5+WC5vXnS7nz59MpcXi6mZza+6fKu7aJ/swu7OYvShngzfbdp3
+        u71qMLudj+reoB4v9meT06q7ulAN6ulFPe+9HhzytfZztT+vh8v6ouesw451HaBzSC8svoBoAjlH
+        8L7qrh+qjuvlp9n8jx0eQf1y93DAEiyH82Wf73LvOdmOBf45t/ZF8/N+d2deL5bz8YjhZYS3PK7Z
+        TT1lMfv1YjQf35Sh9A4X82F9vVNEnoxHO6tuqu79Z6qVhladv3nzOzzo3lkW//u7P+LGlrcXdQ/R
+        WCDAqnt3qTqaTa9Wd8l4sAn47t216tV1/bGRpRcZzcjNhWowXvITx8NJ3SsiVt3mIyu8ud5okp8r
+        Ive2SbxS9vqRav/DcDpl1bSD/v0f779jzDy169sQO9Z3wH6HSnauZ6Om4/2mqz9RRf36ZvmhR7bM
+        b/lU7X0ZT275A19Zf6z645teLo/w72ownNxc12dFI56v3ft679ZZaZ5Vfzv5dz1vLy+axx9eWT9Q
+        j2bTi0UP7u6vLtxvftXkPqvmj/58fLksIt77VkxqMZsXlTY2dnjxcre99NeiexsAAIl8NuB8sMkA
+        sF7PP9/Uvf03rzv4anDaBcdtNpcemMTD+w8M4Q1P0PWjB9prjV1z79zUcDk8ml1d1Q+FK5evm8tf
+        C+goJEOPLLOsYQM5WmMtGF5/j2TpbjrqVWf14mY2XfBIDqe8xm4n9XRZBBovxx/Hy8+96t3w+rbu
+        UYrOorUsdnuhOpjX/7llx/i5Zw1PyOYrN3Rzu3w7HS8Xa6PqDu5s6v7Nk9vloyf3T94en28efvBA
+        9wkB2SKu6p1psyDYo7EyTme8aN7X89nigSLXQz3de79lqmP5f3dnyj23nmqjQrbgHxrVu+0DOv1y
+        Ph9OF5f1/OB2Oipz0yypo73To739Vzt/O9vrH+4dD7qDV/snx/2/V90nANXxbD4ZXo+/NLZ6MBwt
+        eTVhdNzrlhuPnr6bNnj8+GZCiyrvFFxW21k9vC5m1fyuDifDq/F0OP9cLm2+VN2Ca2fjDm3X6I6j
+        5xso0EcNwF0DPDekacHdtcC2k6zTtIGbYZQ9N3zdhgcTMT3bkH+2oc7TLXU3C31lBq+H4+naZN33
+        WWv3HrD9/NiknNakMEYD9oFNFXe0MaxF6edfbpt1vfuFbQsQMZn8f7OvJyzkrpvvWp/fXgywZSVI
+        10FZ9Puz+vJyPBqzE178wKx9y8/vX26dif7h68PzvSPey7ff5xsPZOvXo/FkxV4aYe4xkLKR2ZWM
+        94nJen5ZMavJPLm8XNQNhVh94navh80UtB9YI/N53YjREI3Nt/LERoSvZiTwv7jdQoXzUnzIweHZ
+        VsPk61tYQwIw4Vm79Nvs8tHM6ad58HkyqZe8gE/6fR7Y+luhevV8yMq/N53sBI3lHRpq5sUN+fv6
+        kSeAYDBbl8XAYKJLYpQzkWKOdcdmES4a8oFAjOOtgZcRy2mTCIeMyxjEOJbTIaAYB8Y774hxUahP
+        VmfOYpw3PmfrxTgeX+JdWIzjKN4DFjmDEJdjoCTGcXDH8yfvzzPHaNa1EBdMBgqa8VkbsKxrkq4X
+        DD6LcY6DXiQFLEb0QYxjM6IQ5MOjohaIYlww3B05MS4Zn6xCnWU3sGBjIplbanFIIHQTLa54NIWc
+        znJIocF55xSoRBYVo0OXNYPD6DPJbK/BeUg2KybPU/AKVAqIit5YlbxvqnC5pLjkcgIp5s4jQNZM
+        nmf+pejPOQwk9SyUEiSxpXdWpscsSwP0LrGoCiAvayt0Eg0QwIGXzXyLI890WI7jYNoL974W53P0
+        ChxHKMkr5GSfm51iIjz3RzI32OI8O3mZ5bY4XqRegSMbMynmnZxVyUngU5J5tNX4+J/Mg7Y4ZPNV
+        jA8Db5uK/hx5jZgAwWWF4yVClDtQFywp/C6HAODkuxFHRpTFjACYkAeZwRYUZoribR0is2OxhK4Q
+        OfGcOZ8ciLdmZkdZPi50iCDeJ5Gyj2Kyghz+yikOx7DgxNrwhCB05gUVoxW6yILKwQm38JJIB1aj
+        uC+ClOUSkoOET2q+e3B49mPJO1Jm71p/GBFRksbblliVJvBImsBjJ0omPpvAo5+TwDs+OX71fAaP
+        Q3pWrzx1xEBHZOU5mU4whV46OdCxGYUUxdmODhlm7E3+QQiE4lqiPCHAwJIRkGcgynSECF6R8khB
+        kQhizVA7F5oMBHrymsierVlBAJhvZC9MxK7CJ0INWWTz5rBEwfaZqxSSo+Bvnr2wBsfsVEMzgYIT
+        Zks60WS08pxcy2qZfMvzFxRjDPI0RLKMU9BMXi1iUsCBYQhWEagRMzJhAqnTUE0AYb6qwFzwTADl
+        sORQEd2xkEmRi8uoYC/F3oT7CaNysuilEoJnAaUYjl6ylHgzjbNPh2XPMzL3TUL2I3wMCpX9uWQs
+        iMkYxx8mPUvGwi9ExkIpVxGKy5tMGiLvqmIO50x2PpCibBgiJXl/nWzY/zQ0RQj0Ta5IXnDkHjFi
+        kFc4C4ND61HDGYuTlVOxMsbYsFuZpGhKVlLeXzIhaeQsiy3I938wETDIM+BMwcElFZO20SW5oDwP
+        7OCDvFrZSbxTZkWOP5sYeIOQAyPvYD7JwxNeotlZbd2RKYumfogsq3jfLLjM86+AAZGQ9LM7hKyg
+        tqtaCwYXFQyQ+Q55YSqvJe/OJWFVr8XxNqnJ8fPixpwUNdkcKYhZVklKkFOEl+jKzMt7y4jCylWb
+        cY+gWS6QXBbWENeFD9JU9HgTBE0oGy0F1BTKfOBdQjMLJAyAmyS/80mericCeeIdiGmm3AhSTlEo
+        4qoAmEDhHEpdlOQJAcRvBBxPo4JLimKq82iT3FB9phTFWSCfkhcWUjkAa7Y7cXiYrDjTz+4Axese
+        OE5+GvR8fOj/pPAQ/M8ODqM4OEzRm/xscBh/oaO2zjDVi+LY0JuI0XvFEVbneS9VxJSQfFNPEFIT
+        Zl8R5bFopxwS9CDGeVOSWmJYLq6EFKGv50A0KnCuBBWKI7pFn+hIrhg0FEOUx6HOIDs+RT2IjCVL
+        8kPBnebYZXPMUwYkw9wL5B2CwbJByiN7Vg1hlgvKQIe+Ofcs7DFwDAtJni9BAzEleaWMR5jb/oSC
+        lhPvQZNm4UmE9si79Ig2lsM8YlwuR7uTV9UQ0TsNDjleVqQTPO9vSd4hmFjIpiKZ4Iqj0SRocjkv
+        KAc6Q5STHAiGEia5pEWhWYFrPBugwnypvAfSWIW87sy7qLx8HHl1O5SrlHfRGJwiOxeNB46+NMky
+        174JIj2ib7MmjdimvDxGK4ym2CMGigrNtD1mTMIjV4Vh+GDl2cA2t4Mlv65RjVMci+TueIGrclCB
+        2aVCzBw1MF/idqHtZoPOBbkJtuMjD0FY6+4k5kGkLMnbgEyFFG8wIGbvFEcObCCIwjzwGoigyLxY
+        IhefPtj2NC5nZm2axY3F62sOwaNNmjMEFpr0kjx3yYrRvE4SEgbN4XmgiElzuoVRIPdNvPMyMZGn
+        IMFFzdnrclA/avLxvC156XIh5veU5Sy2Sc2i1RwS5+06agwevQevUUsAElpDexCHOZ5cKSwjKRKm
+        vFp4cJoXHyg6xZmmcvqYFGUKjrGs/Li4hVTeRNBUDdhBaF6zKOxVnhJmQhgUpcXyjrbmHZLM7la+
+        t0M5IaYwu4wgN3IOjZ2w+tmsZjYD4UbSDM2TF75W0GlP6DGFEE938ZZRXrfx0SkKYMXrKepfzlmF
+        +kN5a0s81y6rVr9LERT1at5UnfDF3PbEWIxBPGkeXRYXYJpFpZgzn5y0TF1gHFZaOfli0u3E2xQC
+        yo+0eh+/URx9vkqUvlEkctoiERhMP+MMYXfzd9S6q7//195cdbn684hFDw/+cGTvL/8Dy4TMpnBS
+        AAA=
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3023'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:17 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0441b26ebc66ceecd147a58199cf8a1a55f4334acd8424fefd683e3563f82120ad11932af354ba50e2fe03c4bc49727e613;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMC2 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA81cXW8bOw59318RZF92HyyLoqiPYuqLrNP0BkiTIE6LRV8WXmeSGje2s7bTbvvr
+        l5qx4yR1mpLdW7QIUHtmjkRRInVIalz99t/J9c7Her4Yz6Yvd8HY3Z16OppdjKdXL3ffnh900u5v
+        vepgf3A8WA6X/NA/3xztMGa6eLn7Ybm8edHtfvr0yVxeLKZmNr/q8q3uon2yC7s7i9GHejJ8t2nf
+        7faqwex2Pqp7g3q86M8mp1V3daEa1NOLet57PTjka+3nqj+vh8v6ouesw451HaBzSC8svoBsbAgh
+        +vdVd/1QdVwvP83mf+zwCOqXu4cDlmA5nC/3+S73npPtWOC/c2tfNH/vd3fm9WI5H48YXkZ4y+Oa
+        3dRTFnO/Xozm45sylN7hYj6sr3eKyJPxaGfVTdW9/0y10tCq8zdv+u5B986y+N/f/RE3try9qHuI
+        xrqQoOreXaqOZtOr1V0yHiB4vnt3rXp1XX9sZOlFy7jN12owXvL94+Gk7hUBq27zkdXdXG/0yM8V
+        gXvb5F2pev1I1f8wnE5ZMe2Q//H7++8YMU/s+jbEjvUdsN+hkJ3r2ajpuN909acpaL++WX7okS1z
+        Wz5Ve1/Gk1v+wFfWH6v98U0vl0f4/2ownNxc12dFH56v3ft679ZZaZ4Vfzv5dz1vLy+axx9eWT9Q
+        j2bTi0UP7u6vLtxvftVknxXzx/58fLksIt77VsxpMZsXhTb2dXjxcre99NeieRsAAIkIDGBk9RkA
+        1ur555u613/zuoOvBqddcNxmc+mBOTy8/8AI3vD0XD96oL3W2DT3zk0Nl8Oj2dVV/VC4cvm6ufy1
+        gBSIDD2yyrKCDeRojbVgePU9kqW76ahXndWLm9l0wSM5nPIKu53U02URaLwcfxwvP/eqd8Pr27pH
+        KTqL1rLY7YXqYF7/55ad4ueeNTwhm6/c0M3t8u10vFysTao7uLOo+zdPbpePnuyfvD0+3zz84IHu
+        EwKyPVzVO9NmQbA3Y2WcznjRvK/ns8UDRa6Herr3fstUp8BKY9c05a5bN7XRIRvwDw3r3fYRnX45
+        nw+ni8t6fnA7HZXJadbU0d7p0V7/1c7fzvb2D/eOB93Bq/7J8f7fq+4TgOp4Np8Mr8dfGmM9GI6W
+        vJwwFje25cajp+/mDR4/vpnRoss7DZfldlYPr4tdNf9Xh5Ph1Xg6nH8ulzZfqm7BtdNxh7ZrdMfR
+        8w0U6KMG4K4BnhvStODuWgjJJOs0beBmGNEECl+34cFETM825J9tqPN0S93NSl/ZwevheLq2Wfd9
+        5tq9B2w/P7Ypp7UpT96AfWBTxR9tDGtR+vmX22Zd735h2wJETCb/3+zrCQu56+a71ue3FwNsWQnS
+        dVAWfX9WX16OR2P2wosfmLVvOfr+5daZ2D98fXi+d8Sb+fb7fOOBbPv1aDxZ0ZdGmHsUpOxkdiXj
+        fWaynl9WzGoyTy4vF3XDIVafuN3rYTMF7QfWyHxeN2I0TGPzrTyxEeGrGQmFpm+3UOG8FB9ycHi2
+        1TD5+hbakDI7m2ft0m+zy0czp5/mwefJpF7yAj7Z3+eBrb8VrlfPh6z8e9PJTtBYHzPUTIsb9vf1
+        I08AwWC2LouBwUSXxChnIsUc647NIlw05AOBGMdbAy8jltMmEQ4ZlzGIcSynQ0AxDox33hHjolCf
+        rM6cxThvfM7Wi3E8vsS7sBjHIbwHLHIGIS7HQEmM49iO50/en2eO0axrIS6YDBQ047M2YFnXJF0v
+        GHwW45yx7N4UsBjRBzGOzYhCkA+PiloginHBcHfkxLhkfLIKdZbdwIKNiWRuqcUhgdBNtLji0RRy
+        OsshhQbnnVOgEllUjA5d1gyOyXQmme01OA/JZsXkeSq5ITEqBURFb6xK3jdVuAyokRNIMXceAbJm
+        8jzzL0V/zmEgqWehlCCJLb2zMj1mWRqgd4lFVQB5WVuhk2iAAA68bOZbHHlnQY7jYNoL974W53P0
+        ChxHKMkr5GSfm51iIjz3RzI32OI8O3mZ5bY4XqRegSMbMynmnZxVyUngU5J5tNX4+J/Mg7Y4ZPNV
+        jA8Db5uK/hx5jZgAwWWF4yVClDtQFywp/C6HAODkuxFHRpTFjACYkAeZwRYUZoribR0is2OxhK4Q
+        OfGcOZ8ciLdmZkdZPi50iCDeJ5Gyj2Kyghz+yikOx7DgxNrwhCB05gUVoxW6yILKwQm38JJIB1aj
+        uC+ClOUSkoOET2q+e3B49mPJO1Jm71p/GBFRksbblliVJvBImsALvE2Y+GwCj35OAu/45PjV8xk8
+        DulZvfLUEQMdkZXnZDrBFHrp5EDHZhRSFGc7OmSYsTf5ByEQimuJ8oQAA0tGQJ6BKNMRInhFyiMF
+        RSKINUPtXGgyEOjJayJ7tmYFAWC+kb0wEbsKnwg1ZJHNm8MSBdtnrlJIjoK/efbCGhyzUw3NBApO
+        mC3pRJPRynNyLatl8i3PX1CMMcjTEMkyTkEzebWISQEHhiFYRaBGzMiECaROQzUBhPmqAnPBMwGU
+        w5JDRXTHQiZFLi6jgr0UexPuJ4zKyaKXSgieBZRiOHrJUuLNNM4+HZY9z8jcNwnZj/AxKFT255Kx
+        ICZjIfKm+CwZC78QGQulXEUoLm8yaYi8q4o5nDPZ+UCKsmGIlOT9dbJh/9PQFCHQN7kiecGRe8SI
+        QV7hLAwOrUcNZyxOVk7Fyhhjw25lkqIpWUl5f8mEpJGzLLYg3//BRLZJeQacKTi4pGLSNrokF5Tn
+        gR18kFcrO4l3yqzI8WcTA28QcmDkHcwneXjCSzQ7q607MmXR1A+RZRXvmwWXef4VMCASkn52h5AV
+        1HZVa8HgooIBMt8hL0zlteTduSSs6rU43iY1OX5e3JiToiabIwUxyypJCXKK8BJdmXl5bxlRWLlq
+        M+4RNMsFksvCGuK68EGaih5vgqAJZaOlgJpCmQ+8S2hmgYQBcJPkdz7J0/XME+WJdyCmmXIjSDlF
+        oYirAmAChXModVGSJwQQvxFwPI0KLimKqc6jTXJD9ZlSFGeBfEpeWEjlAKzZ7sThYbLiTD+7AxSv
+        e+A4+WnQ8/Gh/5PCQ/A/OziM4uCQeZPJzwaH8Rc6ausMU70ojg29iRi9VxxhdZ73UkVMCck39QQh
+        NWH2FVEei3bKIUEPYpw3JaklhuXiSkgR+noORKMC50pQoTiiW/SJjuSKQUMxRHkc6gyy41PUg8hY
+        siQ/FNxpjl02xzxlQDLMvUDeIRgsG6Q8smfVEGa5oAx06Jtzz8IeA8ewkOT5EjQQU5JXyniEue1P
+        KGg58R40aRaeRGiPvEuPaGM5zCPGlRe4c/KqGiJ6p8Ehx8uKdII3HDDLOwQTC9lUJBNccTSaBE0u
+        5wXlQGeIcpIDwVDCJJe0KDQrcI1nA1SYL5X3QBqrkNedeReVl48jr26HcpXyLhqDU2TnYnnPPSlG
+        mI1r3wSRHtG3WZNGbFNeHqMVRlPsEQNFhWbaHjMm4ZGrwjB8sPJsYJvbwZJf16jGKY5Fcne8wFU5
+        qMDsUiFmjhqYL3G70HazQeeC3ATb8ZGHIKx1dxLzIFKW5G1ApkKKNxgQs3eKIwc2EERhHngNRFBk
+        XiyRi08fbHsalzOzNs3ixuL1NYfg0SbNGQILTXpJnrtkxWheJwkJg+bwPFDEpDndwiiQ+6YS5aN8
+        vThwUXP2uhzUj5p8PG9LXrpciPk9ZTmLbVKzaDWHxHm7jhqDR+/Ba9QSgITW0B7EYY4nVwrLSIqE
+        Ka8WHpzmxQeKTnGmqZw+JkWZgmMsKz8ubiGVNxE0VQN2EJrXLAp7laeEmRAGRWmxvKOteYcks7uV
+        7+1QTogpzC4jyI2cQ2MnrH42q5nNQLiRNEPz5IWvFXTaE3pMIcTTXbxllNdtfHSKAljxeor6l3NW
+        of5Q3toSz7XLqtXvUgRFvZo3VSd8Mbc9MRZjEE+aR5fFBZhmUSnmzCcnLVMXGIeVVk6+mHQ78TaF
+        gPIjrd7HbxRHn68SpW8UiZy2SAQG0884Q9jd/JBad/Xzf+3NVZer30Ysenjwq5G9v/wPq4DTfm1S
+        AAA=
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3023'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:19 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff04432ec507ff3e45408b17ab4ebefd669eaf928cde6b9f867b08302f4263ad013e48f3bebda6b2bcb99d7c67c84e8dd28ec;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMC3 -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '83'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        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
+        cFIAAA==
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '3025'
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:20 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff0441310222f725245d97584c34906ff44b63d2d7d557c76b4e41f0ad14c01dcadcd44484ba36dca5943933acdeb44ed3183;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'level=response
+
+      IS MMLI -- BHE 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS MMLI -- BHN 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000
+
+      IS MMLI -- BHZ 2008-04-01T17:49:30.000000 2008-04-01T17:57:00.000000'
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Content-Length:
+      - '221'
+      Content-Type:
+      - text/plain
+      Host:
+      - seis.gsi.gov.il
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-11.7.3-x86_64-i386-64bit, Python 3.10.9)
+    method: POST
+    uri: https://seis.gsi.gov.il/fdsnws/station/1/query
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+xZ227jNhB971cIemqBWqQutqWA0cKVk60B2zEiJyjyxpVph4hEuRKVNPn6DnXx
+        Pcg2u0W3gQABpmbIw5khD3lgkU9/JbH2yLKcp+JcNw2sa0xE6YKL1bl+M7/suPonn1wOw2koqYRO
+        f0zGGowR+bl+L+X6DKGnpydjuciFkWYrBC6UVz2RqWt5dM8ServFt3SfhGmRRcwPGc+DNJkRVBtI
+        yMSCZf7ncAS2qk2CjFHJFr6FLbuDrY7ZnZvuGbbPLNPo9z3Tce8IajqRKZNPafagQQbsXB+FEIGk
+        mRyCF2b3XNzBJjxzjM/K507XMpbLjEcwXGVYQF7pmgkIc8jyKONrlYo/yjPKYk2FnPBIq6chaLcP
+        qStUTz6ZjEffMv0YwGSxYL5tGY7tWR5BGxMZp2JVe7uGY1o9sw/ujZFcxOyxDMbvOg5B21cScgn+
+        KU2YP6HxA8/vC/qrVuVHUGknQVoImT37G3NjgGUph5f1BjiVmH8qr3pJmi4kuKdCQAGr0vz2+937
+        K6PFaVQiByXWv1epIVvLex+rRVYNMnjhSVFZmiYZ8rXf8VQfaJCQJuuYXauMHbDtvO64rhU8rECR
+        fGFZZc7L7vuWpgOLUrHIfXPjrw278DVkAJV5GGZ8KVWMO2+KWHmaqYqWTBstzvXKhIBWJnaxhV0b
+        Wz2j67r9rmXYDpR1/rxm/o2gj5TH9EvMCCote7zYc++RYQKrE+/7K1NJbZgagKik43S1YvuRKXNc
+        mk9EB7+GbevIJ9csX6cih4BGAjZKkTAhFTKX/JFL2Ku3NC6Y37PgjOhhDBWpDOQyY38WcMg9+9jA
+        FkHbd0BaF/JGcJk3FEFhQ4rd7G4ZFBcm0bjQJkzC8abNIItqbQ4KgXZBrwp5MENwdTOdbyZBex3Q
+        K5kBH1ZME+V+APbAWs1S2DN3LEvzvVI2NZoN7o5r6WGzZ9hdXRMwtTosDXVkGUBOQxHSwBiuA1w9
+        +n9Sm9vTZZm9zDMq8iXLLgsRKaRyY44Hs/EguNB+vh4MR4NpiMKL4Go6/IWgVwaQaZolNOYvJeEv
+        aSRhV8JWUUVSfDzhPRhysJNecRK1MJvl6upq79JYcbT8JaOErrigcL6CaftCkBp3MLr3T0ernbEZ
+        jZvRHQjY7mPsHKM0LrO3D6eADuDMr4D7ejRrg2Z1TSD5mwmewLA3GKYNu/dUek6vb6gr4g0k502k
+        14HQlo41WT9TLt51IqGd4VX7kP6qbEHKlksecTgo8hNM3fLo/WdRsDzJoeHo82g+GMN1c9qvtMNu
+        bEMW8aS+YMtgDu7MQxupiQf3X0PBq+UyZ+UVV7cANKbP1U2tGlCOLGNlDOVFuH1TPbbzH62MeWpF
+        3lwOtL2JUK1zjgXP9AMJng8kdzwM5TNs9weVO55nG3a/VTvfrnY83HPgUvGO1c60VTut2mnVTqt2
+        WrXz3dTOxf9Y7XgfWO64fdP1DBv/oHKn17fhjGnlznf4c6fveK5hm8dy56KVO63caeVOK3daufNu
+        uYPqL33Qqr8EQmv/G6n/098AAAD//wMA52JQl1sdAAA=
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/xml
+      Date:
+      - Wed, 15 Feb 2023 18:03:21 GMT
+      Set-Cookie:
+      - GSI0147caf9=01c77ff04451707735b7a6d30933423f208ab78026b2403fa9d3b74a643cf9accf33ac1cdf7bc2e262741cada05388b97ca8a9a2c2;
+        Path=/; Domain=.seis.gsi.gov.il
+      Strict-Transport-Security:
+      - max-age=16070400; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+  response:
+    body:
+      string: 'Error 404: Not Found
+
+
+        Not Found
+
+
+        Usage details are available from https://earthquake.usgs.gov/fdsnws/event/1
+
+
+        Request:
+
+        /fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+
+
+        Request Submitted:
+
+        2023-02-15T18:02:33+00:00
+
+
+        Service version:
+
+        1.13.6'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '50'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '250'
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Date:
+      - Wed, 15 Feb 2023 18:02:33 GMT
+      Expires:
+      - Wed, 15 Feb 2023 18:03:33 GMT
+      Last-Modified:
+      - Wed, 15 Feb 2023 18:02:33 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 730d0b7e5f5de3b777d629325ecdb89c.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - oKmlp9NV2fII6m6z_LqeLIAyf4Xm_5qYSGhV5Rv4I60mRxexQW8kpg==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Error from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+  response:
+    body:
+      string: 'Error 404: Not Found
+
+
+        Not Found
+
+
+        Usage details are available from https://earthquake.usgs.gov/fdsnws/event/1
+
+
+        Request:
+
+        /fdsnws/event/1/query?format=geojson&eventid=gsi200801041549
+
+
+        Request Submitted:
+
+        2023-02-15T18:02:33+00:00
+
+
+        Service version:
+
+        1.13.6'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '50'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '250'
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Date:
+      - Wed, 15 Feb 2023 18:02:33 GMT
+      Expires:
+      - Wed, 15 Feb 2023 18:03:33 GMT
+      Last-Modified:
+      - Wed, 15 Feb 2023 18:02:33 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 56a79b3a2ac1e2942686c2337f96fb72.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - 4qA0UfM9YBgD-b2gcA0ourjHI-ZbKphLRdSvKwYygm1n3LBVhnskBA==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Error from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=hv73325052
+  response:
+    body:
+      string: '{"type":"Feature","properties":{"mag":4.78,"place":"12 km SE of P?hala,
+        Hawaii","time":1676446026530,"updated":1676484088353,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/hv73325052","felt":1401,"cdi":5.3,"mmi":6.156,"alert":"green","status":"reviewed","tsunami":0,"sig":882,"net":"hv","code":"73325052","ids":",pt23046050,hv73325052,us6000jp21,","sources":",pt,hv,us,","types":",dyfi,losspager,origin,phase-data,shakemap,trump-origin,","nst":45,"dmin":null,"rms":0.11,"gap":185,"magType":"ml","type":"earthquake","title":"M
+        4.8 - 12 km SE of P?hala, Hawaii","products":{"dyfi":[{"indexid":"22329118","indexTime":1676484092803,"id":"urn:usgs-product:us:dyfi:hv73325052:1676484088353","type":"dyfi","code":"hv73325052","source":"us","updateTime":1676484088353,"status":"UPDATE","properties":{"depth":"31.75","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.8","maxmmi":"5.3","num-responses":"1401","numResp":"1401","original-signature":"MC4CFQDCMScFNd+F+z4kxVLjlpJyRLSnAAIVAI+otRYANHWGJcubNJuSeX58mWrj","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21"},"preferredWeight":53,"contents":{"hv73325052_plot_atten.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":3407,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.txt","sha256":"JS3fSAFmQbApoDAEP93CyJibpi0wiUCi8g8ESMYjBCk="},"dyfi_zip.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":5664,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_zip.geojson","sha256":"29SuC9V0AcZ8fdjFPNZiP79Ois5Q0cHPO4J7/tgkkG8="},"dyfi_geo_10km.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":26423,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo_10km.geojson","sha256":"wpEKSQdErt845w5mk5Kw48q71lwjxW47+pkojQclBig="},"dyfi_geo_1km.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":178087,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo_1km.geojson","sha256":"4REWHf5+b7nT29Ie6u6PA5+pQdOw1kNCaOm62PIvwdM="},"cdi_geo.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":8149,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo.txt","sha256":"ttQNU98S5SB1Zry5oQu2EaQtGCj6zTHEytQyYTREmSI="},"contents.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":4224,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/contents.xml","sha256":"4Ez6rX5nmdtSH0GadUUHy0DCRrrn+Vw3ZCWFP5qHUXs="},"cdi_geo_1km.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":58892,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo_1km.txt","sha256":"6EfHTcTvoBUvK6dychEZs4pjqPdBGNs1OetlJ2BwjHs="},"dyfi_plot_atten.json":{"contentType":"application/json","lastModified":1676484088000,"length":4909,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_plot_atten.json","sha256":"Vtc5O9FS0kGXHMCBBjtnMPkyhIKpRdqoWIkcKOdqzyM="},"hv73325052_ciim_geo.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":128877,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.ps","sha256":"CtvuDvbPGDtz0ec3zuhH4RDRg8wp4u+dfjbygdNTGnE="},"cdi_geo.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":25932,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo.xml","sha256":"6Vh7E6xKAi15U9CQLyCwr1D38IwnwhH/N2+S83UMjlI="},"hv73325052_plot_atten.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":53073,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.ps","sha256":"kn7p6lAhtxJoLOBQLeAvp8N+vo+B4Ap+U9SXxt35REU="},"cdi_zip.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":7806,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_zip.xml","sha256":"iMd0a1ils5a5qDWISIALbw02+TXZGManvPHpPi5clvQ="},"dyfi_geo.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484087000,"length":5917,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo.kmz","sha256":"6PniqiDcBZKKLmB8cm4RhrhKKWkfxeOp6wi6O+nFMXw="},"hv73325052_ciim.pdf":{"contentType":"application/pdf","lastModified":1676484087000,"length":56602,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.pdf","sha256":"iC3bhmWLPNlvD35qzM6bGG0fZmOjPiw2XPb2uxr1WuU="},"hv73325052_ciim_imap.html":{"contentType":"text/html","lastModified":1676484087000,"length":15520,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_imap.html","sha256":"NzVCfHw+nvIXegFMThgTNCgcl/R46kOqoBfrj2UZLDo="},"dyfi_zip.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484088000,"length":10614,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_zip.kmz","sha256":"OL6+eGcl60Fp5ild1rjYonzkpaRyXepj34PvVvylvpY="},"hv73325052_plot_numresp.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":33338,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.ps","sha256":"RnCcay0tZyK+A/l2RaQeUZ18/6VnGrz/KbJpSzqJ4vk="},"cdi_zip.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":2162,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_zip.txt","sha256":"4ugE6LX8gSb+ag0MZgXqI57zP95BZzNFKkHn8ojMzKA="},"event_data.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":3062,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/event_data.xml","sha256":"tT+O3MJpthCxp2tSX7jXh2yXbVzCWSf1j7vfs3+eCf4="},"hv73325052_ciim_geo.pdf":{"contentType":"application/pdf","lastModified":1676484087000,"length":44963,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.pdf","sha256":"M3bXFUGoZnM2I8AVazjLn5akgMPeJOaFmt77mM2/7jo="},"dyfi_plot_numresp.json":{"contentType":"application/json","lastModified":1676484088000,"length":98916,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_plot_numresp.json","sha256":"yTcHmF9CBA+H1KDNC/vB1pKjKAPqmlKozsgM/wJMT8M="},"hv73325052_ciim.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":80545,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.jpg","sha256":"rtnxbL5JpzYP31oeNj8tC3mOGsxDpdImP3cPRjYD1M0="},"hv73325052_ciim_geo_imap.html":{"contentType":"text/html","lastModified":1676484087000,"length":25247,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo_imap.html","sha256":"APEycJ4TpeSH9Fjx9s4L89XKeS9+6vjwO+YTZK+nkxk="},"hv73325052_plot_numresp.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":39632,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.jpg","sha256":"TWfbCHFuGM6UWMsRZgwNRhyLEWudwpSaE/cipwqIj/w="},"hv73325052_plot_atten.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":54355,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.jpg","sha256":"u3w7c9FXCa7kF83bNDAJUbVOyHA2hRE05vSv6LSA/p8="},"hv73325052_ciim.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":146939,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.ps","sha256":"vcigCiP7Ahj2PJwx7h52GXhArs725T2oex+E5L8QvYw="},"dyfi.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484087000,"length":1175,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi.kmz","sha256":"rF85CGu2XRWB8nLedNg2kxiD6nDM4laERSQ2GedGHnk="},"hv73325052_ciim_geo.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":80271,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.jpg","sha256":"1lkZ8CSwEcXSfeevq/7L0cTW8WrUDIfCexjH9R6aUFM="},"hv73325052_plot_numresp.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":63685,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.txt","sha256":"81lxQK9pUd6J0YFzG8dJsoH1dEl+iuwo8RO/G+GtV2M="}}}],"losspager":[{"indexid":"22327533","indexTime":1676453453544,"id":"urn:usgs-product:us:losspager:us6000jp21:1676453429697","type":"losspager","code":"us6000jp21","source":"us","updateTime":1676453429697,"status":"UPDATE","properties":{"alertlevel":"green","depth":"29.1","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.1746","longitude":"-155.4238","magnitude":"4.5","maxmmi":"5","original-signature":"MCwCFDhGZD1sh3EF2UGIbtp/WACOUj7xAhRbL41SKkDnj+KF1nu+LkaJ8u/0ig==","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.9 2021-02-10","review-status":"automatic"},"preferredWeight":8,"contents":{"json/cities.json":{"contentType":"application/json","lastModified":1676453428000,"length":8446,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/cities.json","sha256":"cXCTP0NXg0gaULia9x4PHL0V4Zkog81Is1Gug7LCH3Y="},"onepager.pdf":{"contentType":"application/pdf","lastModified":1676453429000,"length":2101039,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.pdf","sha256":"Bk3RlvlGgCkPLwxbRysA0snmFReooQHZQFSq2f0eVbM="},"json/alerts.json":{"contentType":"application/json","lastModified":1676453428000,"length":1428,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/alerts.json","sha256":"QjCzEmBod7d52Pd7iqC54QqiPZlv7gvLdYzwjUnRMh8="},"json/exposures.json":{"contentType":"application/json","lastModified":1676453428000,"length":651,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/exposures.json","sha256":"bbBWc4pwKBEDRfa+QCxxZIh9sqsG2N1TxkXl3fC+gTM="},"json/historical_earthquakes.json":{"contentType":"application/json","lastModified":1676453428000,"length":1542,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/historical_earthquakes.json","sha256":"oDWSHeGA6CTy3+5XtsEdCj/HBQE2cpxvkn6rg7XkhoM="},"grid.xml":{"contentType":"application/xml","lastModified":1676453392000,"length":12637620,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/grid.xml","sha256":"THJlQWPF31esTybs3YV2GGWbaVT5IEYHu+4vJ/CqjQg="},"contents.xml":{"contentType":"application/xml","lastModified":1676453429000,"length":2951,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/contents.xml","sha256":"4YQYOxrL0fquA/rZdjmRkwL065QhV7flQVnnu+RBWCE="},"alertfatal.pdf":{"contentType":"application/pdf","lastModified":1676453406000,"length":9987,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal.pdf","sha256":"/nPpXdXYOWWM5Ug78giM9FBsZ7LUt4LUNIIOGXM0FUM="},"json/event.json":{"contentType":"application/json","lastModified":1676453428000,"length":720,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/event.json","sha256":"ouDrtLP+936FXTMmofoH+Nrqz1Lkyfg/IVGhXBg/EFI="},"onepager.log":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":27372,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.log","sha256":"dFPScqhGbUb3L9WFEnIh8S1Zd33sWo6S/kn2te6aad8="},"alertfatal.png":{"contentType":"image/png","lastModified":1676453406000,"length":12148,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal.png","sha256":"YgS3YF7seTY3X6yiNwslF5O5c/MhV39p8tU20PFPCME="},"alertecon.png":{"contentType":"image/png","lastModified":1676453407000,"length":13714,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon.png","sha256":"Gwjb536rAFa38psaePb6h5eIHVv4P1hLuKLamAExtuQ="},"json/comments.json":{"contentType":"application/json","lastModified":1676453428000,"length":821,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/comments.json","sha256":"EVUesH8xA3n3L7K5ZN+bQqRWyB8wo906DgqfnYHFKUA="},"exposure.png":{"contentType":"image/png","lastModified":1676453422000,"length":90698,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/exposure.png","sha256":"kHV39L7NwcRWhPjeqjV8d4OYGWdORM3uaMe1vPVJm/Q="},"alertfatal_small.png":{"contentType":"image/png","lastModified":1676453407000,"length":5280,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal_small.png","sha256":"i1ZAv1SQZYJ5VD4G4DU8XgL+Buv3pWLeJ8CdgYbgHpI="},"alertecon.pdf":{"contentType":"application/pdf","lastModified":1676453407000,"length":11570,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon.pdf","sha256":"1TwmHzz5y9HStMZVSP+7MY10vvZxIHrsycipQgMXNjM="},"onepager.aux":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":166,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.aux","sha256":"Wogp1VdeNQAUFhvWSLY6a2xGsMZxAcv6AdpewII2+W4="},"exposure.pdf":{"contentType":"application/pdf","lastModified":1676453422000,"length":1790655,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/exposure.pdf","sha256":"7m9g5XBTlzSAKNoWpirpFVl8uC7DT1SbAaJdEsmWbvM="},"json/losses.json":{"contentType":"application/json","lastModified":1676453428000,"length":1002,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/losses.json","sha256":"Cni7FG95VEmyXRG+JCeEyukQldFpGrgfz2MVIzICHbQ="},"alertfatal_smaller.png":{"contentType":"image/png","lastModified":1676453407000,"length":3046,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal_smaller.png","sha256":"3ay18lD51uS4TR1Rz5snvU/fcKJB0/wtMyOCTncvlqs="},"onepager.tex":{"contentType":"application/x-tex","lastModified":1676453428000,"length":17770,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.tex","sha256":"updsP0gLJtKirIEGALoYTFOsj6JwRc+1kK5e7frUZrI="},"pager.xml":{"contentType":"application/xml","lastModified":1676453428000,"length":8864,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/pager.xml","sha256":"BjPFBLouehWSwaVrdLm3Qv2+M2a2lkgfKc0b2NN866M="},"alertecon_small.png":{"contentType":"image/png","lastModified":1676453407000,"length":6007,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon_small.png","sha256":"D7+MGwb4bVA7h+XVnCAtKqhs0dH92Z6fBQlNd+AihRc="},"alertecon_smaller.png":{"contentType":"image/png","lastModified":1676453407000,"length":3470,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon_smaller.png","sha256":"EOdT8djOLKBcYMoOW7bqML3gtS6ceMJ6IwJzwe8arCM="},"event.log":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":4128,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/event.log","sha256":"0UWFy4hhkKa0tKsBgydSwnp3x4BxkNj4SJvm0f2+xig="}}}],"origin":[{"indexid":"22327281","indexTime":1676447698758,"id":"urn:usgs-product:hv:origin:hv73325052:1676446801690","type":"origin","code":"hv73325052","source":"hv","updateTime":1676446801690,"status":"UPDATE","properties":{"azimuthal-gap":"185","depth":"31.75","depth-type":"from
+        location","error-ellipse-azimuth":"346","error-ellipse-intermediate":"1152","error-ellipse-major":"1512","error-ellipse-minor":"672","error-ellipse-plunge":"77","error-ellipse-rotation":"358","evaluation-status":"final","event-type":"earthquake","eventParametersPublicID":"quakeml:hv.anss.org/Event/HV/73325052#167644680169","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.530Z","horizontal-error":"0.47","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.78","magnitude-azimuthal-gap":"184.399626103932","magnitude-error":"0.13919640319702","magnitude-num-stations-used":"29","magnitude-source":"HV","magnitude-type":"ml","num-phases-used":"79","num-stations-used":"45","origin-source":"HV","original-signature":"MC0CFCqYM+/mJyOD8zGmoxcXv6l19qBXAhUA59Pmf/GILlycl/g5mfMxiTTpVvM=","original-signature-version":"v1","pdl-client-version":"Version
+        2.4.0 2020-05-11","quakeml-magnitude-publicid":"quakeml:hv.anss.org/Netmag/HV/95167253","quakeml-origin-publicid":"quakeml:hv.anss.org/Origin/HV/75092663","quakeml-publicid":"quakeml:hv.anss.org/Event/HV/73325052","review-status":"reviewed","standard-error":"0.11","title":"12
+        km SE of P?hala, Hawaii","version":"1","vertical-error":"0.61"},"preferredWeight":100000000,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/hv73325052/hv/1676446801690/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":2945,"url":"https://earthquake.usgs.gov/product/origin/hv73325052/hv/1676446801690/quakeml.xml","sha256":"+Nki1hlEtzAw/77gfggPm7tZtNkG2hfh7kUDK1sCaas="}}},{"indexid":"22327314","indexTime":1676448015126,"id":"urn:usgs-product:us:origin:us6000jp21:1676448008040","type":"origin","code":"us6000jp21","source":"us","updateTime":1676448008040,"status":"UPDATE","properties":{"azimuthal-gap":"161","depth":"29.098","depth-type":"from
+        location","error-ellipse-azimuth":"167","error-ellipse-intermediate":"7435","error-ellipse-major":"9550","error-ellipse-minor":"5023","error-ellipse-plunge":"56","error-ellipse-rotation":"171","evaluation-status":"preliminary","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000jp21/1676448010","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.758Z","eventtime-error":"1.92","horizontal-error":"4.22","latitude":"19.1746","latitude-error":"0.0467","longitude":"-155.4238","longitude-error":"0.0341","magnitude":"4.5","magnitude-error":"0.082","magnitude-num-stations-used":"44","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.041","num-phases-used":"117","num-stations-used":"87","origin-source":"us","original-signature":"MC4CFQCyoOCLcuQuH48WvSmgjOfq6/j2IgIVALBiTTzxIg3lZF0Vre6uTNqRKMif","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000jp21/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000jp21","quakeml-publicid":"quakeml:us.anss.org/event/6000jp21","review-status":"reviewed","standard-error":"0.95","title":"6
+        km ESE of P?hala, Hawaii","vertical-error":"5.884"},"preferredWeight":8,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676448012000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/us6000jp21/us/1676448008040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676448008000,"length":3809,"url":"https://earthquake.usgs.gov/product/origin/us6000jp21/us/1676448008040/quakeml.xml","sha256":"geFY24jMDHNobJbC1hjDLkbo6LyI8lmsjEA2q3ejetw="}}},{"indexid":"22327170","indexTime":1676446184042,"id":"urn:usgs-product:pt:origin:pt23046050:1676446181216","type":"origin","code":"pt23046050","source":"pt","updateTime":1676446181216,"status":"UPDATE","properties":{"cube-location-method":"u","cube-magnitude-type":"L","depth":"32.9","event-type":"earthquake","eventsource":"pt","eventsourcecode":"23046050","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.121","location-method-algorithm":"u","location-method-class":"CUBE_Code","longitude":"-155.403","magnitude":"4.7","magnitude-num-stations-used":"25","magnitude-type":"Ml","num-stations-used":"80","original-signature":"MCwCFAT7ZEcleE8BG753z9v1XelIygyHAhR2+IV8kGPJQvrKyMz72tDSVL3CLg==","original-signature-version":"v1","review-status":"REVIEWED","title":"12
+        km SE of P?hala, Hawaii","version":"A"},"preferredWeight":6,"contents":{"contents.xml":{"contentType":"text/plain","lastModified":1676446181000,"length":272,"url":"https://earthquake.usgs.gov/product/origin/pt23046050/pt/1676446181216/contents.xml","sha256":"PzlTQj8FWkBJx8Aaw8QrZKtT8VeAHdXJtYpy43yn7+I="},"eqxml.xml":{"contentType":"text/plain","lastModified":1676446181000,"length":845,"url":"https://earthquake.usgs.gov/product/origin/pt23046050/pt/1676446181216/eqxml.xml","sha256":"VXCpact/nVOsB3BY16L46lQXqTtKanU9BgkaC4PK848="}}}],"phase-data":[{"indexid":"22327235","indexTime":1676446805343,"id":"urn:usgs-product:hv:phase-data:hv73325052:1676446801690","type":"phase-data","code":"hv73325052","source":"hv","updateTime":1676446801690,"status":"UPDATE","properties":{"azimuthal-gap":"185","depth":"31.75","depth-type":"from
+        location","error-ellipse-azimuth":"346","error-ellipse-intermediate":"1152","error-ellipse-major":"1512","error-ellipse-minor":"672","error-ellipse-plunge":"77","error-ellipse-rotation":"358","evaluation-status":"final","event-type":"earthquake","eventParametersPublicID":"quakeml:hv.anss.org/Event/HV/73325052#167644680169","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.530Z","horizontal-error":"0.47","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.78","magnitude-azimuthal-gap":"184.399626103932","magnitude-error":"0.13919640319702","magnitude-num-stations-used":"29","magnitude-source":"HV","magnitude-type":"ml","num-phases-used":"79","num-stations-used":"45","origin-source":"HV","original-signature":"MC0CFQCvXkbte5ZrNCiUkAVsF6hBufMSzgIUETPMEbJ1ttjxdxG3M2sDBBp/ztQ=","original-signature-version":"v1","pdl-client-version":"Version
+        2.4.0 2020-05-11","quakeml-magnitude-publicid":"quakeml:hv.anss.org/Netmag/HV/95167253","quakeml-origin-publicid":"quakeml:hv.anss.org/Origin/HV/75092663","quakeml-publicid":"quakeml:hv.anss.org/Event/HV/73325052","review-status":"reviewed","standard-error":"0.11","version":"1","vertical-error":"0.61"},"preferredWeight":157,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/hv73325052/hv/1676446801690/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":212615,"url":"https://earthquake.usgs.gov/product/phase-data/hv73325052/hv/1676446801690/quakeml.xml","sha256":"zD7ySvlO8EkeyNkptfaWuOihjAynZvytBsa0JpDgeyc="}}},{"indexid":"22327315","indexTime":1676448017296,"id":"urn:usgs-product:us:phase-data:us6000jp21:1676448008040","type":"phase-data","code":"us6000jp21","source":"us","updateTime":1676448008040,"status":"UPDATE","properties":{"azimuthal-gap":"161","depth":"29.098","depth-type":"from
+        location","error-ellipse-azimuth":"167","error-ellipse-intermediate":"7435","error-ellipse-major":"9550","error-ellipse-minor":"5023","error-ellipse-plunge":"56","error-ellipse-rotation":"171","evaluation-status":"preliminary","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000jp21/1676448010","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.758Z","eventtime-error":"1.92","horizontal-error":"4.22","latitude":"19.1746","latitude-error":"0.0467","longitude":"-155.4238","longitude-error":"0.0341","magnitude":"4.5","magnitude-error":"0.082","magnitude-num-stations-used":"44","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.041","num-phases-used":"117","num-stations-used":"87","origin-source":"us","original-signature":"MC4CFQDOjEw4KihdPzR6Vty9nhzt6zq5rgIVAJEcLujD529mGPySAkdUzQ3do2kq","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000jp21/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000jp21","quakeml-publicid":"quakeml:us.anss.org/event/6000jp21","review-status":"reviewed","standard-error":"0.95","vertical-error":"5.884"},"preferredWeight":8,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676448012000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/us6000jp21/us/1676448008040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676448008000,"length":291951,"url":"https://earthquake.usgs.gov/product/phase-data/us6000jp21/us/1676448008040/quakeml.xml","sha256":"NUGarUKPDi+R5kqey7mbI0LLWOfA/A609WYBNFl50CY="}}}],"shakemap":[{"indexid":"22327531","indexTime":1676453418423,"id":"urn:usgs-product:us:shakemap:us6000jp21:1676453340886","type":"shakemap","code":"us6000jp21","source":"us","updateTime":1676453340886,"status":"UPDATE","properties":{"depth":"29.1","event-description":"USGS
+        NEIC ShakeMap","event-type":"ACTUAL","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.000Z","gmice":"WGRW12","latitude":"19.1746","longitude":"-155.4238","magnitude":"4.5","map-status":"automatic","maximum-latitude":"20.967","maximum-longitude":"-153.483","maxmmi":"6.156","maxmmi-grid":"6.244","maxpga":"0.209","maxpga-grid":"0.225","maxpgv":"8.603","maxpgv-grid":"9.249","maxpsa03":"0.18","maxpsa03-grid":"0.19","maxpsa10":"0.034","maxpsa10-grid":"0.038","maxpsa30":"0.004","maxpsa30-grid":"0.004","minimum-latitude":"17.367","minimum-longitude":"-157.283","original-signature":"MCwCFB4Qoazg+Hyr621mEdDWXAnYe6I0AhQ9aCb5kcmbm4uk/LylXl4I88Aezw==","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","process-timestamp":"2023-02-15T09:27:59Z","review-status":"automatic","shakemap-code-version":"4.0.2+731.g88a8033","version":"4"},"preferredWeight":82,"contents":{"download/coverage_psa3p0_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1317121,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_high_res.covjson","sha256":"QSz2yENelYZEtuW3rEvy4BKkB+KD7aHdif0zZ0y6734="},"download/coverage_psa3p0_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":331492,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_medium_res.covjson","sha256":"hpQSs1vpJwZpqzXqp+NNa/HThE+O0BaLlNaM15FunZs="},"download/coverage_pgv_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":1166412,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_high_res.covjson","sha256":"H7HVI/i7cPgAcngvGG9xjqXD2aCzfumfrDTnvxp9gxk="},"download/mmi_legend.png":{"contentType":"image/png","lastModified":1676453296000,"length":48086,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/mmi_legend.png","sha256":"MTg/qBrLQLPetJsPhqyImcTVC+XopgPJ4JlwhLgCnzs="},"download/rupture.json":{"contentType":"application/json","lastModified":1676453340000,"length":530,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/rupture.json","sha256":"pcCL5rhik6T/DAsG8E2AjQ6gW9TsFEOnirUFiQtNYjw="},"download/info.json":{"contentType":"application/json","lastModified":1676453284000,"length":4108,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/info.json","sha256":"v8nbNP/OiDI6bE4XDLZ2dRAJvAr6T+COH2iKo/KJZzM="},"download/coverage_psa0p3_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1168322,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_high_res.covjson","sha256":"IKH05Mpp/ACrl+UHTVTcKm9A0zGNwD39vjPMmnfnKks="},"download/psa3p0.jpg":{"contentType":"image/jpeg","lastModified":1676453333000,"length":82609,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0.jpg","sha256":"jdv0iZfWSNN942CiRtCOyqkH3A3oRq+o5HyLg5YBxIY="},"download/cont_psa0p3.json":{"contentType":"application/json","lastModified":1676453281000,"length":9424,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa0p3.json","sha256":"ilMW2TzyipN33krgaf7nGU+nBDC3LEjPjmrJMww8RXI="},"download/coverage_pga_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":1168268,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_high_res.covjson","sha256":"LbcIAfpdVCnY/dJgLlOXiVDkFt5h+069zRkSaICPzSc="},"download/coverage_psa0p3_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":74754,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_low_res.covjson","sha256":"3f+FXCLFqvRBJ/Ft6xEl1HbL0yUx3k8/9CMKFMut0Fo="},"download/attenuation_curves.json":{"contentType":"application/json","lastModified":1676453335000,"length":52964,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/attenuation_curves.json","sha256":"HB39l1+B8EJrXAxeYD00KEXZ0RpTmD+ywjUVsYutE+U="},"download/intensity.jpg":{"contentType":"image/jpeg","lastModified":1676453315000,"length":95288,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity.jpg","sha256":"OBOBPy+n060CAIc3s180TDqnWCzeDIRrw8Uc9MP9SIY="},"download/raster.zip":{"contentType":"application/zip","lastModified":1676453339000,"length":6717843,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/raster.zip","sha256":"OtheFm8wAvqZgnFH0XZkRz8ipLMb5xyJ5fcyRfxSVXI="},"download/pga.pdf":{"contentType":"application/pdf","lastModified":1676453318000,"length":1949168,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga.pdf","sha256":"ezfzMXT+gEybDwfqBZq4/FSUvokHFvAC4Jq+zDzvZmE="},"download/pga_regr.png":{"contentType":"image/png","lastModified":1676453334000,"length":101185,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga_regr.png","sha256":"Dg9X62R+uL/gbvKZ8lywyeKcDB+u4BSlHS3a9gGpoM0="},"download/coverage_mmi_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":51078,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_low_res.covjson","sha256":"OtyF+tZKpLfNATctYlOAfKRk9Lnfk3sIbfRTcdJRjAo="},"download/coverage_mmi_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":792462,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_high_res.covjson","sha256":"V5Pz0vF9JZdjbL2twlNtPLHz/izUycXmheHSsu+ChSo="},"download/intensity.pdf":{"contentType":"application/pdf","lastModified":1676453314000,"length":1953157,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity.pdf","sha256":"x+uwUb5Swx5oSc4BhgVTXNDWFUitRXOvkBtLMI8a0Zs="},"download/mmi_regr.png":{"contentType":"image/png","lastModified":1676453333000,"length":91243,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/mmi_regr.png","sha256":"qH7UZgHoW1Zt2gCYED6+pds9kdBaOdAbl34H3vPDVvg="},"download/psa3p0.pdf":{"contentType":"application/pdf","lastModified":1676453332000,"length":1946339,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0.pdf","sha256":"jsx4vPPRKFLtoK7pzy9cr/0HXWstKMwiXSPE7XPImP8="},"download/coverage_psa1p0_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1168293,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_high_res.covjson","sha256":"zhRaJ/msej8HApShj9KTu5lp6slaWWh0QVoGek14oQo="},"download/uncertainty.xml":{"contentType":"application/xml","lastModified":1676453284000,"length":11354321,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/uncertainty.xml","sha256":"co7P3fbevKcGajkE1R2yZKIp1mUdyGmakvn7OTWX7jA="},"download/pin-thumbnail.png":{"contentType":"image/png","lastModified":1676453315000,"length":26152,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pin-thumbnail.png","sha256":"xtU9zULUVR0X9qcgfpscSfccywk2nRnxxR3MFIVFLew="},"download/cont_mmi.json":{"contentType":"application/json","lastModified":1676453280000,"length":10567,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_mmi.json","sha256":"8JPaFklPKXoV+z9vqF/5Nss+tvejwxrCEGP+mUoSpVA="},"download/coverage_pgv_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":74588,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_low_res.covjson","sha256":"1ryMODvJhsTnu7OS+PhIHj8CBjYnQRDaNnBu3I7ajr0="},"download/coverage_mmi_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":199710,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_medium_res.covjson","sha256":"wUQuaQ/gszNrEpz0AM9cP8i0dr751wkPm3IgIrt0MBg="},"download/pgv.pdf":{"contentType":"application/pdf","lastModified":1676453322000,"length":1947945,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv.pdf","sha256":"EACE8DGID3CNlJCm/EYB1UIy4DeYIisCLRzh/nL/ju0="},"contents.xml":{"contentType":"application/xml","lastModified":1676453340000,"length":12211,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/contents.xml","sha256":"zo1fJo1f/XFlqPJ8k5dCq9bkShInmmnvs/+C+/Isbm8="},"download/cont_psa1p0.json":{"contentType":"application/json","lastModified":1676453281000,"length":9317,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa1p0.json","sha256":"F2su1ERRKsnL+klMwAAg9x7RtlMcvjexv5mCbTxzcEs="},"download/cont_psa3p0.json":{"contentType":"application/json","lastModified":1676453282000,"length":9486,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa3p0.json","sha256":"EY8FzBcH1lGCO8+zzH58ci7CNhNf7+YSVIoSwNEPRKY="},"download/psa1p0.pdf":{"contentType":"application/pdf","lastModified":1676453329000,"length":1947864,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0.pdf","sha256":"66+4ulPC+1a5DPdNv8mTUHEQJknPW7sMlWkR71RsPq4="},"download/coverage_pgv_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":293471,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_medium_res.covjson","sha256":"soZtjznyGE5xp4Vh5NeMi8WxFvKo0j8lNzvP6Jzhrc0="},"download/psa1p0_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":91368,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0_regr.png","sha256":"E1w0VIOevkkFMtMKTQmw5o2qfUSq+ZstpiXdAFAfgBA="},"download/coverage_psa3p0_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":84265,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_low_res.covjson","sha256":"wnx+A9j0cEMKNEdhYgTiCdBCY9Uy6XnCNMpWyUkCHsY="},"download/pga.jpg":{"contentType":"image/jpeg","lastModified":1676453319000,"length":87347,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga.jpg","sha256":"q177XF4tJCWHaVod31TavLE55i7wyxT93oY2bBhFe3Q="},"download/coverage_psa1p0_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":293989,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_medium_res.covjson","sha256":"CRKxmeCWlOoNjDSwfLZUXZDMVsCGFYlD+UIyxHMdtk8="},"download/psa0p3.jpg":{"contentType":"image/jpeg","lastModified":1676453326000,"length":83269,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3.jpg","sha256":"pU0XNO47Sl6YjJ7osFPaYIz9slLHyHtw+7+bKBTdjaI="},"download/shake_result.hdf":{"contentType":"application/octet-stream","lastModified":1676453340000,"length":15448999,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shake_result.hdf","sha256":"g3kURtEutstMx6xvR7pu3EjPzavaPqZDijMZFKuykS0="},"download/cont_pga.json":{"contentType":"application/json","lastModified":1676453280000,"length":11714,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_pga.json","sha256":"+kHlV+BmBk0ElgGXMUm8F32Oj1vDhS4B5ZZ9nIWMQhw="},"download/pgv.jpg":{"contentType":"image/jpeg","lastModified":1676453322000,"length":82353,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv.jpg","sha256":"QBgfcBGtvxH0Nze35LNRmayGEi6CEppq2CT3j9mQCPU="},"download/psa1p0.jpg":{"contentType":"image/jpeg","lastModified":1676453329000,"length":83050,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0.jpg","sha256":"rUxooG+aZHFW2b1W9r8Uo5yfQ+KrhvjH3iuOta6r3qE="},"download/cont_mi.json":{"contentType":"application/json","lastModified":1676453280000,"length":10567,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_mi.json","sha256":"8JPaFklPKXoV+z9vqF/5Nss+tvejwxrCEGP+mUoSpVA="},"download/pgv_regr.png":{"contentType":"image/png","lastModified":1676453334000,"length":97652,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv_regr.png","sha256":"mkJgKpsMg1gWmHnMWlHMySULWiEUxKEk5haJrmx9Qp0="},"download/intensity_overlay.pngw":{"contentType":"application/octet-stream","lastModified":1676453315000,"length":41,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity_overlay.pngw","sha256":"x6S9dpEMmEMZASXK6q2xEoZGb4fgg3w12J1NUXyg/bo="},"download/coverage_pga_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":74729,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_low_res.covjson","sha256":"4JvrSHQfAcMw7epryrQ2d1fp5v+u7P+0NI2z5F6wAKs="},"download/coverage_pga_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":293969,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_medium_res.covjson","sha256":"bfThdVGdwN7oohpOrcddjtnDOpQd9nzrYPlZRyZ9BJc="},"download/grid.xml":{"contentType":"application/xml","lastModified":1676453283000,"length":12637620,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/grid.xml","sha256":"THJlQWPF31esTybs3YV2GGWbaVT5IEYHu+4vJ/CqjQg="},"download/coverage_psa1p0_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":74704,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_low_res.covjson","sha256":"4UcB26FfKWs04GFHgFxbR4KzNvAHFelDZrZoMU+eBD0="},"download/intensity_overlay.png":{"contentType":"image/png","lastModified":1676453315000,"length":35306,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity_overlay.png","sha256":"yiLNh2GPUZg8oln7UyW015lO7uideypTN9NbiuApFz8="},"download/psa0p3_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":101343,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3_regr.png","sha256":"FURMlqpfRTfpEVj3u89B/IMtKmymvE3SYFL0b0xOa9s="},"download/stationlist.json":{"contentType":"application/json","lastModified":1676453340000,"length":442230,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/stationlist.json","sha256":"F2CcFbilW8ySk25pCYRkQKx4afvIZS/LBZP0+eTTtOY="},"download/psa3p0_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":92120,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0_regr.png","sha256":"v7A9treeWa6zsQQAhFyh1581zP9Ux39DrkaqZM1XAgw="},"download/shakemap.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676453291000,"length":128819,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shakemap.kmz","sha256":"zvsbcTAZ83ubnp5CFqrVYUv5mP6IueuedSExz5/ZPo8="},"download/psa0p3.pdf":{"contentType":"application/pdf","lastModified":1676453325000,"length":1948196,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3.pdf","sha256":"/N3bzwS38KA6Deak+dpAK+clNglZOVStq+DGEPCj7nw="},"download/coverage_psa0p3_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":294002,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_medium_res.covjson","sha256":"1mOcDxncEUhLyfVZg3NCafYtCuiHtg1qk2DKKGs1lgw="},"download/cont_pgv.json":{"contentType":"application/json","lastModified":1676453281000,"length":9952,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_pgv.json","sha256":"TfIJKj3vYPhciyWBuTQKFe9g32MtC/lCSCEXh5Ml9fg="},"download/shape.zip":{"contentType":"application/zip","lastModified":1676453340000,"length":853110,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shape.zip","sha256":"QN5RbZ9TgCmX0vuhPYYTXnvrYgRI+NLVBEX5uND3cgI="}}}],"trump-origin":[{"indexid":"22327280","indexTime":1676447698643,"id":"urn:usgs-product:admin:trump-origin:hv73325052:1676447697223","type":"trump-origin","code":"hv73325052","source":"admin","updateTime":1676447697223,"status":"UPDATE","properties":{"eventsource":"hv","eventsourcecode":"73325052","original-signature":"UUWIZb7WKVe2uaEnVc17HwL5Tj30bSDE4+r5xsOpyOK71ExuD26KJHCdjJ7Qf8OWNLLd+JXIqwv9C0y6zqrwoCPZ0cHRqeB2rqFNLLFfXpq0m6pVL1GcJ2URs5rSSVvHGzWdk67+r0quCAkN/I7yVZNeNn8Kgx1MqHQXYQHoIdqaC83NN2reOcS3zzaiZ3Xfboj+2gaOn8C0CXDdzaEal5r/NswfuFFcmCB8o4thp0fjYRJ9jAPK8KV9klyJW5ZRyV0c9lu3sNrxbQ6FHu/B7YW797nNl7dKwk33C6vndwT9j2sAZsBaorAQgjEPZa/tw4Zfz031tKX1UcPbPv3ULK3kNcKhD8zoOryY/oYQRXQAtGjL0hthcRE7eLIS73ZVUSU8gdDyihXnvsLhtuPIjhDsEqq7b0Ib0slpgcs/1CTQ67YN6zWmtCjiHBAj8ffEt+zyCHdxHhYY5j+V9Tz5wtCPXJs4hiUW5miv93OSZaBjgEUeMQ15gOCEnHkMGbt8TRiFvzAfGD82YVcubWiG5e1tQzp1YZHHjx9p0UyP+cXPd/Iv42fQlYIN1guT71CYXOyWMnYtgRSRcj3k1bHQR9wW+dPpECGJJ/lZNL4cocE8XBatBvMISTxa5YCeNvNl4g3bvpBpgaiOnXC+K/XfUPqIz29+li1CcZNpRNT5O/M=","original-signature-version":"v1","pdl-client-version":"Version
+        2.6.0 2020-11-20","senderemail":"jchang","trump-code":"hv73325052","trump-source":"hv"},"preferredWeight":1,"contents":[]}]}},"geometry":{"type":"Point","coordinates":[-155.407166666667,19.1136666666667,31.75]},"id":"hv73325052"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '48'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 15 Feb 2023 18:02:35 GMT
+      Expires:
+      - Wed, 15 Feb 2023 18:03:35 GMT
+      Last-Modified:
+      - Wed, 15 Feb 2023 18:02:35 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 6fc2d4bdda3d8efb927d086a87e8483e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - _sXTcg5Va5IsZB67NyFIOQ-Gss0XI3SGpaSCt2AB98TQ8smJMqAbhQ==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=hv73325052
+  response:
+    body:
+      string: '{"type":"Feature","properties":{"mag":4.78,"place":"12 km SE of P?hala,
+        Hawaii","time":1676446026530,"updated":1676484088353,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/hv73325052","felt":1401,"cdi":5.3,"mmi":6.156,"alert":"green","status":"reviewed","tsunami":0,"sig":882,"net":"hv","code":"73325052","ids":",pt23046050,hv73325052,us6000jp21,","sources":",pt,hv,us,","types":",dyfi,losspager,origin,phase-data,shakemap,trump-origin,","nst":45,"dmin":null,"rms":0.11,"gap":185,"magType":"ml","type":"earthquake","title":"M
+        4.8 - 12 km SE of P?hala, Hawaii","products":{"dyfi":[{"indexid":"22329118","indexTime":1676484092803,"id":"urn:usgs-product:us:dyfi:hv73325052:1676484088353","type":"dyfi","code":"hv73325052","source":"us","updateTime":1676484088353,"status":"UPDATE","properties":{"depth":"31.75","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.8","maxmmi":"5.3","num-responses":"1401","numResp":"1401","original-signature":"MC4CFQDCMScFNd+F+z4kxVLjlpJyRLSnAAIVAI+otRYANHWGJcubNJuSeX58mWrj","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21"},"preferredWeight":53,"contents":{"hv73325052_plot_atten.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":3407,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.txt","sha256":"JS3fSAFmQbApoDAEP93CyJibpi0wiUCi8g8ESMYjBCk="},"dyfi_zip.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":5664,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_zip.geojson","sha256":"29SuC9V0AcZ8fdjFPNZiP79Ois5Q0cHPO4J7/tgkkG8="},"dyfi_geo_10km.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":26423,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo_10km.geojson","sha256":"wpEKSQdErt845w5mk5Kw48q71lwjxW47+pkojQclBig="},"dyfi_geo_1km.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":178087,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo_1km.geojson","sha256":"4REWHf5+b7nT29Ie6u6PA5+pQdOw1kNCaOm62PIvwdM="},"cdi_geo.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":8149,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo.txt","sha256":"ttQNU98S5SB1Zry5oQu2EaQtGCj6zTHEytQyYTREmSI="},"contents.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":4224,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/contents.xml","sha256":"4Ez6rX5nmdtSH0GadUUHy0DCRrrn+Vw3ZCWFP5qHUXs="},"cdi_geo_1km.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":58892,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo_1km.txt","sha256":"6EfHTcTvoBUvK6dychEZs4pjqPdBGNs1OetlJ2BwjHs="},"dyfi_plot_atten.json":{"contentType":"application/json","lastModified":1676484088000,"length":4909,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_plot_atten.json","sha256":"Vtc5O9FS0kGXHMCBBjtnMPkyhIKpRdqoWIkcKOdqzyM="},"hv73325052_ciim_geo.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":128877,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.ps","sha256":"CtvuDvbPGDtz0ec3zuhH4RDRg8wp4u+dfjbygdNTGnE="},"cdi_geo.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":25932,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo.xml","sha256":"6Vh7E6xKAi15U9CQLyCwr1D38IwnwhH/N2+S83UMjlI="},"hv73325052_plot_atten.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":53073,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.ps","sha256":"kn7p6lAhtxJoLOBQLeAvp8N+vo+B4Ap+U9SXxt35REU="},"cdi_zip.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":7806,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_zip.xml","sha256":"iMd0a1ils5a5qDWISIALbw02+TXZGManvPHpPi5clvQ="},"dyfi_geo.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484087000,"length":5917,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo.kmz","sha256":"6PniqiDcBZKKLmB8cm4RhrhKKWkfxeOp6wi6O+nFMXw="},"hv73325052_ciim.pdf":{"contentType":"application/pdf","lastModified":1676484087000,"length":56602,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.pdf","sha256":"iC3bhmWLPNlvD35qzM6bGG0fZmOjPiw2XPb2uxr1WuU="},"hv73325052_ciim_imap.html":{"contentType":"text/html","lastModified":1676484087000,"length":15520,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_imap.html","sha256":"NzVCfHw+nvIXegFMThgTNCgcl/R46kOqoBfrj2UZLDo="},"dyfi_zip.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484088000,"length":10614,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_zip.kmz","sha256":"OL6+eGcl60Fp5ild1rjYonzkpaRyXepj34PvVvylvpY="},"hv73325052_plot_numresp.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":33338,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.ps","sha256":"RnCcay0tZyK+A/l2RaQeUZ18/6VnGrz/KbJpSzqJ4vk="},"cdi_zip.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":2162,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_zip.txt","sha256":"4ugE6LX8gSb+ag0MZgXqI57zP95BZzNFKkHn8ojMzKA="},"event_data.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":3062,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/event_data.xml","sha256":"tT+O3MJpthCxp2tSX7jXh2yXbVzCWSf1j7vfs3+eCf4="},"hv73325052_ciim_geo.pdf":{"contentType":"application/pdf","lastModified":1676484087000,"length":44963,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.pdf","sha256":"M3bXFUGoZnM2I8AVazjLn5akgMPeJOaFmt77mM2/7jo="},"dyfi_plot_numresp.json":{"contentType":"application/json","lastModified":1676484088000,"length":98916,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_plot_numresp.json","sha256":"yTcHmF9CBA+H1KDNC/vB1pKjKAPqmlKozsgM/wJMT8M="},"hv73325052_ciim.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":80545,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.jpg","sha256":"rtnxbL5JpzYP31oeNj8tC3mOGsxDpdImP3cPRjYD1M0="},"hv73325052_ciim_geo_imap.html":{"contentType":"text/html","lastModified":1676484087000,"length":25247,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo_imap.html","sha256":"APEycJ4TpeSH9Fjx9s4L89XKeS9+6vjwO+YTZK+nkxk="},"hv73325052_plot_numresp.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":39632,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.jpg","sha256":"TWfbCHFuGM6UWMsRZgwNRhyLEWudwpSaE/cipwqIj/w="},"hv73325052_plot_atten.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":54355,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.jpg","sha256":"u3w7c9FXCa7kF83bNDAJUbVOyHA2hRE05vSv6LSA/p8="},"hv73325052_ciim.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":146939,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.ps","sha256":"vcigCiP7Ahj2PJwx7h52GXhArs725T2oex+E5L8QvYw="},"dyfi.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484087000,"length":1175,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi.kmz","sha256":"rF85CGu2XRWB8nLedNg2kxiD6nDM4laERSQ2GedGHnk="},"hv73325052_ciim_geo.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":80271,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.jpg","sha256":"1lkZ8CSwEcXSfeevq/7L0cTW8WrUDIfCexjH9R6aUFM="},"hv73325052_plot_numresp.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":63685,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.txt","sha256":"81lxQK9pUd6J0YFzG8dJsoH1dEl+iuwo8RO/G+GtV2M="}}}],"losspager":[{"indexid":"22327533","indexTime":1676453453544,"id":"urn:usgs-product:us:losspager:us6000jp21:1676453429697","type":"losspager","code":"us6000jp21","source":"us","updateTime":1676453429697,"status":"UPDATE","properties":{"alertlevel":"green","depth":"29.1","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.1746","longitude":"-155.4238","magnitude":"4.5","maxmmi":"5","original-signature":"MCwCFDhGZD1sh3EF2UGIbtp/WACOUj7xAhRbL41SKkDnj+KF1nu+LkaJ8u/0ig==","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.9 2021-02-10","review-status":"automatic"},"preferredWeight":8,"contents":{"json/cities.json":{"contentType":"application/json","lastModified":1676453428000,"length":8446,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/cities.json","sha256":"cXCTP0NXg0gaULia9x4PHL0V4Zkog81Is1Gug7LCH3Y="},"onepager.pdf":{"contentType":"application/pdf","lastModified":1676453429000,"length":2101039,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.pdf","sha256":"Bk3RlvlGgCkPLwxbRysA0snmFReooQHZQFSq2f0eVbM="},"json/alerts.json":{"contentType":"application/json","lastModified":1676453428000,"length":1428,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/alerts.json","sha256":"QjCzEmBod7d52Pd7iqC54QqiPZlv7gvLdYzwjUnRMh8="},"json/exposures.json":{"contentType":"application/json","lastModified":1676453428000,"length":651,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/exposures.json","sha256":"bbBWc4pwKBEDRfa+QCxxZIh9sqsG2N1TxkXl3fC+gTM="},"json/historical_earthquakes.json":{"contentType":"application/json","lastModified":1676453428000,"length":1542,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/historical_earthquakes.json","sha256":"oDWSHeGA6CTy3+5XtsEdCj/HBQE2cpxvkn6rg7XkhoM="},"grid.xml":{"contentType":"application/xml","lastModified":1676453392000,"length":12637620,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/grid.xml","sha256":"THJlQWPF31esTybs3YV2GGWbaVT5IEYHu+4vJ/CqjQg="},"contents.xml":{"contentType":"application/xml","lastModified":1676453429000,"length":2951,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/contents.xml","sha256":"4YQYOxrL0fquA/rZdjmRkwL065QhV7flQVnnu+RBWCE="},"alertfatal.pdf":{"contentType":"application/pdf","lastModified":1676453406000,"length":9987,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal.pdf","sha256":"/nPpXdXYOWWM5Ug78giM9FBsZ7LUt4LUNIIOGXM0FUM="},"json/event.json":{"contentType":"application/json","lastModified":1676453428000,"length":720,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/event.json","sha256":"ouDrtLP+936FXTMmofoH+Nrqz1Lkyfg/IVGhXBg/EFI="},"onepager.log":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":27372,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.log","sha256":"dFPScqhGbUb3L9WFEnIh8S1Zd33sWo6S/kn2te6aad8="},"alertfatal.png":{"contentType":"image/png","lastModified":1676453406000,"length":12148,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal.png","sha256":"YgS3YF7seTY3X6yiNwslF5O5c/MhV39p8tU20PFPCME="},"alertecon.png":{"contentType":"image/png","lastModified":1676453407000,"length":13714,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon.png","sha256":"Gwjb536rAFa38psaePb6h5eIHVv4P1hLuKLamAExtuQ="},"json/comments.json":{"contentType":"application/json","lastModified":1676453428000,"length":821,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/comments.json","sha256":"EVUesH8xA3n3L7K5ZN+bQqRWyB8wo906DgqfnYHFKUA="},"exposure.png":{"contentType":"image/png","lastModified":1676453422000,"length":90698,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/exposure.png","sha256":"kHV39L7NwcRWhPjeqjV8d4OYGWdORM3uaMe1vPVJm/Q="},"alertfatal_small.png":{"contentType":"image/png","lastModified":1676453407000,"length":5280,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal_small.png","sha256":"i1ZAv1SQZYJ5VD4G4DU8XgL+Buv3pWLeJ8CdgYbgHpI="},"alertecon.pdf":{"contentType":"application/pdf","lastModified":1676453407000,"length":11570,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon.pdf","sha256":"1TwmHzz5y9HStMZVSP+7MY10vvZxIHrsycipQgMXNjM="},"onepager.aux":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":166,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.aux","sha256":"Wogp1VdeNQAUFhvWSLY6a2xGsMZxAcv6AdpewII2+W4="},"exposure.pdf":{"contentType":"application/pdf","lastModified":1676453422000,"length":1790655,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/exposure.pdf","sha256":"7m9g5XBTlzSAKNoWpirpFVl8uC7DT1SbAaJdEsmWbvM="},"json/losses.json":{"contentType":"application/json","lastModified":1676453428000,"length":1002,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/losses.json","sha256":"Cni7FG95VEmyXRG+JCeEyukQldFpGrgfz2MVIzICHbQ="},"alertfatal_smaller.png":{"contentType":"image/png","lastModified":1676453407000,"length":3046,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal_smaller.png","sha256":"3ay18lD51uS4TR1Rz5snvU/fcKJB0/wtMyOCTncvlqs="},"onepager.tex":{"contentType":"application/x-tex","lastModified":1676453428000,"length":17770,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.tex","sha256":"updsP0gLJtKirIEGALoYTFOsj6JwRc+1kK5e7frUZrI="},"pager.xml":{"contentType":"application/xml","lastModified":1676453428000,"length":8864,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/pager.xml","sha256":"BjPFBLouehWSwaVrdLm3Qv2+M2a2lkgfKc0b2NN866M="},"alertecon_small.png":{"contentType":"image/png","lastModified":1676453407000,"length":6007,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon_small.png","sha256":"D7+MGwb4bVA7h+XVnCAtKqhs0dH92Z6fBQlNd+AihRc="},"alertecon_smaller.png":{"contentType":"image/png","lastModified":1676453407000,"length":3470,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon_smaller.png","sha256":"EOdT8djOLKBcYMoOW7bqML3gtS6ceMJ6IwJzwe8arCM="},"event.log":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":4128,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/event.log","sha256":"0UWFy4hhkKa0tKsBgydSwnp3x4BxkNj4SJvm0f2+xig="}}}],"origin":[{"indexid":"22327281","indexTime":1676447698758,"id":"urn:usgs-product:hv:origin:hv73325052:1676446801690","type":"origin","code":"hv73325052","source":"hv","updateTime":1676446801690,"status":"UPDATE","properties":{"azimuthal-gap":"185","depth":"31.75","depth-type":"from
+        location","error-ellipse-azimuth":"346","error-ellipse-intermediate":"1152","error-ellipse-major":"1512","error-ellipse-minor":"672","error-ellipse-plunge":"77","error-ellipse-rotation":"358","evaluation-status":"final","event-type":"earthquake","eventParametersPublicID":"quakeml:hv.anss.org/Event/HV/73325052#167644680169","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.530Z","horizontal-error":"0.47","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.78","magnitude-azimuthal-gap":"184.399626103932","magnitude-error":"0.13919640319702","magnitude-num-stations-used":"29","magnitude-source":"HV","magnitude-type":"ml","num-phases-used":"79","num-stations-used":"45","origin-source":"HV","original-signature":"MC0CFCqYM+/mJyOD8zGmoxcXv6l19qBXAhUA59Pmf/GILlycl/g5mfMxiTTpVvM=","original-signature-version":"v1","pdl-client-version":"Version
+        2.4.0 2020-05-11","quakeml-magnitude-publicid":"quakeml:hv.anss.org/Netmag/HV/95167253","quakeml-origin-publicid":"quakeml:hv.anss.org/Origin/HV/75092663","quakeml-publicid":"quakeml:hv.anss.org/Event/HV/73325052","review-status":"reviewed","standard-error":"0.11","title":"12
+        km SE of P?hala, Hawaii","version":"1","vertical-error":"0.61"},"preferredWeight":100000000,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/hv73325052/hv/1676446801690/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":2945,"url":"https://earthquake.usgs.gov/product/origin/hv73325052/hv/1676446801690/quakeml.xml","sha256":"+Nki1hlEtzAw/77gfggPm7tZtNkG2hfh7kUDK1sCaas="}}},{"indexid":"22327314","indexTime":1676448015126,"id":"urn:usgs-product:us:origin:us6000jp21:1676448008040","type":"origin","code":"us6000jp21","source":"us","updateTime":1676448008040,"status":"UPDATE","properties":{"azimuthal-gap":"161","depth":"29.098","depth-type":"from
+        location","error-ellipse-azimuth":"167","error-ellipse-intermediate":"7435","error-ellipse-major":"9550","error-ellipse-minor":"5023","error-ellipse-plunge":"56","error-ellipse-rotation":"171","evaluation-status":"preliminary","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000jp21/1676448010","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.758Z","eventtime-error":"1.92","horizontal-error":"4.22","latitude":"19.1746","latitude-error":"0.0467","longitude":"-155.4238","longitude-error":"0.0341","magnitude":"4.5","magnitude-error":"0.082","magnitude-num-stations-used":"44","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.041","num-phases-used":"117","num-stations-used":"87","origin-source":"us","original-signature":"MC4CFQCyoOCLcuQuH48WvSmgjOfq6/j2IgIVALBiTTzxIg3lZF0Vre6uTNqRKMif","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000jp21/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000jp21","quakeml-publicid":"quakeml:us.anss.org/event/6000jp21","review-status":"reviewed","standard-error":"0.95","title":"6
+        km ESE of P?hala, Hawaii","vertical-error":"5.884"},"preferredWeight":8,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676448012000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/us6000jp21/us/1676448008040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676448008000,"length":3809,"url":"https://earthquake.usgs.gov/product/origin/us6000jp21/us/1676448008040/quakeml.xml","sha256":"geFY24jMDHNobJbC1hjDLkbo6LyI8lmsjEA2q3ejetw="}}},{"indexid":"22327170","indexTime":1676446184042,"id":"urn:usgs-product:pt:origin:pt23046050:1676446181216","type":"origin","code":"pt23046050","source":"pt","updateTime":1676446181216,"status":"UPDATE","properties":{"cube-location-method":"u","cube-magnitude-type":"L","depth":"32.9","event-type":"earthquake","eventsource":"pt","eventsourcecode":"23046050","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.121","location-method-algorithm":"u","location-method-class":"CUBE_Code","longitude":"-155.403","magnitude":"4.7","magnitude-num-stations-used":"25","magnitude-type":"Ml","num-stations-used":"80","original-signature":"MCwCFAT7ZEcleE8BG753z9v1XelIygyHAhR2+IV8kGPJQvrKyMz72tDSVL3CLg==","original-signature-version":"v1","review-status":"REVIEWED","title":"12
+        km SE of P?hala, Hawaii","version":"A"},"preferredWeight":6,"contents":{"contents.xml":{"contentType":"text/plain","lastModified":1676446181000,"length":272,"url":"https://earthquake.usgs.gov/product/origin/pt23046050/pt/1676446181216/contents.xml","sha256":"PzlTQj8FWkBJx8Aaw8QrZKtT8VeAHdXJtYpy43yn7+I="},"eqxml.xml":{"contentType":"text/plain","lastModified":1676446181000,"length":845,"url":"https://earthquake.usgs.gov/product/origin/pt23046050/pt/1676446181216/eqxml.xml","sha256":"VXCpact/nVOsB3BY16L46lQXqTtKanU9BgkaC4PK848="}}}],"phase-data":[{"indexid":"22327235","indexTime":1676446805343,"id":"urn:usgs-product:hv:phase-data:hv73325052:1676446801690","type":"phase-data","code":"hv73325052","source":"hv","updateTime":1676446801690,"status":"UPDATE","properties":{"azimuthal-gap":"185","depth":"31.75","depth-type":"from
+        location","error-ellipse-azimuth":"346","error-ellipse-intermediate":"1152","error-ellipse-major":"1512","error-ellipse-minor":"672","error-ellipse-plunge":"77","error-ellipse-rotation":"358","evaluation-status":"final","event-type":"earthquake","eventParametersPublicID":"quakeml:hv.anss.org/Event/HV/73325052#167644680169","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.530Z","horizontal-error":"0.47","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.78","magnitude-azimuthal-gap":"184.399626103932","magnitude-error":"0.13919640319702","magnitude-num-stations-used":"29","magnitude-source":"HV","magnitude-type":"ml","num-phases-used":"79","num-stations-used":"45","origin-source":"HV","original-signature":"MC0CFQCvXkbte5ZrNCiUkAVsF6hBufMSzgIUETPMEbJ1ttjxdxG3M2sDBBp/ztQ=","original-signature-version":"v1","pdl-client-version":"Version
+        2.4.0 2020-05-11","quakeml-magnitude-publicid":"quakeml:hv.anss.org/Netmag/HV/95167253","quakeml-origin-publicid":"quakeml:hv.anss.org/Origin/HV/75092663","quakeml-publicid":"quakeml:hv.anss.org/Event/HV/73325052","review-status":"reviewed","standard-error":"0.11","version":"1","vertical-error":"0.61"},"preferredWeight":157,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/hv73325052/hv/1676446801690/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":212615,"url":"https://earthquake.usgs.gov/product/phase-data/hv73325052/hv/1676446801690/quakeml.xml","sha256":"zD7ySvlO8EkeyNkptfaWuOihjAynZvytBsa0JpDgeyc="}}},{"indexid":"22327315","indexTime":1676448017296,"id":"urn:usgs-product:us:phase-data:us6000jp21:1676448008040","type":"phase-data","code":"us6000jp21","source":"us","updateTime":1676448008040,"status":"UPDATE","properties":{"azimuthal-gap":"161","depth":"29.098","depth-type":"from
+        location","error-ellipse-azimuth":"167","error-ellipse-intermediate":"7435","error-ellipse-major":"9550","error-ellipse-minor":"5023","error-ellipse-plunge":"56","error-ellipse-rotation":"171","evaluation-status":"preliminary","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000jp21/1676448010","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.758Z","eventtime-error":"1.92","horizontal-error":"4.22","latitude":"19.1746","latitude-error":"0.0467","longitude":"-155.4238","longitude-error":"0.0341","magnitude":"4.5","magnitude-error":"0.082","magnitude-num-stations-used":"44","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.041","num-phases-used":"117","num-stations-used":"87","origin-source":"us","original-signature":"MC4CFQDOjEw4KihdPzR6Vty9nhzt6zq5rgIVAJEcLujD529mGPySAkdUzQ3do2kq","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000jp21/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000jp21","quakeml-publicid":"quakeml:us.anss.org/event/6000jp21","review-status":"reviewed","standard-error":"0.95","vertical-error":"5.884"},"preferredWeight":8,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676448012000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/us6000jp21/us/1676448008040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676448008000,"length":291951,"url":"https://earthquake.usgs.gov/product/phase-data/us6000jp21/us/1676448008040/quakeml.xml","sha256":"NUGarUKPDi+R5kqey7mbI0LLWOfA/A609WYBNFl50CY="}}}],"shakemap":[{"indexid":"22327531","indexTime":1676453418423,"id":"urn:usgs-product:us:shakemap:us6000jp21:1676453340886","type":"shakemap","code":"us6000jp21","source":"us","updateTime":1676453340886,"status":"UPDATE","properties":{"depth":"29.1","event-description":"USGS
+        NEIC ShakeMap","event-type":"ACTUAL","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.000Z","gmice":"WGRW12","latitude":"19.1746","longitude":"-155.4238","magnitude":"4.5","map-status":"automatic","maximum-latitude":"20.967","maximum-longitude":"-153.483","maxmmi":"6.156","maxmmi-grid":"6.244","maxpga":"0.209","maxpga-grid":"0.225","maxpgv":"8.603","maxpgv-grid":"9.249","maxpsa03":"0.18","maxpsa03-grid":"0.19","maxpsa10":"0.034","maxpsa10-grid":"0.038","maxpsa30":"0.004","maxpsa30-grid":"0.004","minimum-latitude":"17.367","minimum-longitude":"-157.283","original-signature":"MCwCFB4Qoazg+Hyr621mEdDWXAnYe6I0AhQ9aCb5kcmbm4uk/LylXl4I88Aezw==","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","process-timestamp":"2023-02-15T09:27:59Z","review-status":"automatic","shakemap-code-version":"4.0.2+731.g88a8033","version":"4"},"preferredWeight":82,"contents":{"download/coverage_psa3p0_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1317121,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_high_res.covjson","sha256":"QSz2yENelYZEtuW3rEvy4BKkB+KD7aHdif0zZ0y6734="},"download/coverage_psa3p0_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":331492,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_medium_res.covjson","sha256":"hpQSs1vpJwZpqzXqp+NNa/HThE+O0BaLlNaM15FunZs="},"download/coverage_pgv_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":1166412,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_high_res.covjson","sha256":"H7HVI/i7cPgAcngvGG9xjqXD2aCzfumfrDTnvxp9gxk="},"download/mmi_legend.png":{"contentType":"image/png","lastModified":1676453296000,"length":48086,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/mmi_legend.png","sha256":"MTg/qBrLQLPetJsPhqyImcTVC+XopgPJ4JlwhLgCnzs="},"download/rupture.json":{"contentType":"application/json","lastModified":1676453340000,"length":530,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/rupture.json","sha256":"pcCL5rhik6T/DAsG8E2AjQ6gW9TsFEOnirUFiQtNYjw="},"download/info.json":{"contentType":"application/json","lastModified":1676453284000,"length":4108,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/info.json","sha256":"v8nbNP/OiDI6bE4XDLZ2dRAJvAr6T+COH2iKo/KJZzM="},"download/coverage_psa0p3_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1168322,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_high_res.covjson","sha256":"IKH05Mpp/ACrl+UHTVTcKm9A0zGNwD39vjPMmnfnKks="},"download/psa3p0.jpg":{"contentType":"image/jpeg","lastModified":1676453333000,"length":82609,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0.jpg","sha256":"jdv0iZfWSNN942CiRtCOyqkH3A3oRq+o5HyLg5YBxIY="},"download/cont_psa0p3.json":{"contentType":"application/json","lastModified":1676453281000,"length":9424,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa0p3.json","sha256":"ilMW2TzyipN33krgaf7nGU+nBDC3LEjPjmrJMww8RXI="},"download/coverage_pga_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":1168268,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_high_res.covjson","sha256":"LbcIAfpdVCnY/dJgLlOXiVDkFt5h+069zRkSaICPzSc="},"download/coverage_psa0p3_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":74754,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_low_res.covjson","sha256":"3f+FXCLFqvRBJ/Ft6xEl1HbL0yUx3k8/9CMKFMut0Fo="},"download/attenuation_curves.json":{"contentType":"application/json","lastModified":1676453335000,"length":52964,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/attenuation_curves.json","sha256":"HB39l1+B8EJrXAxeYD00KEXZ0RpTmD+ywjUVsYutE+U="},"download/intensity.jpg":{"contentType":"image/jpeg","lastModified":1676453315000,"length":95288,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity.jpg","sha256":"OBOBPy+n060CAIc3s180TDqnWCzeDIRrw8Uc9MP9SIY="},"download/raster.zip":{"contentType":"application/zip","lastModified":1676453339000,"length":6717843,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/raster.zip","sha256":"OtheFm8wAvqZgnFH0XZkRz8ipLMb5xyJ5fcyRfxSVXI="},"download/pga.pdf":{"contentType":"application/pdf","lastModified":1676453318000,"length":1949168,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga.pdf","sha256":"ezfzMXT+gEybDwfqBZq4/FSUvokHFvAC4Jq+zDzvZmE="},"download/pga_regr.png":{"contentType":"image/png","lastModified":1676453334000,"length":101185,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga_regr.png","sha256":"Dg9X62R+uL/gbvKZ8lywyeKcDB+u4BSlHS3a9gGpoM0="},"download/coverage_mmi_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":51078,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_low_res.covjson","sha256":"OtyF+tZKpLfNATctYlOAfKRk9Lnfk3sIbfRTcdJRjAo="},"download/coverage_mmi_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":792462,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_high_res.covjson","sha256":"V5Pz0vF9JZdjbL2twlNtPLHz/izUycXmheHSsu+ChSo="},"download/intensity.pdf":{"contentType":"application/pdf","lastModified":1676453314000,"length":1953157,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity.pdf","sha256":"x+uwUb5Swx5oSc4BhgVTXNDWFUitRXOvkBtLMI8a0Zs="},"download/mmi_regr.png":{"contentType":"image/png","lastModified":1676453333000,"length":91243,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/mmi_regr.png","sha256":"qH7UZgHoW1Zt2gCYED6+pds9kdBaOdAbl34H3vPDVvg="},"download/psa3p0.pdf":{"contentType":"application/pdf","lastModified":1676453332000,"length":1946339,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0.pdf","sha256":"jsx4vPPRKFLtoK7pzy9cr/0HXWstKMwiXSPE7XPImP8="},"download/coverage_psa1p0_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1168293,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_high_res.covjson","sha256":"zhRaJ/msej8HApShj9KTu5lp6slaWWh0QVoGek14oQo="},"download/uncertainty.xml":{"contentType":"application/xml","lastModified":1676453284000,"length":11354321,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/uncertainty.xml","sha256":"co7P3fbevKcGajkE1R2yZKIp1mUdyGmakvn7OTWX7jA="},"download/pin-thumbnail.png":{"contentType":"image/png","lastModified":1676453315000,"length":26152,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pin-thumbnail.png","sha256":"xtU9zULUVR0X9qcgfpscSfccywk2nRnxxR3MFIVFLew="},"download/cont_mmi.json":{"contentType":"application/json","lastModified":1676453280000,"length":10567,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_mmi.json","sha256":"8JPaFklPKXoV+z9vqF/5Nss+tvejwxrCEGP+mUoSpVA="},"download/coverage_pgv_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":74588,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_low_res.covjson","sha256":"1ryMODvJhsTnu7OS+PhIHj8CBjYnQRDaNnBu3I7ajr0="},"download/coverage_mmi_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":199710,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_medium_res.covjson","sha256":"wUQuaQ/gszNrEpz0AM9cP8i0dr751wkPm3IgIrt0MBg="},"download/pgv.pdf":{"contentType":"application/pdf","lastModified":1676453322000,"length":1947945,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv.pdf","sha256":"EACE8DGID3CNlJCm/EYB1UIy4DeYIisCLRzh/nL/ju0="},"contents.xml":{"contentType":"application/xml","lastModified":1676453340000,"length":12211,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/contents.xml","sha256":"zo1fJo1f/XFlqPJ8k5dCq9bkShInmmnvs/+C+/Isbm8="},"download/cont_psa1p0.json":{"contentType":"application/json","lastModified":1676453281000,"length":9317,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa1p0.json","sha256":"F2su1ERRKsnL+klMwAAg9x7RtlMcvjexv5mCbTxzcEs="},"download/cont_psa3p0.json":{"contentType":"application/json","lastModified":1676453282000,"length":9486,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa3p0.json","sha256":"EY8FzBcH1lGCO8+zzH58ci7CNhNf7+YSVIoSwNEPRKY="},"download/psa1p0.pdf":{"contentType":"application/pdf","lastModified":1676453329000,"length":1947864,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0.pdf","sha256":"66+4ulPC+1a5DPdNv8mTUHEQJknPW7sMlWkR71RsPq4="},"download/coverage_pgv_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":293471,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_medium_res.covjson","sha256":"soZtjznyGE5xp4Vh5NeMi8WxFvKo0j8lNzvP6Jzhrc0="},"download/psa1p0_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":91368,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0_regr.png","sha256":"E1w0VIOevkkFMtMKTQmw5o2qfUSq+ZstpiXdAFAfgBA="},"download/coverage_psa3p0_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":84265,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_low_res.covjson","sha256":"wnx+A9j0cEMKNEdhYgTiCdBCY9Uy6XnCNMpWyUkCHsY="},"download/pga.jpg":{"contentType":"image/jpeg","lastModified":1676453319000,"length":87347,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga.jpg","sha256":"q177XF4tJCWHaVod31TavLE55i7wyxT93oY2bBhFe3Q="},"download/coverage_psa1p0_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":293989,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_medium_res.covjson","sha256":"CRKxmeCWlOoNjDSwfLZUXZDMVsCGFYlD+UIyxHMdtk8="},"download/psa0p3.jpg":{"contentType":"image/jpeg","lastModified":1676453326000,"length":83269,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3.jpg","sha256":"pU0XNO47Sl6YjJ7osFPaYIz9slLHyHtw+7+bKBTdjaI="},"download/shake_result.hdf":{"contentType":"application/octet-stream","lastModified":1676453340000,"length":15448999,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shake_result.hdf","sha256":"g3kURtEutstMx6xvR7pu3EjPzavaPqZDijMZFKuykS0="},"download/cont_pga.json":{"contentType":"application/json","lastModified":1676453280000,"length":11714,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_pga.json","sha256":"+kHlV+BmBk0ElgGXMUm8F32Oj1vDhS4B5ZZ9nIWMQhw="},"download/pgv.jpg":{"contentType":"image/jpeg","lastModified":1676453322000,"length":82353,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv.jpg","sha256":"QBgfcBGtvxH0Nze35LNRmayGEi6CEppq2CT3j9mQCPU="},"download/psa1p0.jpg":{"contentType":"image/jpeg","lastModified":1676453329000,"length":83050,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0.jpg","sha256":"rUxooG+aZHFW2b1W9r8Uo5yfQ+KrhvjH3iuOta6r3qE="},"download/cont_mi.json":{"contentType":"application/json","lastModified":1676453280000,"length":10567,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_mi.json","sha256":"8JPaFklPKXoV+z9vqF/5Nss+tvejwxrCEGP+mUoSpVA="},"download/pgv_regr.png":{"contentType":"image/png","lastModified":1676453334000,"length":97652,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv_regr.png","sha256":"mkJgKpsMg1gWmHnMWlHMySULWiEUxKEk5haJrmx9Qp0="},"download/intensity_overlay.pngw":{"contentType":"application/octet-stream","lastModified":1676453315000,"length":41,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity_overlay.pngw","sha256":"x6S9dpEMmEMZASXK6q2xEoZGb4fgg3w12J1NUXyg/bo="},"download/coverage_pga_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":74729,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_low_res.covjson","sha256":"4JvrSHQfAcMw7epryrQ2d1fp5v+u7P+0NI2z5F6wAKs="},"download/coverage_pga_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":293969,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_medium_res.covjson","sha256":"bfThdVGdwN7oohpOrcddjtnDOpQd9nzrYPlZRyZ9BJc="},"download/grid.xml":{"contentType":"application/xml","lastModified":1676453283000,"length":12637620,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/grid.xml","sha256":"THJlQWPF31esTybs3YV2GGWbaVT5IEYHu+4vJ/CqjQg="},"download/coverage_psa1p0_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":74704,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_low_res.covjson","sha256":"4UcB26FfKWs04GFHgFxbR4KzNvAHFelDZrZoMU+eBD0="},"download/intensity_overlay.png":{"contentType":"image/png","lastModified":1676453315000,"length":35306,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity_overlay.png","sha256":"yiLNh2GPUZg8oln7UyW015lO7uideypTN9NbiuApFz8="},"download/psa0p3_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":101343,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3_regr.png","sha256":"FURMlqpfRTfpEVj3u89B/IMtKmymvE3SYFL0b0xOa9s="},"download/stationlist.json":{"contentType":"application/json","lastModified":1676453340000,"length":442230,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/stationlist.json","sha256":"F2CcFbilW8ySk25pCYRkQKx4afvIZS/LBZP0+eTTtOY="},"download/psa3p0_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":92120,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0_regr.png","sha256":"v7A9treeWa6zsQQAhFyh1581zP9Ux39DrkaqZM1XAgw="},"download/shakemap.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676453291000,"length":128819,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shakemap.kmz","sha256":"zvsbcTAZ83ubnp5CFqrVYUv5mP6IueuedSExz5/ZPo8="},"download/psa0p3.pdf":{"contentType":"application/pdf","lastModified":1676453325000,"length":1948196,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3.pdf","sha256":"/N3bzwS38KA6Deak+dpAK+clNglZOVStq+DGEPCj7nw="},"download/coverage_psa0p3_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":294002,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_medium_res.covjson","sha256":"1mOcDxncEUhLyfVZg3NCafYtCuiHtg1qk2DKKGs1lgw="},"download/cont_pgv.json":{"contentType":"application/json","lastModified":1676453281000,"length":9952,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_pgv.json","sha256":"TfIJKj3vYPhciyWBuTQKFe9g32MtC/lCSCEXh5Ml9fg="},"download/shape.zip":{"contentType":"application/zip","lastModified":1676453340000,"length":853110,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shape.zip","sha256":"QN5RbZ9TgCmX0vuhPYYTXnvrYgRI+NLVBEX5uND3cgI="}}}],"trump-origin":[{"indexid":"22327280","indexTime":1676447698643,"id":"urn:usgs-product:admin:trump-origin:hv73325052:1676447697223","type":"trump-origin","code":"hv73325052","source":"admin","updateTime":1676447697223,"status":"UPDATE","properties":{"eventsource":"hv","eventsourcecode":"73325052","original-signature":"UUWIZb7WKVe2uaEnVc17HwL5Tj30bSDE4+r5xsOpyOK71ExuD26KJHCdjJ7Qf8OWNLLd+JXIqwv9C0y6zqrwoCPZ0cHRqeB2rqFNLLFfXpq0m6pVL1GcJ2URs5rSSVvHGzWdk67+r0quCAkN/I7yVZNeNn8Kgx1MqHQXYQHoIdqaC83NN2reOcS3zzaiZ3Xfboj+2gaOn8C0CXDdzaEal5r/NswfuFFcmCB8o4thp0fjYRJ9jAPK8KV9klyJW5ZRyV0c9lu3sNrxbQ6FHu/B7YW797nNl7dKwk33C6vndwT9j2sAZsBaorAQgjEPZa/tw4Zfz031tKX1UcPbPv3ULK3kNcKhD8zoOryY/oYQRXQAtGjL0hthcRE7eLIS73ZVUSU8gdDyihXnvsLhtuPIjhDsEqq7b0Ib0slpgcs/1CTQ67YN6zWmtCjiHBAj8ffEt+zyCHdxHhYY5j+V9Tz5wtCPXJs4hiUW5miv93OSZaBjgEUeMQ15gOCEnHkMGbt8TRiFvzAfGD82YVcubWiG5e1tQzp1YZHHjx9p0UyP+cXPd/Iv42fQlYIN1guT71CYXOyWMnYtgRSRcj3k1bHQR9wW+dPpECGJJ/lZNL4cocE8XBatBvMISTxa5YCeNvNl4g3bvpBpgaiOnXC+K/XfUPqIz29+li1CcZNpRNT5O/M=","original-signature-version":"v1","pdl-client-version":"Version
+        2.6.0 2020-11-20","senderemail":"jchang","trump-code":"hv73325052","trump-source":"hv"},"preferredWeight":1,"contents":[]}]}},"geometry":{"type":"Point","coordinates":[-155.407166666667,19.1136666666667,31.75]},"id":"hv73325052"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '49'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 15 Feb 2023 18:02:35 GMT
+      Expires:
+      - Wed, 15 Feb 2023 18:03:35 GMT
+      Last-Modified:
+      - Wed, 15 Feb 2023 18:02:35 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 c965c698e00469f12854479079151e98.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - Xw5mfXm2ze5MGpe8IY6-3xDxzP6o154VdrRQ--Jj9MZuDChzTm9DSg==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=hv73325052
+  response:
+    body:
+      string: '{"type":"Feature","properties":{"mag":4.78,"place":"12 km SE of P?hala,
+        Hawaii","time":1676446026530,"updated":1676484088353,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/hv73325052","felt":1401,"cdi":5.3,"mmi":6.156,"alert":"green","status":"reviewed","tsunami":0,"sig":882,"net":"hv","code":"73325052","ids":",pt23046050,hv73325052,us6000jp21,","sources":",pt,hv,us,","types":",dyfi,losspager,origin,phase-data,shakemap,trump-origin,","nst":45,"dmin":null,"rms":0.11,"gap":185,"magType":"ml","type":"earthquake","title":"M
+        4.8 - 12 km SE of P?hala, Hawaii","products":{"dyfi":[{"indexid":"22329118","indexTime":1676484092803,"id":"urn:usgs-product:us:dyfi:hv73325052:1676484088353","type":"dyfi","code":"hv73325052","source":"us","updateTime":1676484088353,"status":"UPDATE","properties":{"depth":"31.75","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.8","maxmmi":"5.3","num-responses":"1401","numResp":"1401","original-signature":"MC4CFQDCMScFNd+F+z4kxVLjlpJyRLSnAAIVAI+otRYANHWGJcubNJuSeX58mWrj","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21"},"preferredWeight":53,"contents":{"hv73325052_plot_atten.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":3407,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.txt","sha256":"JS3fSAFmQbApoDAEP93CyJibpi0wiUCi8g8ESMYjBCk="},"dyfi_zip.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":5664,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_zip.geojson","sha256":"29SuC9V0AcZ8fdjFPNZiP79Ois5Q0cHPO4J7/tgkkG8="},"dyfi_geo_10km.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":26423,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo_10km.geojson","sha256":"wpEKSQdErt845w5mk5Kw48q71lwjxW47+pkojQclBig="},"dyfi_geo_1km.geojson":{"contentType":"application/octet-stream","lastModified":1676484088000,"length":178087,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo_1km.geojson","sha256":"4REWHf5+b7nT29Ie6u6PA5+pQdOw1kNCaOm62PIvwdM="},"cdi_geo.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":8149,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo.txt","sha256":"ttQNU98S5SB1Zry5oQu2EaQtGCj6zTHEytQyYTREmSI="},"contents.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":4224,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/contents.xml","sha256":"4Ez6rX5nmdtSH0GadUUHy0DCRrrn+Vw3ZCWFP5qHUXs="},"cdi_geo_1km.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":58892,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo_1km.txt","sha256":"6EfHTcTvoBUvK6dychEZs4pjqPdBGNs1OetlJ2BwjHs="},"dyfi_plot_atten.json":{"contentType":"application/json","lastModified":1676484088000,"length":4909,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_plot_atten.json","sha256":"Vtc5O9FS0kGXHMCBBjtnMPkyhIKpRdqoWIkcKOdqzyM="},"hv73325052_ciim_geo.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":128877,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.ps","sha256":"CtvuDvbPGDtz0ec3zuhH4RDRg8wp4u+dfjbygdNTGnE="},"cdi_geo.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":25932,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_geo.xml","sha256":"6Vh7E6xKAi15U9CQLyCwr1D38IwnwhH/N2+S83UMjlI="},"hv73325052_plot_atten.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":53073,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.ps","sha256":"kn7p6lAhtxJoLOBQLeAvp8N+vo+B4Ap+U9SXxt35REU="},"cdi_zip.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":7806,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_zip.xml","sha256":"iMd0a1ils5a5qDWISIALbw02+TXZGManvPHpPi5clvQ="},"dyfi_geo.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484087000,"length":5917,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_geo.kmz","sha256":"6PniqiDcBZKKLmB8cm4RhrhKKWkfxeOp6wi6O+nFMXw="},"hv73325052_ciim.pdf":{"contentType":"application/pdf","lastModified":1676484087000,"length":56602,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.pdf","sha256":"iC3bhmWLPNlvD35qzM6bGG0fZmOjPiw2XPb2uxr1WuU="},"hv73325052_ciim_imap.html":{"contentType":"text/html","lastModified":1676484087000,"length":15520,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_imap.html","sha256":"NzVCfHw+nvIXegFMThgTNCgcl/R46kOqoBfrj2UZLDo="},"dyfi_zip.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484088000,"length":10614,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_zip.kmz","sha256":"OL6+eGcl60Fp5ild1rjYonzkpaRyXepj34PvVvylvpY="},"hv73325052_plot_numresp.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":33338,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.ps","sha256":"RnCcay0tZyK+A/l2RaQeUZ18/6VnGrz/KbJpSzqJ4vk="},"cdi_zip.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":2162,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/cdi_zip.txt","sha256":"4ugE6LX8gSb+ag0MZgXqI57zP95BZzNFKkHn8ojMzKA="},"event_data.xml":{"contentType":"application/xml","lastModified":1676484087000,"length":3062,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/event_data.xml","sha256":"tT+O3MJpthCxp2tSX7jXh2yXbVzCWSf1j7vfs3+eCf4="},"hv73325052_ciim_geo.pdf":{"contentType":"application/pdf","lastModified":1676484087000,"length":44963,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.pdf","sha256":"M3bXFUGoZnM2I8AVazjLn5akgMPeJOaFmt77mM2/7jo="},"dyfi_plot_numresp.json":{"contentType":"application/json","lastModified":1676484088000,"length":98916,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi_plot_numresp.json","sha256":"yTcHmF9CBA+H1KDNC/vB1pKjKAPqmlKozsgM/wJMT8M="},"hv73325052_ciim.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":80545,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.jpg","sha256":"rtnxbL5JpzYP31oeNj8tC3mOGsxDpdImP3cPRjYD1M0="},"hv73325052_ciim_geo_imap.html":{"contentType":"text/html","lastModified":1676484087000,"length":25247,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo_imap.html","sha256":"APEycJ4TpeSH9Fjx9s4L89XKeS9+6vjwO+YTZK+nkxk="},"hv73325052_plot_numresp.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":39632,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.jpg","sha256":"TWfbCHFuGM6UWMsRZgwNRhyLEWudwpSaE/cipwqIj/w="},"hv73325052_plot_atten.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":54355,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_atten.jpg","sha256":"u3w7c9FXCa7kF83bNDAJUbVOyHA2hRE05vSv6LSA/p8="},"hv73325052_ciim.ps":{"contentType":"application/postscript","lastModified":1676484087000,"length":146939,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim.ps","sha256":"vcigCiP7Ahj2PJwx7h52GXhArs725T2oex+E5L8QvYw="},"dyfi.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676484087000,"length":1175,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/dyfi.kmz","sha256":"rF85CGu2XRWB8nLedNg2kxiD6nDM4laERSQ2GedGHnk="},"hv73325052_ciim_geo.jpg":{"contentType":"image/jpeg","lastModified":1676484087000,"length":80271,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_ciim_geo.jpg","sha256":"1lkZ8CSwEcXSfeevq/7L0cTW8WrUDIfCexjH9R6aUFM="},"hv73325052_plot_numresp.txt":{"contentType":"text/plain","lastModified":1676484087000,"length":63685,"url":"https://earthquake.usgs.gov/product/dyfi/hv73325052/us/1676484088353/hv73325052_plot_numresp.txt","sha256":"81lxQK9pUd6J0YFzG8dJsoH1dEl+iuwo8RO/G+GtV2M="}}}],"losspager":[{"indexid":"22327533","indexTime":1676453453544,"id":"urn:usgs-product:us:losspager:us6000jp21:1676453429697","type":"losspager","code":"us6000jp21","source":"us","updateTime":1676453429697,"status":"UPDATE","properties":{"alertlevel":"green","depth":"29.1","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.1746","longitude":"-155.4238","magnitude":"4.5","maxmmi":"5","original-signature":"MCwCFDhGZD1sh3EF2UGIbtp/WACOUj7xAhRbL41SKkDnj+KF1nu+LkaJ8u/0ig==","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.9 2021-02-10","review-status":"automatic"},"preferredWeight":8,"contents":{"json/cities.json":{"contentType":"application/json","lastModified":1676453428000,"length":8446,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/cities.json","sha256":"cXCTP0NXg0gaULia9x4PHL0V4Zkog81Is1Gug7LCH3Y="},"onepager.pdf":{"contentType":"application/pdf","lastModified":1676453429000,"length":2101039,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.pdf","sha256":"Bk3RlvlGgCkPLwxbRysA0snmFReooQHZQFSq2f0eVbM="},"json/alerts.json":{"contentType":"application/json","lastModified":1676453428000,"length":1428,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/alerts.json","sha256":"QjCzEmBod7d52Pd7iqC54QqiPZlv7gvLdYzwjUnRMh8="},"json/exposures.json":{"contentType":"application/json","lastModified":1676453428000,"length":651,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/exposures.json","sha256":"bbBWc4pwKBEDRfa+QCxxZIh9sqsG2N1TxkXl3fC+gTM="},"json/historical_earthquakes.json":{"contentType":"application/json","lastModified":1676453428000,"length":1542,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/historical_earthquakes.json","sha256":"oDWSHeGA6CTy3+5XtsEdCj/HBQE2cpxvkn6rg7XkhoM="},"grid.xml":{"contentType":"application/xml","lastModified":1676453392000,"length":12637620,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/grid.xml","sha256":"THJlQWPF31esTybs3YV2GGWbaVT5IEYHu+4vJ/CqjQg="},"contents.xml":{"contentType":"application/xml","lastModified":1676453429000,"length":2951,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/contents.xml","sha256":"4YQYOxrL0fquA/rZdjmRkwL065QhV7flQVnnu+RBWCE="},"alertfatal.pdf":{"contentType":"application/pdf","lastModified":1676453406000,"length":9987,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal.pdf","sha256":"/nPpXdXYOWWM5Ug78giM9FBsZ7LUt4LUNIIOGXM0FUM="},"json/event.json":{"contentType":"application/json","lastModified":1676453428000,"length":720,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/event.json","sha256":"ouDrtLP+936FXTMmofoH+Nrqz1Lkyfg/IVGhXBg/EFI="},"onepager.log":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":27372,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.log","sha256":"dFPScqhGbUb3L9WFEnIh8S1Zd33sWo6S/kn2te6aad8="},"alertfatal.png":{"contentType":"image/png","lastModified":1676453406000,"length":12148,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal.png","sha256":"YgS3YF7seTY3X6yiNwslF5O5c/MhV39p8tU20PFPCME="},"alertecon.png":{"contentType":"image/png","lastModified":1676453407000,"length":13714,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon.png","sha256":"Gwjb536rAFa38psaePb6h5eIHVv4P1hLuKLamAExtuQ="},"json/comments.json":{"contentType":"application/json","lastModified":1676453428000,"length":821,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/comments.json","sha256":"EVUesH8xA3n3L7K5ZN+bQqRWyB8wo906DgqfnYHFKUA="},"exposure.png":{"contentType":"image/png","lastModified":1676453422000,"length":90698,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/exposure.png","sha256":"kHV39L7NwcRWhPjeqjV8d4OYGWdORM3uaMe1vPVJm/Q="},"alertfatal_small.png":{"contentType":"image/png","lastModified":1676453407000,"length":5280,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal_small.png","sha256":"i1ZAv1SQZYJ5VD4G4DU8XgL+Buv3pWLeJ8CdgYbgHpI="},"alertecon.pdf":{"contentType":"application/pdf","lastModified":1676453407000,"length":11570,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon.pdf","sha256":"1TwmHzz5y9HStMZVSP+7MY10vvZxIHrsycipQgMXNjM="},"onepager.aux":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":166,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.aux","sha256":"Wogp1VdeNQAUFhvWSLY6a2xGsMZxAcv6AdpewII2+W4="},"exposure.pdf":{"contentType":"application/pdf","lastModified":1676453422000,"length":1790655,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/exposure.pdf","sha256":"7m9g5XBTlzSAKNoWpirpFVl8uC7DT1SbAaJdEsmWbvM="},"json/losses.json":{"contentType":"application/json","lastModified":1676453428000,"length":1002,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/json/losses.json","sha256":"Cni7FG95VEmyXRG+JCeEyukQldFpGrgfz2MVIzICHbQ="},"alertfatal_smaller.png":{"contentType":"image/png","lastModified":1676453407000,"length":3046,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertfatal_smaller.png","sha256":"3ay18lD51uS4TR1Rz5snvU/fcKJB0/wtMyOCTncvlqs="},"onepager.tex":{"contentType":"application/x-tex","lastModified":1676453428000,"length":17770,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/onepager.tex","sha256":"updsP0gLJtKirIEGALoYTFOsj6JwRc+1kK5e7frUZrI="},"pager.xml":{"contentType":"application/xml","lastModified":1676453428000,"length":8864,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/pager.xml","sha256":"BjPFBLouehWSwaVrdLm3Qv2+M2a2lkgfKc0b2NN866M="},"alertecon_small.png":{"contentType":"image/png","lastModified":1676453407000,"length":6007,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon_small.png","sha256":"D7+MGwb4bVA7h+XVnCAtKqhs0dH92Z6fBQlNd+AihRc="},"alertecon_smaller.png":{"contentType":"image/png","lastModified":1676453407000,"length":3470,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/alertecon_smaller.png","sha256":"EOdT8djOLKBcYMoOW7bqML3gtS6ceMJ6IwJzwe8arCM="},"event.log":{"contentType":"application/octet-stream","lastModified":1676453429000,"length":4128,"url":"https://earthquake.usgs.gov/product/losspager/us6000jp21/us/1676453429697/event.log","sha256":"0UWFy4hhkKa0tKsBgydSwnp3x4BxkNj4SJvm0f2+xig="}}}],"origin":[{"indexid":"22327281","indexTime":1676447698758,"id":"urn:usgs-product:hv:origin:hv73325052:1676446801690","type":"origin","code":"hv73325052","source":"hv","updateTime":1676446801690,"status":"UPDATE","properties":{"azimuthal-gap":"185","depth":"31.75","depth-type":"from
+        location","error-ellipse-azimuth":"346","error-ellipse-intermediate":"1152","error-ellipse-major":"1512","error-ellipse-minor":"672","error-ellipse-plunge":"77","error-ellipse-rotation":"358","evaluation-status":"final","event-type":"earthquake","eventParametersPublicID":"quakeml:hv.anss.org/Event/HV/73325052#167644680169","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.530Z","horizontal-error":"0.47","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.78","magnitude-azimuthal-gap":"184.399626103932","magnitude-error":"0.13919640319702","magnitude-num-stations-used":"29","magnitude-source":"HV","magnitude-type":"ml","num-phases-used":"79","num-stations-used":"45","origin-source":"HV","original-signature":"MC0CFCqYM+/mJyOD8zGmoxcXv6l19qBXAhUA59Pmf/GILlycl/g5mfMxiTTpVvM=","original-signature-version":"v1","pdl-client-version":"Version
+        2.4.0 2020-05-11","quakeml-magnitude-publicid":"quakeml:hv.anss.org/Netmag/HV/95167253","quakeml-origin-publicid":"quakeml:hv.anss.org/Origin/HV/75092663","quakeml-publicid":"quakeml:hv.anss.org/Event/HV/73325052","review-status":"reviewed","standard-error":"0.11","title":"12
+        km SE of P?hala, Hawaii","version":"1","vertical-error":"0.61"},"preferredWeight":100000000,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/hv73325052/hv/1676446801690/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":2945,"url":"https://earthquake.usgs.gov/product/origin/hv73325052/hv/1676446801690/quakeml.xml","sha256":"+Nki1hlEtzAw/77gfggPm7tZtNkG2hfh7kUDK1sCaas="}}},{"indexid":"22327314","indexTime":1676448015126,"id":"urn:usgs-product:us:origin:us6000jp21:1676448008040","type":"origin","code":"us6000jp21","source":"us","updateTime":1676448008040,"status":"UPDATE","properties":{"azimuthal-gap":"161","depth":"29.098","depth-type":"from
+        location","error-ellipse-azimuth":"167","error-ellipse-intermediate":"7435","error-ellipse-major":"9550","error-ellipse-minor":"5023","error-ellipse-plunge":"56","error-ellipse-rotation":"171","evaluation-status":"preliminary","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000jp21/1676448010","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.758Z","eventtime-error":"1.92","horizontal-error":"4.22","latitude":"19.1746","latitude-error":"0.0467","longitude":"-155.4238","longitude-error":"0.0341","magnitude":"4.5","magnitude-error":"0.082","magnitude-num-stations-used":"44","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.041","num-phases-used":"117","num-stations-used":"87","origin-source":"us","original-signature":"MC4CFQCyoOCLcuQuH48WvSmgjOfq6/j2IgIVALBiTTzxIg3lZF0Vre6uTNqRKMif","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000jp21/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000jp21","quakeml-publicid":"quakeml:us.anss.org/event/6000jp21","review-status":"reviewed","standard-error":"0.95","title":"6
+        km ESE of P?hala, Hawaii","vertical-error":"5.884"},"preferredWeight":8,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676448012000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/us6000jp21/us/1676448008040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676448008000,"length":3809,"url":"https://earthquake.usgs.gov/product/origin/us6000jp21/us/1676448008040/quakeml.xml","sha256":"geFY24jMDHNobJbC1hjDLkbo6LyI8lmsjEA2q3ejetw="}}},{"indexid":"22327170","indexTime":1676446184042,"id":"urn:usgs-product:pt:origin:pt23046050:1676446181216","type":"origin","code":"pt23046050","source":"pt","updateTime":1676446181216,"status":"UPDATE","properties":{"cube-location-method":"u","cube-magnitude-type":"L","depth":"32.9","event-type":"earthquake","eventsource":"pt","eventsourcecode":"23046050","eventtime":"2023-02-15T07:27:06.000Z","latitude":"19.121","location-method-algorithm":"u","location-method-class":"CUBE_Code","longitude":"-155.403","magnitude":"4.7","magnitude-num-stations-used":"25","magnitude-type":"Ml","num-stations-used":"80","original-signature":"MCwCFAT7ZEcleE8BG753z9v1XelIygyHAhR2+IV8kGPJQvrKyMz72tDSVL3CLg==","original-signature-version":"v1","review-status":"REVIEWED","title":"12
+        km SE of P?hala, Hawaii","version":"A"},"preferredWeight":6,"contents":{"contents.xml":{"contentType":"text/plain","lastModified":1676446181000,"length":272,"url":"https://earthquake.usgs.gov/product/origin/pt23046050/pt/1676446181216/contents.xml","sha256":"PzlTQj8FWkBJx8Aaw8QrZKtT8VeAHdXJtYpy43yn7+I="},"eqxml.xml":{"contentType":"text/plain","lastModified":1676446181000,"length":845,"url":"https://earthquake.usgs.gov/product/origin/pt23046050/pt/1676446181216/eqxml.xml","sha256":"VXCpact/nVOsB3BY16L46lQXqTtKanU9BgkaC4PK848="}}}],"phase-data":[{"indexid":"22327235","indexTime":1676446805343,"id":"urn:usgs-product:hv:phase-data:hv73325052:1676446801690","type":"phase-data","code":"hv73325052","source":"hv","updateTime":1676446801690,"status":"UPDATE","properties":{"azimuthal-gap":"185","depth":"31.75","depth-type":"from
+        location","error-ellipse-azimuth":"346","error-ellipse-intermediate":"1152","error-ellipse-major":"1512","error-ellipse-minor":"672","error-ellipse-plunge":"77","error-ellipse-rotation":"358","evaluation-status":"final","event-type":"earthquake","eventParametersPublicID":"quakeml:hv.anss.org/Event/HV/73325052#167644680169","eventsource":"hv","eventsourcecode":"73325052","eventtime":"2023-02-15T07:27:06.530Z","horizontal-error":"0.47","latitude":"19.1136666666667","longitude":"-155.407166666667","magnitude":"4.78","magnitude-azimuthal-gap":"184.399626103932","magnitude-error":"0.13919640319702","magnitude-num-stations-used":"29","magnitude-source":"HV","magnitude-type":"ml","num-phases-used":"79","num-stations-used":"45","origin-source":"HV","original-signature":"MC0CFQCvXkbte5ZrNCiUkAVsF6hBufMSzgIUETPMEbJ1ttjxdxG3M2sDBBp/ztQ=","original-signature-version":"v1","pdl-client-version":"Version
+        2.4.0 2020-05-11","quakeml-magnitude-publicid":"quakeml:hv.anss.org/Netmag/HV/95167253","quakeml-origin-publicid":"quakeml:hv.anss.org/Origin/HV/75092663","quakeml-publicid":"quakeml:hv.anss.org/Event/HV/73325052","review-status":"reviewed","standard-error":"0.11","version":"1","vertical-error":"0.61"},"preferredWeight":157,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/hv73325052/hv/1676446801690/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676446801000,"length":212615,"url":"https://earthquake.usgs.gov/product/phase-data/hv73325052/hv/1676446801690/quakeml.xml","sha256":"zD7ySvlO8EkeyNkptfaWuOihjAynZvytBsa0JpDgeyc="}}},{"indexid":"22327315","indexTime":1676448017296,"id":"urn:usgs-product:us:phase-data:us6000jp21:1676448008040","type":"phase-data","code":"us6000jp21","source":"us","updateTime":1676448008040,"status":"UPDATE","properties":{"azimuthal-gap":"161","depth":"29.098","depth-type":"from
+        location","error-ellipse-azimuth":"167","error-ellipse-intermediate":"7435","error-ellipse-major":"9550","error-ellipse-minor":"5023","error-ellipse-plunge":"56","error-ellipse-rotation":"171","evaluation-status":"preliminary","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000jp21/1676448010","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.758Z","eventtime-error":"1.92","horizontal-error":"4.22","latitude":"19.1746","latitude-error":"0.0467","longitude":"-155.4238","longitude-error":"0.0341","magnitude":"4.5","magnitude-error":"0.082","magnitude-num-stations-used":"44","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.041","num-phases-used":"117","num-stations-used":"87","origin-source":"us","original-signature":"MC4CFQDOjEw4KihdPzR6Vty9nhzt6zq5rgIVAJEcLujD529mGPySAkdUzQ3do2kq","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000jp21/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000jp21","quakeml-publicid":"quakeml:us.anss.org/event/6000jp21","review-status":"reviewed","standard-error":"0.95","vertical-error":"5.884"},"preferredWeight":8,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1676448012000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/us6000jp21/us/1676448008040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1676448008000,"length":291951,"url":"https://earthquake.usgs.gov/product/phase-data/us6000jp21/us/1676448008040/quakeml.xml","sha256":"NUGarUKPDi+R5kqey7mbI0LLWOfA/A609WYBNFl50CY="}}}],"shakemap":[{"indexid":"22327531","indexTime":1676453418423,"id":"urn:usgs-product:us:shakemap:us6000jp21:1676453340886","type":"shakemap","code":"us6000jp21","source":"us","updateTime":1676453340886,"status":"UPDATE","properties":{"depth":"29.1","event-description":"USGS
+        NEIC ShakeMap","event-type":"ACTUAL","eventsource":"us","eventsourcecode":"6000jp21","eventtime":"2023-02-15T07:27:06.000Z","gmice":"WGRW12","latitude":"19.1746","longitude":"-155.4238","magnitude":"4.5","map-status":"automatic","maximum-latitude":"20.967","maximum-longitude":"-153.483","maxmmi":"6.156","maxmmi-grid":"6.244","maxpga":"0.209","maxpga-grid":"0.225","maxpgv":"8.603","maxpgv-grid":"9.249","maxpsa03":"0.18","maxpsa03-grid":"0.19","maxpsa10":"0.034","maxpsa10-grid":"0.038","maxpsa30":"0.004","maxpsa30-grid":"0.004","minimum-latitude":"17.367","minimum-longitude":"-157.283","original-signature":"MCwCFB4Qoazg+Hyr621mEdDWXAnYe6I0AhQ9aCb5kcmbm4uk/LylXl4I88Aezw==","original-signature-version":"v1","pdl-client-version":"Version
+        2.7.10 2021-06-21","process-timestamp":"2023-02-15T09:27:59Z","review-status":"automatic","shakemap-code-version":"4.0.2+731.g88a8033","version":"4"},"preferredWeight":82,"contents":{"download/coverage_psa3p0_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1317121,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_high_res.covjson","sha256":"QSz2yENelYZEtuW3rEvy4BKkB+KD7aHdif0zZ0y6734="},"download/coverage_psa3p0_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":331492,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_medium_res.covjson","sha256":"hpQSs1vpJwZpqzXqp+NNa/HThE+O0BaLlNaM15FunZs="},"download/coverage_pgv_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":1166412,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_high_res.covjson","sha256":"H7HVI/i7cPgAcngvGG9xjqXD2aCzfumfrDTnvxp9gxk="},"download/mmi_legend.png":{"contentType":"image/png","lastModified":1676453296000,"length":48086,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/mmi_legend.png","sha256":"MTg/qBrLQLPetJsPhqyImcTVC+XopgPJ4JlwhLgCnzs="},"download/rupture.json":{"contentType":"application/json","lastModified":1676453340000,"length":530,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/rupture.json","sha256":"pcCL5rhik6T/DAsG8E2AjQ6gW9TsFEOnirUFiQtNYjw="},"download/info.json":{"contentType":"application/json","lastModified":1676453284000,"length":4108,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/info.json","sha256":"v8nbNP/OiDI6bE4XDLZ2dRAJvAr6T+COH2iKo/KJZzM="},"download/coverage_psa0p3_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1168322,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_high_res.covjson","sha256":"IKH05Mpp/ACrl+UHTVTcKm9A0zGNwD39vjPMmnfnKks="},"download/psa3p0.jpg":{"contentType":"image/jpeg","lastModified":1676453333000,"length":82609,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0.jpg","sha256":"jdv0iZfWSNN942CiRtCOyqkH3A3oRq+o5HyLg5YBxIY="},"download/cont_psa0p3.json":{"contentType":"application/json","lastModified":1676453281000,"length":9424,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa0p3.json","sha256":"ilMW2TzyipN33krgaf7nGU+nBDC3LEjPjmrJMww8RXI="},"download/coverage_pga_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":1168268,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_high_res.covjson","sha256":"LbcIAfpdVCnY/dJgLlOXiVDkFt5h+069zRkSaICPzSc="},"download/coverage_psa0p3_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":74754,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_low_res.covjson","sha256":"3f+FXCLFqvRBJ/Ft6xEl1HbL0yUx3k8/9CMKFMut0Fo="},"download/attenuation_curves.json":{"contentType":"application/json","lastModified":1676453335000,"length":52964,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/attenuation_curves.json","sha256":"HB39l1+B8EJrXAxeYD00KEXZ0RpTmD+ywjUVsYutE+U="},"download/intensity.jpg":{"contentType":"image/jpeg","lastModified":1676453315000,"length":95288,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity.jpg","sha256":"OBOBPy+n060CAIc3s180TDqnWCzeDIRrw8Uc9MP9SIY="},"download/raster.zip":{"contentType":"application/zip","lastModified":1676453339000,"length":6717843,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/raster.zip","sha256":"OtheFm8wAvqZgnFH0XZkRz8ipLMb5xyJ5fcyRfxSVXI="},"download/pga.pdf":{"contentType":"application/pdf","lastModified":1676453318000,"length":1949168,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga.pdf","sha256":"ezfzMXT+gEybDwfqBZq4/FSUvokHFvAC4Jq+zDzvZmE="},"download/pga_regr.png":{"contentType":"image/png","lastModified":1676453334000,"length":101185,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga_regr.png","sha256":"Dg9X62R+uL/gbvKZ8lywyeKcDB+u4BSlHS3a9gGpoM0="},"download/coverage_mmi_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":51078,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_low_res.covjson","sha256":"OtyF+tZKpLfNATctYlOAfKRk9Lnfk3sIbfRTcdJRjAo="},"download/coverage_mmi_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":792462,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_high_res.covjson","sha256":"V5Pz0vF9JZdjbL2twlNtPLHz/izUycXmheHSsu+ChSo="},"download/intensity.pdf":{"contentType":"application/pdf","lastModified":1676453314000,"length":1953157,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity.pdf","sha256":"x+uwUb5Swx5oSc4BhgVTXNDWFUitRXOvkBtLMI8a0Zs="},"download/mmi_regr.png":{"contentType":"image/png","lastModified":1676453333000,"length":91243,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/mmi_regr.png","sha256":"qH7UZgHoW1Zt2gCYED6+pds9kdBaOdAbl34H3vPDVvg="},"download/psa3p0.pdf":{"contentType":"application/pdf","lastModified":1676453332000,"length":1946339,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0.pdf","sha256":"jsx4vPPRKFLtoK7pzy9cr/0HXWstKMwiXSPE7XPImP8="},"download/coverage_psa1p0_high_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":1168293,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_high_res.covjson","sha256":"zhRaJ/msej8HApShj9KTu5lp6slaWWh0QVoGek14oQo="},"download/uncertainty.xml":{"contentType":"application/xml","lastModified":1676453284000,"length":11354321,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/uncertainty.xml","sha256":"co7P3fbevKcGajkE1R2yZKIp1mUdyGmakvn7OTWX7jA="},"download/pin-thumbnail.png":{"contentType":"image/png","lastModified":1676453315000,"length":26152,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pin-thumbnail.png","sha256":"xtU9zULUVR0X9qcgfpscSfccywk2nRnxxR3MFIVFLew="},"download/cont_mmi.json":{"contentType":"application/json","lastModified":1676453280000,"length":10567,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_mmi.json","sha256":"8JPaFklPKXoV+z9vqF/5Nss+tvejwxrCEGP+mUoSpVA="},"download/coverage_pgv_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":74588,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_low_res.covjson","sha256":"1ryMODvJhsTnu7OS+PhIHj8CBjYnQRDaNnBu3I7ajr0="},"download/coverage_mmi_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":199710,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_mmi_medium_res.covjson","sha256":"wUQuaQ/gszNrEpz0AM9cP8i0dr751wkPm3IgIrt0MBg="},"download/pgv.pdf":{"contentType":"application/pdf","lastModified":1676453322000,"length":1947945,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv.pdf","sha256":"EACE8DGID3CNlJCm/EYB1UIy4DeYIisCLRzh/nL/ju0="},"contents.xml":{"contentType":"application/xml","lastModified":1676453340000,"length":12211,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/contents.xml","sha256":"zo1fJo1f/XFlqPJ8k5dCq9bkShInmmnvs/+C+/Isbm8="},"download/cont_psa1p0.json":{"contentType":"application/json","lastModified":1676453281000,"length":9317,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa1p0.json","sha256":"F2su1ERRKsnL+klMwAAg9x7RtlMcvjexv5mCbTxzcEs="},"download/cont_psa3p0.json":{"contentType":"application/json","lastModified":1676453282000,"length":9486,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_psa3p0.json","sha256":"EY8FzBcH1lGCO8+zzH58ci7CNhNf7+YSVIoSwNEPRKY="},"download/psa1p0.pdf":{"contentType":"application/pdf","lastModified":1676453329000,"length":1947864,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0.pdf","sha256":"66+4ulPC+1a5DPdNv8mTUHEQJknPW7sMlWkR71RsPq4="},"download/coverage_pgv_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":293471,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pgv_medium_res.covjson","sha256":"soZtjznyGE5xp4Vh5NeMi8WxFvKo0j8lNzvP6Jzhrc0="},"download/psa1p0_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":91368,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0_regr.png","sha256":"E1w0VIOevkkFMtMKTQmw5o2qfUSq+ZstpiXdAFAfgBA="},"download/coverage_psa3p0_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":84265,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa3p0_low_res.covjson","sha256":"wnx+A9j0cEMKNEdhYgTiCdBCY9Uy6XnCNMpWyUkCHsY="},"download/pga.jpg":{"contentType":"image/jpeg","lastModified":1676453319000,"length":87347,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pga.jpg","sha256":"q177XF4tJCWHaVod31TavLE55i7wyxT93oY2bBhFe3Q="},"download/coverage_psa1p0_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":293989,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_medium_res.covjson","sha256":"CRKxmeCWlOoNjDSwfLZUXZDMVsCGFYlD+UIyxHMdtk8="},"download/psa0p3.jpg":{"contentType":"image/jpeg","lastModified":1676453326000,"length":83269,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3.jpg","sha256":"pU0XNO47Sl6YjJ7osFPaYIz9slLHyHtw+7+bKBTdjaI="},"download/shake_result.hdf":{"contentType":"application/octet-stream","lastModified":1676453340000,"length":15448999,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shake_result.hdf","sha256":"g3kURtEutstMx6xvR7pu3EjPzavaPqZDijMZFKuykS0="},"download/cont_pga.json":{"contentType":"application/json","lastModified":1676453280000,"length":11714,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_pga.json","sha256":"+kHlV+BmBk0ElgGXMUm8F32Oj1vDhS4B5ZZ9nIWMQhw="},"download/pgv.jpg":{"contentType":"image/jpeg","lastModified":1676453322000,"length":82353,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv.jpg","sha256":"QBgfcBGtvxH0Nze35LNRmayGEi6CEppq2CT3j9mQCPU="},"download/psa1p0.jpg":{"contentType":"image/jpeg","lastModified":1676453329000,"length":83050,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa1p0.jpg","sha256":"rUxooG+aZHFW2b1W9r8Uo5yfQ+KrhvjH3iuOta6r3qE="},"download/cont_mi.json":{"contentType":"application/json","lastModified":1676453280000,"length":10567,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_mi.json","sha256":"8JPaFklPKXoV+z9vqF/5Nss+tvejwxrCEGP+mUoSpVA="},"download/pgv_regr.png":{"contentType":"image/png","lastModified":1676453334000,"length":97652,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/pgv_regr.png","sha256":"mkJgKpsMg1gWmHnMWlHMySULWiEUxKEk5haJrmx9Qp0="},"download/intensity_overlay.pngw":{"contentType":"application/octet-stream","lastModified":1676453315000,"length":41,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity_overlay.pngw","sha256":"x6S9dpEMmEMZASXK6q2xEoZGb4fgg3w12J1NUXyg/bo="},"download/coverage_pga_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":74729,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_low_res.covjson","sha256":"4JvrSHQfAcMw7epryrQ2d1fp5v+u7P+0NI2z5F6wAKs="},"download/coverage_pga_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453336000,"length":293969,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_pga_medium_res.covjson","sha256":"bfThdVGdwN7oohpOrcddjtnDOpQd9nzrYPlZRyZ9BJc="},"download/grid.xml":{"contentType":"application/xml","lastModified":1676453283000,"length":12637620,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/grid.xml","sha256":"THJlQWPF31esTybs3YV2GGWbaVT5IEYHu+4vJ/CqjQg="},"download/coverage_psa1p0_low_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":74704,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa1p0_low_res.covjson","sha256":"4UcB26FfKWs04GFHgFxbR4KzNvAHFelDZrZoMU+eBD0="},"download/intensity_overlay.png":{"contentType":"image/png","lastModified":1676453315000,"length":35306,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/intensity_overlay.png","sha256":"yiLNh2GPUZg8oln7UyW015lO7uideypTN9NbiuApFz8="},"download/psa0p3_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":101343,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3_regr.png","sha256":"FURMlqpfRTfpEVj3u89B/IMtKmymvE3SYFL0b0xOa9s="},"download/stationlist.json":{"contentType":"application/json","lastModified":1676453340000,"length":442230,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/stationlist.json","sha256":"F2CcFbilW8ySk25pCYRkQKx4afvIZS/LBZP0+eTTtOY="},"download/psa3p0_regr.png":{"contentType":"image/png","lastModified":1676453335000,"length":92120,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa3p0_regr.png","sha256":"v7A9treeWa6zsQQAhFyh1581zP9Ux39DrkaqZM1XAgw="},"download/shakemap.kmz":{"contentType":"application/vnd.google-earth.kmz","lastModified":1676453291000,"length":128819,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shakemap.kmz","sha256":"zvsbcTAZ83ubnp5CFqrVYUv5mP6IueuedSExz5/ZPo8="},"download/psa0p3.pdf":{"contentType":"application/pdf","lastModified":1676453325000,"length":1948196,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/psa0p3.pdf","sha256":"/N3bzwS38KA6Deak+dpAK+clNglZOVStq+DGEPCj7nw="},"download/coverage_psa0p3_medium_res.covjson":{"contentType":"application/octet-stream","lastModified":1676453337000,"length":294002,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/coverage_psa0p3_medium_res.covjson","sha256":"1mOcDxncEUhLyfVZg3NCafYtCuiHtg1qk2DKKGs1lgw="},"download/cont_pgv.json":{"contentType":"application/json","lastModified":1676453281000,"length":9952,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/cont_pgv.json","sha256":"TfIJKj3vYPhciyWBuTQKFe9g32MtC/lCSCEXh5Ml9fg="},"download/shape.zip":{"contentType":"application/zip","lastModified":1676453340000,"length":853110,"url":"https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/shape.zip","sha256":"QN5RbZ9TgCmX0vuhPYYTXnvrYgRI+NLVBEX5uND3cgI="}}}],"trump-origin":[{"indexid":"22327280","indexTime":1676447698643,"id":"urn:usgs-product:admin:trump-origin:hv73325052:1676447697223","type":"trump-origin","code":"hv73325052","source":"admin","updateTime":1676447697223,"status":"UPDATE","properties":{"eventsource":"hv","eventsourcecode":"73325052","original-signature":"UUWIZb7WKVe2uaEnVc17HwL5Tj30bSDE4+r5xsOpyOK71ExuD26KJHCdjJ7Qf8OWNLLd+JXIqwv9C0y6zqrwoCPZ0cHRqeB2rqFNLLFfXpq0m6pVL1GcJ2URs5rSSVvHGzWdk67+r0quCAkN/I7yVZNeNn8Kgx1MqHQXYQHoIdqaC83NN2reOcS3zzaiZ3Xfboj+2gaOn8C0CXDdzaEal5r/NswfuFFcmCB8o4thp0fjYRJ9jAPK8KV9klyJW5ZRyV0c9lu3sNrxbQ6FHu/B7YW797nNl7dKwk33C6vndwT9j2sAZsBaorAQgjEPZa/tw4Zfz031tKX1UcPbPv3ULK3kNcKhD8zoOryY/oYQRXQAtGjL0hthcRE7eLIS73ZVUSU8gdDyihXnvsLhtuPIjhDsEqq7b0Ib0slpgcs/1CTQ67YN6zWmtCjiHBAj8ffEt+zyCHdxHhYY5j+V9Tz5wtCPXJs4hiUW5miv93OSZaBjgEUeMQ15gOCEnHkMGbt8TRiFvzAfGD82YVcubWiG5e1tQzp1YZHHjx9p0UyP+cXPd/Iv42fQlYIN1guT71CYXOyWMnYtgRSRcj3k1bHQR9wW+dPpECGJJ/lZNL4cocE8XBatBvMISTxa5YCeNvNl4g3bvpBpgaiOnXC+K/XfUPqIz29+li1CcZNpRNT5O/M=","original-signature-version":"v1","pdl-client-version":"Version
+        2.6.0 2020-11-20","senderemail":"jchang","trump-code":"hv73325052","trump-source":"hv"},"preferredWeight":1,"contents":[]}]}},"geometry":{"type":"Point","coordinates":[-155.407166666667,19.1136666666667,31.75]},"id":"hv73325052"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '49'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 15 Feb 2023 18:02:35 GMT
+      Expires:
+      - Wed, 15 Feb 2023 18:03:35 GMT
+      Last-Modified:
+      - Wed, 15 Feb 2023 18:02:35 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 b963086ba799e00936372ebe90b8f6b4.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - ENC-OnA9_8beLIXiyCTVVDxfCmmXQs_zRh94f7JriUePNhF-sUPNtw==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/product/shakemap/us6000jp21/us/1676453340886/download/rupture.json
+  response:
+    body:
+      string: '{"type": "FeatureCollection", "metadata": {"reference": "Origin", "id":
+        "us6000jp21", "network": "USGS National Earthquake Information Center, PDE",
+        "netid": "us", "productcode": "us6000jp21", "time": "2023-02-15T07:27:06.000000Z",
+        "lat": 19.1746, "lon": -155.4238, "depth": 29.1, "mag": 4.5, "locstring":
+        "6 km ESE of P\u0101hala, Hawaii, ", "mech": "ALL", "rake": 0.0}, "features":
+        [{"type": "Feature", "properties": {"rupture type": "rupture extent"}, "geometry":
+        {"type": "Point", "coordinates": [-155.4238, 19.1746, 29.1]}}]}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '263'
+      Cache-Control:
+      - max-age=315360000
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '530'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 15 Feb 2023 17:59:01 GMT
+      ETag:
+      - '"1b1db47212ef70683ed3e380c7e73a3c"'
+      Expires:
+      - Sat, 12 Feb 2033 17:59:01 GMT
+      Last-Modified:
+      - Wed, 15 Feb 2023 09:30:17 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 89657e9ba87ccb5f5b96de064bf6d496.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - Sm2PkyGrgvULVGspxn3MFhe-OB4Sg3vsHhos3LSEuu8HRtYuHz0pwQ==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+      x-amz-meta-modified:
+      - '2023-02-15T09:29:00.000Z'
+      x-amz-meta-sha256:
+      - pcCL5rhik6T/DAsG8E2AjQ6gW9TsFEOnirUFiQtNYjw=
+      x-amz-server-side-encryption:
+      - AES256
+      x-amz-version-id:
+      - OGeLy5oDadBa.Y4qccZt_tAGg_q10_di
+    status:
+      code: 200
+      message: OK
+version: 1
