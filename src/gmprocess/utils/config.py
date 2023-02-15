@@ -263,7 +263,8 @@ def get_config(config_path=None):
 
     Args:
         config_path:
-            Path to directory containing config files to use. If None, uses defaults.
+            pathlib.Path() object of directory containing config files to use. If None,
+            uses defaults.
 
     Returns:
         dictionary:
