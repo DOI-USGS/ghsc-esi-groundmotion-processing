@@ -12,6 +12,7 @@
    - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
    - Fixed bug in StationTrace filters where the bandpass option was not implemented and no warning was given.
    - Fixed bug in fdsn_fetcher caused by a missing key error
+   - Fixed bug in gmpacket_writer_test
 
 ## 1.2.4 / 2023-02-09
 
