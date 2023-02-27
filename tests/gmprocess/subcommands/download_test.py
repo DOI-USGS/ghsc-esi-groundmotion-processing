@@ -10,7 +10,7 @@ from gmprocess.utils.test_utils import vcr
 
 
 @vcr.use_cassette()
-def download(script_runner):
+def ownload(script_runner):
     try:
         # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
