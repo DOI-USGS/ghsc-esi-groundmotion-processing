@@ -4,9 +4,15 @@
  - Add support for bounds in FDSN providers.
  - Added bandpass and bandstop filter types for StationTrace. Improved modularity of low/high pass filter code.
  - Added unit tests for the StationTrace filter types.
+ - Added event depth to gmprocess reports
+ - Updated pphase_test to use StationTrace object instead of obspy trace
+ - Allowed string for label parameter in getStreams() method
+ - Added warning if label not found in workspace file when using getStreams() method 
  - Bugfixes
    - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
    - Fixed bug in StationTrace filters where the bandpass option was not implemented and no warning was given.
+   - Fixed bug in fdsn_fetcher caused by a missing key error
+   - Fixed bug in gmpacket_writer_test
 
 ## 1.2.4 / 2023-02-09
 

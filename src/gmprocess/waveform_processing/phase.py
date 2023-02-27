@@ -588,15 +588,15 @@ def pphase_pick(trace, period=None, damping=0.6, nbins=None, peak_selection=Fals
 
     if filtflag != 0:
         trace_copy.filter(
-            type="bandpass", freqmin=flp, freqmax=fhp, corners=4, zerophase=True
+            type="bandpass", freqmin=flp, freqmax=fhp, corners=4, zerophase=False
         )
         trace_copy.detrend(type="linear")
 
     if peak_selection == "True":
-        ind_peak = np.nonzero(
+        find_peak = np.nonzero(
             np.abs(trace_copy.data) == np.max(np.abs(trace_copy.data))
         )
-        trace_copy.data = trace_copy.data[0 : ind_peak[0][0]]
+        trace_copy.data = trace_copy.data[0 : find_peak[0][0]]
 
     # Construct a fixed-base viscously damped SDF oscillator
     omegan = 2 * np.pi / period  # natural frequency in radian/second

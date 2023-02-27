@@ -185,6 +185,7 @@ def build_report_latex(
     # sort list of streams:
     st_list.sort(key=lambda x: x.id)
     event_id = event.id.replace("smi:local/", "")
+    event_depth = np.round(event.depth_km, 1)
 
     for st in st_list:
         streamid = st.get_id()
@@ -193,7 +194,7 @@ def build_report_latex(
         SB = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
         SB = SB.replace(
             "[EVENT]",
-            f"M {event.magnitude} - {str_for_latex(event_id)} - {timestr}",
+            f"{str_for_latex(event_id)} - M{event.magnitude} - {event_depth} km - {timestr}",
         )
         SB = SB.replace("[STATION]", st.get_id())
         report += SB
