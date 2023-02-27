@@ -524,7 +524,7 @@ class StreamWorkspace(object):
                 Event ID corresponding to an Event in the workspace.
             stations (list):
                 List of stations (<nework code>.<station code>) to search for.
-            labels (list):
+            labels (list or str):
                 List of processing labels to search for.
             config (dict):
                 Configuration options.
@@ -560,6 +560,13 @@ class StreamWorkspace(object):
             stations = self.getStations()
         if labels is None:
             labels = self.getLabels()
+        else:
+            if not isinstance(labels, list):
+                labels = [labels]
+            all_labels = self.getLabels()
+            for label in labels:
+                if label not in all_labels:
+                    logging.warning(f"Label {labels} not found in workspace")
 
         net_codes = [st.split(".")[0] for st in stations]
         sta_codes = [st.split(".")[1] for st in stations]

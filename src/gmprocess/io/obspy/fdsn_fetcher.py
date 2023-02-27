@@ -252,7 +252,7 @@ class FDSNFetcher(DataFetcher):
                 fdsn_password = None
             try:
                 client = Client(
-                    base_url=provider_dict["url"],
+                    base_url=provider_dict["name"],
                     user=fdsn_user,
                     password=fdsn_password,
                     debug=debug,

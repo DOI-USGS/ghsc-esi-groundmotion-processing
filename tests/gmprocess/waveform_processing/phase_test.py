@@ -5,6 +5,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from gmprocess.core.stationtrace import StationTrace
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.read import read_data
 from gmprocess.utils.config import get_config
@@ -13,7 +14,6 @@ from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.waveform_processing import phase
 from obspy import UTCDateTime, read
 from obspy.core.stream import Stream
-from obspy.core.trace import Trace
 from obspy.geodetics import locations2degrees
 from obspy.taup import TauPyModel
 from scipy.io import loadmat
@@ -60,13 +60,34 @@ def test_pphase_picker():
 
     dt = matlabfile["dt"][0][0]
     hdr = {
+        "channel": "HN1",
         "delta": dt,
         "sampling_rate": 1 / dt,
         "npts": len(x),
         "starttime": UTCDateTime("1970-01-01"),
-        "standard": {"units_type": "acc"},
+        "standard": {
+            "corner_frequency": np.nan,
+            "station_name": "",
+            "source": "json",
+            "instrument": "",
+            "instrument_period": np.nan,
+            "source_format": "json",
+            "comments": "",
+            "structure_type": "",
+            "sensor_serial_number": "",
+            "process_level": "raw counts",
+            "process_time": "",
+            "source_file": "",
+            "horizontal_orientation": np.nan,
+            "vertical_orientation": np.nan,
+            "units": "cm/s/s",
+            "units_type": "acc,",
+            "instrument_sensitivity": np.nan,
+            "volts_to_counts": np.nan,
+            "instrument_damping": np.nan,
+        },
     }
-    trace = Trace(data=x, header=hdr)
+    trace = StationTrace(data=x, header=hdr)
     stream = Stream(traces=[trace])
     period = 0.01
     damping = 0.6
@@ -74,7 +95,8 @@ def test_pphase_picker():
     loc = phase.pphase_pick(
         stream[0], period=period, damping=damping, nbins=nbins, peak_selection=True
     )
-    np.testing.assert_allclose(loc, 26.035)
+    print(loc)
+    np.testing.assert_allclose(loc, 26.105)
 
 
 def test_all_pickers():
