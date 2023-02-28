@@ -184,8 +184,8 @@ class FDSNFetcher(DataFetcher):
         selected_providers = []
         providers_conf = fdsn_conf["providers"]
         if providers_conf is not None:
-            for poviders_dict in providers_conf:
-                key_list = list(poviders_dict.keys())
+            for providers_dict in providers_conf:
+                key_list = list(providers_dict.keys())
 
                 if len(key_list) != 1:
                     raise ValueError("Each provider must contain exactly one key.")
@@ -194,7 +194,7 @@ class FDSNFetcher(DataFetcher):
                 selected_provider_dict = {}
                 selected_provider_dict["name"] = provider_name
 
-                if poviders_dict[provider_name] is None:
+                if providers_dict[provider_name] is None:
                     # User has not provided a conf dict for this provider, thus the
                     # provider must be in obspy's list of providers
                     if provider_name in providers:
@@ -206,9 +206,9 @@ class FDSNFetcher(DataFetcher):
                         )
                 else:
                     # User has provided a conf dict for this provider
-                    if "url" in poviders_dict[provider_name]:
+                    if "url" in providers_dict[provider_name]:
                         # Use url provided by conf
-                        selected_provider_dict["url"] = poviders_dict[provider_name][
+                        selected_provider_dict["url"] = providers_dict[provider_name][
                             "url"
                         ]
                     elif provider_name in providers:
@@ -218,10 +218,10 @@ class FDSNFetcher(DataFetcher):
                             f"No url provided for fdsn provider {provider_name} and "
                             "this provider is not found in URL_MAPPINGS."
                         )
-                    if "bounds" in poviders_dict[provider_name]:
-                        selected_provider_dict["bounds"] = poviders_dict[provider_name][
-                            "bounds"
-                        ]
+                    if "bounds" in providers_dict[provider_name]:
+                        selected_provider_dict["bounds"] = providers_dict[
+                            provider_name
+                        ]["bounds"]
                 selected_providers.append(selected_provider_dict)
         else:
             selected_providers = [{"name": p} for p in providers]
@@ -250,9 +250,19 @@ class FDSNFetcher(DataFetcher):
             except KeyError:
                 fdsn_user = None
                 fdsn_password = None
+
             try:
+                provider_key = ""
+                if "url" in provider_dict:
+                    # The provider(s) is/are supplied as a URL via the config file
+                    provider_key = "url"
+
+                else:
+                    # The provider(s) is/are supplied as a "base" name, ex: "IRIS"
+                    provider_key = "name"
+
                 client = Client(
-                    base_url=provider_dict["name"],
+                    base_url=provider_dict[provider_key],
                     user=fdsn_user,
                     password=fdsn_password,
                     debug=debug,
