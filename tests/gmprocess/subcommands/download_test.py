@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import io
+import os
 import shutil
 from pathlib import Path
 
@@ -42,8 +43,14 @@ def test_download_single_provider(script_runner):
         assert ret.success
 
         # Copy over relevant config
+        os.environ.TEST_SPECIFIC_CONF = True
         test_conf_file = constants.TEST_DATA_DIR / "config_download_single_provider.yml"
-        shutil.copy(test_conf_file, constants.CONFIG_PATH_TEST / "user.yml")
+        os.environ.TEST_SPECIFIC_CONF_FILE = test_conf_file
+
+        # test_conf_file = constants.TEST_DATA_DIR / "config_download_single_provider.yml"
+        # shutil.copy(test_conf_file, constants.CONFIG_PATH_TEST / "user.yml")
+
+
 
         ret = script_runner.run("gmrecords", "-e", "nc73821036", "download")
         assert ret.success

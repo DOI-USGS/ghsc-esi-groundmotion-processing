@@ -217,7 +217,15 @@ class GMrecordsApp(object):
         )
         projmod.validate_projects_config(self.projects_conf, self.projects_path)
 
-        if "CALLED_FROM_PYTEST" in os.environ:
+        if os.environ.TEST_SPECIFIC_CONF:
+            conf_path = const.CONFIG_PATH_TEST
+            conf_path.mkdir(exist_ok=True)
+            test_conf_file = (
+                const.DATA_DIR / os.environ.TEST_SPECIFIC_CONF_FILE
+            ).resolve()
+            shutil.copyfile(test_conf_file, conf_path / const.CONFIG_FILE_TEST)
+
+        elif "CALLED_FROM_PYTEST" in os.environ:
             conf_path = const.CONFIG_PATH_TEST
             conf_path.mkdir(exist_ok=True)
             test_conf_file = (const.DATA_DIR / const.CONFIG_FILE_TEST).resolve()
