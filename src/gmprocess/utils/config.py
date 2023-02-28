@@ -327,7 +327,7 @@ def update_config(custom_cfg_file, default_cfg):
 
 
 def __conf_path_to_config(config_path, default_config):
-    conf_files = config_path.glob("**/*.yml")
+    conf_files = sorted(config_path.glob("**/*.yml"))
     for cf in conf_files:
         default_config = update_config(cf, default_config)
     return default_config
