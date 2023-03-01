@@ -50,8 +50,6 @@ def test_download_single_provider(script_runner):
         # test_conf_file = constants.TEST_DATA_DIR / "config_download_single_provider.yml"
         # shutil.copy(test_conf_file, constants.CONFIG_PATH_TEST / "user.yml")
 
-
-
         ret = script_runner.run("gmrecords", "-e", "nc73821036", "download")
         assert ret.success
 
@@ -67,6 +65,8 @@ def test_download_single_provider(script_runner):
         raise ex
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST)
+        os.environ.TEST_SPECIFIC_CONF = True
+        os.environ.TEST_SPECIFIC_CONF_FILE = ""
 
 
 @vcr.use_cassette()
@@ -82,8 +82,12 @@ def test_download_provider_url(script_runner):
         assert ret.success
 
         # Copy over relevant config
+        os.environ.TEST_SPECIFIC_CONF = True
         test_conf_file = constants.TEST_DATA_DIR / "config_download_provider_url.yml"
-        shutil.copy(test_conf_file, constants.CONFIG_PATH_TEST / "user.yml")
+        os.environ.TEST_SPECIFIC_CONF_FILE = test_conf_file
+
+        # test_conf_file = constants.TEST_DATA_DIR / "config_download_provider_url.yml"
+        # shutil.copy(test_conf_file, constants.CONFIG_PATH_TEST / "user.yml")
         event_file = constants.TEST_DATA_DIR / "israel_event_test.csv"
 
         ret = script_runner.run("gmrecords", "-t", str(event_file), "download")
@@ -100,6 +104,8 @@ def test_download_provider_url(script_runner):
         raise ex
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST)
+        os.environ.TEST_SPECIFIC_CONF = True
+        os.environ.TEST_SPECIFIC_CONF_FILE = ""
 
 
 @vcr.use_cassette()
