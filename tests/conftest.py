@@ -19,9 +19,6 @@ def pytest_configure(config):
     #
     os.environ["CALLED_FROM_PYTEST"] = "True"
 
-    os.environ["TEST_SPECIFIC_CONF"] = "False"
-    os.environ["TEST_SPECIFIC_CONF_FILE"] = ""
-
 
 def pytest_unconfigure(config):
     del os.environ["CALLED_FROM_PYTEST"]
