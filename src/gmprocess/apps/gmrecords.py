@@ -218,9 +218,21 @@ class GMrecordsApp(object):
         projmod.validate_projects_config(self.projects_conf, self.projects_path)
 
         if "CALLED_FROM_PYTEST" in os.environ:
+            # Check if we are running unit tests
             conf_path = const.CONFIG_PATH_TEST
             conf_path.mkdir(exist_ok=True)
-            test_conf_file = (const.DATA_DIR / const.CONFIG_FILE_TEST).resolve()
+
+            # Check if the test sets an env variable for a unique config file
+            if "TEST_SPECIFIC_CONF" in os.environ:
+                test_conf_file = (
+                    const.DATA_DIR / os.environ["TEST_SPECIFIC_CONF_FILE"]
+                ).resolve()
+
+            # Otherwise use the default testing config
+            else:
+                test_conf_file = (const.DATA_DIR / const.CONFIG_FILE_TEST).resolve()
+
+            # Copy into the tmp gmptest project directory
             shutil.copyfile(test_conf_file, conf_path / const.CONFIG_FILE_TEST)
 
         subcommands_need_conf = ["download", "assemble", "autoshakemap", "autoprocess"]

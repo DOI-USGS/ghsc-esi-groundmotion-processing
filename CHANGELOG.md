@@ -13,6 +13,7 @@
    - Fixed bug in StationTrace filters where the bandpass option was not implemented and no warning was given.
    - Fixed bug in fdsn_fetcher.py that caused either URL or name-based data providers to fail on download
    - Allow more date formats for time stamps in Engineering Strong Motion (ESM) ASCII reader.
+   - Adjust test configuration to allow test-specific config files to be used without sometimes being overwritten
 
 ## 1.2.4 / 2023-02-09
 
