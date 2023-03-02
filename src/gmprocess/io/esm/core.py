@@ -16,10 +16,13 @@ from gmprocess.io.utils import is_binary
 from obspy.core.trace import Stats
 
 TEXT_HDR_ROWS = 64
-# 20190728_160919.870
-TIMEFMT = "%Y%m%d_%H%M%S.%f"
-TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
-TIMEFMT3 = "%Y/%m/%d %H:%M:%S.%f"
+
+TIMEFMTS = (
+    "%Y%m%d_%H%M%S.%f", # 20190728_160919.870000
+    "%Y-%m-%dT%H:%M:%S.%f", # 2019-07-28T16:09:19.870000
+    "%Y/%m/%d %H:%M:%S.%f", # 2019/07/28 16:09:19.870000
+    "%d/%m/%Y %H:%M:%S.%f", # 28/07/2019 16:09:19.870000
+)
 
 
 SRC = "ORFEUS Engineering Strong Motion Database"
@@ -94,7 +97,6 @@ def read_esm(filename, config=None, **kwargs):
     stats = {}
     standard = {}
     coordinates = {}
-
     # fill in all known stats header fields
     stats["network"] = header["NETWORK"]
     stats["station"] = header["STATION_CODE"]
@@ -105,10 +107,18 @@ def read_esm(filename, config=None, **kwargs):
     stats["calib"] = 1.0
     stats["npts"] = int(header["NDATA"])
     stimestr = header["DATE_TIME_FIRST_SAMPLE_YYYYMMDD_HHMMSS"]
-    try:
-        stats["starttime"] = datetime.strptime(stimestr, TIMEFMT)
-    except Exception:
-        stats["starttime"] = datetime.strptime(stimestr[0:26], TIMEFMT3)
+    starttime = None
+    for timefmt in TIMEFMTS:
+        try:
+            slen = min(len(stimestr), 26) # maximum length of formatted string is 26
+            starttime = datetime.strptime(stimestr[:slen], timefmt)
+            break
+        except Exception:
+            continue
+    if starttime:
+        stats["starttime"] = starttime
+    else:
+        raise ValueError(f"Could not parse timestamp of first sample {stimestr}.")
 
     # fill in standard fields
     head, tail = os.path.split(filename)
@@ -128,11 +138,15 @@ def read_esm(filename, config=None, **kwargs):
         standard["instrument_damping"] = np.nan
 
     ptimestr = header["DATA_TIMESTAMP_YYYYMMDD_HHMMSS"]
-    try:
-        ptime = datetime.strptime(ptimestr, TIMEFMT).strftime(TIMEFMT2)
-    except Exception:
-        ptime = ""
-    standard["process_time"] = ptime
+    ptime = ""
+    for timefmt in TIMEFMTS:
+        try:
+            slen = min(len(ptimestr), 26) # maximum length of formatted string is 26
+            ptime = datetime.strptime(ptimestr[:slen], timefmt)
+            break
+        except Exception:
+            continue
+    standard["process_time"] = str(ptime)
     standard["process_level"] = PROCESS_LEVELS["V1"]
     instr_str = header["INSTRUMENT"]
     parts = instr_str.split("|")
