@@ -5,13 +5,73 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, br
+      - gzip, deflate
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.1
+      - python-requests/2.28.2
     method: GET
-    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=us1000j96d
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us1000j96d.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Thu, 16 Mar 2023 20:15:37 GMT
+      Expires:
+      - Thu, 16 Mar 2023 20:16:37 GMT
+      Last-Modified:
+      - Thu, 16 Mar 2023 20:15:37 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us1000j96d&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 187855e01bff01816fb7f2e5860898b6.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - AAh04ug94YFjF4IbS2zQi4dpZbd2XW4467K6LxTeRiOV3c6snb3V0g==
+      X-Amz-Cf-Pop:
+      - DEN52-C1
+      X-Cache:
+      - Miss from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us1000j96d&format=geojson
   response:
     body:
       string: "{\"type\":\"Feature\",\"properties\":{\"mag\":7,\"place\":\"22 km NNE
@@ -95,11 +155,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Fri, 12 Aug 2022 14:28:02 GMT
+      - Thu, 16 Mar 2023 20:15:41 GMT
       Expires:
-      - Fri, 12 Aug 2022 14:29:01 GMT
+      - Thu, 16 Mar 2023 20:16:41 GMT
       Last-Modified:
-      - Fri, 12 Aug 2022 14:28:01 GMT
+      - Thu, 16 Mar 2023 20:15:41 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -109,11 +169,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 22512dca1de1fae848b2509fed0309aa.cloudfront.net (CloudFront)
+      - 1.1 187855e01bff01816fb7f2e5860898b6.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - igqA9P3Z1cCN-0jT0I_Lnk5B9eB1x8-Xi-VwNug8XnwXgqBKDhe_Hg==
+      - LrcXVWimW01Oi7aXNO9FPScolqgaIo3q6-t0PcVoEIf__tRoe4FTUw==
       X-Amz-Cf-Pop:
-      - IAD50-C2
+      - DEN52-C1
       X-Cache:
       - Miss from cloudfront
       X-Content-Type-Options:
@@ -131,13 +191,75 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, br
+      - gzip, deflate
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.1
+      - python-requests/2.28.2
     method: GET
-    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=us1000j96d
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us1000j96d.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '4'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Thu, 16 Mar 2023 20:15:37 GMT
+      Expires:
+      - Thu, 16 Mar 2023 20:16:37 GMT
+      Last-Modified:
+      - Thu, 16 Mar 2023 20:15:37 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us1000j96d&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 3f7e5e686bf8f19b9c786efbe99c7588.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - p86yzmI4Bpk__iaQ6s-YvMJ3QLWR4G_dTTJjtUaoItTDj8_5De7gCw==
+      X-Amz-Cf-Pop:
+      - DEN52-C1
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us1000j96d&format=geojson
   response:
     body:
       string: "{\"type\":\"Feature\",\"properties\":{\"mag\":7,\"place\":\"22 km NNE
@@ -221,11 +343,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Fri, 12 Aug 2022 14:28:02 GMT
+      - Thu, 16 Mar 2023 20:15:41 GMT
       Expires:
-      - Fri, 12 Aug 2022 14:29:01 GMT
+      - Thu, 16 Mar 2023 20:16:41 GMT
       Last-Modified:
-      - Fri, 12 Aug 2022 14:28:01 GMT
+      - Thu, 16 Mar 2023 20:15:41 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -235,11 +357,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 d01a0cfc47d6e412dd81c986ff5d69da.cloudfront.net (CloudFront)
+      - 1.1 3f7e5e686bf8f19b9c786efbe99c7588.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - aqbF7K4Xkqz5L254jSBxvIsNoHIHGEdkzEC2a3O0DArwPheyvq6XVw==
+      - TGqB1qV66TsZoA0e-weaOcXYTKs8nLSZt4J2nT2mcgAf6nR31_JSGw==
       X-Amz-Cf-Pop:
-      - IAD50-C2
+      - DEN52-C1
       X-Cache:
       - Hit from cloudfront
       X-Content-Type-Options:
