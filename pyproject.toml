@@ -74,7 +74,10 @@ doc = [
 build = [
     "build",
     "twine",
+    "check-wheel-contents",
 ]
+
+
 
 [project.scripts]
 gmconvert = "gmprocess.bin.gmconvert:main"
@@ -93,9 +96,13 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["gmprocess*"]
 exclude = ["tests*"]
 
 [tool.setuptools_scm]
+
