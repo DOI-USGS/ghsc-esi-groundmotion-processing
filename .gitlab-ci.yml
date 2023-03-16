@@ -27,7 +27,6 @@ default:
   variables:
     ENVIRONMENT: staging
 
-
 stages:
   - test
   - build
@@ -57,9 +56,16 @@ run upload pypi:
   script:
     - pip install .[build]
     - python -m build
-    - python -m twine upload dist/*
+    - python -m zipfile --list dist/*whl
+    - check-wheel-contents --package src/gmprocess/ --package-omit src/gmprocess/data/asdf dist/
+    - |
+      if [ $? -eq 0 ]; then
+        echo "check-wheel-contents has passed, uploading to PyPi ..."
+        python -m twine upload dist/*
+      else
+        echo "check-wheel-contents failed, wheel will not be uploaded to PyPi ..."
+      fi
   stage: build
-
 pages:
   artifacts:
     paths:
