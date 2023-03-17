@@ -41,13 +41,11 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 
 # Adapted from MATLAB script
 def AICPicker(data, triggers, search_window, sps):
-
     refined_triggers = []
     data = data - np.median(data)
     searchwindowpts = int(sps * search_window)
 
     for trigpts in triggers:
-
         trigstart = trigpts - (2 * searchwindowpts)
         trigend = trigpts + 1 * searchwindowpts
 

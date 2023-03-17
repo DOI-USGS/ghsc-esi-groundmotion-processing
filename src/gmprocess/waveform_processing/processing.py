@@ -124,7 +124,6 @@ def process_streams(streams, event, config=None, old_streams=None):
                             stream[j].fail("Manual review")
 
         for processing_step_dict in processing_steps:
-
             key_list = list(processing_step_dict.keys())
             if len(key_list) != 1:
                 raise ValueError("Each processing step must contain exactly one key.")

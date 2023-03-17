@@ -18,10 +18,10 @@ from obspy.core.trace import Stats
 TEXT_HDR_ROWS = 64
 
 TIMEFMTS = (
-    "%Y%m%d_%H%M%S.%f", # 20190728_160919.870000
-    "%Y-%m-%dT%H:%M:%S.%f", # 2019-07-28T16:09:19.870000
-    "%Y/%m/%d %H:%M:%S.%f", # 2019/07/28 16:09:19.870000
-    "%d/%m/%Y %H:%M:%S.%f", # 28/07/2019 16:09:19.870000
+    "%Y%m%d_%H%M%S.%f",  # 20190728_160919.870000
+    "%Y-%m-%dT%H:%M:%S.%f",  # 2019-07-28T16:09:19.870000
+    "%Y/%m/%d %H:%M:%S.%f",  # 2019/07/28 16:09:19.870000
+    "%d/%m/%Y %H:%M:%S.%f",  # 28/07/2019 16:09:19.870000
 )
 
 
@@ -110,7 +110,7 @@ def read_esm(filename, config=None, **kwargs):
     starttime = None
     for timefmt in TIMEFMTS:
         try:
-            slen = min(len(stimestr), 26) # maximum length of formatted string is 26
+            slen = min(len(stimestr), 26)  # maximum length of formatted string is 26
             starttime = datetime.strptime(stimestr[:slen], timefmt)
             break
         except Exception:
@@ -141,7 +141,7 @@ def read_esm(filename, config=None, **kwargs):
     ptime = ""
     for timefmt in TIMEFMTS:
         try:
-            slen = min(len(ptimestr), 26) # maximum length of formatted string is 26
+            slen = min(len(ptimestr), 26)  # maximum length of formatted string is 26
             ptime = datetime.strptime(ptimestr[:slen], timefmt)
             break
         except Exception:

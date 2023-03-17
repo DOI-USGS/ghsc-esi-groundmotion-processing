@@ -104,7 +104,9 @@ def snr_check(
                 min_snr = 0
 
             if min_snr < threshold:
-                logging.debug(f"{tr.id} failed SNR check {min_snr:.2f} < {threshold:.2f}.")
+                logging.debug(
+                    f"{tr.id} failed SNR check {min_snr:.2f} < {threshold:.2f}."
+                )
                 tr.fail(f"SNR check: SNR {min_snr:.2f} < {threshold:.2f}")
         snr_conf = {"threshold": threshold, "min_freq": min_freq, "max_freq": max_freq}
         tr.setParameter("snr_conf", snr_conf)
@@ -121,7 +123,10 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
             Konno-Omachi smoothing bandwidth parameter.
 
     """
-    def _compute_event_spectra(preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event):
+
+    def _compute_event_spectra(
+        preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event
+    ):
         """Compute noise and signal spectra from event spectrum using pre-event noise spectrum
         to estimate the event noise spectrum.
 
@@ -135,12 +140,13 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         Noise is stationary => noise spectra normalized by duration are equal ->
         pre-event noise spectrum / sqrt(pre-event duration) = event noise spectra / sqrt(event duration)
         """
-        event_noise_spectrum = preevent_noise_spectrum * np.sqrt(dur_event) / np.sqrt(dur_preevent)
+        event_noise_spectrum = (
+            preevent_noise_spectrum * np.sqrt(dur_event) / np.sqrt(dur_preevent)
+        )
         signal_spectrum = event_spectrum - event_noise_spectrum
         return (event_noise_spectrum, signal_spectrum)
 
     if tr.hasParameter("signal_split"):
-
         # Split the noise and signal into two separate traces
         split_prov = tr.getParameter("signal_split")
         if isinstance(split_prov, list):
@@ -149,13 +155,18 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         preevent_noise = tr.copy().trim(endtime=split_time)
         event = tr.copy().trim(starttime=split_time)
 
-        tr.setCached("preevent_noise_trace", {"times": preevent_noise.times(), "data": preevent_noise.data})
+        tr.setCached(
+            "preevent_noise_trace",
+            {"times": preevent_noise.times(), "data": preevent_noise.data},
+        )
 
         preevent_noise.detrend("demean")
         event.detrend("demean")
 
         # Taper both windows
-        preevent_noise.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
+        preevent_noise.taper(
+            max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE
+        )
         event.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
 
         # Check that there are a minimum number of points in the noise window
@@ -196,7 +207,8 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         preevent_noise_spectrum = tr.getCached("noise_spectrum")["spec"]
         event_spectrum = tr.getCached("event_spectrum")["spec"]
         event_noise_spectrum, signal_spectrum = _compute_event_spectra(
-            preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event)
+            preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event
+        )
         tr.setCached(
             "noise_spectrum",
             {
@@ -218,7 +230,11 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         smooth_preevent_noise_spectrum = tr.getCached("smooth_noise_spectrum")["spec"]
         smooth_event_spectrum = tr.getCached("smooth_event_spectrum")["spec"]
         smooth_event_noise_spectrum, smooth_signal_spectrum = _compute_event_spectra(
-            smooth_preevent_noise_spectrum, smooth_event_spectrum, dur_preevent, dur_event)
+            smooth_preevent_noise_spectrum,
+            smooth_event_spectrum,
+            dur_preevent,
+            dur_event,
+        )
         tr.setCached(
             "smooth_noise_spectrum",
             {
@@ -233,14 +249,19 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
                 "freq": tr.getCached("smooth_event_spectrum")["freq"],
             },
         )
- 
-        smooth_event_noise_normspectrum = smooth_event_noise_spectrum / np.sqrt(dur_event)
+
+        smooth_event_noise_normspectrum = smooth_event_noise_spectrum / np.sqrt(
+            dur_event
+        )
         smooth_signal_normspectrum = smooth_signal_spectrum / np.sqrt(dur_shaking)
         snr = smooth_signal_normspectrum / smooth_event_noise_normspectrum
-        snr_dict = tr.setCached("snr", {
-            "snr": snr,
-            "freq": tr.getCached("smooth_event_spectrum")["freq"],
-            })
+        snr_dict = tr.setCached(
+            "snr",
+            {
+                "snr": snr,
+                "freq": tr.getCached("smooth_event_spectrum")["freq"],
+            },
+        )
 
     else:
         # We do not have an estimate of the event split time for this trace

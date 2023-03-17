@@ -17,7 +17,6 @@ MAP_PADDING = 1.1  # Station map padding value
 
 
 def draw_stations_map(pstreams, event, event_dir):
-
     # interactive html map is created first
     lats = np.array([st[0].stats.coordinates["latitude"] for st in pstreams])
     lons = np.array([st[0].stats.coordinates["longitude"] for st in pstreams])

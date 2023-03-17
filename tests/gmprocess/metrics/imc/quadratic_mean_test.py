@@ -14,9 +14,9 @@ def test_quadratic_mean():
 
     # Test valid
     target = [
-        np.sqrt(0.5 * (1 ** 2 + 4 ** 2)),
-        np.sqrt(0.5 * (2 ** 2 + 5 ** 2)),
-        np.sqrt(0.5 * (3 ** 2 + 6 ** 2)),
+        np.sqrt(0.5 * (1**2 + 4**2)),
+        np.sqrt(0.5 * (2**2 + 5**2)),
+        np.sqrt(0.5 * (3**2 + 6**2)),
     ]
     gm_data = Quadratic_Mean([[], trace1, trace2]).result[1]
     np.testing.assert_array_equal(gm_data, target)

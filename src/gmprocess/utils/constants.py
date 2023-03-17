@@ -5,9 +5,7 @@ import scipy.constants as sp
 import pathlib
 
 DATA_DIR = (pathlib.Path(__file__).parent / ".." / "data").resolve()
-TEST_DATA_DIR = (
-    pathlib.Path(".").parent / "tests" / "data"
-).resolve()
+TEST_DATA_DIR = (pathlib.Path(".").parent / "tests" / "data").resolve()
 
 PROJ_CONF_DIR = ".gmprocess"
 PROJ_CONF_FILE = "projects.conf"

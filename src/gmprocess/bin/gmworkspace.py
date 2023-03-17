@@ -121,7 +121,7 @@ class WorkspaceApp(object):
                 level (int):
                    Level of group in HDF5 hierarchy (root level is 0).
             """
-            mb = group["total_bytes"] / float(2 ** 20)
+            mb = group["total_bytes"] / float(2**20)
             print(f"{INDENT * level}{name}: {mb:.3f} MB")
             for subgroup in group["groups"]:
                 _print_subtotal(subgroup, group["groups"][subgroup], level + 1)

@@ -10,7 +10,6 @@ from gmprocess.utils.constants import TEST_DATA_DIR
 
 
 def test_read_event_json_files():
-
     datafile = TEST_DATA_DIR / "event_json" / "event.json"
 
     eid = "nc51203888"

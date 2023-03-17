@@ -53,4 +53,4 @@ def _poly_func(x, a, b, c, d, e):
     """
     Model polynomial function for polynomial baseline correction.
     """
-    return a * x ** 6 + b * x ** 5 + c * x ** 4 + d * x ** 3 + e * x ** 2
+    return a * x**6 + b * x**5 + c * x**4 + d * x**3 + e * x**2

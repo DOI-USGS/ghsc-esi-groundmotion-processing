@@ -39,12 +39,10 @@ class ExportFailureTablesModule(base.SubcommandModule):
         {
             "short_flag": "-l",
             "long_flag": "--log-status",
-            "help": (
-                'Include failure information in INFO logging.'
-            ),
+            "help": ("Include failure information in INFO logging."),
             "action": "store_true",
             "default": False,
-        }
+        },
     ]
 
     def main(self, gmrecords):
