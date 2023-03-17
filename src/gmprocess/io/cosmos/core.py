@@ -202,7 +202,7 @@ def read_cosmos(filename, config=None, **kwargs):
     line_offset = 0
     stream = StationStream([], config=config)
     while line_offset < line_count:
-        trace, line_offset = _read_channel(filename, line_offset, location=location)
+        trace, line_offset = _read_channel(filename, line_offset, location=location, config=config)
         # store the trace if the station type is in the valid_station_types
         # list or store the trace if there is no valid_station_types list
         if valid_station_types is not None:
@@ -215,7 +215,7 @@ def read_cosmos(filename, config=None, **kwargs):
     return [stream]
 
 
-def _read_channel(filename, line_offset, location=""):
+def _read_channel(filename, line_offset, location="",config=None):
     """Read channel data from COSMOS V1/V2 text file.
 
     Args:
@@ -283,7 +283,7 @@ def _read_channel(filename, line_offset, location=""):
     if hdr["standard"]["units_type"] != "acc":
         raise ValueError("COSMOS: Only acceleration data accepted.")
 
-    trace = StationTrace(data.copy(), Stats(hdr.copy()))
+    trace = StationTrace(data.copy(), Stats(hdr.copy()),config=config)
 
     # record that this data has been converted to g, if it has
     if hdr["standard"]["process_level"] != PROCESS_LEVELS["V0"]:
