@@ -78,14 +78,15 @@ Common reasons to rebase include:
 1. Create a release candidate branch with a name related to the release version like `v1.2.1-rc0`.
 2. Add new section to `code.json` for this release; update "metadataLastUpdated" date and the urls that include the version.
 3. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
-4. Create an annotated tag and push the release candidate upstream
+4. Commit changes to the `v1.2.1-rc0` branch.
+5. Create an annotated tag and push the release candidate upstream
    ```
    git tag -a v1.2.1 -m "Version 1.2.1"
-   git push upstream v1.2.1-rc0
+   git push upstream v1.2.1
    ```
-5. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
-6. Copy/paste the relevant part of the changelog into the "describe this release" section.
-7. Merge the release candidate back into main. 
+6. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
+7. Copy/paste the relevant part of the changelog into the "describe this release" section.
+8. Merge the release candidate back into main. 
 
 
 ## Build Documentation
