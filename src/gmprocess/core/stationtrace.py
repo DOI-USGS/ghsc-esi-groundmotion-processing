@@ -556,7 +556,6 @@ class StationTrace(Trace):
         else:
             number_of_passes = 1
         if type == "lowpass":
-
             if not frequency_domain:
                 self.setProvenance(
                     "lowpass_filter",

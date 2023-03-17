@@ -17,7 +17,6 @@ setup_logger()
 
 
 def test_StreamCollection():
-
     # read usc data
     directory = TEST_DATA_DIR / "usc" / "ci3144585"
     usc_streams, _, _ = directory_to_streams(directory)

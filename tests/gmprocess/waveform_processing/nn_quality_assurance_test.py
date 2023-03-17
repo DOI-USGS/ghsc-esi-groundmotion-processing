@@ -19,7 +19,6 @@ setup_logger()
 
 
 def test_nnet():
-
     conf = get_config()
 
     update = {

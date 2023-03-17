@@ -11,10 +11,7 @@ from gmprocess.utils.config import get_config
 
 
 def test_auto_fchp():
-
-    data_files, _ = read_data_dir(
-        "geonet", "us1000778i", "20161113_110259_WTMC_20.V1A"
-    )
+    data_files, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V1A")
     streams = []
     for f in data_files:
         streams += read_data(f)

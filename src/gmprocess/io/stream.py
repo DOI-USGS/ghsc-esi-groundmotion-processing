@@ -82,9 +82,7 @@ def directory_to_dataframe(directory, imcs=None, imts=None, event=None, process=
         streams += read_data(filepath)
     grouped_streams = StreamCollection(streams)
 
-    dataframe = streams_to_dataframe(
-        grouped_streams, imcs=imcs, imts=imts, event=event
-    )
+    dataframe = streams_to_dataframe(grouped_streams, imcs=imcs, imts=imts, event=event)
     return dataframe
 
 

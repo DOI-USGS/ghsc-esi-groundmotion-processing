@@ -32,7 +32,7 @@ M_TO_KM = 1.0 / 1000
 
 def duration_from_magnitude(event_magnitude):
     """Compute shaking duration in seconds from earthquake magnitude.
-    
+
     From Hamid Haddadi, generic ground-motion record duration, (including 30s pre-event window:
     Duration (minutes) = earthquake magnitude / 2.0 .
 
@@ -43,6 +43,7 @@ def duration_from_magnitude(event_magnitude):
         Duration of earthquake shaking in seconds.
     """
     return event_magnitude / 2.0 * 60.0 - 30.0
+
 
 @ProcessingStep
 def cut(st, sec_before_split=2.0, config=None):

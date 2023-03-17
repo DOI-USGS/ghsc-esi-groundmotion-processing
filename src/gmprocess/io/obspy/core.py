@@ -194,7 +194,6 @@ def read_obspy(filename, config=None, **kwargs):
 
         # Search for a match using regular expressions.
         for pattern in exclude_patterns:
-
             # Split each string into components. Check if
             # components are of equal length.
             pparts = pattern.split(".")

@@ -41,9 +41,7 @@ def test_all_num_clip_intervals():
 
     np.testing.assert_equal(
         num_clip_intervals,
-        np.array(
-            [[0, 0, 0], [0, 1, 1], [1, 2, 2], [1, 1, 0], [1, 1, 1], [0, 0, 1]]
-        ),
+        np.array([[0, 0, 0], [0, 1, 1], [1, 2, 2], [1, 1, 0], [1, 1, 1], [0, 0, 1]]),
     )
 
 

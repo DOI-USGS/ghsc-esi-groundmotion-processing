@@ -12,7 +12,6 @@ datadir = TEST_DATA_DIR / "process"
 
 
 def test_rotation():
-
     # Create a stream and station summary, convert from m/s^2 to cm/s^2 (GAL)
     osc1_data = np.genfromtxt(datadir / "ALCTENE.UW..sac.acc.final.txt")
     osc2_data = np.genfromtxt(datadir / "ALCTENN.UW..sac.acc.final.txt")

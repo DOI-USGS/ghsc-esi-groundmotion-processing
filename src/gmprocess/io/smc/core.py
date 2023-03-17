@@ -348,7 +348,6 @@ def _get_header_info(filename, any_structure=False, accept_flagged=False, locati
         and hour != missing_data
         and minute != missing_data
     ):
-
         # Handle second if missing
         second = 0
         if not intheader[0, 5] == missing_data:

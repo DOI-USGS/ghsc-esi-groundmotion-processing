@@ -701,7 +701,7 @@ class StreamWorkspace(object):
         ]:
             streams = StreamCollection(streams, handle_duplicates=False, config=config)
         else:
-            streams = StreamArray(streams)
+            streams = StreamArray(streams, config=config)
         return streams
 
     def getStations(self):

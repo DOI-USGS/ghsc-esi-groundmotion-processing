@@ -66,7 +66,6 @@ def remove_response(
 
     # Check if the response information is already attached in the trace stats
     for tr in st:
-
         # Check if this trace has already been converted to physical units
         if "remove_response" in tr.getProvenanceKeys():
             logging.debug(

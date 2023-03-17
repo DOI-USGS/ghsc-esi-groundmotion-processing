@@ -233,7 +233,6 @@ def build_report_latex(
     res = False
     # Do not save report if running tests
     if "CALLED_FROM_PYTEST" not in os.environ:
-
         # Set working directory to be the event subdirectory
         current_directory = Path.cwd()
         os.chdir(directory)

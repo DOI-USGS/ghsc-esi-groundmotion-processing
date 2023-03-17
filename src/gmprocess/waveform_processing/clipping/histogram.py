@@ -377,9 +377,7 @@ class Histogram(ClipDetection):
             )
         if has_positive_clip:
             peaks = self._find_peaks(tr.data, positive_thresh, True)
-            clip_intervals[1] = self._get_clip_interval(
-                tr.data, peaks, positive_width
-            )
+            clip_intervals[1] = self._get_clip_interval(tr.data, peaks, positive_width)
         # Aggregate the positive and negative clipping intervals.
         num_clip_intervals = 0
         for interval in clip_intervals:
