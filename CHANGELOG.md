@@ -1,4 +1,4 @@
-## main
+## 1.2.5 / 2023-03-17
  - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
  - Added support for passing in a config directory to `gmrecords config -u`
  - Add support for bounds in FDSN providers.
