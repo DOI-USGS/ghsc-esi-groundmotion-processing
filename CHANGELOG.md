@@ -1,4 +1,4 @@
-# main
+## 1.2.6 / 2023-03-18
  - Update URL in download code.
  - Bugfixes
    - Config wasn't being passed to COSMOS reader, or to StreamArray.
