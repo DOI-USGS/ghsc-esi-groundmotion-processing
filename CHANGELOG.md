@@ -1,6 +1,8 @@
 # main
+ - Update URL in download code.
  - Bugfixes
    - Config wasn't being passed to COSMOS reader, or to StreamArray.
+   - Fix units in ground motion packet output.
 
 ## 1.2.5 / 2023-03-17
  - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.

@@ -31,9 +31,9 @@ from gmpacket.provenance import (
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 
 METRIC_INFO = {
-    "PGA": ("Peak ground acceleration", "cm/s^2"),
+    "PGA": ("Peak ground acceleration", "%g"),
     "PGV": ("Peak ground velocity", "cm/s"),
-    "SA": ("Spectral acceleration", "g"),
+    "SA": ("Spectral acceleration", "%g"),
     "DURATION": ("Earthquake duration", "s"),
     "FAS": ("Fourier Amplitude Spectra", "cm/s"),
     "SORTED_DURATION": (

@@ -26,7 +26,7 @@ TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
 FLOAT_PATTERN = r"[-+]?[0-9]*\.?[0-9]+"
 
 EVENT_TEMPLATE = (
-    "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=[EVENT]"
+    "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/[EVENT].geojson"
 )
 
 

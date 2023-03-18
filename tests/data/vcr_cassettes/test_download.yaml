@@ -9,9 +9,69 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.1
+      - python-requests/2.28.2
     method: GET
-    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=us10008dkr
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us10008dkr.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Fri, 17 Mar 2023 23:13:38 GMT
+      Expires:
+      - Fri, 17 Mar 2023 23:14:38 GMT
+      Last-Modified:
+      - Fri, 17 Mar 2023 23:13:38 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us10008dkr&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 64544648f8289d0bd61ef02997afb698.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - xaHPxz9npTQKYcgz0AKGAketDqIcDPFfFB3t0c40K9_g2iV0Ta39QA==
+      X-Amz-Cf-Pop:
+      - DEN52-P3
+      X-Cache:
+      - Miss from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10008dkr&format=geojson
   response:
     body:
       string: '{"type":"Feature","properties":{"mag":4.1,"place":"119 km ESE of Kambalda
@@ -30,8 +90,6 @@ interactions:
       - '*'
       Access-Control-Max-Age:
       - '86400'
-      Age:
-      - '37'
       Cache-Control:
       - public, max-age=60
       Connection:
@@ -41,11 +99,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Sat, 05 Nov 2022 21:58:33 GMT
+      - Fri, 17 Mar 2023 23:13:39 GMT
       Expires:
-      - Sat, 05 Nov 2022 21:59:33 GMT
+      - Fri, 17 Mar 2023 23:14:39 GMT
       Last-Modified:
-      - Sat, 05 Nov 2022 21:58:33 GMT
+      - Fri, 17 Mar 2023 23:13:39 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -53,13 +111,13 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 89657e9ba87ccb5f5b96de064bf6d496.cloudfront.net (CloudFront)
+      - 1.1 64544648f8289d0bd61ef02997afb698.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - fMRacAdCCHSkpaw3nxs-ipfUUJUz7j3Pe_PW9lIATTC77HlYlbyO7A==
+      - o7DAZuj9i5j9a5309qnQwIcOuwQbd03yqWq_iAJLCkrQ6bNNRfX1sg==
       X-Amz-Cf-Pop:
       - DEN52-P3
       X-Cache:
-      - Hit from cloudfront
+      - Miss from cloudfront
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -79,7 +137,7 @@ interactions:
       Host:
       - auspass.edu.au
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://auspass.edu.au/fdsnws/dataselect/1/application.wadl
   response:
@@ -114,7 +172,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:11 GMT
+      - Fri, 17 Mar 2023 23:13:41 GMT
       Last-Modified:
       - Mon, 04 Jul 2022 06:47:28 GMT
       Server:
@@ -134,23 +192,23 @@ interactions:
       Host:
       - eida.bgr.de
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.bgr.de/fdsnws/dataselect/1/application.wadl
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA91VTY+bMBA9J7/Ccs/FkGQPjSArVap62VUrJYdevXiyeNcYFg8h+fe1gQDZEKWN
-        WlXqwYnm4817tmaG8H6fKrKDwshMRzTwfHq/moY8z5WMOVonsQnaLPdGRjRBzJeMVVXlVXMvK57Z
-        zPcD9uPxYR0nkPKPUhvkOgY6nUwsYmlq90PWlGoKmNMK6/IplcbRs4oLVf94eyPqEi21uE7dpfep
-        rpCAnffCd9zTgA7xifkzuppOwgJMVhYxGPLEDUSUbYXRlWGCo7UVxMgCl9hnkpxjEtG3EopDHZmE
-        KWCSCZIUsI3ohzry9cuGsovR79/WbThkx7oXSXiJyd8mOufQPLXPUeNrfw3JM22gMZ2dWxdobPoj
-        BSH55pBbFMIeWa641K20hr1Hh6xhuS6sbckxbe7m/1LaYDg812R/TOOgMLO9/LtCe8M460wPkaLt
-        rKM6q8XaBpu6OS942ubbMS4QZQqUGDwoOPY9wVqpHcmlnRTYuAx2DgctbgfbUa2y4vUy2GAh9fMY
-        1DSPegtUtUvqFmyccK1B3QJ9K7mSeHgPFbDlpcKIfj62UZbX7bLjqgTnZqP+xyMHq0nO+bZZkXK8
-        qrQXkEotDYAY19FFr9DqzC3Wy7RS44Bz5i/G6Vxg/OKLLjLQ4Caia/BuEInrktK4an47u782kzst
-        PPeZ8NL+yqfDOcaxIAvftyewZ26PtQP7HyzInfXf+fOrGt7vrhPOwToYWeH9zHcb/b9/h5ANxK6m
-        PwGzIn274wgAAA==
+        H4sIAAAAAAAAA+VUTY/aMBA9w6+w0nPjBNhDUcJKlapedtVK7KFXbzxs3MZO1p4Q+Pe1nUDCEkQX
+        taceDJqPN+/FnpnkficLsgVtRKnSIA6j4H41TVhVFSJjaJ3EJiiz3BmRBjlitaS0aZqwmYelfqGz
+        KIrpj8eHdZaDZB+FMshUBsF0MrGIpfHuh7It1RYwpxXW9bMUxtHThvHC/4Q7w32Jjppfpz6m96mu
+        EIdt+JNtWagAHeITjWbBajpJNJiy1hkY8swMpAHdcKMaQzlDaxeQIY1dYp9JKoZ5GrzWoPc+Mkkk
+        YF5ykmvYpMEHH/n65SmgF6Pfv627cEIPdS+SsBrzf03UvfwpjWLS3ogj8G4PqkploDWdXVkXKGw7
+        RAIX7GlfWRDCDmlVMKE6cS1/j05oS3Jd2qAHQ/eWf03joDC1LfNeob1hnHWmhwjePeBBndVibYNt
+        3YppJrt8Oy0aUUgIiMF9AYf2IuiV2s5f2oaEJ5dBz+Gg+O1gOxFNqX9dBhvUQr2MQU17qbdAi24X
+        3ILNcqYUFLdAX2tWCNy/hXLYsLrANPh8aKOy8u2yZUUNzk1H/Y8HDupJzvk2pZYMryrtBUihhAHg
+        4zqO0Su0qnT76zKtUDjgnEWLcToXGP/wxTEy0OAm4tjgx0Ekrktq46pF3ez+2UxuFQ/dNg5l/8mn
+        wznGsSCLKLIntmduj7Vj+x8vyJ3130Xzqxre7q4TzsE6OB15v2n7mffmf3EPCR2IXU1/AzY3H7JK
+        CAAA
     headers:
       Accept-Ranges:
       - bytes
@@ -165,7 +223,7 @@ interactions:
       Content-Encoding:
       - gzip
       Content-Length:
-      - '580'
+      - '573'
       Content-Security-Policy:
       - default-src 'self'; font-src 'self' *.bootstrapcdn.com; script-src 'self'
         www.google-analytics.com ajax.googleapis.com code.jquery.com *.bootstrapcdn.com;
@@ -173,9 +231,9 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:12 GMT
+      - Fri, 17 Mar 2023 23:13:42 GMT
       Last-Modified:
-      - Fri, 12 Mar 2021 13:53:41 GMT
+      - Tue, 10 Jan 2023 10:25:32 GMT
       Public-Key-Pins:
       - pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000;
         includeSubDomains
@@ -202,7 +260,7 @@ interactions:
       Host:
       - eida-federator.ethz.ch
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida-federator.ethz.ch/fdsnws/dataselect/1/application.wadl
   response:
@@ -246,7 +304,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:12 GMT
+      - Fri, 17 Mar 2023 23:13:43 GMT
       ETag:
       - '"607005bf-750"'
       Last-Modified:
@@ -266,7 +324,7 @@ interactions:
       Host:
       - eida.ethz.ch
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.ethz.ch/fdsnws/dataselect/1/application.wadl
   response:
@@ -301,7 +359,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:13 GMT
+      - Fri, 17 Mar 2023 23:13:44 GMT
       Last-Modified:
       - Fri, 17 Dec 2021 15:09:27 GMT
       Server:
@@ -321,7 +379,7 @@ interactions:
       Host:
       - www.seismicportal.eu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://www.seismicportal.eu/fdsnws/dataselect/1/application.wadl
   response:
@@ -349,35 +407,33 @@ interactions:
       Host:
       - www.seismicportal.eu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
-    uri: https://www.seismicportal.eu/fdsnws/event/1/catalogs
+    uri: https://www.seismicportal.eu/fdsnws/dataselect/1/application.wadl
   response:
     body:
-      string: "<?xml version=\"1.0\"?>\n<Catalogs>\n    <total>3</total>\n    <Catalog>EMSC-RTS</Catalog>\n
-        \   <Catalog>EMSC-EMB</Catalog>\n    <Catalog>ISC</Catalog>\n</Catalogs>\n"
+      string: !!binary |
+        H4sIAAAAAAAAA7PJKMnNsePlsslITUyxsynJLMlJtTMxMFHwyy9RcMsvzUux0YcI2uiDlQCVJuWn
+        VCokpSfn5+QX2SqVZ2SWpCqBjEhOzStJLbKzyTBENwEoYqMPlQbZBVQE5eWlZ+ZVIMvpg0wHmaYP
+        dRkAkDs0MaIAAAA=
     headers:
-      Access-Control-Allow-Origin:
-      - '*'
       Connection:
       - close
-      Content-Length:
-      - '157'
+      Content-Encoding:
+      - gzip
       Content-Type:
-      - application/xml
+      - text/html
       Date:
-      - Sat, 05 Nov 2022 21:59:14 GMT
-      Etag:
-      - '"73528b97dbd0d97ce18e025b693adc0be9f5ed66"'
+      - Fri, 17 Mar 2023 23:13:46 GMT
       Server:
       - nginx/1.13.3
       Set-Cookie:
       - BIGipServerpool-seismicportal=44083392.20480.0000; path=/; Httponly; Secure
-      Vary:
-      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
 - request:
     body: null
     headers:
@@ -388,7 +444,7 @@ interactions:
       Host:
       - service.geonet.org.nz
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://service.geonet.org.nz/fdsnws/dataselect/1/application.wadl
   response:
@@ -417,16 +473,16 @@ interactions:
       Content-Length:
       - '575'
       Content-Security-Policy:
-      - 'default-src ''none''; font-src ''self'' https://fonts.gstatic.com; script-src
-        ''self''; base-uri ''none''; frame-ancestors ''self''; img-src ''self'' *.geonet.org.nz
-        data: https://www.google-analytics.com https://stats.g.doubleclick.net; style-src
-        ''self''; connect-src ''self'' https://*.geonet.org.nz https://www.google-analytics.com
-        https://stats.g.doubleclick.net; frame-src ''self'' https://www.youtube.com
-        https://www.google.com; form-action ''self''; object-src ''none'';'
+      - 'img-src ''self'' *.geonet.org.nz data: https://www.google-analytics.com https://stats.g.doubleclick.net;
+        style-src ''self''; script-src ''self''; frame-src ''self'' https://www.youtube.com
+        https://www.google.com; form-action ''self''; frame-ancestors ''self''; default-src
+        ''none''; font-src ''self'' https://fonts.gstatic.com; connect-src ''self''
+        https://*.geonet.org.nz https://www.google-analytics.com https://stats.g.doubleclick.net;
+        base-uri ''none''; object-src ''none'';'
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:14 GMT
+      - Fri, 17 Mar 2023 23:13:47 GMT
       Referrer-Policy:
       - no-referrer
       Strict-Transport-Security:
@@ -452,7 +508,7 @@ interactions:
       Host:
       - geofon.gfz-potsdam.de
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://geofon.gfz-potsdam.de/fdsnws/dataselect/1/application.wadl
   response:
@@ -479,7 +535,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:14 GMT
+      - Fri, 17 Mar 2023 23:13:47 GMT
       ETag:
       - W/"5abd1708-852"
       Last-Modified:
@@ -501,7 +557,7 @@ interactions:
       Host:
       - ws.icgc.cat
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ws.icgc.cat/fdsnws/dataselect/1/application.wadl
   response:
@@ -546,7 +602,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:15 GMT
+      - Fri, 17 Mar 2023 23:13:48 GMT
       Last-Modified:
       - Fri, 03 Jun 2022 11:42:43 GMT
       Server:
@@ -564,7 +620,7 @@ interactions:
       Host:
       - webservices.ingv.it
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://webservices.ingv.it/fdsnws/dataselect/1/application.wadl
   response:
@@ -597,7 +653,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:15 GMT
+      - Fri, 17 Mar 2023 23:13:49 GMT
       Last-Modified:
       - Mon, 16 Aug 2021 11:00:27 GMT
       Server:
@@ -627,7 +683,7 @@ interactions:
       Host:
       - ws.ipgp.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ws.ipgp.fr/fdsnws/dataselect/1/application.wadl
   response:
@@ -662,7 +718,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:16 GMT
+      - Fri, 17 Mar 2023 23:13:51 GMT
       Last-Modified:
       - Mon, 15 Feb 2021 21:00:55 GMT
       Server:
@@ -682,7 +738,7 @@ interactions:
       Host:
       - service.iris.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://service.iris.edu/fdsnws/dataselect/1/application.wadl
   response:
@@ -712,11 +768,11 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:15 GMT
+      - Fri, 17 Mar 2023 23:13:52 GMT
       Transfer-Encoding:
       - chunked
       content-disposition:
-      - inline; filename=fdsnws-dataselect_2022-11-05T21:59:16Z.xml
+      - inline; filename=fdsnws-dataselect_2023-03-17T23:13:52Z.xml
       vary:
       - accept-encoding
     status:
@@ -732,7 +788,7 @@ interactions:
       Host:
       - isc-mirror.iris.washington.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://isc-mirror.iris.washington.edu/fdsnws/dataselect/1/application.wadl
   response:
@@ -761,7 +817,7 @@ interactions:
       Content-Type:
       - text/html; charset=iso-8859-1
       Date:
-      - Sat, 05 Nov 2022 21:59:16 GMT
+      - Fri, 17 Mar 2023 23:13:52 GMT
       Server:
       - Apache/2.4.6 (CentOS) PHP/5.6.40
     status:
@@ -777,7 +833,7 @@ interactions:
       Host:
       - rdsa.knmi.nl
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://rdsa.knmi.nl/fdsnws/dataselect/1/application.wadl
   response:
@@ -822,7 +878,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:16 GMT
+      - Fri, 17 Mar 2023 23:13:53 GMT
       Last-Modified:
       - Mon, 14 Mar 2022 15:11:58 GMT
       Server:
@@ -840,7 +896,7 @@ interactions:
       Host:
       - eida.koeri.boun.edu.tr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.koeri.boun.edu.tr/fdsnws/dataselect/1/application.wadl
   response:
@@ -875,7 +931,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:16 GMT
+      - Fri, 17 Mar 2023 23:13:35 GMT
       Last-Modified:
       - Fri, 28 May 2021 14:19:38 GMT
       Server:
@@ -895,7 +951,7 @@ interactions:
       Host:
       - erde.geophysik.uni-muenchen.de
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://erde.geophysik.uni-muenchen.de/fdsnws/dataselect/1/application.wadl
   response:
@@ -930,9 +986,9 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:17 GMT
+      - Fri, 17 Mar 2023 23:13:57 GMT
       Last-Modified:
-      - Wed, 17 Jun 2020 10:27:00 GMT
+      - Thu, 17 Nov 2022 11:30:59 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
       Vary:
@@ -950,43 +1006,77 @@ interactions:
       Host:
       - service.ncedc.org
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
-    uri: http://service.ncedc.org/fdsnws/dataselect/1/application.wadl
+    uri: https://service.ncedc.org/fdsnws/dataselect/1/application.wadl
   response:
     body:
-      string: '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-
-        <html><head>
-
-        <title>308 Permanent Redirect</title>
-
-        </head><body>
-
-        <h1>Permanent Redirect</h1>
-
-        <p>The document has moved <a href="https://service.ncedc.org/fdsnws/dataselect/1/application.wadl">here</a>.</p>
-
-        </body></html>
-
-        '
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<application
+        xmlns=\"http://wadl.dev.java.net/2009/02\">\n  <doc title=\"FDSN dataselect
+        web service 1.1\"/>\n  <grammars/>\n  <resources base=\"https://service.ncedc.org/fdsnws/dataselect/1/\">\n
+        \   <resource path=\"/\">\n      <method name=\"GET\" id=\"root\">\n        <response>\n
+        \         <representation mediaType=\"text/html\"/>\n        </response>\n
+        \     </method>\n      <resource path=\"/query\">\n        <method name=\"GET\"
+        id=\"query\">\n          <request>\n            <param name=\"starttime\"
+        style=\"query\" required=\"true\" type=\"xs:date\"/>\n            <doc xml:lang=\"english\"
+        title=\"limit to channels that are active on or after the specified start
+        time\">\n              Examples: starttime=2012-11-29 or 2012-11-29T00:00:00
+        or 2012-11-29T00:00:00.000 </doc>\n            <param name=\"endtime\" style=\"query\"
+        required=\"true\" type=\"xs:date\"/>\n            <doc xml:lang=\"english\"
+        title=\"limit to channels that are active on or before the specified end time\">\n
+        \             Examples: endtime=2012-11-29 or 2012-11-29T00:00:00 or 2012-11-29T00:00:00.000
+        </doc>\n            <param name=\"network\" style=\"query\" type=\"xs:string\"/>\n
+        \           <doc xml:lang=\"english\" title=\"Select one or more network codes.
+        Lists and wildcards are accepted\"> Examples:\n              network=BK or
+        network=BK,NC or network=B? </doc>\n            <param name=\"station\" style=\"query\"
+        type=\"xs:string\"/>\n            <doc xml:lang=\"english\" title=\"Select
+        one or more SEED station codes. Lists and wildcards are accepted\">\n              Examples:
+        station=BKS or station=BKS,CMB or station=C* or station=?MN? </doc>\n            <param
+        name=\"location\" style=\"query\" type=\"xs:string\"/>\n            <doc xml:lang=\"english\"
+        title=\"Select one or more SEED location codes. Use -- for spaces. Lists and
+        wildcards are accepted\">\n              Examples: location=-- or location=?0
+        or location=--,10 </doc>\n            <param name=\"channel\" style=\"query\"
+        type=\"xs:string\"/>\n            <doc xml:lang=\"english\" title=\"Select
+        one or more SEED channel codes. Lists and wildcards are accepted\">\n              Examples:
+        channel=BHZ or channel=BH1,BH2 or channel=*Z or channel=BH? </doc>\n          </request>\n
+        \         <response>\n            <representation mediaType=\"text/plain\"/>\n
+        \           <representation mediaType=\"application/vnd.fdsn.mseed\"/>\n          </response>\n
+        \       </method>\n        <method name=\"POST\" id=\"postQuery\">\n          <request>\n
+        \           <representation mediaType=\"*/*\"/>\n          </request>\n          <response>\n
+        \           <representation mediaType=\"text/plain\"/>\n            <representation
+        mediaType=\"application/vnd.fdsn.mseed\"/>\n          </response>\n        </method>\n
+        \     </resource>\n      <resource path=\"/version\">\n        <method name=\"GET\"
+        id=\"version\">\n          <response>\n            <representation mediaType=\"text/plain\"/>\n
+        \         </response>\n        </method>\n      </resource>\n      <resource
+        path=\"/application.wadl\">\n        <method name=\"GET\" id=\"application.wadl\">\n
+        \         <response>\n            <representation mediaType=\"application/xml\"/>\n
+        \         </response>\n        </method>\n      </resource>\n    </resource>\n
+        \ </resources>\n</application>\n"
     headers:
+      Access-Control-Allow-Headers:
+      - x-requested-with, Content-Type, origin, authorization, accept, client-security-token
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS, DELETE, PUT
+      Access-Control-Max-Age:
+      - '1000'
       Connection:
       - close
       Content-Length:
-      - '272'
+      - '3195'
       Content-Type:
-      - text/html; charset=iso-8859-1
+      - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:17 GMT
-      Location:
-      - https://service.ncedc.org/fdsnws/dataselect/1/application.wadl
+      - Fri, 17 Mar 2023 23:13:57 GMT
       Server:
       - Apache/2.4.6 (Red Hat Enterprise Linux) OpenSSL/1.0.2k-fips mod_fcgid/2.3.9
         PHP/7.2.9 mod_wsgi/3.4 Python/2.7.5 mod_jk/1.2.42
+      access-control-allow-origin:
+      - '*'
+      content-disposition:
+      - inline; filename=fdsnws-dataselect_2023-03-17T23:13:57Z.xml
     status:
-      code: 308
-      message: Permanent Redirect
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -997,7 +1087,7 @@ interactions:
       Host:
       - eida-sc3.infp.ro
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida-sc3.infp.ro/fdsnws/dataselect/1/application.wadl
   response:
@@ -1030,7 +1120,7 @@ interactions:
       Content-Type:
       - text/html; charset=iso-8859-1
       Date:
-      - Sat, 05 Nov 2022 21:59:18 GMT
+      - Fri, 17 Mar 2023 23:13:58 GMT
       Location:
       - https://eida-sc3.infp.ro/fdsnws/dataselect/1/application.wadl
       Server:
@@ -1048,38 +1138,84 @@ interactions:
       Host:
       - eida-sc3.infp.ro
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
-    uri: https://eida-sc3.infp.ro/fdsnws/dataselect/1/application.wadl
+    uri: https://eida-sc3.infp.ro/fdsnws/event/1/application.wadl
   response:
     body:
       string: "<?xml version=\"1.0\"?>\n<application xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\t\txsi:schemaLocation=\"https://www.w3.org/Submission/wadl/wadl.xsd\"\n\t\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n\t\txmlns=\"http://wadl.dev.java.net/2009/02\">\n\t<resources
-        base=\"/fdsnws/dataselect/1\">\n\t\t<resource path=\"query\">\n\t\t\t<method
-        href=\"#queryGET\"/>\n\t\t\t<method href=\"#queryPOST\"/>\n\t\t</resource>\n\t\t<resource
-        path=\"queryauth\">\n\t\t\t<method href=\"#queryGET\"/>\n\t\t\t<method href=\"#queryPOST\"/>\n\t\t</resource>\n\t\t<resource
+        base=\"/fdsnws/event/1\">\n\t\t<resource path=\"query\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<request>\n\t\t\t\t\t<param
+        name=\"starttime\" style=\"query\" type=\"xsd:dateTime\"/>\n\t\t\t\t\t<param
+        name=\"endtime\" style=\"query\" type=\"xsd:dateTime\"/>\n\t\t\t\t\t<param
+        name=\"minlatitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"maxlatitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"minlongitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"maxlongitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"latitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param name=\"longitude\"
+        style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param name=\"minradius\"
+        style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param name=\"maxradius\"
+        style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param name=\"mindepth\" style=\"query\"
+        type=\"xsd:float\"/>\n\t\t\t\t\t<param name=\"maxdepth\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"minmagnitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"maxmagnitude\" style=\"query\" type=\"xsd:float\"/>\n\t\t\t\t\t<param
+        name=\"magnitudetype\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t\t\t<param
+        name=\"eventtype\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t\t\t<param
+        name=\"includeallorigins\" style=\"query\" type=\"xsd:boolean\" default=\"false\"/>\n\t\t\t\t\t<param
+        name=\"includeallmagnitudes\" style=\"query\" type=\"xsd:boolean\" default=\"false\"/>\n\t\t\t\t\t<param
+        name=\"includearrivals\" style=\"query\" type=\"xsd:boolean\" default=\"false\"/>\n\t\t\t\t\t<param
+        name=\"eventid\" style=\"query\" repeating=\"true\"/>\n\t\t\t\t\t<param name=\"limit\"
+        style=\"query\" type=\"xsd:int\"/>\n\t\t\t\t\t<param name=\"offset\" style=\"query\"
+        type=\"xsd:int\" default=\"1\">\n\t\t\t\t\t\t<doc title=\"definition\">\n\t\t\t\t\t\t\tThe
+        FDSNWS specification uses a weird definition of\n\t\t\t\t\t\t\tan offset where
+        the first element is not addressed\n\t\t\t\t\t\t\tby 'offset=0' but 'offset=1'.
+        So the implementation\n\t\t\t\t\t\t\twill decrement the offset value by one
+        when\n\t\t\t\t\t\t\tgenerating the SQL database query.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param
+        name=\"orderby\" style=\"query\" type=\"xsd:string\" default=\"time\">\n\t\t\t\t\t\t<option
+        value=\"time\"/>\n\t\t\t\t\t\t<option value=\"time-asc\"/>\n\t\t\t\t\t\t<option
+        value=\"magnitude\"/>\n\t\t\t\t\t\t<option value=\"magnitude-asc\"/>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param
+        name=\"contributor\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t\t\t<param
+        name=\"catalog\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t\t\t<!-- not
+        implemented -->\n\t\t\t\t\t<!--param name=\"updateafter\" style=\"query\"
+        type=\"xsd:dateTime\"/-->\n\t\t\t\t\t<param name=\"format\" style=\"query\"
+        type=\"xsd:string\" default=\"xml\">\n\t\t\t\t\t\t<option value=\"xml\" mediaType=\"application/xml\"/>\n\t\t\t\t\t\t<option
+        value=\"text\" mediaType=\"text/plain\"/>\n\n\t\t\t\t\t\t<!-- additional,
+        non standard options -->\n\t\t\t\t\t\t<option value=\"qml\" mediaType=\"application/xml\"/>\n\t\t\t\t\t\t<option
+        value=\"qml-rt\" mediaType=\"application/xml\"/>\n\t\t\t\t\t\t<option value=\"sc3ml\"
+        mediaType=\"application/xml\"/>\n\t\t\t\t\t\t<option value=\"csv\" mediaType=\"text/plain\"/>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param
+        name=\"nodata\" style=\"query\" type=\"xsd:int\" default=\"204\">\n\t\t\t\t\t\t<option
+        value=\"204\"/>\n\t\t\t\t\t\t<option value=\"404\"/>\n\t\t\t\t\t</param>\n\n\t\t\t\t\t<!--
+        additional, non standard parameters, effective only in XML output -->\n\t\t\t\t\t<param
+        name=\"includepicks\" style=\"query\" type=\"xsd:boolean\" default=\"true\">\n\t\t\t\t\t\t<doc
+        title=\"definition\">\n\t\t\t\t\t\t\tAdds pick information to arrivals. Note:
+        Picks will\n\t\t\t\t\t\t\tonly be available if arrivals are requested.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param
+        name=\"includefocalmechanism\" style=\"query\" type=\"xsd:boolean\" default=\"false\">\n\t\t\t\t\t\t<doc
+        title=\"definition\">\n\t\t\t\t\t\t\tAdds peferred focal mechanism information
+        including momentensor solution if available.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param
+        name=\"includeallfocalmechanisms\" style=\"query\" type=\"xsd:boolean\" default=\"false\">\n\t\t\t\t\t\t<doc
+        title=\"definition\">\n\t\t\t\t\t\t\tAdds all focal mechanism information
+        including momentensor solution if available.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param
+        name=\"includestationmts\" style=\"query\" type=\"xsd:boolean\" default=\"false\">\n\t\t\t\t\t\t<doc
+        title=\"definition\">\n\t\t\t\t\t\t\tAdds all momentensor station contributions.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t\t<!--
+        includecomments parameter, requires hideComments configuration parameter to
+        be disabled -->\n\t\t\t\t\t<param name=\"includecomments\" style=\"query\"
+        type=\"xsd:boolean\" default=\"false\">\n\t\t\t\t\t\t<doc title=\"definition\">\n\t\t\t\t\t\t\tSeisComP
+        supports comments for most datamodel\n\t\t\t\t\t\t\tobjects. This parameter
+        controls whether or not\n\t\t\t\t\t\t\tcomments are included in the output
+        document.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t\t<param name=\"formatted\"
+        style=\"query\" type=\"xsd:boolean\" default=\"false\">\n\t\t\t\t\t\t<doc>\n\t\t\t\t\t\t\tControls
+        formatted (pretty print) output.\n\t\t\t\t\t\t</doc>\n\t\t\t\t\t</param>\n\t\t\t\t</request>\n\t\t\t\t<response
+        status=\"200\">\n\t\t\t\t\t<representation mediaType=\"application/xml\"/>\n\t\t\t\t\t<representation
+        mediaType=\"text/plain\"/>\n\t\t\t\t</response>\n\t\t\t\t<response status=\"204
+        400 401 403 404 413 414 500 503\">\n\t\t\t\t\t<representation mediaType=\"text/plain\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t\t<resource
+        path=\"catalogs\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<response>\n\t\t\t\t\t<representation
+        mediaType=\"application/xml\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t\t<resource
+        path=\"contributors\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<response>\n\t\t\t\t\t<representation
+        mediaType=\"application/xml\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t\t<resource
         path=\"version\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<response>\n\t\t\t\t\t<representation
         mediaType=\"text/plain\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t\t<resource
         path=\"application.wadl\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<response>\n\t\t\t\t\t<representation
-        mediaType=\"application/xml\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t</resources>\n\t<method
-        name=\"GET\" id=\"queryGET\">\n\t\t<request>\n\t\t\t<param name=\"starttime\"
-        style=\"query\" type=\"xsd:dateTime\"/>\n\t\t\t<param name=\"endtime\" style=\"query\"
-        type=\"xsd:dateTime\"/>\n\t\t\t<param name=\"network\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t<param
-        name=\"station\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t<param name=\"location\"
-        style=\"query\" type=\"xsd:string\"/>\n\t\t\t<param name=\"channel\" style=\"query\"
-        type=\"xsd:string\"/>\n\t\t\t<param name=\"quality\" style=\"query\" default=\"B\">\n\t\t\t\t<option
-        value=\"B\"/>\n\t\t\t\t<option value=\"M\"/>\n\t\t\t</param>\n\t\t\t<param
-        name=\"format\" style=\"query\" type=\"xsd:string\" default=\"miniseed\">\n\t\t\t\t<option
-        value=\"miniseed\"/>\n\t\t\t</param>\n\t\t\t<param name=\"nodata\" style=\"query\"
-        type=\"xsd:int\" default=\"204\">\n\t\t\t\t<option value=\"204\"/>\n\t\t\t\t<option
-        value=\"404\"/>\n\t\t\t</param>\n\t\t</request>\n\t\t<response status=\"200\">\n\t\t\t<representation
-        mediaType=\"application/vnd.fdsn.mseed\"/>\n\t\t</response>\n\t\t<response
-        status=\"204 400 401 403 404 413 414 500 503\">\n\t\t\t<representation mediaType=\"text/plain\"/>\n\t\t</response>\n\t</method>\n\t<method
-        name=\"POST\" id=\"queryPOST\">\n\t\t<response status=\"200\">\n\t\t\t<representation
-        mediaType=\"application/vnd.fdsn.mseed\"/>\n\t\t</response>\n\t\t<response
-        status=\"204 400 401 403 404 413 414 500 503\">\n\t\t\t<representation mediaType=\"text/plain\"/>\n\t\t</response>\n\t</method>\n</application>\n"
+        mediaType=\"application/xml\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t</resources>\n</application>\n"
     headers:
-      Accept-Ranges:
-      - bytes
       Access-Control-Allow-Headers:
       - Authorization
       Access-Control-Allow-Origin:
@@ -1089,13 +1225,11 @@ interactions:
       Connection:
       - close
       Content-Length:
-      - '2122'
+      - '5765'
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:19 GMT
-      Last-Modified:
-      - Wed, 24 Feb 2021 11:25:19 GMT
+      - Fri, 17 Mar 2023 23:14:00 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -1111,7 +1245,7 @@ interactions:
       Host:
       - eida.gein.noa.gr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.gein.noa.gr/fdsnws/dataselect/1/application.wadl
   response:
@@ -1146,9 +1280,9 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:19 GMT
+      - Fri, 17 Mar 2023 23:14:00 GMT
       Last-Modified:
-      - Tue, 19 Jul 2022 12:04:45 GMT
+      - Wed, 08 Mar 2023 19:00:22 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
       Vary:
@@ -1166,7 +1300,7 @@ interactions:
       Host:
       - www.orfeus-eu.org
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://www.orfeus-eu.org/fdsnws/dataselect/1/application.wadl
   response:
@@ -1211,7 +1345,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:19 GMT
+      - Fri, 17 Mar 2023 23:14:00 GMT
       Last-Modified:
       - Thu, 24 Feb 2022 08:04:36 GMT
       Server:
@@ -1229,7 +1363,7 @@ interactions:
       Host:
       - ws.resif.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ws.resif.fr/fdsnws/dataselect/1/application.wadl
   response:
@@ -1285,20 +1419,16 @@ interactions:
     headers:
       access-control-allow-origin:
       - '*'
-      age:
-      - '257'
       connection:
       - close
       content-disposition:
-      - inline; filename=fdsnws-dataselect_2022-11-05T21:55:03Z.xml
+      - inline; filename=fdsnws-dataselect_2023-03-17T23:14:01Z.xml
       content-length:
       - '3710'
       content-type:
       - application/xml
       date:
-      - Sat, 05 Nov 2022 21:55:03 GMT
-      x-cache-status:
-      - HIT
+      - Fri, 17 Mar 2023 23:14:01 GMT
     status:
       code: 200
       message: ''
@@ -1312,7 +1442,7 @@ interactions:
       Host:
       - api.franceseisme.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: https://api.franceseisme.fr//fdsnws/event/1/application.wadl
   response:
@@ -1447,7 +1577,7 @@ interactions:
       Cross-Origin-Window-Policy:
       - deny
       Date:
-      - Sat, 05 Nov 2022 21:59:14 GMT
+      - Fri, 17 Mar 2023 23:14:02 GMT
       Server:
       - Caddy
       - Cowboy
@@ -1474,7 +1604,7 @@ interactions:
       Host:
       - ph5ws.resif.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ph5ws.resif.fr/fdsnws/dataselect/1/application.wadl
   response:
@@ -1525,9 +1655,7 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Sat, 05 Nov 2022 21:59:20 GMT
-      x-cache-status:
-      - MISS
+      - Fri, 17 Mar 2023 23:14:04 GMT
     status:
       code: 200
       message: OK
@@ -1541,7 +1669,7 @@ interactions:
       Host:
       - api.franceseisme.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: https://api.franceseisme.fr//fdsnws/event/1/application.wadl
   response:
@@ -1676,7 +1804,7 @@ interactions:
       Cross-Origin-Window-Policy:
       - deny
       Date:
-      - Sat, 05 Nov 2022 21:59:15 GMT
+      - Fri, 17 Mar 2023 23:14:04 GMT
       Server:
       - Caddy
       - Cowboy
@@ -1701,74 +1829,9 @@ interactions:
       Connection:
       - close
       Host:
-      - fdsnws.raspberryshakedata.com
-      User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
-    method: GET
-    uri: https://fdsnws.raspberryshakedata.com/fdsnws/dataselect/1/application.wadl
-  response:
-    body:
-      string: "<?xml version=\"1.0\"?>\n<application xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\t\txsi:schemaLocation=\"https://www.w3.org/Submission/wadl/wadl.xsd\"\n\t\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n\t\txmlns=\"http://wadl.dev.java.net/2009/02\">\n\t<resources
-        base=\"/fdsnws/dataselect/1\">\n\t\t<resource path=\"query\">\n\t\t\t<method
-        href=\"#queryGET\"/>\n\t\t\t<method href=\"#queryPOST\"/>\n\t\t</resource>\n\t\t<resource
-        path=\"queryauth\">\n\t\t\t<method href=\"#queryGET\"/>\n\t\t\t<method href=\"#queryPOST\"/>\n\t\t</resource>\n\t\t<resource
-        path=\"version\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<response>\n\t\t\t\t\t<representation
-        mediaType=\"text/plain\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t\t<resource
-        path=\"application.wadl\">\n\t\t\t<method name=\"GET\">\n\t\t\t\t<response>\n\t\t\t\t\t<representation
-        mediaType=\"application/xml\"/>\n\t\t\t\t</response>\n\t\t\t</method>\n\t\t</resource>\n\t</resources>\n\t<method
-        name=\"GET\" id=\"queryGET\">\n\t\t<request>\n\t\t\t<param name=\"starttime\"
-        style=\"query\" type=\"xsd:dateTime\"/>\n\t\t\t<param name=\"endtime\" style=\"query\"
-        type=\"xsd:dateTime\"/>\n\t\t\t<param name=\"network\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t<param
-        name=\"station\" style=\"query\" type=\"xsd:string\"/>\n\t\t\t<param name=\"location\"
-        style=\"query\" type=\"xsd:string\"/>\n\t\t\t<param name=\"channel\" style=\"query\"
-        type=\"xsd:string\"/>\n\t\t\t<param name=\"quality\" style=\"query\" default=\"B\">\n\t\t\t\t<option
-        value=\"B\"/>\n\t\t\t\t<option value=\"M\"/>\n\t\t\t</param>\n\t\t\t<param
-        name=\"format\" style=\"query\" type=\"xsd:string\" default=\"miniseed\">\n\t\t\t\t<option
-        value=\"miniseed\"/>\n\t\t\t</param>\n\t\t\t<param name=\"nodata\" style=\"query\"
-        type=\"xsd:int\" default=\"204\">\n\t\t\t\t<option value=\"204\"/>\n\t\t\t\t<option
-        value=\"404\"/>\n\t\t\t</param>\n\t\t</request>\n\t\t<response status=\"200\">\n\t\t\t<representation
-        mediaType=\"application/vnd.fdsn.mseed\"/>\n\t\t</response>\n\t\t<response
-        status=\"204 400 401 403 404 413 414 500 503\">\n\t\t\t<representation mediaType=\"text/plain\"/>\n\t\t</response>\n\t</method>\n\t<method
-        name=\"POST\" id=\"queryPOST\">\n\t\t<response status=\"200\">\n\t\t\t<representation
-        mediaType=\"application/vnd.fdsn.mseed\"/>\n\t\t</response>\n\t\t<response
-        status=\"204 400 401 403 404 413 414 500 503\">\n\t\t\t<representation mediaType=\"text/plain\"/>\n\t\t</response>\n\t</method>\n</application>\n"
-    headers:
-      Accept-Ranges:
-      - bytes
-      Access-Control-Allow-Headers:
-      - Authorization
-      Access-Control-Allow-Origin:
-      - '*'
-      Access-Control-Expose-Headers:
-      - WWW-Authenticate
-      Connection:
-      - close
-      Content-Length:
-      - '2122'
-      Content-Type:
-      - application/xml
-      Date:
-      - Sat, 05 Nov 2022 21:59:22 GMT
-      Last-Modified:
-      - Thu, 09 Jul 2020 18:56:38 GMT
-      Server:
-      - nginx
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept-Encoding:
-      - gzip
-      Connection:
-      - close
-      Host:
       - service.scedc.caltech.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://service.scedc.caltech.edu/fdsnws/dataselect/1/application.wadl
   response:
@@ -1838,13 +1901,13 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:22 GMT
+      - Fri, 17 Mar 2023 23:14:08 GMT
       Server:
       - Apache/2.4.6 (Red Hat Enterprise Linux) mod_jk/1.2.48 PHP/7.2.12 OpenSSL/1.0.2k-fips
       access-control-allow-origin:
       - '*'
       content-disposition:
-      - inline; filename=fdsnws-dataselect_2022-11-05T21:59:22Z.xml
+      - inline; filename=fdsnws-dataselect_2023-03-17T23:14:08Z.xml
     status:
       code: 200
       message: '200'
@@ -1858,7 +1921,7 @@ interactions:
       Host:
       - rtserve.beg.utexas.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://rtserve.beg.utexas.edu/fdsnws/dataselect/1/application.wadl
   response:
@@ -1903,7 +1966,7 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:22 GMT
+      - Fri, 17 Mar 2023 23:14:08 GMT
       Last-Modified:
       - Thu, 10 Mar 2022 09:33:24 GMT
       Server:
@@ -1921,7 +1984,7 @@ interactions:
       Host:
       - earthquake.usgs.gov
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://earthquake.usgs.gov/fdsnws/dataselect/1/application.wadl
   response:
@@ -1936,15 +1999,15 @@ interactions:
       Content-Type:
       - text/html
       Date:
-      - Sat, 05 Nov 2022 21:59:22 GMT
+      - Fri, 17 Mar 2023 23:14:08 GMT
       Location:
       - https://earthquake.usgs.gov/fdsnws/dataselect/1/application.wadl
       Server:
       - CloudFront
       Via:
-      - 1.1 9367844cfa8aaebd6a8f032ea2e7d4ec.cloudfront.net (CloudFront)
+      - 1.1 e5778a61da2e928608d7fdc9242d1f8e.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - cmzPSAEiCErb3gGtVpQz_3mrHSq2BD6_HksXQbw8_s5_YepEPTKR0A==
+      - PvDK7NtbexdbIqYi_pEgEkeR39si39PUj_miUq8F6tsarvTVbNNETQ==
       X-Amz-Cf-Pop:
       - DEN52-P3
       X-Cache:
@@ -1962,7 +2025,7 @@ interactions:
       Host:
       - earthquake.usgs.gov
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: https://earthquake.usgs.gov/fdsnws/event/1/application.wadl
   response:
@@ -2056,11 +2119,11 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:23 GMT
+      - Fri, 17 Mar 2023 23:14:08 GMT
       Expires:
-      - Sat, 05 Nov 2022 22:00:23 GMT
+      - Fri, 17 Mar 2023 23:15:08 GMT
       Last-Modified:
-      - Sat, 05 Nov 2022 21:59:23 GMT
+      - Fri, 17 Mar 2023 23:14:08 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -2068,9 +2131,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 89657e9ba87ccb5f5b96de064bf6d496.cloudfront.net (CloudFront)
+      - 1.1 270fdef5b99b63ae592608f44e3043b6.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - IaLxvMoIW88bFcvJi4ofrh7Hg46ZbqssLvSG8UhXJ5T_VcA5oZkXfg==
+      - K4yYIaoja9HcMxXoDwEBlZn8CZpCkqMEgWWXTbnrFUtIxYh3WCrqWw==
       X-Amz-Cf-Pop:
       - DEN52-P3
       X-Cache:
@@ -2094,7 +2157,7 @@ interactions:
       Host:
       - sismo.iag.usp.br
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://sismo.iag.usp.br/fdsnws/dataselect/1/application.wadl
   response:
@@ -2126,7 +2189,7 @@ interactions:
       Content-Type:
       - text/html; charset=iso-8859-1
       Date:
-      - Sat, 05 Nov 2022 21:59:24 GMT
+      - Fri, 17 Mar 2023 23:14:14 GMT
       Location:
       - https://sismo.iag.usp.br/fdsnws/dataselect/1/application.wadl
       Server:
@@ -2144,35 +2207,27 @@ interactions:
       Host:
       - sismo.iag.usp.br
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
-    uri: https://sismo.iag.usp.br/fdsnws/event/1/application.wadl
+    uri: https://sismo.iag.usp.br/fdsnws/station/1/application.wadl
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA81YS3PbNhA+y79iq4vbGUuUbOdQj+RMJ31c0kw68kx7hYilhBQEGACUrH/fBfiS
-        ElMP0m1zUGIS++1+uwvsLjF7+5xK2KCxQqv5cDqeDN8+Xs1YlkkRM0cvgQSUfXi2Yj5cO5c9RNF2
-        ux1v78barKLbyWQa/fX7+0W8xpSNhLKOqRiHV4MBIR5seP1eF6oKBfZQwyJfpsJ689GWcRn+GT9b
-        HlSUpvlp07V4I+oVcdyMP7ENGyt0HvFjNLkdPl4NZgatzk2MFpbM4nwYJdyqrY1wg8pFUy/TCEHG
-        3Ho+/Jyj2YWVwSxFt9YcFEsJ/NsvT8VrDyEp64qnwSxjhqWlFIXGOCdSHIJ1O4mVQnC7jB7IzQfO
-        HD55ieglBah4H3gqlKQ8uJwfUZFIzVwLnj33w5N9rVb9CPRS0It+T+5CGcZFbrt63gctFMfMrbua
-        7gEWKmUr1SvlfRWUaC/drsE6I9Sq5dj5ktAdLlQsyT6TUhuxogrZrmaptUSmhsAxYbl082HCpG05
-        zo3e2sfXVm2M2JDUK2kNcRT8S20GM6RzqVbzoTN5C1aKVLh2HkK1pF8nicUTwIb8tKzipITrGKhY
-        eBAtC4ovdah6efC0Rvj158WHPxdgM4xFUnXL3FJLYbBFYTg0SNBJBWX+wbOC7RoNgiNViTDWAUpM
-        KUQgLCjtgHFODcgir5DLHVwX0PnkGpa5qx+n12NY6KBKpFmhJvCpoFshJdGJTWHBC5YkKME5AqnW
-        Cj2jGrJChSYkJogv/ngP1F+Yb5cQ4jiuYhVRsKrgRyH6L6bCcDTL3clD1KQjNLs6IzoLgQx8y7Xo
-        yOKI2bhVoKkpJyUO9BxxL9aK+FNStOlWJ2gDMalX54O/G43CPqkzjhxGo73Vfe155ocDljg8Qq+Z
-        Hxo9+0oSbVJ25DR9lUGayNoS6JcgRS7YU8DvjZyRX2vNLT67A6B/EWWSCeUxFcgHhw5QOHxM3lCg
-        FPjZlDM6l4VG20TrSyOfO5Ij3Mi4TlAb33U0GtvNkYCc2rdK+1N9boW8ndy3JdQvtVG831uruext
-        49ZMBVGkTWtvAJMEYyc2VLqU3IFQQNM/6NxlVAlf3rBlI8tE/PdFXSw0onN7wU+cW/AmiFJxQrzn
-        TkPVP8fwQTt8gI+eBvhSXEGDI0sE+kIRki0lle+khtEfCOX3BPILq23peUKfXjLFeM2UsOnljfyy
-        GGCCxlAVClahNnsQl4KY7yqpDkVLWW3AapkXy0kTjG4u00B06HWH+eUit8ng/+uxLXp96v4LTw98
-        KAxD3ft8VT3DB3/kS+6xTr0+25z0m7DnBY0+sBYc31UCZCQRq9wUJmtxf9DoBHFhfQD58UJQWfv3
-        4rRAYYnyR7B5lmkTeJcO0I6g6NGc5wtuqjk2ZWD5iSob1YmntdiLRBFXTZWA5jKawQyQBur4FazW
-        7AtF6SH3dTGMd0VdJLq5F7pwZxW7l8pOv0jVYXlXeVIrhu8zg/RZBRnNDO6Hku9JmrPo4IbFX9Fk
-        tOkw7MXc+jY0qSjQItmw1Sx8Tm89Avm6rXouhfV2MvdwP5nQb0q/O/rR85T+n97DG3r/ZnJ3BtmT
-        lmdRcR0VLq2i6tbqpSuscsi0J2+x9v3qEMjuBJsx+tslWd6Xvhq/V0zwnqtjfwP6rcSwebCPV7No
-        T9vj1T/JhQOFhRYAAA==
+        H4sIAAAAAAAAA+1XTXPaMBA9w69QObUzAZmEHMqY5NDp9JJOO5McehXWEtTKkiut+fj3XdkYTAcl
+        FHd66sEJ1uq9fetdSav0fpNrtgLnlTWzwXiUDO7v+qkoCq0ygTTIaILx041Xs8ESsZhyvl6vR+ub
+        kXXP/DpJxvzb54fHbAm5GCrjUZgMBv1ejxBTXw0/2JqqJvDHDI/lPFc+uOdrIXX1Z7TxsqLYuZav
+        u95PP0wNRBJWo+9iJUYGMCDe8+R6cNfvpQ68LV0Gns2Fh9mAL6Q3a89Jf5DKx2HWYRorBC5ng58l
+        uG1l6aU54NJKZkRO8E8fn+rhAKFZHuu3XloIJ/LdLCJ3iCqHAfO41dAQMtwW9EKBTqVAeAoz+CkC
+        MLILvPI/h4V13SjEAsF1iKGbBCLoJIBKYW3djzjco1PmORp/qI/LwHq3EC5DZ0thDOjLwLkymnxj
+        KV/47gttBUbwYtMNT/6tee4moBNBJ/kdtSvjhFSlvzTyDmgNqzNqhklYiFLjocB3XL3UFtUxsBK6
+        bC0eHrE38Ji9KeKYnTbcwhrfWrq8iuZUaMpkmlJCEAoiQ5DxMOfWahCmFedCaB/ZIHa8dGwoLeZK
+        K9x2YH4zHLJcYLYMO7cHp+jMqbwB7WFXLBwXikJgtGkJ1vbJFiCwdMDQsjkwMGKuQbLh8OSmZgM+
+        LlMZbEm8TiaxBAdTLDmTlu2FvNDmTgH/Qc3RwR2TE0wsB6nEU4VvdSY82GJSETZ4BAwDvNBCVbXZ
+        gEJyhJQqQIW+YoYYQgsjhZOsZvSHL/67k9AzXCpwt1Auhmc3ZyL3ieqfEfK+MH2kzurcXrTW9pFI
+        mzW/ex+sQWe1Z3ti9rZwgFT+BVUJvmO2xKLEUQPmB/SpyIxFpvJCQw4Gj1YLWduBlEXoEs5uJBqe
+        lB/1d2mzX4VPiKUP6ydpIiUjheJJSN1Jn5OsOOS4gBsttfe4mAmbJAk9Y3pu6KH3Mf0fT9gtjd8m
+        N2eIfdVzyutm+ERj/PXLY6sz/v+tjr5VZaruF6cuG7tb2avXjXZY/0haKyWjcM/6axojuT5X6OHF
+        0y2Wt9ju+r8Ag0vXT+sOAAA=
     headers:
       Access-Control-Allow-Headers:
       - Authorization
@@ -2185,11 +2240,11 @@ interactions:
       Content-Encoding:
       - gzip
       Content-Length:
-      - '1267'
+      - '815'
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 21:59:24 GMT
+      - Fri, 17 Mar 2023 23:14:15 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
       Vary:
@@ -2207,7 +2262,7 @@ interactions:
       Host:
       - auspass.edu.au
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://auspass.edu.au/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&matchtimeseries=true&format=text
   response:
@@ -2225,7 +2280,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 21:59:25 GMT
+      - Fri, 17 Mar 2023 23:14:16 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -2241,7 +2296,7 @@ interactions:
       Host:
       - eida.bgr.de
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.bgr.de/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -2263,7 +2318,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 21:59:25 GMT
+      - Fri, 17 Mar 2023 23:14:16 GMT
       Public-Key-Pins:
       - pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000;
         includeSubDomains
@@ -2288,7 +2343,7 @@ interactions:
       Host:
       - eida.ethz.ch
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.ethz.ch/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -2306,7 +2361,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:26 GMT
+      - Fri, 17 Mar 2023 23:16:16 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -2322,7 +2377,7 @@ interactions:
       Host:
       - service.geonet.org.nz
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://service.geonet.org.nz/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -2333,14 +2388,16 @@ interactions:
       - bytes
       Connection:
       - close
+      Content-Encoding:
+      - gzip
       Content-Security-Policy:
-      - img-src 'self'; style-src 'none'; connect-src 'none'; frame-src 'none'; form-action
-        'none'; object-src 'none'; default-src 'none'; font-src 'none'; script-src
-        'none'; base-uri 'none'; frame-ancestors 'none';
+      - frame-ancestors 'none'; default-src 'none'; font-src 'none'; style-src 'none';
+        connect-src 'none'; form-action 'none'; base-uri 'none'; img-src 'self'; script-src
+        'none'; frame-src 'none'; object-src 'none';
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Sat, 05 Nov 2022 22:01:26 GMT
+      - Fri, 17 Mar 2023 23:16:17 GMT
       Referrer-Policy:
       - no-referrer
       Strict-Transport-Security:
@@ -2366,7 +2423,7 @@ interactions:
       Host:
       - geofon.gfz-potsdam.de
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://geofon.gfz-potsdam.de/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -2384,7 +2441,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:28 GMT
+      - Fri, 17 Mar 2023 23:16:18 GMT
       Server:
       - nginx/1.18.0
     status:
@@ -2400,7 +2457,7 @@ interactions:
       Host:
       - ws.icgc.cat
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ws.icgc.cat/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -2418,7 +2475,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:34 GMT
+      - Fri, 17 Mar 2023 23:16:18 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -2434,44 +2491,53 @@ interactions:
       Host:
       - webservices.ingv.it
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
-    uri: http://webservices.ingv.it/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
+    uri: http://webservices.ingv.it/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&matchtimeseries=true&format=text
   response:
     body:
-      string: ''
+      string: 'Error 400: Bad request
+
+
+        Syntax Error in Request
+
+
+
+        Including of availability information not supported.
+
+
+
+        Usage details are available from /fdsnws/station/1/
+
+
+        Request:
+
+
+        /fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&matchtimeseries=true&format=text
+
+
+        Request Submitted: 2023-03-17T23:16:19.033Z
+
+
+        Service version: 1.1.55'
     headers:
-      Access-Control-Allow-Headers:
-      - Content-Type, X-Auth-Token, Origin, Authorization
-      Access-Control-Allow-Methods:
-      - POST, GET
-      Access-Control-Allow-Origin:
-      - '*'
       Cache-Control:
-      - no-cache, private
-      - public, max-age=60
+      - max-age=60, must-revalidate
       Connection:
       - close
       Content-Type:
-      - text/html; charset=UTF-8
+      - text/plain;charset=utf-8
       Date:
-      - Sat, 05 Nov 2022 22:01:34 GMT
+      - Fri, 17 Mar 2023 23:16:19 GMT
       Server:
       - nginx
-      X-Cache-Status:
-      - HIT
-      X-RateLimit-Limit:
-      - '600'
-      - '10'
-      X-RateLimit-Remaining:
-      - '592'
-      X-RateLimit-Reset:
-      - '1'
-      X-UA-Compatible:
-      - IE=Edge
+      Transfer-Encoding:
+      - chunked
+      X-XQuery-Cached:
+      - 'true'
     status:
-      code: 204
-      message: No Content
+      code: 400
+      message: Bad Request
 - request:
     body: null
     headers:
@@ -2482,7 +2548,7 @@ interactions:
       Host:
       - ws.ipgp.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ws.ipgp.fr/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -2500,7 +2566,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:35 GMT
+      - Fri, 17 Mar 2023 23:16:19 GMT
       Server:
       - SeisComP3-FDSNWS/1.2.4
     status:
@@ -2516,7 +2582,7 @@ interactions:
       Host:
       - service.iris.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://service.iris.edu/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&matchtimeseries=true&format=text
   response:
@@ -2541,13 +2607,13 @@ interactions:
       Connection:
       - close
       Content-Disposition:
-      - inline; filename=fdsn-station_2022-11-05T22:01:35.4880.txt
+      - inline; filename=fdsn-station_2023-03-17T23:16:19.7190.txt
       Content-Encoding:
       - gzip
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:35 GMT
+      - Fri, 17 Mar 2023 23:16:19 GMT
       Expires:
       - '0'
       Pragma:
@@ -2595,7 +2661,7 @@ interactions:
       Host:
       - service.iris.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: POST
     uri: http://service.iris.edu/fdsnws/dataselect/1/query
   response:
@@ -13193,11 +13259,11 @@ interactions:
       Content-Type:
       - application/vnd.fdsn.mseed
       Date:
-      - Sat, 05 Nov 2022 22:01:36 GMT
+      - Fri, 17 Mar 2023 23:16:19 GMT
       Transfer-Encoding:
       - chunked
       content-disposition:
-      - attachment; filename=fdsnws-dataselect_2022-11-05t22:01:35z.mseed
+      - attachment; filename=fdsnws-dataselect_2023-03-17t23:16:19z.mseed
     status:
       code: 200
       message: ''
@@ -13221,47 +13287,47 @@ interactions:
       Host:
       - service.iris.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: POST
     uri: http://service.iris.edu/fdsnws/station/1/query
   response:
     body:
       string: !!binary |
-        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
+        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
     headers:
       Access-Control-Allow-Origin:
       - '*'
@@ -13272,13 +13338,13 @@ interactions:
       Connection:
       - close
       Content-Disposition:
-      - inline; filename=fdsn-station_2022-11-05T22:01:37.7730.xml
+      - inline; filename=fdsn-station_2023-03-17T23:16:22.2320.xml
       Content-Encoding:
       - gzip
       Content-Type:
       - application/xml
       Date:
-      - Sat, 05 Nov 2022 22:01:37 GMT
+      - Fri, 17 Mar 2023 23:16:21 GMT
       Expires:
       - '0'
       Pragma:
@@ -13306,7 +13372,7 @@ interactions:
       Host:
       - rdsa.knmi.nl
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://rdsa.knmi.nl/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13324,7 +13390,7 @@ interactions:
       Content-Type:
       - text/plain; charset=UTF-8
       Date:
-      - Sat, 05 Nov 2022 22:01:38 GMT
+      - Fri, 17 Mar 2023 23:16:22 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -13340,7 +13406,7 @@ interactions:
       Host:
       - eida.koeri.boun.edu.tr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.koeri.boun.edu.tr/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13358,7 +13424,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:37 GMT
+      - Fri, 17 Mar 2023 23:16:03 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -13374,7 +13440,7 @@ interactions:
       Host:
       - erde.geophysik.uni-muenchen.de
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://erde.geophysik.uni-muenchen.de/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13392,7 +13458,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:38 GMT
+      - Fri, 17 Mar 2023 23:16:23 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -13406,9 +13472,46 @@ interactions:
       Connection:
       - close
       Host:
+      - service.ncedc.org
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
+    method: GET
+    uri: https://service.ncedc.org/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - x-requested-with, Content-Type, origin, authorization, accept, client-security-token
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS, DELETE, PUT
+      Access-Control-Max-Age:
+      - '1000'
+      Connection:
+      - close
+      Content-Type:
+      - text/plain; charset=UTF-8
+      Date:
+      - Fri, 17 Mar 2023 23:16:23 GMT
+      Server:
+      - Apache/2.4.6 (Red Hat Enterprise Linux) OpenSSL/1.0.2k-fips mod_fcgid/2.3.9
+        PHP/7.2.9 mod_wsgi/3.4 Python/2.7.5 mod_jk/1.2.42
+      access-control-allow-origin:
+      - '*'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
       - eida-sc3.infp.ro
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida-sc3.infp.ro/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13441,7 +13544,7 @@ interactions:
       Content-Type:
       - text/html; charset=iso-8859-1
       Date:
-      - Sat, 05 Nov 2022 22:01:39 GMT
+      - Fri, 17 Mar 2023 23:16:36 GMT
       Location:
       - https://eida-sc3.infp.ro/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
       Server:
@@ -13459,7 +13562,7 @@ interactions:
       Host:
       - eida-sc3.infp.ro
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: https://eida-sc3.infp.ro/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13477,7 +13580,7 @@ interactions:
       Content-Type:
       - text/plain; charset=UTF-8
       Date:
-      - Sat, 05 Nov 2022 22:01:40 GMT
+      - Fri, 17 Mar 2023 23:16:37 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -13493,7 +13596,7 @@ interactions:
       Host:
       - eida.gein.noa.gr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://eida.gein.noa.gr/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13511,7 +13614,7 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:40 GMT
+      - Fri, 17 Mar 2023 23:16:37 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -13527,7 +13630,7 @@ interactions:
       Host:
       - www.orfeus-eu.org
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://www.orfeus-eu.org/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13545,7 +13648,7 @@ interactions:
       Content-Type:
       - text/plain; charset=UTF-8
       Date:
-      - Sat, 05 Nov 2022 22:01:40 GMT
+      - Fri, 17 Mar 2023 23:16:38 GMT
       Server:
       - SeisComP-FDSNWS/1.2.4
     status:
@@ -13561,7 +13664,7 @@ interactions:
       Host:
       - ws.resif.fr
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://ws.resif.fr/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&matchtimeseries=true&format=text
   response:
@@ -13575,9 +13678,7 @@ interactions:
       content-type:
       - text/plain
       date:
-      - Sat, 05 Nov 2022 22:01:41 GMT
-      x-cache-status:
-      - MISS
+      - Fri, 17 Mar 2023 23:16:38 GMT
     status:
       code: 204
       message: ''
@@ -13589,45 +13690,9 @@ interactions:
       Connection:
       - close
       Host:
-      - fdsnws.raspberryshakedata.com
-      User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
-    method: GET
-    uri: https://fdsnws.raspberryshakedata.com/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
-  response:
-    body:
-      string: ''
-    headers:
-      Access-Control-Allow-Headers:
-      - Authorization
-      Access-Control-Allow-Origin:
-      - '*'
-      Access-Control-Expose-Headers:
-      - WWW-Authenticate
-      Connection:
-      - close
-      Content-Type:
-      - text/plain
-      Date:
-      - Sat, 05 Nov 2022 22:01:42 GMT
-      Server:
-      - nginx
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-    status:
-      code: 204
-      message: No Content
-- request:
-    body: null
-    headers:
-      Accept-Encoding:
-      - gzip
-      Connection:
-      - close
-      Host:
       - service.scedc.caltech.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://service.scedc.caltech.edu/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13639,7 +13704,7 @@ interactions:
       Content-Type:
       - text/plain; charset=UTF-8
       Date:
-      - Sat, 05 Nov 2022 22:01:42 GMT
+      - Fri, 17 Mar 2023 23:16:39 GMT
       Server:
       - Apache/2.4.6 (Red Hat Enterprise Linux) mod_jk/1.2.48 PHP/7.2.12 OpenSSL/1.0.2k-fips
       access-control-allow-origin:
@@ -13657,7 +13722,7 @@ interactions:
       Host:
       - rtserve.beg.utexas.edu
       User-Agent:
-      - ObsPy/1.3.1 (macOS-10.16-x86_64-i386-64bit, Python 3.8.13)
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
     method: GET
     uri: http://rtserve.beg.utexas.edu/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
   response:
@@ -13675,9 +13740,93 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Sat, 05 Nov 2022 22:01:55 GMT
+      - Fri, 17 Mar 2023 23:16:52 GMT
       Server:
       - nginx/1.4.4
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
+      - sismo.iag.usp.br
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
+    method: GET
+    uri: http://sismo.iag.usp.br/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
+  response:
+    body:
+      string: '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+
+        <html><head>
+
+        <title>301 Moved Permanently</title>
+
+        </head><body>
+
+        <h1>Moved Permanently</h1>
+
+        <p>The document has moved <a href="https://sismo.iag.usp.br/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&amp;endtime=2017-03-26T20%3A07%3A04.110000&amp;network=%2A&amp;channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&amp;level=channel&amp;latitude=-31.5062&amp;longitude=122.8771&amp;minradius=0.0&amp;maxradius=3.0&amp;format=text">here</a>.</p>
+
+        <hr>
+
+        <address>Apache/2.4.54 (Debian) Server at sismo.iag.usp.br Port 80</address>
+
+        </body></html>
+
+        '
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '594'
+      Content-Type:
+      - text/html; charset=iso-8859-1
+      Date:
+      - Fri, 17 Mar 2023 23:16:53 GMT
+      Location:
+      - https://sismo.iag.usp.br/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
+      Server:
+      - Apache/2.4.54 (Debian)
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept-Encoding:
+      - gzip
+      Connection:
+      - close
+      Host:
+      - sismo.iag.usp.br
+      User-Agent:
+      - ObsPy/1.4.0 (macOS-12.6.3-x86_64-i386-64bit, Python 3.10.9)
+    method: GET
+    uri: https://sismo.iag.usp.br/fdsnws/station/1/query?starttime=2017-03-26T19%3A59%3A34.110000&endtime=2017-03-26T20%3A07%3A04.110000&network=%2A&channel=BH%3F%2CHH%3F%2CBN%3F%2CHN%3F&level=channel&latitude=-31.5062&longitude=122.8771&minradius=0.0&maxradius=3.0&format=text
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - Authorization
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - WWW-Authenticate
+      Connection:
+      - close
+      Content-Type:
+      - text/plain
+      Date:
+      - Fri, 17 Mar 2023 23:16:54 GMT
+      Server:
+      - SeisComP-FDSNWS/1.2.4
     status:
       code: 204
       message: No Content
@@ -13691,9 +13840,69 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.1
+      - python-requests/2.28.2
     method: GET
-    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=us10008dkr
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us10008dkr.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Fri, 17 Mar 2023 23:16:54 GMT
+      Expires:
+      - Fri, 17 Mar 2023 23:17:54 GMT
+      Last-Modified:
+      - Fri, 17 Mar 2023 23:16:54 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us10008dkr&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 7917ae295bcaa1617f5a5320e5cd1774.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - N_yfAJJanbsAZzK5oAN3Lf72525ksr4SjSAVBFHTs1WI5Atd9Wqhng==
+      X-Amz-Cf-Pop:
+      - DFW56-P5
+      X-Cache:
+      - Miss from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10008dkr&format=geojson
   response:
     body:
       string: '{"type":"Feature","properties":{"mag":4.1,"place":"119 km ESE of Kambalda
@@ -13721,11 +13930,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Sat, 05 Nov 2022 22:01:55 GMT
+      - Fri, 17 Mar 2023 23:16:54 GMT
       Expires:
-      - Sat, 05 Nov 2022 22:02:55 GMT
+      - Fri, 17 Mar 2023 23:17:54 GMT
       Last-Modified:
-      - Sat, 05 Nov 2022 22:01:55 GMT
+      - Fri, 17 Mar 2023 23:16:54 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -13733,11 +13942,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 64544648f8289d0bd61ef02997afb698.cloudfront.net (CloudFront)
+      - 1.1 7917ae295bcaa1617f5a5320e5cd1774.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - 2KM3UUwSYEjjnc4Psef8pOTrNRdcbwfuNicqipqn4trc6rG4d6rVMA==
+      - Zo9rZ_-iiwUhDo-LQ2PI_ENc9DoOdVls_A5gwb0X4q3viQJxAJLPzA==
       X-Amz-Cf-Pop:
-      - DEN52-P3
+      - DFW56-P5
       X-Cache:
       - Miss from cloudfront
       X-Content-Type-Options:
@@ -13759,9 +13968,71 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.1
+      - python-requests/2.28.2
     method: GET
-    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=us10008dkr
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us10008dkr.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '1'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Fri, 17 Mar 2023 23:16:54 GMT
+      Expires:
+      - Fri, 17 Mar 2023 23:17:54 GMT
+      Last-Modified:
+      - Fri, 17 Mar 2023 23:16:54 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us10008dkr&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 e474fa753e7e530faa5c82db12f758ee.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - LFGGz4Gu9ct7sRO_zbkkXXlSiQ9OZXE3OlqpPDv6xy_n8_QVwBImDw==
+      X-Amz-Cf-Pop:
+      - DFW56-P5
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.2
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10008dkr&format=geojson
   response:
     body:
       string: '{"type":"Feature","properties":{"mag":4.1,"place":"119 km ESE of Kambalda
@@ -13780,6 +14051,8 @@ interactions:
       - '*'
       Access-Control-Max-Age:
       - '86400'
+      Age:
+      - '1'
       Cache-Control:
       - public, max-age=60
       Connection:
@@ -13789,11 +14062,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Sat, 05 Nov 2022 22:01:55 GMT
+      - Fri, 17 Mar 2023 23:16:54 GMT
       Expires:
-      - Sat, 05 Nov 2022 22:02:55 GMT
+      - Fri, 17 Mar 2023 23:17:54 GMT
       Last-Modified:
-      - Sat, 05 Nov 2022 22:01:55 GMT
+      - Fri, 17 Mar 2023 23:16:54 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -13801,11 +14074,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 4a3448a83573e51d340356257951f57a.cloudfront.net (CloudFront)
+      - 1.1 e474fa753e7e530faa5c82db12f758ee.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - F-AZQOOCn3CDJG5n-fh6vZP1cFhKfSppSqhvQbutSEkjTH6uG9HubQ==
+      - PK3OVkOfWsjrL5sExqrOsLXwgMdh0pDZ4Gj1Uf4_FNo9bwdVCxm9Yw==
       X-Amz-Cf-Pop:
-      - DEN52-P3
+      - DFW56-P5
       X-Cache:
       - Hit from cloudfront
       X-Content-Type-Options:
