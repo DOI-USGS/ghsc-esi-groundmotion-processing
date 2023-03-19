@@ -317,8 +317,19 @@ class StreamWorkspace(object):
         if not data_exists:
             logging.error("No config found in auxiliary data.")
         bytelist = self.dataset._auxiliary_data_group[group_name][()].tolist()
+
+        # Load config from the workshapce file
         conf_str = "".join([chr(b) for b in bytelist])
-        self.config = json.loads(conf_str)
+        custom_config = json.loads(conf_str)
+
+        # Get the default config
+        default_config_file = constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
+        with open(default_config_file, "r", encoding="utf-8") as f:
+            yaml = YAML()
+            yaml.preserve_quotes = True
+            default_config = yaml.load(f)
+        update_dict(default_config, custom_config)
+        self.config = default_config
 
     def addGmprocessVersion(self, version):
         """Add gmprocess version to an ASDF file."""
