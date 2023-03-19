@@ -33,8 +33,8 @@ M_TO_KM = 1.0 / 1000
 def duration_from_magnitude(event_magnitude):
     """Compute shaking duration in seconds from earthquake magnitude.
 
-    From Hamid Haddadi, generic ground-motion record duration, (including 30s pre-event window:
-    Duration (minutes) = earthquake magnitude / 2.0 .
+    From Hamid Haddadi, generic ground-motion record duration, (including 30s pre-event
+    window: Duration (minutes) = earthquake magnitude / 2.0 .
 
     Args:
         event_magnitude (float):
@@ -168,6 +168,19 @@ def signal_split(st, event, model=None, config=None):
     """
     if config is None:
         config = get_config()
+
+    # If we are in "no noise" window mode, then set the split time to the start time
+    if config["windows"]["no_noise"]:
+        tsplit = st[0].stats.starttime
+        split_params = {
+            "split_time": tsplit,
+            "method": "no noise window",
+            "picker_type": "none",
+        }
+        for tr in st:
+            tr.setParameter("signal_split", split_params)
+        return st
+
     picker_config = config["pickers"]
 
     loc, mean_snr = pick_travel(st, event, model)

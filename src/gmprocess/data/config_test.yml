@@ -152,7 +152,7 @@ read:
 #    record_start       split              signal_end
 
 windows:
-
+    no_noise: False
     signal_end:
         # Options for setting the end of the signal window. Options are set with the key
         # "method":
