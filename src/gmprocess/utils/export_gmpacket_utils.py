@@ -238,18 +238,19 @@ class GroundMotionPacketWriter(object):
                     properties=gmp_feature_props,
                 )
                 gmp_features.append(gmp_feature)
-            gmp_packet = GroundMotionPacket(
-                event=gmp_event,
-                provenance=gmp_provenance,
-                features=gmp_features,
-                version=VERSION,
-            )
-            outfile = pathlib.Path(
-                self._gmpacket_directory, f"{eventid}_groundmotion_packet.json"
-            )
-            gmp_packet.save_to_json(outfile)
-            files.append(outfile)
-            nevents += 1
+            if len(gmp_features):
+                gmp_packet = GroundMotionPacket(
+                    event=gmp_event,
+                    provenance=gmp_provenance,
+                    features=gmp_features,
+                    version=VERSION,
+                )
+                outfile = pathlib.Path(
+                    self._gmpacket_directory, f"{eventid}_groundmotion_packet.json"
+                )
+                gmp_packet.save_to_json(outfile)
+                files.append(outfile)
+                nevents += 1
 
         return (files, nevents, nstreams, ntraces)
 

@@ -58,9 +58,8 @@ class ExportGMPacketModule(base.SubcommandModule):
             logging.info(
                 f"Processed {nevents} events - {nstreams} streams and {ntraces} traces."
             )
-            jsonfile = files[0]
-
-            if jsonfile is not None:
+            if len(files):
+                jsonfile = files[0]
                 self.append_file("shakemap", jsonfile)
 
         self._summarize_files_created()
