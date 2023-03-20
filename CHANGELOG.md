@@ -1,7 +1,8 @@
 ## main
  - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
  - Update workspace so that when the config attribute is set, any missing values entries are filled in with defaults.
-   
+ - Bugfixes
+   - Avoid gmpacket export error when no records are present.
 
 
 ## 1.2.6 / 2023-03-18
