@@ -1,6 +1,8 @@
 ## main
  - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
  - Update workspace so that when the config attribute is set, any missing values entries are filled in with defaults.
+ - Moved supplemental stream info out of StationXML description field and into auxiliary data.
+ - Added a gmrecords "fix_inventory" subcommand to move data supplemental stream data from StationXML to auxiliary data in existing workspace files.
  - Bugfixes
    - Avoid gmpacket export error when no records are present.
 

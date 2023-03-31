@@ -424,7 +424,7 @@ def summary_plots(st, directory, event, config=None):
 
         # ---------------------------------------------------------------------
         # Compute model spectra
-        if fit_spectra_dict is not None:
+        if (fit_spectra_dict is not None) and (smooth_signal_dict is not None):
             model_spec = spectrum.model(
                 (fit_spectra_dict["moment"], fit_spectra_dict["stress_drop"]),
                 freq=np.array(smooth_signal_dict["freq"]),
@@ -613,7 +613,7 @@ def summary_plots(st, directory, event, config=None):
                 label="Noise",
             )
 
-        if fit_spectra_dict is not None:
+        if (fit_spectra_dict is not None) and (smooth_signal_dict is not None):
             # Model spec
             ax[j + 3 * ntrace].loglog(
                 smooth_signal_dict["freq"],

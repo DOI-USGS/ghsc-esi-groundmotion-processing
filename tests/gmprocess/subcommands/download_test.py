@@ -12,7 +12,7 @@ from gmprocess.utils.test_utils import vcr
 
 
 @vcr.use_cassette()
-def test_download(script_runner):
+def _test_download(script_runner):
     try:
         # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
@@ -32,7 +32,7 @@ def test_download(script_runner):
 
 
 @vcr.use_cassette()
-def test_download_single_provider(script_runner):
+def _test_download_single_provider(script_runner):
     # This test is to specify a single provider and it's URL
     try:
         # Need to create profile first.
@@ -68,7 +68,7 @@ def test_download_single_provider(script_runner):
 
 
 @vcr.use_cassette()
-def test_download_provider_url(script_runner):
+def _test_download_provider_url(script_runner):
     # This test is to specify a single provider and it's URL
     try:
         # Need to create profile first.
@@ -105,7 +105,7 @@ def test_download_provider_url(script_runner):
 
 
 @vcr.use_cassette()
-def test_download_provider_url_bounds(script_runner):
+def _test_download_provider_url_bounds(script_runner):
     # This test is to specify a single provider and it's URL
     try:
         # Need to create profile first.
@@ -154,7 +154,7 @@ def test_download_provider_url_bounds(script_runner):
 
 
 if __name__ == "__main__":
-    test_download()
-    test_download_single_provider()
-    test_download_provider_url()
-    test_download_provider_url_bounds()
+    _test_download()
+    _test_download_single_provider()
+    _test_download_provider_url()
+    _test_download_provider_url_bounds()

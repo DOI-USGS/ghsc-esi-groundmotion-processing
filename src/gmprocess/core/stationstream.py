@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # stdlib imports
-import json
 import logging
 
 # third party imports
@@ -31,11 +30,6 @@ REVERSE_UNITS = {"cm/s/s": "acc", "cm/s": "vel"}
 # Number of samples for Landzos interpolation.
 N_LANCZOS = 20
 
-# if we find places for these in the standard metadata,
-# remove them from this list. Anything here will
-# be extracted from the stats standard dictionary,
-# combined with the format_specific dictionary,
-# serialized to json and stored in the station description.
 UNUSED_STANDARD_PARAMS = [
     "instrument_period",
     "instrument_damping",
@@ -412,6 +406,29 @@ class StationStream(Stream):
             channel = _channel_from_stats(trace.stats)
             channels.append(channel)
 
+        sta = Station(
+            # This is the station code according to the SEED standard.
+            code=self[0].stats.station,
+            latitude=self[0].stats.coordinates.latitude,
+            elevation=self[0].stats.coordinates.elevation,
+            longitude=self[0].stats.coordinates.longitude,
+            channels=channels,
+            site=Site(name=self[0].stats.standard.station_name),
+            creation_date=UTCDateTime(1970, 1, 1),  # this is bogus
+            total_number_of_channels=len(self),
+        )
+
+        net.stations.append(sta)
+        inv.networks.append(net)
+
+        return inv
+
+    def getSupplementalStats(self):
+        """Return dictionary supplemental stream information.
+
+        This was created to include information that is not captured in StationXML
+        or in obspy's trace stats object.
+        """
         subdict = {}
         for k in UNUSED_STANDARD_PARAMS:
             if k in self[0].stats.standard:
@@ -421,25 +438,7 @@ class StationStream(Stream):
         if "format_specific" in self[0].stats:
             format_specific = dict(self[0].stats.format_specific)
 
-        big_dict = {"standard": subdict, "format_specific": format_specific}
-        jsonstr = json.dumps(big_dict)
-        sta = Station(
-            # This is the station code according to the SEED standard.
-            code=self[0].stats.station,
-            latitude=self[0].stats.coordinates.latitude,
-            elevation=self[0].stats.coordinates.elevation,
-            longitude=self[0].stats.coordinates.longitude,
-            channels=channels,
-            site=Site(name=self[0].stats.standard.station_name),
-            description=jsonstr,
-            creation_date=UTCDateTime(1970, 1, 1),  # this is bogus
-            total_number_of_channels=len(self),
-        )
-
-        net.stations.append(sta)
-        inv.networks.append(net)
-
-        return inv
+        return {"standard": subdict, "format_specific": format_specific}
 
     def check_stream(self):
         """Check StationStream for being flagged as failed.
