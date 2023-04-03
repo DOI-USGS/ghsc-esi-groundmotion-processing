@@ -425,33 +425,42 @@ class StreamWorkspace(object):
                     provname = format_nslct(trace.stats, tag)
                     self.dataset.add_provenance_document(provdoc, name=provname)
 
+            # get the path for the stream for storing aux data
+            if config["read"]["use_streamcollection"]:
+                chancode = stream.get_inst()
+            else:
+                chancode = stream[0].stats.channel
+            stream_path = "/".join(
+                [
+                    format_netsta(stream[0].stats),
+                    format_nslit(stream[0].stats, chancode, tag),
+                ]
+            )
+
+            # add supplemental stats, e.g., "standard" and "format_specific"
+            sup_stats = stream.getSupplementalStats()
+            sup_stats_str = _stringify_dict(sup_stats)
+            self.insert_aux(
+                json.dumps(sup_stats_str), "StreamSupplementalStats", stream_path
+            )
+
             # add processing parameters from streams
-            jdict = {}
+            proc_params = {}
             for key in stream.getStreamParamKeys():
                 value = stream.getStreamParam(key)
-                jdict[key] = value
+                proc_params[key] = value
 
-            if len(jdict):
-                # NOTE: We would store this dictionary just as
-                # the parameters dictionary, but HDF cannot handle
-                # nested dictionaries.
-                # Also, this seems like a lot of effort
-                # just to store a string in HDF, but other
+            if len(proc_params):
+                # NOTE: We would store this dictionary just as the parameters
+                # dictionary, but HDF cannot handle nested dictionaries. Also, this
+                # seems like a lot of effort just to store a string in HDF, but other
                 # approaches failed. Suggestions are welcome.
-                jdict = _stringify_dict(jdict)
+                proc_params_str = _stringify_dict(proc_params)
                 dtype = "StreamProcessingParameters"
-                if config["read"]["use_streamcollection"]:
-                    chancode = stream.get_inst()
-                else:
-                    chancode = stream[0].stats.channel
-                parampath = "/".join(
-                    [
-                        format_netsta(stream[0].stats),
-                        format_nslit(stream[0].stats, chancode, tag),
-                    ]
-                )
 
-                self.insert_aux(json.dumps(jdict), dtype, parampath, overwrite)
+                self.insert_aux(
+                    json.dumps(proc_params_str), dtype, stream_path, overwrite
+                )
 
             # add processing parameters from traces
             for trace in stream:
@@ -559,12 +568,9 @@ class StreamWorkspace(object):
                 config = get_config()
 
         trace_auxholder = []
-        stream_auxholder = []
         auxdata = self.dataset.auxiliary_data
         if "TraceProcessingParameters" in auxdata:
             trace_auxholder = auxdata.TraceProcessingParameters
-        if "StreamProcessingParameters" in auxdata:
-            stream_auxholder = auxdata.StreamProcessingParameters
         streams = []
 
         if stations is None:
@@ -621,10 +627,10 @@ class StreamWorkspace(object):
                         trace.setProvenanceDocument(provdoc)
 
                     # get the trace processing parameters
-                    top = format_netsta(trace.stats)
+                    net_sta = format_netsta(trace.stats)
                     trace_path = format_nslct(trace.stats, tag)
-                    if top in trace_auxholder:
-                        root_auxholder = trace_auxholder[top]
+                    if net_sta in trace_auxholder:
+                        root_auxholder = trace_auxholder[net_sta]
                         if trace_path in root_auxholder:
                             bytelist = root_auxholder[trace_path].data[:].tolist()
                             jsonstr = "".join([chr(b) for b in bytelist])
@@ -639,14 +645,14 @@ class StreamWorkspace(object):
                     if "Cache" in auxdata:
                         for aux in auxdata["Cache"].list():
                             auxarray = auxdata["Cache"][aux]
-                            if top not in auxarray.list():
+                            if net_sta not in auxarray.list():
                                 continue
-                            auxarray_top = auxarray[top]
-                            if trace_path in auxarray_top:
+                            auxarray_net_sta = auxarray[net_sta]
+                            if trace_path in auxarray_net_sta:
                                 specparts = camel_case_split(aux)
                                 array_name = specparts[-1].lower()
                                 specname = "_".join(specparts[:-1]).lower()
-                                specarray = auxarray_top[trace_path].data[()]
+                                specarray = auxarray_net_sta[trace_path].data[()]
                                 if specname in spectra:
                                     spectra[specname][array_name] = specarray
                                 else:
@@ -656,9 +662,9 @@ class StreamWorkspace(object):
 
                     # get review information if it is present:
                     if "review" in auxdata:
-                        if top in auxdata.review:
-                            if trace_path in auxdata.review[top]:
-                                tr_review = auxdata.review[top][trace_path]
+                        if net_sta in auxdata.review:
+                            if trace_path in auxdata.review[net_sta]:
+                                tr_review = auxdata.review[net_sta][trace_path]
                                 review_dict = {}
                                 if "accepted" in tr_review:
                                     tr_acc = tr_review.accepted
@@ -687,17 +693,29 @@ class StreamWorkspace(object):
                     stream = StationStream(traces=[trace], config=config)
                     stream.tag = tag
 
-                    # get the stream processing parameters
+                    # deal with stream-level data
                     stream_path = format_nslit(trace.stats, stream.get_inst(), tag)
-                    if top in stream_auxholder:
-                        top_auxholder = stream_auxholder[top]
-                        if stream_path in top_auxholder:
-                            auxarray = top_auxholder[stream_path]
-                            bytelist = auxarray.data[:].tolist()
-                            jsonstr = "".join([chr(b) for b in bytelist])
-                            jdict = json.loads(jsonstr)
-                            for key, value in jdict.items():
-                                stream.setStreamParam(key, value)
+
+                    # get the stream processing parameters
+                    proc_dict = self._get_aux_dict(
+                        "StreamProcessingParameters", net_sta, stream_path
+                    )
+                    if proc_dict:
+                        for key, value in proc_dict.items():
+                            stream.setStreamParam(key, value)
+
+                    # get the supplemental stream parameters
+                    supp_dict = self._get_aux_dict(
+                        "StreamSupplementalStats", net_sta, stream_path
+                    )
+                    if supp_dict:
+                        supp_keys = ["standard", "format_specific"]
+                        for supp_key in supp_keys:
+                            for key1, value1 in supp_dict.items():
+                                if key1 == supp_key:
+                                    for key2, value2 in value1.items():
+                                        for tr in stream:
+                                            tr.stats[supp_key][key2] = value2
 
                     streams.append(stream)
 
@@ -714,6 +732,34 @@ class StreamWorkspace(object):
         else:
             streams = StreamArray(streams, config=config)
         return streams
+
+    def _get_aux_dict(self, aux_name, net_sta, stream_path):
+        """Convenience function to get a diction stored in aux data
+
+        Args:
+            aux_name (str):
+                Name of data in aux data.
+            net_sta (str):
+                <net code>.<sta code>.
+            stream_path (str):
+                <net code>.<sta code>.<loc code>.<chan code>_<event id>_<label>
+
+        Returns:
+            dict if found, otherwise None.
+        """
+        aux_data = self.dataset.auxiliary_data
+        if aux_name in aux_data:
+            stream_auxholder = aux_data[aux_name][net_sta]
+            if stream_path in stream_auxholder:
+                auxarray = stream_auxholder[stream_path]
+                bytelist = auxarray.data[:].tolist()
+                jsonstr = "".join([chr(b) for b in bytelist])
+                if len(jsonstr):
+                    return json.loads(jsonstr)
+                else:
+                    return None
+        else:
+            return None
 
     def getStations(self):
         """Get list of station codes within the file.
@@ -737,8 +783,7 @@ class StreamWorkspace(object):
             overwrite (bool):
                 Should the data be overwritten if it already exists?
         """
-        # this seems like a lot of effort
-        # just to store a string in HDF, but other
+        # this seems like a lot of effort just to store a string in HDF, but other
         # approaches failed. Suggestions are welcome.
 
         group_name = f"{data_name}/{path}"
@@ -1277,18 +1322,18 @@ class StreamWorkspace(object):
             chancode = streams[0][0].stats.channel
         else:
             chancode = streams[0].get_inst()
-        top = format_netsta(streams[0][0].stats)
+        net_sta = format_netsta(streams[0][0].stats)
 
         metricpath = format_nslit(streams[0][0].stats, chancode, stream_tag)
 
-        if top in auxholder:
-            tauxholder = auxholder[top]
-            if metricpath not in tauxholder:
+        if net_sta in auxholder:
+            net_sta_auxholder = auxholder[net_sta]
+            if metricpath not in net_sta_auxholder:
                 fmt = "Stream metrics path (%s) not in WaveFormMetrics auxiliary_data."
                 logging.warning(fmt % metricpath)
                 return None
 
-            bytelist = tauxholder[metricpath].data[:].tolist()
+            bytelist = net_sta_auxholder[metricpath].data[:].tolist()
             xml_stream = "".join([chr(b) for b in bytelist])
             xml_stream = xml_stream.encode("utf-8")
         else:
@@ -1307,16 +1352,16 @@ class StreamWorkspace(object):
             chancode = streams[0].get_inst()
         station_path = format_nslit(streams[0][0].stats, chancode, eventid)
 
-        if top in auxholder:
-            tauxholder = auxholder[top]
-            if station_path not in tauxholder:
+        if net_sta in auxholder:
+            net_sta_auxholder = auxholder[net_sta]
+            if station_path not in net_sta_auxholder:
                 logging.warning(
                     "Stream path (%s) not in StationMetrics auxiliary_data."
                     % station_path
                 )
                 return
 
-            bytelist = tauxholder[station_path].data[:].tolist()
+            bytelist = net_sta_auxholder[station_path].data[:].tolist()
             xml_station = "".join([chr(b) for b in bytelist])
             xml_station = xml_station.encode("utf-8")
         else:

@@ -43,9 +43,11 @@ class GenerateRegressionPlotModule(base.SubcommandModule):
             if "fit_spectra_parameters" not in imc_tables:
                 table_name = self.gmrecords.data_path / f"{imckey}{imc_table_ext}"
                 if imc_table_ext == ".csv":
-                    imc_tables[imckey] = pd.read_csv(table_name)
+                    if table_name.exists():
+                        imc_tables[imckey] = pd.read_csv(table_name)
                 else:
-                    imc_tables[imckey] = pd.read_excel(table_name)
+                    if table_name.exists():
+                        imc_tables[imckey] = pd.read_excel(table_name)
 
         event_files = list(self.gmrecords.data_path.glob("*_events.*"))
         if len(event_files) == 1:

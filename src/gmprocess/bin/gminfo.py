@@ -37,8 +37,6 @@ COLUMNS = [
     "Longitude",
 ]
 
-ERROR_COLUMNS = ["Filename", "Error"]
-
 REV_PROCESS_LEVELS = {
     "raw counts": "V0",
     "uncorrected physical units": "V1",
@@ -71,9 +69,9 @@ def get_dataframe(filename, stream):
 
 
 def render_concise(files, save=False):
-    errors = pd.DataFrame(columns=ERROR_COLUMNS)
     df = pd.DataFrame(columns=COLUMNS, index=None)
     folders = []
+    error_rows = []
     for path in files:
         fpath = path.parent
         if fpath not in folders:
@@ -85,11 +83,12 @@ def render_concise(files, save=False):
                 tdf = get_dataframe(path, stream)
                 df = pd.concat([df, tdf], axis=0)
         except BaseException as e:
-            row = pd.Series(index=ERROR_COLUMNS)
+            row = {}
             row["Filename"] = str(path)
             row["Error"] = str(e)
-            errors = errors.append(row, ignore_index=True)
+            error_rows.append(row)
             continue
+    errors = pd.DataFrame(error_rows)
 
     # organize dataframe by network, station, and channel
     df = df.sort_values(["Network", "Station", "Channel"])
@@ -114,7 +113,7 @@ def render_dir(rootdir, concise=True, save=False):
 
 def render_verbose(files):
     config = confmod.get_config()
-    errors = pd.DataFrame(columns=ERROR_COLUMNS)
+    error_rows = []
     for fname in files:
         try:
             fmt = readmod._get_format(fname, config)
@@ -155,11 +154,12 @@ def render_verbose(files):
                 chstr = "\n".join(parts)
                 print(chstr)
         except BaseException as e:
-            row = pd.Series(index=ERROR_COLUMNS)
+            row = {}
             row["Filename"] = str(fname)
             row["Error"] = str(e)
-            errors = errors.append(row, ignore_index=True)
+            error_rows.append(row)
             continue
+    errors = pd.DataFrame(error_rows)
     return errors
 
 

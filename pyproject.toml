@@ -86,6 +86,7 @@ gmrecords = "gmprocess.bin.gmrecords:main"
 gmworkspace = "gmprocess.bin.gmworkspace:main"
 list_metrics = "gmprocess.bin.list_metrics:main"
 cwb_gather = "gmprocess.bin.cwb_gather:main"
+fix_inventory = "gmprocess.bin.fix_inventory:main"
 
 [build-system]
 requires = [
