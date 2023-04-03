@@ -146,7 +146,7 @@ class FixInventory:
 
 def _get_file_list(args):
     if args.file:
-        return [args.file]
+        return [Path(args.file)]
     elif args.event_dir_path:
         return [Path(args.event_dir_path).expanduser() / "workspace.h5"]
     elif args.project_data_path:
