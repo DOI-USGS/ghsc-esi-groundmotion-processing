@@ -3,20 +3,18 @@
 import os
 import shutil
 import tempfile
-import pytest
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
-
+import pytest
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.metrics.station_summary import StationSummary
-from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils.config import update_config, get_config
 from gmprocess.utils import constants
+from gmprocess.utils.config import get_config, update_config
+from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.waveform_processing.processing import process_streams
-
-import numpy as np
 
 CONFIG = get_config()
 
@@ -34,6 +32,10 @@ def test_stream_workspace_methods():
             ws.calcMetrics(eventid)
 
         ws.addEvent(event)
+
+        # strec_params = ws.get_strec(event)
+        # assert strec_params == 1
+
         tabs = ws.getTables(label="raw", config=CONFIG)
         assert isinstance(tabs[0], pd.core.frame.DataFrame)
         assert tabs[1] == {}

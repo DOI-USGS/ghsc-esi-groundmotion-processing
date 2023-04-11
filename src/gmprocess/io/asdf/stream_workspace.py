@@ -1,40 +1,41 @@
 # stdlib imports
-import json
-import re
 import copy
-import warnings
+import json
 import logging
+import re
+import warnings
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import prov.model
 
 # third party imports
 import pyasdf
-import prov.model
-import numpy as np
 import scipy.interpolate as spint
-from obspy.core.utcdatetime import UTCDateTime
-import pandas as pd
-from h5py.h5py_warnings import H5pyDeprecationWarning
-from ruamel.yaml import YAML
 from esi_utils_rupture.factory import get_rupture
 from esi_utils_rupture.origin import Origin
+from gmprocess.core.stationstream import StationStream
 
 # local imports
 from gmprocess.core.stationtrace import (
-    StationTrace,
-    TIMEFMT_MS,
     NS_SEIS,
+    TIMEFMT_MS,
+    StationTrace,
     _get_person_agent,
     _get_software_agent,
 )
-from gmprocess.core.stationstream import StationStream
-from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.core.streamarray import StreamArray
-from gmprocess.metrics.station_summary import StationSummary, XML_UNITS
+from gmprocess.core.streamcollection import StreamCollection
+from gmprocess.metrics.station_summary import XML_UNITS, StationSummary
+from gmprocess.utils import constants
+from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.tables import _get_table_row
-from gmprocess.utils.config import get_config
-from gmprocess.utils.config import update_dict
-from gmprocess.utils import constants
+from h5py.h5py_warnings import H5pyDeprecationWarning
+from obspy.core.utcdatetime import UTCDateTime
+from ruamel.yaml import YAML
+from strec.subtype import SubductionSelector
 
 TIMEPAT = "[0-9]{4}-[0-9]{2}-[0-9]{2}T"
 EVENT_TABLE_COLUMNS = [
@@ -275,7 +276,31 @@ class StreamWorkspace(object):
         Args:
             event (Event): Obspy event object.
         """
+        self.insert_strec(event)
         self.dataset.add_quakeml(event)
+
+    def insert_strec(self, event):
+        selector = SubductionSelector()
+        _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
+        strec_params = selector.getSubductionType(
+            event.latitude,
+            event.longitude,
+            event.depth_km,
+            event.magnitude,
+            eventid=event.id,
+            tensor_params=tensor_params,
+        ).to_dict()
+        strec_params_str = _stringify_dict(strec_params)
+        dtype = "StrecParameters"
+        strec_path = f"STREC/{event.id}"
+        self.insert_aux(json.dumps(strec_params_str), dtype, strec_path, True)
+
+    def get_strec(self, event):
+        aux_data = self.dataset.auxiliary_data
+        bytelist = aux_data["StrecParameters"]["STREC"]["us6000k20g"].data[:].tolist()
+        jsonstr = "".join([chr(b) for b in bytelist])
+        jdict = json.loads(jsonstr)
+        return jdict
 
     def addConfig(self, config=None, force=False):
         """Add config to an ASDF dataset and workspace attribute.

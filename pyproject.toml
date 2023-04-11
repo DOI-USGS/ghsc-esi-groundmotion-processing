@@ -41,6 +41,7 @@ dependencies = [
     "scipy>=1.7",
     "setuptools-scm>=6.3.2",
     "statsmodels>=0.12.2",
+    "usgs-strec>=2.2.6",
     "xlrd>=2.0",
 ]
 
