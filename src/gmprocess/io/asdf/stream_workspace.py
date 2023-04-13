@@ -281,7 +281,9 @@ class StreamWorkspace(object):
 
     def insert_strec(self, event):
         selector = SubductionSelector()
-        _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
+        tensor_params = None
+        if hasattr(event, "id"):
+            _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
         strec_params = selector.getSubductionType(
             event.latitude,
             event.longitude,
@@ -293,11 +295,15 @@ class StreamWorkspace(object):
         strec_params_str = _stringify_dict(strec_params)
         dtype = "StrecParameters"
         strec_path = f"STREC/{event.id}"
+        logging.info(f"Inserting strec info for {event.id}")
         self.insert_aux(json.dumps(strec_params_str), dtype, strec_path, True)
 
     def get_strec(self, event):
+        eventid = event.id.replace("smi:local/", "")
         aux_data = self.dataset.auxiliary_data
-        bytelist = aux_data["StrecParameters"]["STREC"]["us6000k20g"].data[:].tolist()
+        if "StrecParameters" not in aux_data:
+            return None
+        bytelist = aux_data["StrecParameters"]["STREC"][eventid].data[:].tolist()
         jsonstr = "".join([chr(b) for b in bytelist])
         jdict = json.loads(jsonstr)
         return jdict

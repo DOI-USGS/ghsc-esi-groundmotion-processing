@@ -19,6 +19,17 @@ from gmprocess.waveform_processing.processing import process_streams
 CONFIG = get_config()
 
 
+def assert_cmp_with_nans(d1, d2):
+    for key, v1 in d1.items():
+        if key not in d2:
+            raise AssertionError(f"{key} not in both compared dictionaries.")
+        v2 = d2[key]
+        if isinstance(v1, str):
+            assert v1 == v2
+        else:
+            np.testing.assert_allclose(v1, v2, atol=1e-2)
+
+
 def test_stream_workspace_methods():
     tdir = Path(tempfile.mkdtemp())
     try:
@@ -32,9 +43,42 @@ def test_stream_workspace_methods():
             ws.calcMetrics(eventid)
 
         ws.addEvent(event)
-
-        # strec_params = ws.get_strec(event)
-        # assert strec_params == 1
+        outevent = ws.getEvent(eventid)
+        strec_params = ws.get_strec(outevent)
+        cmp_params = {
+            "TectonicRegion": "Subduction",
+            "FocalMechanism": "RS",
+            "TensorType": "Mww",
+            "TensorSource": "us",
+            "KaganAngle": 31.006964460128113,
+            "CompositeVariability": np.nan,
+            "NComposite": 0,
+            "DistanceToStable": 652.6654705874242,
+            "DistanceToActive": 416.1843055109172,
+            "DistanceToSubduction": 0.0,
+            "DistanceToHotSpot": 3716.302616840036,
+            "Oceanic": False,
+            "DistanceToOceanic": 230.75252636076507,
+            "DistanceToContinental": 0.0,
+            "SlabModelRegion": "Ryukyu",
+            "SlabModelDepth": 138.8086700439453,
+            "SlabModelDepthUncertainty": 17.509645462036133,
+            "SlabModelDip": 31.167997360229492,
+            "SlabModelStrike": 240.8999481201172,
+            "SlabModelMaximumDepth": 47,
+            "ProbabilityActive": 0.0,
+            "ProbabilityStable": 0.0,
+            "ProbabilitySubduction": 1.0,
+            "ProbabilityVolcanic": 0.0,
+            "ProbabilitySubductionCrustal": 0.8652238784260652,
+            "ProbabilitySubductionInterface": 0.1347761215739348,
+            "ProbabilitySubductionIntraslab": 0.0,
+            "ProbabilityActiveShallow": 0.0,
+            "ProbabilityStableShallow": 0.0,
+            "ProbabilityVolcanicShallow": 0.0,
+            "ProbabilityActiveDeep": 0.0,
+        }
+        assert_cmp_with_nans(strec_params, cmp_params)
 
         tabs = ws.getTables(label="raw", config=CONFIG)
         assert isinstance(tabs[0], pd.core.frame.DataFrame)
@@ -122,6 +166,11 @@ def test_stream_workspace_ucla_review():
 def test_getStreamMetrics():
     workspace = constants.TEST_DATA_DIR / "ucla_review" / "workspace.h5"
     ws = StreamWorkspace.open(workspace)
+
+    # make sure that get_strec method returns None appropriately
+    event = ws.getEvent(ws.getEventIds()[0])
+    assert ws.get_strec(event) is None
+
     # to raise warning that no metrics are available
     ws.getStreamMetrics("se60324281", "ET", "GFM", "default")
 
@@ -142,7 +191,7 @@ def test_getStreamMetrics():
 
 if __name__ == "__main__":
     os.environ["CALLED_FROM_PYTEST"] = "True"
+    test_stream_workspace_methods()
     test_stream_workspace()
     test_stream_workspace_ucla_review()
     test_getStreamMetrics()
-    test_stream_workspace_methods()
