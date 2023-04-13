@@ -2,20 +2,22 @@
 
 # stdlib imports
 import os
-import tempfile
 import shutil
+import tempfile
 
 # third party imports
 import h5py
+from gmprocess.io.asdf.core import write_asdf
+from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 
 # local imports
 from gmprocess.io.read import read_data
-from gmprocess.io.asdf.stream_workspace import StreamWorkspace
-from gmprocess.io.asdf.core import write_asdf
-from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils.config import update_config, get_config
+from gmprocess.utils.config import get_config, update_config
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.waveform_processing.processing import process_streams
+
+from stream_workspace_test import STREC_CONFIG_PATH, configure_strec
 
 CONFIG = get_config()
 
@@ -32,18 +34,28 @@ def generate_workspace():
     raw_data = []
     for dfile in datafiles:
         raw_data += read_data(dfile)
-    write_asdf(tfilename, raw_data, event, label="unprocessed")
-    del raw_data
 
-    config = update_config(
-        os.path.join(str(TEST_DATA_DIR), "config_min_freq_0p2.yml"), CONFIG
-    )
+    try:
+        existing_config_data = configure_strec()
 
-    workspace = StreamWorkspace.open(tfilename)
-    raw_streams = workspace.getStreams(EVENTID, labels=["unprocessed"], config=config)
-    pstreams = process_streams(raw_streams, event, config=config)
-    workspace.addStreams(event, pstreams, label=LABEL)
-    workspace.calcMetrics(event.id, labels=[LABEL], config=config)
+        write_asdf(tfilename, raw_data, event, label="unprocessed")
+        del raw_data
+
+        config = update_config(
+            os.path.join(str(TEST_DATA_DIR), "config_min_freq_0p2.yml"), CONFIG
+        )
+
+        workspace = StreamWorkspace.open(tfilename)
+        raw_streams = workspace.getStreams(
+            EVENTID, labels=["unprocessed"], config=config
+        )
+        pstreams = process_streams(raw_streams, event, config=config)
+        workspace.addStreams(event, pstreams, label=LABEL)
+        workspace.calcMetrics(event.id, labels=[LABEL], config=config)
+    finally:
+        if existing_config_data is not None:
+            with open(STREC_CONFIG_PATH, "wt") as f:
+                f.write(existing_config_data)
 
     return tfilename
 
