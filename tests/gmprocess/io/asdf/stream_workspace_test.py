@@ -59,6 +59,8 @@ def configure_strec():
     if STREC_CONFIG_PATH.exists():
         with open(STREC_CONFIG_PATH, "rt") as f:
             config_data = f.read()
+    else:
+        STREC_CONFIG_PATH.parent.mkdir()
     # where is the strec test data folder
     test_strec_dir = (
         Path(__file__).parent / ".." / ".." / ".." / "data" / "strec"
