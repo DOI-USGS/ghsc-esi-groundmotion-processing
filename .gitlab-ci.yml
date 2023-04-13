@@ -45,7 +45,7 @@ run tests and coverage:
     - *upstream
   script:
     - pip install -e .[test]
-    - pytest -rx --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
+    - pytest -s -rx --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
     - coverage xml
   stage: test
 

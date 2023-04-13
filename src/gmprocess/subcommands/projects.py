@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import platform
 import logging
+import os
+import pathlib
+import platform
 import shutil
-
+import sys
 from pathlib import Path
+
+from esi_utils_io.cmd import get_command_output
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
 ryaml = LazyLoader("yaml", globals(), "ruamel.yaml")
@@ -18,6 +20,8 @@ configobj = LazyLoader("configobj", globals(), "configobj")
 
 
 CURRENT_MARKERS = {True: "**Current Project**", False: ""}
+STREC_CONFIG = pathlib.Path.home() / ".strec" / "config.ini"
+NEW_STREC_FOLDER = pathlib.Path.home() / ".gmprocess" / "strec"
 
 
 class ProjectsModule(base.SubcommandModule):
@@ -134,6 +138,10 @@ class ProjectsModule(base.SubcommandModule):
         if len(self.config["projects"]) == 0:
             print(f"No projects in {self.config_filepath}.")
 
+        # check to see if user already has strec installed
+        if not STREC_CONFIG.exists():
+            self.configure_strec()
+
         if args.list:
             self.list_projects()
         elif args.switch:
@@ -151,6 +159,18 @@ class ProjectsModule(base.SubcommandModule):
             self._set_path(proj_name, data_path, "data_path")
         else:
             raise NotImplementedError("Subcommand projects option not implemented.")
+
+    def configure_strec(self):
+        cmd = f"strec_cfg update --datafolder {NEW_STREC_FOLDER} --slab --gcmt"
+        res, stdout, stderr = get_command_output(cmd)
+        if not res:
+            logging.CRITICAL(
+                f"Failed to configure STREC code with command {cmd}. Output:"
+            )
+            logging.CRITICAL(f"\n'{stdout}'")
+            logging.CRITICAL(f"\n'{stderr}'")
+        else:
+            logging.info(f"Successfully installed STREC with {cmd}.")
 
     def list_projects(self):
         projects = self.config["projects"]

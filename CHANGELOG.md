@@ -5,6 +5,9 @@
  - Added a "fix_inventory" utility script to move data supplemental stream data from StationXML to auxiliary data in existing workspace files.
  - Bugfixes
    - Avoid gmpacket export error when no records are present.
+ - Adding support for STREC (https://code.usgs.gov/ghsc/esi/strec#table-of-contents) in gmprocess - 
+   probabilities of different regimes and supporting STREC information are now added to the auxiliary 
+   data section of the workspace.
 
 
 ## 1.2.6 / 2023-03-18

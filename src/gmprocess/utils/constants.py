@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import scipy.constants as sp
 import pathlib
+
+import scipy.constants as sp
 
 DATA_DIR = (pathlib.Path(__file__).parent / ".." / "data").resolve()
 TEST_DATA_DIR = (pathlib.Path(".").parent / "tests" / "data").resolve()
