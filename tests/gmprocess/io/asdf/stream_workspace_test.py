@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import shutil
 import tempfile
@@ -66,6 +67,7 @@ def configure_strec():
         "[TEST_STREC_DIR]", str(test_strec_dir)
     )
     with open(STREC_CONFIG_PATH, "wt") as f:
+        logging.info(f"***Writing new config to {STREC_CONFIG_PATH}")
         f.write(strec_config_str)
     return config_data
 
