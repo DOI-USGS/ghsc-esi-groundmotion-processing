@@ -10,6 +10,7 @@
  - Adding support for STREC (https://code.usgs.gov/ghsc/esi/strec#table-of-contents) in gmprocess - 
    probabilities of different regimes and supporting STREC information are now added to the auxiliary 
    data section of the workspace.
+   
 ## 1.2.6 / 2023-03-18
  - Update URL in download code.
  - Bugfixes
