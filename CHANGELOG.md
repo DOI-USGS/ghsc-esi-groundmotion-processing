@@ -1,6 +1,6 @@
 ## main
 
-## 1.2.7 / 2023-03-18
+## 1.2.7 / 2023-04-28
  - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
  - Update workspace so that when the config attribute is set, any missing values entries are filled in with defaults.
  - Moved supplemental stream info out of StationXML description field and into auxiliary data.
@@ -10,7 +10,7 @@
  - Adding support for STREC (https://code.usgs.gov/ghsc/esi/strec#table-of-contents) in gmprocess - 
    probabilities of different regimes and supporting STREC information are now added to the auxiliary 
    data section of the workspace.
-   
+
 ## 1.2.6 / 2023-03-18
  - Update URL in download code.
  - Bugfixes
