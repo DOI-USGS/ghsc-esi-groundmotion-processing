@@ -122,4 +122,4 @@ pytest .
 This will be followed by a lot of terminal output.
 Warnings are expected to occur and do not indicate a problem.
 Errors indicate that something has gone wrong and you will want to troubleshoot.
-You can create an issue in [GitHub](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) if you are not able to resolve the problem.
+You can create an issue in [Gitlab](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) if you are not able to resolve the problem.
