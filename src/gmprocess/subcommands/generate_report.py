@@ -11,7 +11,8 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
 report = LazyLoader("report", globals(), "gmprocess.io.report")
-plot = LazyLoader("plot", globals(), "gmprocess.utils.plot")
+splot = LazyLoader("plot", globals(), "gmprocess.utils.summary_plots")
+mplot = LazyLoader("plot", globals(), "gmprocess.utils.misc_plots")
 const = LazyLoader("const", globals(), "gmprocess.utils.constants")
 
 
@@ -123,17 +124,15 @@ class GenerateReportModule(base.SubcommandModule):
                 pstreams.append(stream)
                 if self.gmrecords.args.num_processes > 0:
                     future = executor.submit(
-                        plot.summary_plots,
+                        _summary_plot,
                         stream,
                         plot_dir,
                         event,
-                        config=config,
+                        config,
                     )
                     futures.append(future)
                 else:
-                    results.append(
-                        plot.summary_plots(stream, plot_dir, event, config=config)
-                    )
+                    results.append(_summary_plot(stream, plot_dir, event, config))
 
         if self.gmrecords.args.num_processes:
             # Collect the results??
@@ -141,9 +140,14 @@ class GenerateReportModule(base.SubcommandModule):
             executor.shutdown()
 
         moveoutfile = event_dir / "moveout_plot.png"
-        plot.plot_moveout(pstreams, event.latitude, event.longitude, file=moveoutfile)
+        mplot.plot_moveout(pstreams, event.latitude, event.longitude, file=moveoutfile)
         self.append_file("Moveout plot", moveoutfile)
 
         self.workspace.close()
 
         return pstreams
+
+
+def _summary_plot(stream, plot_dir, event, config):
+    sp = splot.SummaryPlot(stream, plot_dir, event, config)
+    return sp.plot()

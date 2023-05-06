@@ -905,17 +905,22 @@ class StationTrace(Trace):
         """
         self.cached[name] = array_dict
 
-    def getCached(self, name):
+    def getCached(self, name, missing_none=False):
         """Retrieve a dictionary of arrays.
 
         Args:
             name (str):
                 Name of dictionary to retrieve.
+            missing_none (bool):
+                Return None if key is missing.
         Returns:
             dict: Dictionary of arrays (see setSpectrum).
         """
         if name not in self.cached:
-            raise KeyError(f"{name} not in set of spectra arrays.")
+            if missing_none:
+                return None
+            else:
+                raise KeyError(f"{name} not in set of spectra arrays.")
         return self.cached[name]
 
     def hasCached(self, name):
@@ -940,19 +945,24 @@ class StationTrace(Trace):
         """
         return list(self.parameters.keys())
 
-    def getParameter(self, param_id):
+    def getParameter(self, param_id, missing_none=False):
         """Retrieve some arbitrary metadata.
 
         Args:
             param_id (str):
                 Key for parameters dictionary.
+            missing_none (bool):
+                Return None if key is missing.
 
         Returns:
             dict or list:
                 Parameters for the given key.
         """
         if param_id not in self.parameters:
-            raise KeyError(f"Parameter {param_id} not found in StationTrace")
+            if missing_none:
+                return None
+            else:
+                raise KeyError(f"Parameter {param_id} not found in StationTrace")
         return self.parameters[param_id]
 
     def getProvDataFrame(self):
