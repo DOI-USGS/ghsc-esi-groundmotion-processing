@@ -535,7 +535,8 @@ class StationTrace(Trace):
 
         Args:
             type (str):
-                What type of filter? "highpass" or "lowpass" or "bandpass" or "bandstop".
+                What type of filter? "highpass" or "lowpass" or "bandpass" or
+                "bandstop".
             freq (float):
                 Corner frequency (Hz) used for "highpass" or "lowpass".
             freqmin (float):
