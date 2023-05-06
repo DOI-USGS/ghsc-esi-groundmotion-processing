@@ -1,4 +1,6 @@
 ## main
+ - Bugfixes
+   - Knet reader wasn't getting the project config file.
 
 ## 1.2.7 / 2023-04-28
  - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
