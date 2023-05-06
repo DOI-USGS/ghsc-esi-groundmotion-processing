@@ -14,24 +14,9 @@ from gmprocess.io.read import read_data
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils import constants
 from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils.plot import plot_oscillators
-from gmprocess.utils.plot import plot_moveout
-from gmprocess.utils.plot import plot_regression
-from gmprocess.utils.plot import summary_plots
-
-
-def test_summary_plots():
-    ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
-    ws = StreamWorkspace.open(ddir / "workspace.h5")
-    event = ws.getEvent("ci38457511")
-    st = ws.getStreams(eventid="ci38457511")[0]
-    tdir = tempfile.mkdtemp()
-    try:
-        summary_plots(st, tdir, event)
-    except Exception as e:
-        raise e
-    finally:
-        shutil.rmtree(tdir, ignore_errors=True)
+from gmprocess.utils.misc_plots import plot_oscillators
+from gmprocess.utils.misc_plots import plot_moveout
+from gmprocess.utils.misc_plots import plot_regression
 
 
 def test_regression():
@@ -92,5 +77,4 @@ if __name__ == "__main__":
     os.environ["CALLED_FROM_PYTEST"] = "True"
     test_regression()
     test_plot()
-    test_summary_plots()
     test_plot_oscillators()

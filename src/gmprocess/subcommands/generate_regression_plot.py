@@ -8,7 +8,7 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 pd = LazyLoader("pd", globals(), "pandas")
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-plot = LazyLoader("plot", globals(), "gmprocess.utils.plot")
+plot = LazyLoader("plot", globals(), "gmprocess.utils.misc_plots")
 const = LazyLoader("const", globals(), "gmprocess.utils.constants")
 
 
