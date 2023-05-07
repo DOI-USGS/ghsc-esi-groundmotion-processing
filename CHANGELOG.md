@@ -1,5 +1,6 @@
 ## main
  - Refactor summary plot code.
+ - Optimize getTables method.
  - Bugfixes
    - Knet reader wasn't getting the project config file.
 

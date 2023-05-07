@@ -19,13 +19,7 @@ from gmpacket.feature import (
     TraceProperties,
 )
 from gmpacket.packet import Event, GroundMotionPacket
-from gmpacket.provenance import (
-    OrganizationAgent,
-    PersonAgent,
-    Provenance,
-    SoftwareAgent,
-    Website,
-)
+from gmpacket.provenance import Provenance
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -142,8 +136,7 @@ class GroundMotionPacketWriter(object):
             )
             try:
                 gmp_metdims = MetricDimensions(**dimensions)
-            except Exception as e:
-                x = 1
+            except BaseException:
                 gmp_metdims = MetricDimensions(**dimensions)
             gmp_metric = Metric(
                 properties=gmp_metprops,

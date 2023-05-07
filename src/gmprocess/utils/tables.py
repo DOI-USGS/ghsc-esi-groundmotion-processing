@@ -34,47 +34,63 @@ def set_precisions(df):
     return df
 
 
-def _get_table_row(stream, summary, event, imc):
-    station_id = stream.get_id()
+def find_float(imt):
+    """Find the float in an IMT string.
+
+    Args:
+        imt (str):
+            An IMT string with a float in it (e.g., period for SA).
+
+    Returns:
+        float: the IMT float, if found, otherwise None.
+    """
+    try:
+        return float(re.search(r"[0-9]*\.[0-9]*", imt).group())
+    except AttributeError:
+        return None
+
+
+# Note: function is in this module to avoid a circular import.
+def get_table_row(stream, summary, event, imc):
+    tr = stream[0]
+    base_station_id = ".".join([tr["network"], tr["station"], tr["location"]])
+    if tr["use_array"]:
+        station_id = ".".join([base_station_id, tr["channel"]])
+    else:
+        station_id = ".".join([base_station_id, tr["channel"][0:2]])
+
     if imc.lower() == "channels":
         if len(stream) > 1:
             raise ValueError("Stream must be length 1 to get row for imc=='channels'.")
-        chan = stream[0]
-        if not chan.passed:
+        if not tr["passed"]:
             return {}
-        station_id = chan.get_id()
-        chan_lowfilt = chan.getProvenance("lowpass_filter")
-        chan_highfilt = chan.getProvenance("highpass_filter")
-        chan_lowpass = np.nan
-        chan_highpass = np.nan
-        if len(chan_lowfilt):
-            chan_lowpass = chan_lowfilt[0]["corner_frequency"]
-        if len(chan_highfilt):
-            chan_highpass = chan_highfilt[0]["corner_frequency"]
-        filter_dict = {"Lowpass": chan_lowpass, "Highpass": chan_highpass}
+        lpf = tr["lowpass_filter"] if "lowpass_filter" in tr else np.nan
+        hpf = tr["highpass_filter"] if "highpass_filter" in tr else np.nan
+        filter_dict = {
+            "Lowpass": lpf,
+            "Highpass": hpf,
+        }
+        station_id = ".".join([base_station_id, tr["channel"]])
     elif imc == "Z":
-        z = stream.select(channel="*Z")
+        z = [tr for tr in stream if tr["channel"].endswith("Z")]
         if not len(z):
             return {}
         z = z[0]
-        if not z.passed:
+        station_id = ".".join([base_station_id, z["channel"]])
+        if not z["passed"]:
             return {}
-        station_id = z.get_id()
-        z_lowfilt = z.getProvenance("lowpass_filter")
-        z_highfilt = z.getProvenance("highpass_filter")
-        z_lowpass = np.nan
-        z_highpass = np.nan
-        if len(z_lowfilt):
-            z_lowpass = z_lowfilt[0]["corner_frequency"]
-        if len(z_highfilt):
-            z_highpass = z_highfilt[0]["corner_frequency"]
-        filter_dict = {"ZLowpass": z_lowpass, "ZHighpass": z_highpass}
+        lpf = z["lowpass_filter"] if "lowpass_filter" in z else np.nan
+        hpf = z["highpass_filter"] if "highpass_filter" in z else np.nan
+        filter_dict = {
+            "ZLowpass": lpf,
+            "ZHighpass": hpf,
+        }
     else:
-        h1 = stream.select(channel="*1")
-        h2 = stream.select(channel="*2")
+        h1 = [tr for tr in stream if tr["channel"].endswith("1")]
+        h2 = [tr for tr in stream if tr["channel"].endswith("2")]
         if not len(h1):
-            h1 = stream.select(channel="*N")
-            h2 = stream.select(channel="*E")
+            h1 = [tr for tr in stream if tr["channel"].endswith("N")]
+            h2 = [tr for tr in stream if tr["channel"].endswith("E")]
 
         # Return empty dict if no horizontal channels are found
         if not len(h1) or not len(h2):
@@ -85,61 +101,56 @@ def _get_table_row(stream, summary, event, imc):
 
         # Return empty dict if the stream has not passed for the IMC requested
         if imc == "H1":
-            if not h1.passed:
+            if not h1["passed"]:
                 return {}
-            station_id = h1.get_id()
+            station_id = ".".join([base_station_id, h1["channel"]])
         if imc == "H2":
-            if not h2.passed:
+            if not h2["passed"]:
                 return {}
-            station_id = h2.get_id()
-
-        h1_lowfilt = h1.getProvenance("lowpass_filter")
-        h1_highfilt = h1.getProvenance("highpass_filter")
-        h1_lowpass = np.nan
-        h1_highpass = np.nan
-        if len(h1_lowfilt):
-            h1_lowpass = h1_lowfilt[0]["corner_frequency"]
-        if len(h1_highfilt):
-            h1_highpass = h1_highfilt[0]["corner_frequency"]
-
-        h2_lowfilt = h2.getProvenance("lowpass_filter")
-        h2_highfilt = h2.getProvenance("highpass_filter")
-        h2_lowpass = np.nan
-        h2_highpass = np.nan
-        if len(h2_lowfilt):
-            h2_lowpass = h2_lowfilt[0]["corner_frequency"]
-        if len(h2_highfilt):
-            h2_highpass = h2_highfilt[0]["corner_frequency"]
+            station_id = ".".join([base_station_id, h1["channel"]])
+        h1lpf = h1["lowpass_filter"] if "lowpass_filter" in h1 else np.nan
+        h1hpf = h1["highpass_filter"] if "highpass_filter" in h1 else np.nan
+        h2lpf = h2["lowpass_filter"] if "lowpass_filter" in h2 else np.nan
+        h2hpf = h2["highpass_filter"] if "highpass_filter" in h2 else np.nan
         filter_dict = {
-            "H1Lowpass": h1_lowpass,
-            "H1Highpass": h1_highpass,
-            "H2Lowpass": h2_lowpass,
-            "H2Highpass": h2_highpass,
+            "H1Lowpass": h1lpf,
+            "H1Highpass": h1hpf,
+            "H2Lowpass": h2lpf,
+            "H2Highpass": h2hpf,
         }
 
     dists = summary.distances
-
     row = {
-        "EarthquakeId": event.id.replace("smi:local/", ""),
-        "EarthquakeTime": event.time,
-        "EarthquakeLatitude": event.latitude,
-        "EarthquakeLongitude": event.longitude,
-        "EarthquakeDepth": event.depth_km,
-        "EarthquakeMagnitude": event.magnitude,
-        "EarthquakeMagnitudeType": event.magnitude_type,
-        "Network": stream[0].stats.network,
-        "DataProvider": stream[0].stats.standard.source,
-        "StationCode": stream[0].stats.station,
+        "EarthquakeId": event["id"] if "id" in event else event.id,
+        "EarthquakeTime": event["time"] if "time" in event else event.time,
+        "EarthquakeLatitude": (
+            event["latitude"] if "latitude" in event else event.latitude
+        ),
+        "EarthquakeLongitude": (
+            event["longitude"] if "longitude" in event else event.longitude
+        ),
+        "EarthquakeDepth": event["depth"] if "depth" in event else event.depth_km,
+        "EarthquakeMagnitude": (
+            event["magnitude"] if "magnitude" in event else event.magnitude
+        ),
+        "EarthquakeMagnitudeType": (
+            event["magnitude_type"]
+            if "magnitude_type" in event
+            else event.magnitude_type
+        ),
+        "Network": tr["network"],
+        "DataProvider": tr["source"],
+        "StationCode": tr["station"],
         "StationID": station_id,
-        "StationDescription": stream[0].stats.standard.station_name,
-        "StationLatitude": stream[0].stats.coordinates.latitude,
-        "StationLongitude": stream[0].stats.coordinates.longitude,
-        "StationElevation": stream[0].stats.coordinates.elevation,
-        "SamplingRate": stream[0].stats.sampling_rate,
+        "StationDescription": tr["station_name"],
+        "StationLatitude": tr["latitude"],
+        "StationLongitude": tr["longitude"],
+        "StationElevation": tr["elevation"],
+        "SamplingRate": tr["sampling_rate"],
         "BackAzimuth": summary._back_azimuth,
         "EpicentralDistance": dists["epicentral"],
         "HypocentralDistance": dists["hypocentral"],
-        "SourceFile": stream[0].stats.standard.source_file,
+        "SourceFile": tr["source_file"] if "source_file" in tr else "",
     }
     if "rupture" in dists:
         row.update({"RuptureDistance": dists["rupture"]})
@@ -164,19 +175,3 @@ def _get_table_row(stream, summary, event, imc):
     imt_frame = summary.pgms.xs(imc, level=1)
     row.update(imt_frame.Result.to_dict())
     return row
-
-
-def find_float(imt):
-    """Find the float in an IMT string.
-
-    Args:
-        imt (str):
-            An IMT string with a float in it (e.g., period for SA).
-
-    Returns:
-        float: the IMT float, if found, otherwise None.
-    """
-    try:
-        return float(re.search(r"[0-9]*\.[0-9]*", imt).group())
-    except AttributeError:
-        return None

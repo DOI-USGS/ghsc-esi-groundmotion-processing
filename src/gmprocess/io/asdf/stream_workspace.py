@@ -31,7 +31,8 @@ from gmprocess.metrics.station_summary import XML_UNITS, StationSummary
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.event import ScalarEvent
-from gmprocess.utils.tables import _get_table_row
+from gmprocess.utils.tables import get_table_row
+
 from h5py.h5py_warnings import H5pyDeprecationWarning
 from obspy.core.utcdatetime import UTCDateTime
 from ruamel.yaml import YAML
@@ -567,6 +568,100 @@ class StreamWorkspace(object):
         labels = list(set(all_labels))
         return labels
 
+    def getStreamMetadata(self, eventid, label):
+        """Lightweght summary info of streams
+
+        Args:
+            eventid (str):
+                Event ID corresponding to an Event in the workspace.
+            label (str):
+                Processing label.
+
+        Returns:
+            list: List in which each element corresponds to a station, and each element
+            includes a list for each channel, and each channel element includes a
+            a dictionary of summary metadata.
+        """
+        auxdata = self.dataset.auxiliary_data
+        if "TraceProcessingParameters" in auxdata:
+            trace_auxholder = auxdata.TraceProcessingParameters
+        if "StreamSupplementalStats" in auxdata:
+            supp_auxholder = auxdata.StreamSupplementalStats
+
+        tag = f"{eventid}_{label}"
+        stream_info = []
+        for waveform in self.dataset.ifilter(self.dataset.q.tag == tag):
+            tstream = waveform[tag]
+            inventory = waveform["StationXML"]
+            if inventory.sender is not None and inventory.sender != inventory.source:
+                source = f"{inventory.source},{inventory.sender}"
+            else:
+                source = inventory.source
+            # since this inventory is for a specific waveform, there should be only one
+            # network/station
+            station = inventory.networks[0].stations[0]
+            tr_info = []
+            for ttrace in tstream:
+                tr_dict = {
+                    "network": ttrace.stats.network,
+                    "station": ttrace.stats.station,
+                    "channel": ttrace.stats.channel,
+                    "location": ttrace.stats.location,
+                    "passed": True,
+                    "tag": tag,
+                    "latitude": station[0].latitude,
+                    "longitude": station[0].longitude,
+                    "elevation": station[0].elevation,
+                    "sampling_rate": ttrace.stats.sampling_rate,
+                    "station_name": station.site.name,
+                    "source": source,
+                }
+
+                # get the provenance information
+                net_sta = format_netsta(ttrace.stats)
+                trace_path = format_nslct(ttrace.stats, tag)
+                if trace_path in self.dataset.provenance.list():
+                    provdoc = self.dataset.provenance[trace_path]
+                    for record in provdoc.get_records():
+                        sptype = record.identifier.localpart.split("_")[1]
+                        if sptype == "lp":
+                            for attr_key, attr_val in record.attributes:
+                                if "seis_prov:corner_frequency" in str(attr_key):
+                                    tr_dict["lowpass_filter"] = attr_val
+                        if sptype == "hp":
+                            for attr_key, attr_val in record.attributes:
+                                if "seis_prov:corner_frequency" in str(attr_key):
+                                    tr_dict["highpass_filter"] = attr_val
+
+                # get the trace processing parameters, check for failures
+                net_sta = format_netsta(ttrace.stats)
+                trace_path = format_nslct(ttrace.stats, tag)
+                if net_sta in trace_auxholder:
+                    root_auxholder = trace_auxholder[net_sta]
+                    if trace_path in root_auxholder:
+                        bytelist = root_auxholder[trace_path].data[:].tolist()
+                        jsonstr = "".join([chr(b) for b in bytelist])
+                        jdict = json.loads(jsonstr)
+                        for key, _ in jdict.items():
+                            if key == "failure":
+                                tr_dict["passed"] = False
+                                break
+                # get source_file from supplemental stats
+                if net_sta in supp_auxholder:
+                    root_auxholder = supp_auxholder[net_sta]
+                    stream_path = (
+                        f"{ttrace.stats.network}.{ttrace.stats.station}."
+                        f"{ttrace.stats.location}.{ttrace.stats.channel[0:2]}_{tag}"
+                    )
+                    if stream_path in root_auxholder:
+                        bytelist = root_auxholder[stream_path].data[:].tolist()
+                        jsonstr = "".join([chr(b) for b in bytelist])
+                        jdict = json.loads(jsonstr)
+                        tr_dict["source_file"] = jdict["standard"]["source_file"]
+                tr_info.append(tr_dict)
+            stream_info.append(tr_info)
+        return stream_info
+
     def getStreams(self, eventid, stations=None, labels=None, config=None):
         """Get Stream from ASDF file given event id and input tags.
 
@@ -652,14 +747,13 @@ class StreamWorkspace(object):
                     )
 
                     # get the provenance information
-                    provname = format_nslct(trace.stats, tag)
-                    if provname in self.dataset.provenance.list():
-                        provdoc = self.dataset.provenance[provname]
+                    net_sta = format_netsta(trace.stats)
+                    trace_path = format_nslct(trace.stats, tag)
+                    if trace_path in self.dataset.provenance.list():
+                        provdoc = self.dataset.provenance[trace_path]
                         trace.setProvenanceDocument(provdoc)
 
                     # get the trace processing parameters
-                    net_sta = format_netsta(trace.stats)
-                    trace_path = format_nslct(trace.stats, tag)
                     if net_sta in trace_auxholder:
                         root_auxholder = trace_auxholder[net_sta]
                         if trace_path in root_auxholder:
@@ -941,6 +1035,91 @@ class StreamWorkspace(object):
                 )
                 self.insert_aux(xmlstr, "StationMetrics", metricpath)
 
+    def setEventInfo(self):
+        """Get a list of event info"""
+        self.event_info = []
+        for eventid in self.getEventIds():
+            event = self.getEvent(eventid)
+            self.event_info.append(
+                {
+                    "id": eventid,
+                    "time": event.time,
+                    "latitude": event.latitude,
+                    "longitude": event.longitude,
+                    "depth": event.depth_km,
+                    "magnitude": event.magnitude,
+                    "magnitude_type": event.magnitude_type,
+                }
+            )
+
+    def setIMCtables(self, label):
+        if hasattr(self, "config"):
+            config = self.config
+            default_config_file = constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
+            with open(default_config_file, "r", encoding="utf-8") as f:
+                yaml = YAML()
+                yaml.preserve_quotes = True
+                default_config = yaml.load(f)
+            update_dict(self.config, default_config)
+        else:
+            config = get_config()
+        any_trace_failures = config["check_stream"]["any_trace_failures"]
+        use_array = not config["read"]["use_streamcollection"]
+
+        self.imc_tables = {}
+        for i, eventid in enumerate(self.getEventIds()):
+
+            st_meta = self.getStreamMetadata(
+                eventid,
+                label=label,
+            )
+
+            for stream in st_meta:
+                passed_traces = [tr for tr in stream if tr["passed"]]
+                for tr in passed_traces:
+                    tr.update({"use_array": use_array})
+
+                if any_trace_failures:
+                    if len(passed_traces) < 3:
+                        stream_passed = False
+                    else:
+                        stream_passed = True
+                else:
+                    if len(passed_traces):
+                        stream_passed = True
+                    else:
+                        stream_passed = False
+
+                if not stream_passed:
+                    continue
+
+                station = passed_traces[0]["station"]
+                network = passed_traces[0]["network"]
+                summary = self.getStreamMetrics(
+                    eventid,
+                    network,
+                    station,
+                    label,
+                    stream_metadata=passed_traces,
+                    stream_label=label,
+                )
+
+                if summary is None:
+                    continue
+
+                pgms = summary.pgms
+                imclist = pgms.index.get_level_values("IMC").unique().tolist()
+                self.imtlist = pgms.index.get_level_values("IMT").unique().tolist()
+                self.imtlist.sort(key=_natural_keys)
+
+                for imc in imclist:
+                    if imc not in self.imc_tables:
+                        self.imc_tables[imc] = []
+                    row = get_table_row(passed_traces, summary, self.event_info[i], imc)
+                    if not len(row):
+                        continue
+                    self.imc_tables[imc].append(row)
+
     def getTables(self, label, config):
         """Retrieve dataframes containing event information and IMC/IMT
         metrics.
@@ -990,75 +1169,13 @@ class StreamWorkspace(object):
                      - Column header
                      - Description
         """
-        event_info = []
-        imc_tables = {}
+        self.setEventInfo()
+        self.setIMCtables(label)
         readme_tables = {}
-        for eventid in self.getEventIds():
-            event = self.getEvent(eventid)
-            event_info.append(
-                {
-                    "id": event.resource_id.id.replace("smi:local/", ""),
-                    "time": event.time,
-                    "latitude": event.latitude,
-                    "longitude": event.longitude,
-                    "depth": event.depth_km,
-                    "magnitude": event.magnitude,
-                    "magnitude_type": event.magnitude_type,
-                }
-            )
 
-            station_list = self.dataset.waveforms.list()
-
-            for station_id in station_list:
-                streams = self.getStreams(
-                    event.resource_id.id.replace("smi:local/", ""),
-                    stations=[station_id],
-                    labels=[label],
-                    config=config,
-                )
-                if not len(streams):
-                    logging.info("No matching streams found. Continuing.")
-                    continue
-
-                for stream in streams:
-                    if not stream.passed:
-                        continue
-
-                    station = stream[0].stats.station
-                    network = stream[0].stats.network
-                    summary = self.getStreamMetrics(
-                        eventid,
-                        network,
-                        station,
-                        label,
-                        streams=[stream],
-                        stream_label=label,
-                    )
-
-                    if summary is None:
-                        continue
-
-                    pgms = summary.pgms
-                    imclist = pgms.index.get_level_values("IMC").unique().tolist()
-                    imtlist = pgms.index.get_level_values("IMT").unique().tolist()
-                    imtlist.sort(key=_natural_keys)
-
-                    for imc in imclist:
-                        if imc not in imc_tables:
-                            row = _get_table_row(stream, summary, event, imc)
-                            if not len(row):
-                                continue
-                            imc_tables[imc] = [row]
-                        else:
-                            row = _get_table_row(stream, summary, event, imc)
-                            if not len(row):
-                                continue
-                            imc_tables[imc].append(row)
-
-        # Remove any empty IMT columns from the IMC tables
-        for key, table in imc_tables.items():
+        for key, table in self.imc_tables.items():
             table = pd.DataFrame.from_dict(table)
-            imt_cols = list(set(table.columns) & set(imtlist))
+            imt_cols = list(set(table.columns) & set(self.imtlist))
 
             # Remove FAS?
             fas_cols = [c for c in imt_cols if c.startswith("FAS(")]
@@ -1067,9 +1184,9 @@ class StreamWorkspace(object):
                 imt_cols = [x for x in imt_cols if x not in fas_cols]
             imt_cols.sort(key=_natural_keys)
 
-            non_imt_cols = [col for col in table.columns if col not in imtlist]
+            non_imt_cols = [col for col in table.columns if col not in self.imtlist]
             table = table[non_imt_cols + imt_cols]
-            imc_tables[key] = table
+            self.imc_tables[key] = table
             readme_dict = {}
             for col in table.columns:
                 if col in FLATFILE_COLUMNS:
@@ -1089,8 +1206,8 @@ class StreamWorkspace(object):
             df_readme.columns = ["Column header", "Description"]
             readme_tables[key] = df_readme
 
-        event_table = pd.DataFrame.from_dict(event_info)
-        return (event_table, imc_tables, readme_tables)
+        event_table = pd.DataFrame.from_dict(self.event_info)
+        return (event_table, self.imc_tables, readme_tables)
 
     def getFitSpectraTable(self, eventid, label, config):
         """
@@ -1286,7 +1403,7 @@ class StreamWorkspace(object):
         network,
         station,
         label,
-        streams=None,
+        stream_metadata=None,
         stream_label=None,
         config=None,
     ):
@@ -1323,39 +1440,47 @@ class StreamWorkspace(object):
         auxholder = self.dataset.auxiliary_data.WaveFormMetrics
 
         # get the stream matching the eventid, station, and label
-        if streams is None:
+        if stream_metadata is None:
             station_id = f"{network}.{station}"
             streams = self.getStreams(
                 eventid, stations=[station_id], labels=[label], config=config
             )
-
-        # Only get streams that passed and match network
-        streams = [
-            st for st in streams if (st.passed and st[0].stats.network == network)
-        ]
-
-        if not len(streams):
-            fmt = (
-                "Stream matching event ID %s, "
-                "station ID %s.%s, and processing label %s not found in "
-                "workspace."
+            # Only get streams that passed and match network
+            streams = [
+                st for st in streams if (st.passed and st[0].stats.network == network)
+            ]
+            if not len(streams):
+                fmt = (
+                    "Stream matching event ID %s, "
+                    "station ID %s.%s, and processing label %s not found in "
+                    "workspace."
+                )
+                msg = fmt % (eventid, network, station, label)
+                logging.warning(msg)
+                return None
+            st = streams[0]
+            if stream_label is not None:
+                stream_tag = f"{eventid}_{stream_label}"
+            else:
+                stream_tag = st.tag
+            if hasattr(st, "use_array") and streams[0].use_array:
+                chancode = st[0].stats.channel
+            else:
+                chancode = st.get_inst()
+            net_sta = format_netsta(st[0].stats)
+            metricpath = format_nslit(st[0].stats, chancode, stream_tag)
+            station_path = format_nslit(st[0].stats, chancode, eventid)
+        else:
+            tr = stream_metadata[0]
+            chancode = tr["channel"] if tr["use_array"] else tr["channel"][0:2]
+            net_sta = f"{tr['network']}.{tr['station']}"
+            metricpath = (
+                f"{tr['network']}.{tr['station']}.{tr['location']}"
+                f".{chancode}_{tr['tag']}"
             )
-            msg = fmt % (eventid, network, station, label)
-            logging.warning(msg)
-            return None
-
-        if stream_label is not None:
-            stream_tag = f"{eventid}_{stream_label}"
-        else:
-            stream_tag = streams[0].tag
-
-        if hasattr(streams[0], "use_array") and streams[0].use_array:
-            chancode = streams[0][0].stats.channel
-        else:
-            chancode = streams[0].get_inst()
-        net_sta = format_netsta(streams[0][0].stats)
-
-        metricpath = format_nslit(streams[0][0].stats, chancode, stream_tag)
+            station_path = (
+                f"{tr['network']}.{tr['station']}.{tr['location']}.{chancode}_{eventid}"
+            )
 
         if net_sta in auxholder:
             net_sta_auxholder = auxholder[net_sta]
@@ -1376,12 +1501,6 @@ class StreamWorkspace(object):
             logging.warning("Station metrics not found in workspace.")
             return None
         auxholder = self.dataset.auxiliary_data.StationMetrics
-
-        if hasattr(streams[0], "use_array") and streams[0].use_array:
-            chancode = streams[0][0].stats.channel
-        else:
-            chancode = streams[0].get_inst()
-        station_path = format_nslit(streams[0][0].stats, chancode, eventid)
 
         if net_sta in auxholder:
             net_sta_auxholder = auxholder[net_sta]
