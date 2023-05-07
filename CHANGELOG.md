@@ -1,4 +1,5 @@
 ## main
+ - Refactor summary plot code.
  - Bugfixes
    - Knet reader wasn't getting the project config file.
 
