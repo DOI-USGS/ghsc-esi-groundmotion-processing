@@ -6,18 +6,19 @@ import pandas as pd
 import ps2ff
 from esi_utils_rupture.origin import Origin
 from esi_utils_rupture.point_rupture import PointRupture
-from gmprocess.metrics.gather import gather_pgms
-from gmprocess.metrics.metrics_controller import MetricsController
-from gmprocess.utils import constants
-
-# local imports
-from gmprocess.utils.config import get_config
-from gmprocess.utils.tables import _get_table_row, find_float
 
 # third party imports
 from lxml import etree
 from obspy.geodetics.base import gps2dist_azimuth
 from openquake.hazardlib.geo import geodetic as oqgeo
+
+# local imports
+from gmprocess.metrics.gather import gather_pgms
+from gmprocess.metrics.metrics_controller import MetricsController
+from gmprocess.utils import constants
+from gmprocess.utils.config import get_config
+from gmprocess.utils.tables import find_float, get_table_row
+
 
 XML_UNITS = {
     "pga": "%g",
@@ -856,7 +857,26 @@ class StationSummary(object):
         # Note: in this situation, we can only have 1 row per "table" where the
         # different IMTs are the different columns.
         for imc in imclist:
-            row = _get_table_row(self._stream, self, self.event, imc)
+            # need to convert stream to streametadata list
+            tr_info = []
+            for tr in self._stream:
+                tr_dict = {
+                    "network": tr.stats.network,
+                    "station": tr.stats.station,
+                    "channel": tr.stats.channel,
+                    "location": tr.stats.location,
+                    "passed": tr.passed,
+                    "tag": self._stream.tag if hasattr(self._stream, "tag") else "",
+                    "latitude": tr.stats.coordinates.latitude,
+                    "longitude": tr.stats.coordinates.longitude,
+                    "elevation": tr.stats.coordinates.elevation,
+                    "sampling_rate": tr.stats.sampling_rate,
+                    "station_name": tr.stats.standard["station_name"],
+                    "source": tr.stats.standard["source"],
+                    "use_array": not self.config["read"]["use_streamcollection"],
+                }
+                tr_info.append(tr_dict)
+            row = get_table_row(tr_info, self, self.event, imc)
             if not len(row):
                 continue
             imc_dict[imc] = row
