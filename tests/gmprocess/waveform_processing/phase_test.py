@@ -35,20 +35,20 @@ def test_p_pick():
     # Testing a strong motion channel
     tr = read(str(datadir / "ALCTENE.UW..sac"))[0]
     chosen_ppick = UTCDateTime("2001-02-28T18:54:47")
-    ppick = phase.PowerPicker(tr)
+    ppick = phase.power_picker(tr)
     ptime = tr.times("utcdatetime")[0] + ppick
     assert (abs(chosen_ppick - ptime)) < 0.2
 
     # Testing a broadband channel
     tr = read(str(datadir / "HAWABHN.US..sac"))[0]
     chosen_ppick = UTCDateTime("2003-01-15T03:42:12.5")
-    ppick = phase.PowerPicker(tr)
+    ppick = phase.power_picker(tr)
     ptime = tr.times("utcdatetime")[0] + ppick
     assert (abs(chosen_ppick - ptime)) < 0.2
 
     # Test a Northridge file that should fail to return a P-pick
     tr = read_data(datadir / "017m30ah.m0a")[0][0]
-    ppick = phase.PowerPicker(tr)
+    ppick = phase.power_picker(tr)
     assert ppick == -1
 
 

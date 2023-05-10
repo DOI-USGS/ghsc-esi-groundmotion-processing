@@ -50,14 +50,14 @@ def read_asdf(filename, eventid=None, stations=None, label=None):
             and channel metadata.
     """
     workspace = StreamWorkspace.open(filename)
-    eventids = workspace.getEventIds()
+    eventids = workspace.get_event_ids()
     allstreams = []
     for eventid in eventids:
         if label is None:
-            labels = workspace.getLabels()
+            labels = workspace.get_labels()
         else:
             labels = [label]
-        streams = workspace.getStreams(eventid, stations=stations, labels=labels)
+        streams = workspace.get_streams(eventid, stations=stations, labels=labels)
         allstreams += streams
 
     workspace.close()
@@ -78,5 +78,5 @@ def write_asdf(filename, streams, event, label=None):
             Label to append to all streams being added to ASDF file.
     """
     workspace = StreamWorkspace(filename)
-    workspace.addStreams(event, streams, label=label, gmprocess_version=VERSION)
+    workspace.add_streams(event, streams, label=label, gmprocess_version=VERSION)
     workspace.close()

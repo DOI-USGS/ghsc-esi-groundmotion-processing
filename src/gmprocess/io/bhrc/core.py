@@ -89,7 +89,7 @@ def read_bhrc(filename, config=None, **kwargs):
     for tr in stream:
         if tr.stats.standard.process_level != PROCESS_LEVELS["V0"]:
             response = {"input_units": "counts", "output_units": "cm/s^2"}
-            tr.setProvenance("remove_response", response)
+            tr.set_provenance("remove_response", response)
 
     return [stream]
 

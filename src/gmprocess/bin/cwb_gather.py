@@ -160,7 +160,8 @@ def main():
                 resp_name = f"{netcode}.{stacode}"
                 if resp_name not in stations:
                     print(
-                        f"No station coordinates available for station {resp_name}. Skipping."
+                        f"No station coordinates available for station {resp_name}. "
+                        "Skipping."
                     )
                     continue
                 latitude = stations[resp_name]["latitude"]

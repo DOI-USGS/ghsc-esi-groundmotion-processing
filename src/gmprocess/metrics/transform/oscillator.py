@@ -105,15 +105,15 @@ def get_spectral(period, stream, damping=0.05, times=None, config=None):
     ns = (int)(10.0 * dt / period - 0.01) + 1
     if ns > 1:
         use_upsampled = True
-        dt = stream[0].getCached("upsampled")["dt"]
+        dt = stream[0].get_cached("upsampled")["dt"]
 
-    if "rotated" in stream.getStreamParamKeys():
+    if "rotated" in stream.get_stream_param_keys():
         # For ROTD and GMROTD
         rotated = []
         if use_upsampled:
-            rotated_data = stream.getStreamParam("upsampled_rotated")
+            rotated_data = stream.get_stream_param("upsampled_rotated")
         else:
-            rotated_data = stream.getStreamParam("rotated")
+            rotated_data = stream.get_stream_param("rotated")
 
         for idx in range(len(rotated_data)):
             rot_matrix = rotated_data[idx]
@@ -135,7 +135,7 @@ def get_spectral(period, stream, damping=0.05, times=None, config=None):
             rotated += [rotated_spectrals]
 
         # Add rotated data to stream parameters
-        stream.setStreamParam("rotated_oscillator", rotated)
+        stream.set_stream_param("rotated_oscillator", rotated)
         return stream
     else:
         traces = []
@@ -143,7 +143,7 @@ def get_spectral(period, stream, damping=0.05, times=None, config=None):
         for idx in range(len(stream)):
             trace = stream[idx]
             if use_upsampled:
-                trace_dict = stream[idx].getCached("upsampled")
+                trace_dict = stream[idx].get_cached("upsampled")
                 stats = {
                     "npts": trace_dict["np"],
                     "delta": dt,

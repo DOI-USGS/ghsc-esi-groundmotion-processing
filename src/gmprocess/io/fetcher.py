@@ -48,7 +48,7 @@ class DataFetcher(object):
         # this method should be implemented in the child class
         pass
 
-    def getMatchingEvents(self, solve=True):
+    def get_matching_events(self, solve=True):
         """
         For appropriate fetchers, return a list of dictionaries matching
         input parameters.
@@ -68,20 +68,20 @@ class DataFetcher(object):
         """
         pass
 
-    def retrieveData(self, event):
+    def retrieve_data(self, event):
         """Retrieve data from remote source, turn into StreamCollection.
 
         Args:
             event (dict):
                 Best dictionary matching input event, fields as above
-                in return of getMatchingEvents().
+                in return of get_matching_events().
 
         Returns:
             StreamCollection: StreamCollection object.
         """
         pass
 
-    def solveEvents(self, events):
+    def solve_events(self, events):
         """Reduce a list of events down to one that best matches the input.
 
         Args:

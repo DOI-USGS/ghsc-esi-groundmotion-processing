@@ -8,7 +8,7 @@ Methods for handling/picking corner frequencies.
 import logging
 import numpy as np
 
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 from gmprocess.waveform_processing.snr import compute_snr_trace
 
 # Options for tapering noise/signal windows
@@ -17,7 +17,7 @@ TAPER_TYPE = "hann"
 TAPER_SIDE = "both"
 
 
-@ProcessingStep
+@processing_step
 def get_corner_frequencies(
     st,
     event,
@@ -67,12 +67,12 @@ def get_corner_frequencies(
         # Constrain the two horizontals to have the same corner frequencies?
         if snr["same_horiz"] and st.passed and st.num_horizontal > 1:
             hlps = [
-                tr.getParameter("corner_frequencies")["lowpass"]
+                tr.get_parameter("corner_frequencies")["lowpass"]
                 for tr in st
                 if "z" not in tr.stats.channel.lower()
             ]
             hhps = [
-                tr.getParameter("corner_frequencies")["highpass"]
+                tr.get_parameter("corner_frequencies")["highpass"]
                 for tr in st
                 if "z" not in tr.stats.channel.lower()
             ]
@@ -80,10 +80,10 @@ def get_corner_frequencies(
             hhp = np.max(hhps)
             for tr in st:
                 if "z" not in tr.stats.channel.lower():
-                    cfdict = tr.getParameter("corner_frequencies")
+                    cfdict = tr.get_parameter("corner_frequencies")
                     cfdict["lowpass"] = llp
                     cfdict["highpass"] = hhp
-                    tr.setParameter("corner_frequencies", cfdict)
+                    tr.set_parameter("corner_frequencies", cfdict)
     else:
         raise ValueError(
             "Corner frequency 'method' must be one of: 'constant', 'magnitude', or "
@@ -92,12 +92,12 @@ def get_corner_frequencies(
 
     # Replace corners set in manual review
     for tr in st:
-        if tr.hasParameter("review"):
-            review_dict = tr.getParameter("review")
+        if tr.has_parameter("review"):
+            review_dict = tr.get_parameter("review")
             if "corner_frequencies" in review_dict:
                 rev_fc_dict = review_dict["corner_frequencies"]
-                if tr.hasParameter("corner_frequencies"):
-                    base_fc_dict = tr.getParameter("corner_frequencies")
+                if tr.has_parameter("corner_frequencies"):
+                    base_fc_dict = tr.get_parameter("corner_frequencies")
                     base_fc_dict["type"] = "reviewed"
                 else:
                     base_fc_dict = {"type": "reviewed"}
@@ -106,11 +106,11 @@ def get_corner_frequencies(
                         base_fc_dict["highpass"] = rev_fc_dict["highpass"]
                     if "lowpass" in rev_fc_dict:
                         base_fc_dict["lowpass"] = rev_fc_dict["lowpass"]
-                    tr.setParameter("corner_frequencies", base_fc_dict)
+                    tr.set_parameter("corner_frequencies", base_fc_dict)
     return st
 
 
-@ProcessingStep
+@processing_step
 def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
     """Cap lowpass corner frequency.
 
@@ -131,15 +131,15 @@ def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
     """
 
     def _cap_lowpass(fc):
-        freq_dict = tr.getParameter("corner_frequencies")
+        freq_dict = tr.get_parameter("corner_frequencies")
         if freq_dict["lowpass"] > fc:
             freq_dict["lowpass"] = fc
-            tr.setParameter("corner_frequencies", freq_dict)
+            tr.set_parameter("corner_frequencies", freq_dict)
 
     for tr in st:
         if tr.passed:
-            if tr.hasParameter("review"):
-                rdict = tr.getParameter("review")
+            if tr.has_parameter("review"):
+                rdict = tr.get_parameter("review")
                 if "corner_frequencies" in rdict:
                     rev_fc_dict = rdict["corner_frequencies"]
                     if "lowpass" in rev_fc_dict:
@@ -172,7 +172,7 @@ def from_constant(st, highpass=0.08, lowpass=20.0):
         stream: stream with selected corner frequencies appended to records.
     """
     for tr in st:
-        tr.setParameter(
+        tr.set_parameter(
             "corner_frequencies",
             {"type": "constant", "highpass": highpass, "lowpass": lowpass},
         )
@@ -206,7 +206,7 @@ def from_magnitude(
     hp_select = highpass[max_idx]
     lp_select = lowpass[max_idx]
     for tr in st:
-        tr.setParameter(
+        tr.set_parameter(
             "corner_frequencies",
             {"type": "magnitude", "highpass": hp_select, "lowpass": lp_select},
         )
@@ -230,19 +230,19 @@ def from_snr(st, event, same_horiz=True, bandwidth=20):
     """
     for tr in st:
         # Check for prior calculation of 'snr'
-        if not tr.hasCached("snr"):
+        if not tr.has_cached("snr"):
             tr = compute_snr_trace(tr, event.magnitude, bandwidth)
 
         # If the SNR doesn't exist then it must have failed because it didn't
         # have enough points in the noise or signal windows
         if tr.passed:
-            snr_conf = tr.getParameter("snr_conf")
+            snr_conf = tr.get_parameter("snr_conf")
             threshold = snr_conf["threshold"]
             min_freq = snr_conf["min_freq"]
             max_freq = snr_conf["max_freq"]
 
-            if tr.hasCached("snr"):
-                snr_dict = tr.getCached("snr")
+            if tr.has_cached("snr"):
+                snr_dict = tr.get_cached("snr")
             else:
                 tr.fail(
                     "Cannot use SNR to pick corners because SNR could not "
@@ -285,16 +285,16 @@ def from_snr(st, event, same_horiz=True, bandwidth=20):
                 # Check to make sure that the highpass corner frequency is not
                 # less than 1 / the duration of the waveform
                 duration = (
-                    tr.getParameter("signal_end")["end_time"] - tr.stats.starttime
+                    tr.get_parameter("signal_end")["end_time"] - tr.stats.starttime
                 )
                 low_corner = max(1 / duration, low_corner)
 
                 # Make sure highpass is greater than min freq of noise spectrum
-                n_noise = len(tr.getCached("preevent_noise_trace")["data"])
+                n_noise = len(tr.get_cached("preevent_noise_trace")["data"])
                 min_freq_noise = 1.0 / n_noise / tr.stats.delta
                 freq_hp = max(low_corner, min_freq_noise)
 
-                tr.setParameter(
+                tr.set_parameter(
                     "corner_frequencies",
                     {"type": "snr", "highpass": freq_hp, "lowpass": high_corner},
                 )

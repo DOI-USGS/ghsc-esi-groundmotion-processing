@@ -23,7 +23,7 @@ def test_get_peak_time():
 
     stream2 = read_geonet(datafile)[0]
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="us1000778i",
         lat=-42.6925,
         lon=173.021944,

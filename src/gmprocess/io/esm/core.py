@@ -173,7 +173,7 @@ def read_esm(filename, config=None, **kwargs):
     stats["coordinates"] = coordinates
     trace = StationTrace(data.copy(), Stats(stats.copy()))
     response = {"input_units": "counts", "output_units": "cm/s^2"}
-    trace.setProvenance("remove_response", response)
+    trace.set_provenance("remove_response", response)
     ftype = header["FILTER_TYPE"].capitalize()
     try:
         forder = int(header["FILTER_ORDER"])
@@ -196,9 +196,9 @@ def read_esm(filename, config=None, **kwargs):
             "filter_order": forder,
         }
 
-        trace.setProvenance("bandpass_filter", filter_att)
+        trace.set_provenance("bandpass_filter", filter_att)
     detrend_att = {"detrending_method": "baseline"}
     if "NOT REMOVED" not in header["BASELINE_CORRECTION"]:
-        trace.setProvenance("detrend", detrend_att)
+        trace.set_provenance("detrend", detrend_att)
     stream = StationStream(traces=[trace], config=config)
     return [stream]

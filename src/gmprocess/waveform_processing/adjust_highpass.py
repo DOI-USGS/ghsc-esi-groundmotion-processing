@@ -10,10 +10,10 @@ from gmprocess.waveform_processing.filtering import (
 )
 from gmprocess.waveform_processing.baseline_correction import correct_baseline
 from gmprocess.waveform_processing.integrate import get_disp
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
+@processing_step
 def adjust_highpass_corner(
     st,
     step_factor=1.5,
@@ -57,13 +57,13 @@ def adjust_highpass_corner(
     """
 
     for tr in st:
-        if not tr.hasParameter("corner_frequencies"):
+        if not tr.has_parameter("corner_frequencies"):
             tr.fail(
                 "Cannot apply adjust_highpass_corner method because "
                 "initial corner frequencies are not set."
             )
         else:
-            initial_corners = tr.getParameter("corner_frequencies")
+            initial_corners = tr.get_parameter("corner_frequencies")
             f_hp = initial_corners["highpass"]
             ok = __disp_checks(
                 tr, max_final_displacement, max_displacment_ratio, config
@@ -77,7 +77,7 @@ def adjust_highpass_corner(
                     )
                     break
                 initial_corners["highpass"] = f_hp
-                tr.setParameter("corner_frequencies", initial_corners)
+                tr.set_parameter("corner_frequencies", initial_corners)
                 ok = __disp_checks(
                     tr, max_final_displacement, max_displacment_ratio, config
                 )

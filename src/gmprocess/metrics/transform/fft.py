@@ -71,13 +71,13 @@ class FFT(Transform):
             nfft = self.get_nfft(trace)
 
             # Check if we already have computed the FFT for this trace
-            if trace.hasCached("fas_spectrum"):
-                spectra = trace.getCached("fas_spectrum")
+            if trace.has_cached("fas_spectrum"):
+                spectra = trace.get_cached("fas_spectrum")
                 sampling_rate = trace.stats.sampling_rate
                 freqs = np.fft.rfftfreq(nfft, 1 / sampling_rate)
             else:
                 spectra, freqs = compute_fft(trace, nfft)
-                trace.setCached("fas_spectrum", spectra)
+                trace.set_cached("fas_spectrum", spectra)
 
             tdict = {"freqs": freqs, "spectra": spectra}
             fft_dict[trace.stats["channel"].upper()] = tdict

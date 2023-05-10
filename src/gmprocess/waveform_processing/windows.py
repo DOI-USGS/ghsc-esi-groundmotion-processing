@@ -25,7 +25,7 @@ from gmprocess.waveform_processing.phase import (
 from gmprocess.utils.config import get_config
 from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.models import load_model
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 M_TO_KM = 1.0 / 1000
 
@@ -45,7 +45,7 @@ def duration_from_magnitude(event_magnitude):
     return event_magnitude / 2.0 * 60.0 - 30.0
 
 
-@ProcessingStep
+@processing_step
 def cut(st, sec_before_split=2.0, config=None):
     """Cut/trim the record.
 
@@ -80,11 +80,11 @@ def cut(st, sec_before_split=2.0, config=None):
         # window and so, unlike other similar processing step loops, there should NOT
         # be an `if tr.passed` here.
         logging.debug(f"Before cut end time: {tr.stats.endtime}")
-        etime = tr.getParameter("signal_end")["end_time"]
+        etime = tr.get_parameter("signal_end")["end_time"]
         tr.trim(endtime=etime)
         logging.debug(f"After cut end time: {tr.stats.endtime}")
         if sec_before_split is not None:
-            split_time = tr.getParameter("signal_split")["split_time"]
+            split_time = tr.get_parameter("signal_split")["split_time"]
             stime = split_time - sec_before_split
             logging.debug(f"Before cut start time: {tr.stats.starttime}")
             if stime < etime:
@@ -95,7 +95,7 @@ def cut(st, sec_before_split=2.0, config=None):
                     "and end times."
                 )
             logging.debug(f"After cut start time: {tr.stats.starttime}")
-        tr.setProvenance(
+        tr.set_provenance(
             "cut",
             {
                 "new_start_time": tr.stats.starttime,
@@ -122,12 +122,12 @@ def window_checks(st, min_noise_duration=0.5, min_signal_duration=5.0):
     """
     for tr in st:
         if tr.passed:
-            if not tr.hasParameter("signal_split"):
+            if not tr.has_parameter("signal_split"):
                 if tr.passed:
                     tr.fail("Cannot check window because no split time available.")
                 continue
             # Split the noise and signal into two separate traces
-            split_prov = tr.getParameter("signal_split")
+            split_prov = tr.get_parameter("signal_split")
             if isinstance(split_prov, list):
                 split_prov = split_prov[0]
             split_time = split_prov["split_time"]
@@ -178,7 +178,7 @@ def signal_split(st, event, model=None, config=None):
             "picker_type": "none",
         }
         for tr in st:
-            tr.setParameter("signal_split", split_params)
+            tr.set_parameter("signal_split", split_params)
         return st
 
     picker_config = config["pickers"]
@@ -248,7 +248,7 @@ def signal_split(st, event, model=None, config=None):
             "picker_type": preferred_picker,
         }
         for tr in st:
-            tr.setParameter("signal_split", split_params)
+            tr.set_parameter("signal_split", split_params)
 
     return st
 
@@ -319,7 +319,7 @@ def signal_end(
         stddev_types = [const.StdDev.TOTAL]
 
     for tr in st:
-        if not tr.hasParameter("signal_split"):
+        if not tr.has_parameter("signal_split"):
             logging.warning("No signal split in trace, cannot set signal end.")
             continue
         if method == "velocity":
@@ -358,7 +358,7 @@ def signal_end(
             )
             duration = np.exp(lnmu + epsilon * lnstd[0])
             # Get split time
-            split_time = tr.getParameter("signal_split")["split_time"]
+            split_time = tr.get_parameter("signal_split")["split_time"]
             end_time = split_time + float(duration)
         elif method == "magnitude":
             end_time = event_time + duration_from_magnitude(event_mag)
@@ -378,12 +378,12 @@ def signal_end(
             "model": model,
             "epsilon": epsilon,
         }
-        tr.setParameter("signal_end", end_params)
+        tr.set_parameter("signal_end", end_params)
 
     return st
 
 
-@ProcessingStep
+@processing_step
 def trim_multiple_events(
     st,
     event,
@@ -459,10 +459,10 @@ def trim_multiple_events(
     # Check that we know the signal split for each trace in the stream
     for tr in st:
         if tr.passed:
-            if not tr.hasParameter("signal_split"):
+            if not tr.has_parameter("signal_split"):
                 return st
 
-    signal_window_starttime = st[0].getParameter("signal_split")["split_time"]
+    signal_window_starttime = st[0].get_parameter("signal_split")["split_time"]
 
     arrivals = travel_time_df[st[0].stats.network + "." + st[0].stats.station]
     arrivals = arrivals.sort_values()
@@ -547,10 +547,10 @@ def trim_multiple_events(
     # Otherwise, trim the stream at the first significant arrival
     else:
         for tr in st:
-            signal_end = tr.getParameter("signal_end")
+            signal_end = tr.get_parameter("signal_end")
             signal_end["end_time"] = significant_arrivals[0]
             signal_end["method"] = "Trimming before right another event"
-            tr.setParameter("signal_end", signal_end)
+            tr.set_parameter("signal_end", signal_end)
         cut(st)
 
     return st

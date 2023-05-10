@@ -45,7 +45,7 @@ def test_windows():
     st2 = StationStream(copy.deepcopy(trace_list))
     windows.window_checks(st2)
     assert (
-        st2[0].getParameter("failure")["reason"]
+        st2[0].get_parameter("failure")["reason"]
         == "Cannot check window because no split time available."
     )
 
@@ -61,7 +61,7 @@ def test_windows():
     )
     windows.window_checks(st3, min_noise_duration=100)
     assert (
-        st3[0].getParameter("failure")["reason"]
+        st3[0].get_parameter("failure")["reason"]
         == "Failed noise window duration check."
     )
 
@@ -77,7 +77,7 @@ def test_windows():
     )
     windows.window_checks(st4, min_signal_duration=1000)
     assert (
-        st4[0].getParameter("failure")["reason"]
+        st4[0].get_parameter("failure")["reason"]
         == "Failed signal window duration check."
     )
 
@@ -104,7 +104,7 @@ def test_signal_end():
     new_durations = []
     for tr in new_streams:
         new_durations.append(
-            tr.getParameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
+            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )
     np.testing.assert_allclose(new_durations, old_durations)
 
@@ -120,7 +120,7 @@ def test_signal_end():
     new_durations = []
     for tr in new_streams:
         new_durations.append(
-            tr.getParameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
+            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )
     target = np.array([212.9617, 212.9617, 212.9617])
     np.testing.assert_allclose(new_durations, target)
@@ -137,7 +137,7 @@ def test_signal_end():
     new_durations = []
     for tr in new_streams:
         new_durations.append(
-            tr.getParameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
+            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )
     target = np.array([149.9617, 149.9617, 149.9617])
     np.testing.assert_allclose(new_durations, target)
@@ -154,7 +154,7 @@ def test_signal_end():
     new_durations = []
     for tr in new_streams:
         new_durations.append(
-            tr.getParameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
+            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )
     target = np.array([89.008733, 89.008733, 89.008733])
     np.testing.assert_allclose(new_durations, target)
@@ -176,7 +176,7 @@ def test_signal_split2():
         "picker_type": "travel_time",
     }
 
-    pdict = stream[0].getParameter("signal_split")
+    pdict = stream[0].get_parameter("signal_split")
     for key, value in cmpdict.items():
         v1 = pdict[key]
         # because I can't figure out how to get utcdattime __eq__

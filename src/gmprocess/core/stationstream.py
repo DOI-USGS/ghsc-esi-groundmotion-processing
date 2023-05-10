@@ -66,7 +66,7 @@ class StationStream(Stream):
         self.parameters = {}
         if self.config is None:
             self.config = get_config()
-        self.setStreamParam(
+        self.set_stream_param(
             "any_trace_failures", self.config["check_stream"]["any_trace_failures"]
         )
 
@@ -111,7 +111,7 @@ class StationStream(Stream):
 
                         # Apply the new start/end times
                         trace = trace.slice(starttime=newstart, endtime=newend)
-                        trace.setProvenance(
+                        trace.set_provenance(
                             "cut", {"new_start_time": newstart, "new_end_time": newend}
                         )
 
@@ -140,7 +140,7 @@ class StationStream(Stream):
                                 npts=new_npts,
                                 a=N_LANCZOS,
                             )
-                            tr.setProvenance(
+                            tr.set_provenance(
                                 "interpolate",
                                 {
                                     "interpolation_method": "lanczos",
@@ -322,7 +322,7 @@ class StationStream(Stream):
         out += ("\n" + ind_str).join(lc)
         return out
 
-    def setStreamParam(self, param_id, param_attributes):
+    def set_stream_param(self, param_id, param_attributes):
         """Add to the StationStreams's set of arbitrary metadata.
 
         Args:
@@ -333,7 +333,7 @@ class StationStream(Stream):
         """
         self.parameters[param_id] = param_attributes
 
-    def getStreamParamKeys(self):
+    def get_stream_param_keys(self):
         """Get a list of all available parameter keys.
 
         Returns:
@@ -341,7 +341,7 @@ class StationStream(Stream):
         """
         return list(self.parameters.keys())
 
-    def getStreamParam(self, param_id):
+    def get_stream_param(self, param_id):
         """Retrieve some arbitrary metadata.
 
         Args:
@@ -356,7 +356,7 @@ class StationStream(Stream):
             raise KeyError(f"Parameter {param_id} not found in StationStream")
         return self.parameters[param_id]
 
-    def getProvenanceDocuments(self, base_prov=None, gmprocess_version="unknown"):
+    def get_provenance_documents(self, base_prov=None, gmprocess_version="unknown"):
         """Generate provenance Document.
 
         Args:
@@ -368,13 +368,13 @@ class StationStream(Stream):
         """
         provdocs = []
         for trace in self.traces:
-            provdoc = trace.getProvenanceDocument(
+            provdoc = trace.get_provenance_document(
                 base_prov=base_prov, gmprocess_version=gmprocess_version
             )
             provdocs.append(provdoc)
         return provdocs
 
-    def getInventory(self):
+    def get_inventory(self):
         """Extract an ObsPy inventory object from a StationStream."""
         networks = [trace.stats.network for trace in self]
         if len(set(networks)) > 1:
@@ -423,7 +423,7 @@ class StationStream(Stream):
 
         return inv
 
-    def getSupplementalStats(self):
+    def get_supplemental_stats(self):
         """Return dictionary supplemental stream information.
 
         This was created to include information that is not captured in StationXML
@@ -454,7 +454,7 @@ class StationStream(Stream):
             bool: True if the stream has passed checks
 
         """
-        any_trace_failures = self.getStreamParam("any_trace_failures")
+        any_trace_failures = self.get_stream_param("any_trace_failures")
         failed_traces = []
         for tr in self:
             failed_traces.append(not tr.passed)

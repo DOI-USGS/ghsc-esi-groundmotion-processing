@@ -5,7 +5,6 @@ Helper functions for working with the NGA flatfile.
 """
 
 # stdlib imports
-import os
 import logging
 
 # third party imports

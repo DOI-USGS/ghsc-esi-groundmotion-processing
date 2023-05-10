@@ -8,10 +8,10 @@ Pretesting methods.
 import logging
 from obspy.signal.trigger import classic_sta_lta
 from gmprocess.utils.config import get_config
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
+@processing_step
 def min_sample_rate(st, min_sps=20.0, config=None):
     """Require a minimum sample rate.
 
@@ -38,7 +38,7 @@ def min_sample_rate(st, min_sps=20.0, config=None):
     return st
 
 
-@ProcessingStep
+@processing_step
 def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
     """Test the channels of the station.
 
@@ -91,7 +91,7 @@ def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
     return st
 
 
-@ProcessingStep
+@processing_step
 def check_free_field(st, reject_non_free_field=True, config=None):
     """Checks free field status of stream.
 
@@ -116,7 +116,7 @@ def check_free_field(st, reject_non_free_field=True, config=None):
     return st
 
 
-@ProcessingStep
+@processing_step
 def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=None):
     """Apply STA/LTA ratio criteria.
 
@@ -160,7 +160,7 @@ def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=Non
     return st
 
 
-@ProcessingStep
+@processing_step
 def check_max_amplitude(st, min=5, max=2e6, config=None):
     """Check the maximum amplitude of the traces.
 
@@ -188,14 +188,14 @@ def check_max_amplitude(st, min=5, max=2e6, config=None):
         # Only perform amplitude/clipping check if data has not been converted
         # to physical units
         if tr.passed:
-            if "remove_response" not in tr.getProvenanceKeys():
+            if "remove_response" not in tr.get_provenance_keys():
                 if abs(tr.max()) < float(min) or abs(tr.max()) > float(max):
                     tr.fail("Failed max amplitude check.")
 
     return st
 
 
-@ProcessingStep
+@processing_step
 def max_traces(st, n_max=3, config=None):
     """Reject a stream if it has more than n_max traces.
 

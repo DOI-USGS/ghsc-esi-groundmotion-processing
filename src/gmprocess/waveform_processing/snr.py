@@ -8,7 +8,7 @@ from obspy.signal.util import next_pow_2
 from gmprocess.metrics.reduction.duration import Duration
 from gmprocess.waveform_processing.fft import compute_and_smooth_spectrum
 from gmprocess.waveform_processing.spectrum import brune_f0, moment_from_magnitude
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 from gmprocess.waveform_processing.windows import duration_from_magnitude
 
 
@@ -19,7 +19,7 @@ TAPER_SIDE = "both"
 MIN_POINTS_IN_WINDOW = 10
 
 
-@ProcessingStep
+@processing_step
 def compute_snr(st, event, bandwidth=20.0, config=None):
     """Compute SNR dictionaries for a stream, looping over all traces.
 
@@ -42,7 +42,7 @@ def compute_snr(st, event, bandwidth=20.0, config=None):
     return st
 
 
-@ProcessingStep
+@processing_step
 def snr_check(
     st,
     mag,
@@ -79,8 +79,8 @@ def snr_check(
         trace: Trace with SNR check.
     """
     for tr in st:
-        if tr.hasCached("snr"):
-            snr_dict = tr.getCached("snr")
+        if tr.has_cached("snr"):
+            snr_dict = tr.get_cached("snr")
             snr = np.array(snr_dict["snr"])
             freq = np.array(snr_dict["freq"])
 
@@ -109,7 +109,7 @@ def snr_check(
                 )
                 tr.fail(f"SNR check: SNR {min_snr:.2f} < {threshold:.2f}")
         snr_conf = {"threshold": threshold, "min_freq": min_freq, "max_freq": max_freq}
-        tr.setParameter("snr_conf", snr_conf)
+        tr.set_parameter("snr_conf", snr_conf)
     return st
 
 
@@ -146,16 +146,16 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         signal_spectrum = event_spectrum - event_noise_spectrum
         return (event_noise_spectrum, signal_spectrum)
 
-    if tr.hasParameter("signal_split"):
+    if tr.has_parameter("signal_split"):
         # Split the noise and signal into two separate traces
-        split_prov = tr.getParameter("signal_split")
+        split_prov = tr.get_parameter("signal_split")
         if isinstance(split_prov, list):
             split_prov = split_prov[0]
         split_time = split_prov["split_time"]
         preevent_noise = tr.copy().trim(endtime=split_time)
         event = tr.copy().trim(starttime=split_time)
 
-        tr.setCached(
+        tr.set_cached(
             "preevent_noise_trace",
             {"times": preevent_noise.times(), "data": preevent_noise.data},
         )
@@ -204,49 +204,49 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         dur_shaking = duration_from_magnitude(event_magnitude)
 
         # Compute noise and signal spectra.
-        preevent_noise_spectrum = tr.getCached("noise_spectrum")["spec"]
-        event_spectrum = tr.getCached("event_spectrum")["spec"]
+        preevent_noise_spectrum = tr.get_cached("noise_spectrum")["spec"]
+        event_spectrum = tr.get_cached("event_spectrum")["spec"]
         event_noise_spectrum, signal_spectrum = _compute_event_spectra(
             preevent_noise_spectrum, event_spectrum, dur_preevent, dur_event
         )
-        tr.setCached(
+        tr.set_cached(
             "noise_spectrum",
             {
                 "spec": event_noise_spectrum,
-                "freq": tr.getCached("noise_spectrum")["freq"],
+                "freq": tr.get_cached("noise_spectrum")["freq"],
             },
         )
-        tr.setParameter("noise_spectrum", {"duration": dur_event})
-        tr.setCached(
+        tr.set_parameter("noise_spectrum", {"duration": dur_event})
+        tr.set_cached(
             "signal_spectrum",
             {
                 "spec": signal_spectrum,
-                "freq": tr.getCached("event_spectrum")["freq"],
+                "freq": tr.get_cached("event_spectrum")["freq"],
             },
         )
-        tr.setParameter("signal_spectrum", {"duration": dur_shaking})
+        tr.set_parameter("signal_spectrum", {"duration": dur_shaking})
 
         # Compute smooth noise and signal.
-        smooth_preevent_noise_spectrum = tr.getCached("smooth_noise_spectrum")["spec"]
-        smooth_event_spectrum = tr.getCached("smooth_event_spectrum")["spec"]
+        smooth_preevent_noise_spectrum = tr.get_cached("smooth_noise_spectrum")["spec"]
+        smooth_event_spectrum = tr.get_cached("smooth_event_spectrum")["spec"]
         smooth_event_noise_spectrum, smooth_signal_spectrum = _compute_event_spectra(
             smooth_preevent_noise_spectrum,
             smooth_event_spectrum,
             dur_preevent,
             dur_event,
         )
-        tr.setCached(
+        tr.set_cached(
             "smooth_noise_spectrum",
             {
                 "spec": smooth_event_noise_spectrum,
-                "freq": tr.getCached("smooth_noise_spectrum")["freq"],
+                "freq": tr.get_cached("smooth_noise_spectrum")["freq"],
             },
         )
-        tr.setCached(
+        tr.set_cached(
             "smooth_signal_spectrum",
             {
                 "spec": smooth_signal_spectrum,
-                "freq": tr.getCached("smooth_event_spectrum")["freq"],
+                "freq": tr.get_cached("smooth_event_spectrum")["freq"],
             },
         )
 
@@ -255,11 +255,11 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         )
         smooth_signal_normspectrum = smooth_signal_spectrum / np.sqrt(dur_shaking)
         snr = smooth_signal_normspectrum / smooth_event_noise_normspectrum
-        snr_dict = tr.setCached(
+        snr_dict = tr.set_cached(
             "snr",
             {
                 "snr": snr,
-                "freq": tr.getCached("smooth_event_spectrum")["freq"],
+                "freq": tr.get_cached("smooth_event_spectrum")["freq"],
             },
         )
 

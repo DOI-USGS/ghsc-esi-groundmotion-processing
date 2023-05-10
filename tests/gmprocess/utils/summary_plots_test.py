@@ -14,8 +14,8 @@ from gmprocess.utils.summary_plots import SummaryPlot
 def test_summary_plots():
     ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
     ws = StreamWorkspace.open(ddir / "workspace.h5")
-    event = ws.getEvent("ci38457511")
-    st = ws.getStreams(eventid="ci38457511")[0]
+    event = ws.get_event("ci38457511")
+    st = ws.get_streams(eventid="ci38457511")[0]
     tdir = tempfile.mkdtemp()
     try:
         sp = SummaryPlot(st, tdir, event)

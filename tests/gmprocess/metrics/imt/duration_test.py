@@ -61,9 +61,9 @@ def test_duration():
 
     for tr in stream:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
-        tr.setProvenance("remove_response", response)
+        tr.set_provenance("remove_response", response)
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=24.0,
         lon=120.0,

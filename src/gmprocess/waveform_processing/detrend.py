@@ -3,11 +3,11 @@
 
 import numpy as np
 
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 from gmprocess.waveform_processing.baseline_correction import correct_baseline
 
 
-@ProcessingStep
+@processing_step
 def detrend(st, detrending_method=None, config=None):
     """Detrend stream.
 
@@ -43,7 +43,7 @@ def detrend(st, detrending_method=None, config=None):
             else:
                 tr = tr.detrend(detrending_method)
 
-            tr.setProvenance("detrend", {"detrending_method": detrending_method})
+            tr.set_provenance("detrend", {"detrending_method": detrending_method})
 
     return st
 
@@ -61,7 +61,7 @@ def _detrend_pre_event_mean(trace, config=None):
     Returns:
         trace: Detrended trace.
     """
-    split_prov = trace.getParameter("signal_split")
+    split_prov = trace.get_parameter("signal_split")
     if isinstance(split_prov, list):
         split_prov = split_prov[0]
     split_time = split_prov["split_time"]

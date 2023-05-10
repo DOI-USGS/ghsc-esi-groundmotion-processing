@@ -42,7 +42,7 @@ def test_scalar():
     quakeml = TEST_DATA_DIR / "usp000hat0_quakeml.xml"
     catalog = read_events(str(quakeml))
     tevent = catalog.events[0]
-    event = ScalarEvent.fromEvent(tevent)
+    event = ScalarEvent.from_event(tevent)
     assert event.id == "quakeml:us.anss.org/origin/pde20100406221501580_31"
     assert event.time == time
     assert event.latitude == lat
@@ -52,7 +52,7 @@ def test_scalar():
     assert event.magnitude_type == mag_type
 
     event = ScalarEvent()
-    event.fromParams(eid, time, lat, lon, depth, mag, mag_type)
+    event.from_params(eid, time, lat, lon, depth, mag, mag_type)
     assert isinstance(event, Event)
     assert event.origins[0].resource_id == eid
     assert event.origins[0].time == time
@@ -69,7 +69,7 @@ def test_scalar():
     magnitude = Magnitude(resource_id=eid, mag=mag, magnitude_type=mag_type)
     tevent.origins = [origin]
     tevent.magnitudes = [magnitude]
-    event2 = ScalarEvent.fromEvent(tevent)
+    event2 = ScalarEvent.from_event(tevent)
     assert isinstance(event2, Event)
     assert event2.origins[0].resource_id == eid
     assert event2.origins[0].time == time

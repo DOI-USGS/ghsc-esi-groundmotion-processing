@@ -153,18 +153,18 @@ class SummaryPlot:
         self.channelidx = np.argsort(channels).tolist()
 
     def get_trace_info(self):
-        self.snr_dict = self.tr.getCached("snr", missing_none=True)
-        self.signal_dict = self.tr.getCached("signal_spectrum", missing_none=True)
-        self.noise_dict = self.tr.getCached("noise_spectrum", missing_none=True)
-        self.smooth_signal_dict = self.tr.getCached(
+        self.snr_dict = self.tr.get_cached("snr", missing_none=True)
+        self.signal_dict = self.tr.get_cached("signal_spectrum", missing_none=True)
+        self.noise_dict = self.tr.get_cached("noise_spectrum", missing_none=True)
+        self.smooth_signal_dict = self.tr.get_cached(
             "smooth_signal_spectrum", missing_none=True
         )
-        self.smooth_noise_dict = self.tr.getCached(
+        self.smooth_noise_dict = self.tr.get_cached(
             "smooth_noise_spectrum", missing_none=True
         )
-        self.snr_conf = self.tr.getParameter("snr_conf", missing_none=True)
-        self.tail_conf = self.tr.getParameter("tail_conf", missing_none=True)
-        self.fit_spectra_dict = self.tr.getParameter("fit_spectra", missing_none=True)
+        self.snr_conf = self.tr.get_parameter("snr_conf", missing_none=True)
+        self.tail_conf = self.tr.get_parameter("tail_conf", missing_none=True)
+        self.fit_spectra_dict = self.tr.get_parameter("fit_spectra", missing_none=True)
 
     def compute_model_spectra(self):
         if (self.fit_spectra_dict is not None) and (
@@ -232,8 +232,8 @@ class SummaryPlot:
         )
 
     def draw_split_time(self):
-        if self.tr.hasParameter("signal_split"):
-            split_dict = self.tr.getParameter("signal_split")
+        if self.tr.has_parameter("signal_split"):
+            split_dict = self.tr.get_parameter("signal_split")
             sptime = UTCDateTime(split_dict["split_time"])
             dsec = sptime - self.tr.stats.starttime
             self.ax.axvline(dsec, color="red", linestyle="dashed")
@@ -263,13 +263,13 @@ class SummaryPlot:
 
     def plot_spectra(self):
         signal_norm_factor = (
-            self.tr.getParameter("signal_spectrum")["duration"] ** 0.5
-            if self.tr.hasParameter("signal_spectrum")
+            self.tr.get_parameter("signal_spectrum")["duration"] ** 0.5
+            if self.tr.has_parameter("signal_spectrum")
             else 1.0
         )
         noise_norm_factor = (
-            self.tr.getParameter("noise_spectrum")["duration"] ** 0.5
-            if self.tr.hasParameter("noise_spectrum")
+            self.tr.get_parameter("noise_spectrum")["duration"] ** 0.5
+            if self.tr.has_parameter("noise_spectrum")
             else 1.0
         )
 
@@ -335,9 +335,9 @@ class SummaryPlot:
         self.xlim = self.ax.get_xlim()
 
     def plot_snr(self):
-        if "corner_frequencies" in self.tr.getParameterKeys():
-            hp = self.tr.getParameter("corner_frequencies")["highpass"]
-            lp = self.tr.getParameter("corner_frequencies")["lowpass"]
+        if "corner_frequencies" in self.tr.get_arameter_keys():
+            hp = self.tr.get_parameter("corner_frequencies")["highpass"]
+            lp = self.tr.get_parameter("corner_frequencies")["lowpass"]
             self.ax.axvline(hp, color="black", linestyle="--", label="Highpass")
             self.ax.axvline(lp, color="black", linestyle="--", label="Lowpass")
 

@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 
-def ProcessingStep(func):
+def processing_step(func):
     """A decorator to mark processing step functions."""
     func.is_processing_step = True
     return func

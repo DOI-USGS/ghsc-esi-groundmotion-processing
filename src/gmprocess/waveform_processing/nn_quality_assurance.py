@@ -8,11 +8,11 @@ from scipy.integrate import cumtrapz
 import os
 import logging
 import pathlib
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
-def NNet_QA(st, acceptance_threshold, model_name, config=None):
+@processing_step
+def nnet_qa(st, acceptance_threshold, model_name, config=None):
     """Apply the neural network QA algorithm by Bellagamba et al. (2019),
 
     Assess the quality of a stream by analyzing its two horizontal components
@@ -62,7 +62,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
         for tr in st:
             tr.fail(
                 "The data contains all zeros, so the "
-                "NNet_QA check is not able to be performed."
+                "nnet_qa check is not able to be performed."
             )
         return st
 
@@ -70,7 +70,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
     have_params = True
     for tr in st:
         if not {"signal_spectrum", "noise_spectrum", "snr"}.issubset(
-            set(tr.getCachedNames())
+            set(tr.get_cached_names())
         ):
             have_params = False
 
@@ -78,7 +78,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
         for tr in st:
             tr.fail(
                 "One or more traces in the stream does have the required "
-                "trace parameters to perform the NNet_QA check."
+                "trace parameters to perform the nnet_qa check."
             )
         return st
 
@@ -86,17 +86,17 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
     nn_path = pathlib.Path(__file__).parent / ".." / "data" / "nn_qa" / model_name
 
     # Compute the quality metrics
-    qm = computeQualityMetrics(st)
+    qm = compute_quality_metrics(st)
 
     # Pre-process the qualtiy metrics
-    qm = preprocessQualityMetrics(qm, model_name)
+    qm = preprocess_quality_metrics(qm, model_name)
 
     # Instanciate the NN (based on model_name)
     NN = neuralNet()
-    NN.loadNN(nn_path)
+    NN.load_nn(nn_path)
 
     # Use NN
-    scores = NN.useNN(qm)[0]
+    scores = NN.use_nn(qm)[0]
 
     # Accepted?
     flag_accept = False
@@ -112,7 +112,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
         "score_HQ": scores[1],
         "pass_QA": flag_accept,
     }
-    st.setStreamParam("nnet_qa", nnet_dict)
+    st.set_stream_param("nnet_qa", nnet_dict)
     if not flag_accept:
         for tr in st:
             tr.fail("Failed NNet QA check.")
@@ -120,7 +120,7 @@ def NNet_QA(st, acceptance_threshold, model_name, config=None):
     return st
 
 
-def isNumber(s):
+def is_number(s):
     """
     Check if given input is a number.
 
@@ -139,7 +139,7 @@ def isNumber(s):
         return False
 
 
-def loadCSV(data_path, row_ignore=0, col_ignore=0):
+def load_csv(data_path, row_ignore=0, col_ignore=0):
     """
     Load csv files from a given path and returns a list of list.
     For all imported data, check if is a number. If so, returns a
@@ -166,7 +166,7 @@ def loadCSV(data_path, row_ignore=0, col_ignore=0):
             # Input vector
             single_line = []
             for i in range(col_ignore, len(row)):
-                if isNumber(row[i]):
+                if is_number(row[i]):
                     single_line.append(float(row[i]))
                 else:
                     single_line.append(row[i])
@@ -232,8 +232,8 @@ class neuralNet:
         self.w_output = []
         self.b_output = []
 
-    # loadNN: load and build neural network model
-    def loadNN(self, nn_path):
+    # load_nn: load and build neural network model
+    def load_nn(self, nn_path):
         """
         Populate an instantated neural netowrk with data contained in a
         specific folder.
@@ -266,27 +266,27 @@ class neuralNet:
         # Load weights and biases
         # Weights first hidden layer
         data_path = os.path.join(nn_path, "weight_1.csv")
-        self.w_H1 = np.asarray(loadCSV(data_path))
+        self.w_H1 = np.asarray(load_csv(data_path))
         # Biases first hidden layer
         data_path = os.path.join(nn_path, "bias_1.csv")
-        self.b_H1 = np.asarray(loadCSV(data_path))
+        self.b_H1 = np.asarray(load_csv(data_path))
         # Weights output layer
         data_path = os.path.join(nn_path, "weight_output.csv")
-        self.w_output = np.asarray(loadCSV(data_path))
+        self.w_output = np.asarray(load_csv(data_path))
         # Biases output layer
         data_path = os.path.join(nn_path, "bias_output.csv")
-        self.b_output = np.asarray(loadCSV(data_path))
+        self.b_output = np.asarray(load_csv(data_path))
 
         # Second hidden layer
         if self.n_neuron_H2 != -1:
             # Weights second hidden layer
             data_path = os.path.join(nn_path, "weight_2.csv")
-            self.w_H2 = np.asarray(loadCSV(data_path))
+            self.w_H2 = np.asarray(load_csv(data_path))
             # Biases second hidden layer
             data_path = os.path.join(nn_path, "bias_2.csv")
-            self.b_H2 = np.asarray(loadCSV(data_path))
+            self.b_H2 = np.asarray(load_csv(data_path))
 
-    def useNN(self, v_input):
+    def use_nn(self, v_input):
         """
         Use a populated neural network (i.e. from the input, returns the
         classification score or the regression result).
@@ -332,7 +332,7 @@ class neuralNet:
         return v_inter
 
 
-def deskewData(data, model_name):
+def deskew_data(data, model_name):
     """
     Performs the deskewing operations used in Bellagamba et al. (2019) on the
     quality metrics vector. Depending on the selected model.
@@ -419,7 +419,7 @@ def deskewData(data, model_name):
         return data
 
 
-def standardizeData(data, mu, sigma):
+def standardize_data(data, mu, sigma):
     """
     Performs a standardization operation on the given data ((X-mu)/sigma)
 
@@ -441,7 +441,7 @@ def standardizeData(data, mu, sigma):
     return data
 
 
-def decorrelateData(data, M):
+def decorrelate_data(data, M):
     """
     Decorrelate the data based on a Mahalanobis tranform. The transformation
     matrix is given as an input.
@@ -462,7 +462,7 @@ def decorrelateData(data, M):
     return data.tolist()
 
 
-def preprocessQualityMetrics(qm, model_name):
+def preprocess_quality_metrics(qm, model_name):
     """
     Pre-process the quality metrics according to Bellagamba et al. (2019)
     (i.e. deskews, standardizes and decorrelates the quality metrics)
@@ -481,14 +481,14 @@ def preprocessQualityMetrics(qm, model_name):
     data_path = pathlib.Path(__file__).parent / ".." / "data" / "nn_qa" / model_name
 
     # Get resource from the correct dir
-    M = loadCSV(os.path.join(data_path, "M.csv"))
+    M = load_csv(os.path.join(data_path, "M.csv"))
     csv_dir = os.path.join(data_path, "mu_sigma.csv")
-    [mu, sigma] = loadCSV(csv_dir)
+    [mu, sigma] = load_csv(csv_dir)
 
     # Deskew, standardize and decorrelate data
-    qm = deskewData(qm, model_name)
-    qm = standardizeData(qm, mu, sigma)
-    qm = decorrelateData(qm, M)
+    qm = deskew_data(qm, model_name)
+    qm = standardize_data(qm, mu, sigma)
+    qm = decorrelate_data(qm, M)
 
     return qm
 
@@ -508,7 +508,7 @@ def get_husid(acceleration, time_vector):
     return husid, AI
 
 
-def getFreqIndex(ft_freq, lower, upper):
+def get_freq_index(ft_freq, lower, upper):
     """
     Gets the indices of a frequency range in the frequency vector
 
@@ -530,7 +530,7 @@ def getFreqIndex(ft_freq, lower, upper):
     return lower_index, upper_index
 
 
-def getHusidIndex(husid, threshold):
+def get_husid_index(husid, threshold):
     """
     Returns the index of the husid for a particular threshold
 
@@ -548,7 +548,7 @@ def getHusidIndex(husid, threshold):
     return husid_index
 
 
-def calculateSNR_min(ft_freq, snr):
+def calculate_snr_min(ft_freq, snr):
     """
     Calculate the SNR min between 0.1 and 20 Hz
 
@@ -562,12 +562,12 @@ def calculateSNR_min(ft_freq, snr):
         float: min snr between 0.1 and 20 Hz
     """
     # Frequencies must be available between 0.1 and 20 Hz
-    lower_index, upper_index = getFreqIndex(ft_freq, 0.1, 20)
+    lower_index, upper_index = get_freq_index(ft_freq, 0.1, 20)
     snr_min = min(snr[lower_index:upper_index])
     return snr_min
 
 
-def calculateHusid(acc, t):
+def calculate_husid(acc, t):
     """
     Calculate the husid and Arias of a signal.
 
@@ -585,13 +585,13 @@ def calculateHusid(acc, t):
     """
     husid, AI = get_husid(acc, t)
     Arias = max(husid)
-    husid_index_5 = getHusidIndex(AI, 0.05)
-    husid_index_75 = getHusidIndex(AI, 0.75)
-    husid_index_95 = getHusidIndex(AI, 0.95)
+    husid_index_5 = get_husid_index(AI, 0.05)
+    husid_index_75 = get_husid_index(AI, 0.75)
+    husid_index_95 = get_husid_index(AI, 0.95)
     return husid, AI, Arias, husid_index_5, husid_index_75, husid_index_95
 
 
-def getClassificationMetrics(tr, p_pick, delta_t):
+def get_classification_metrics(tr, p_pick, delta_t):
     """
     Compute the quality metrics as in Bellagamba et al. (2019). More details
     in the paper.
@@ -651,7 +651,7 @@ def getClassificationMetrics(tr, p_pick, delta_t):
         husid_index1_5,
         husid_index1_75,
         husid_index1_95,
-    ) = calculateHusid(acc1, t)
+    ) = calculate_husid(acc1, t)
     (
         husid2,
         AI2,
@@ -659,7 +659,7 @@ def getClassificationMetrics(tr, p_pick, delta_t):
         husid_index2_5,
         husid_index2_75,
         husid_index2_95,
-    ) = calculateHusid(acc2, t)
+    ) = calculate_husid(acc2, t)
 
     # calculate max amplitudes of acc time series, final is geomean
     PGA1 = np.max(np.abs(acc1))
@@ -769,19 +769,19 @@ def getClassificationMetrics(tr, p_pick, delta_t):
     smooth_ftgm_pe = np.sqrt(np.multiply(abs(smooth_ft1_pe), abs(smooth_ft2_pe)))
 
     # snr metrics - min, max and averages
-    lower_index, upper_index = getFreqIndex(smooth_ft1_freq, 0.1, 20)
+    lower_index, upper_index = get_freq_index(smooth_ft1_freq, 0.1, 20)
     with np.errstate(invalid="ignore"):
         snrgm = np.divide(smooth_ftgm, smooth_ftgm_pe)
     snr_min = min(snrgm[lower_index:upper_index])
     snr_max = max(snrgm)
 
-    lower_index_average, upper_index_average = getFreqIndex(snr1_freq, 0.1, 10)
+    lower_index_average, upper_index_average = get_freq_index(snr1_freq, 0.1, 10)
     snr_average = np.trapz(
         snrgm[lower_index_average:upper_index_average],
         snr1_freq[lower_index_average:upper_index_average],
     ) / (snr1_freq[upper_index_average] - snr1_freq[lower_index_average])
 
-    lower_index_average, upper_index_average = getFreqIndex(snr1_freq, 0.1, 0.5)
+    lower_index_average, upper_index_average = get_freq_index(snr1_freq, 0.1, 0.5)
     ft_a1 = np.trapz(
         smooth_ftgm[lower_index_average:upper_index_average],
         snr1_freq[lower_index_average:upper_index_average],
@@ -791,7 +791,7 @@ def getClassificationMetrics(tr, p_pick, delta_t):
         snr1_freq[lower_index_average:upper_index_average],
     ) / (snr1_freq[upper_index_average] - snr1_freq[lower_index_average])
 
-    lower_index_average, upper_index_average = getFreqIndex(snr1_freq, 0.5, 1.0)
+    lower_index_average, upper_index_average = get_freq_index(snr1_freq, 0.5, 1.0)
     ft_a2 = np.trapz(
         smooth_ftgm[lower_index_average:upper_index_average],
         snr1_freq[lower_index_average:upper_index_average],
@@ -801,19 +801,19 @@ def getClassificationMetrics(tr, p_pick, delta_t):
         snr1_freq[lower_index_average:upper_index_average],
     ) / (snr1_freq[upper_index_average] - snr1_freq[lower_index_average])
 
-    lower_index_average, upper_index_average = getFreqIndex(snr1_freq, 1.0, 2.0)
+    lower_index_average, upper_index_average = get_freq_index(snr1_freq, 1.0, 2.0)
     snr_a3 = np.trapz(
         snrgm[lower_index_average:upper_index_average],
         snr1_freq[lower_index_average:upper_index_average],
     ) / (snr1_freq[upper_index_average] - snr1_freq[lower_index_average])
 
-    lower_index_average, upper_index_average = getFreqIndex(snr1_freq, 2.0, 5.0)
+    lower_index_average, upper_index_average = get_freq_index(snr1_freq, 2.0, 5.0)
     snr_a4 = np.trapz(
         snrgm[lower_index_average:upper_index_average],
         snr1_freq[lower_index_average:upper_index_average],
     ) / (snr1_freq[upper_index_average] - snr1_freq[lower_index_average])
 
-    lower_index_average, upper_index_average = getFreqIndex(snr1_freq, 5.0, 10.0)
+    lower_index_average, upper_index_average = get_freq_index(snr1_freq, 5.0, 10.0)
     snr_a5 = np.trapz(
         snrgm[lower_index_average:upper_index_average],
         snr1_freq[lower_index_average:upper_index_average],
@@ -865,7 +865,7 @@ def getClassificationMetrics(tr, p_pick, delta_t):
     ]
 
 
-def computeQualityMetrics(st):
+def compute_quality_metrics(st):
     """
     Get the 2 horizontal components and format the P-wave arrival time before
     launching the computation of the qualtiy metrics as in Bellagamba et al.
@@ -900,48 +900,48 @@ def computeQualityMetrics(st):
 
             # Fourier spectrum
             str_i = "ft" + ind[i]
-            tr[str_i] = tr_i.getCached("signal_spectrum")["spec"]
+            tr[str_i] = tr_i.get_cached("signal_spectrum")["spec"]
 
             # Frequ of the Fourier spectrum
             str_i = "ft" + ind[i] + "_freq"
-            tr[str_i] = tr_i.getCached("signal_spectrum")["freq"]
+            tr[str_i] = tr_i.get_cached("signal_spectrum")["freq"]
 
             # Smoothed Fourier spectrum
             str_i = "smooth_ft" + ind[i]
-            sig_spec = tr_i.getCached("smooth_signal_spectrum")["spec"]
+            sig_spec = tr_i.get_cached("smooth_signal_spectrum")["spec"]
             sig_spec = np.where(np.isnan(sig_spec), 0.0, sig_spec)
             tr[str_i] = sig_spec
 
             # Freq of he smoothed Fourier spectrum
             str_i = "smooth_ft" + ind[i] + "_freq"
-            tr[str_i] = tr_i.getCached("smooth_signal_spectrum")["freq"]
+            tr[str_i] = tr_i.get_cached("smooth_signal_spectrum")["freq"]
 
             # Fourier spectrum of the pre-event trace
             str_i = "ft" + ind[i] + "_pe"
-            tr[str_i] = tr_i.getCached("noise_spectrum")["spec"]
+            tr[str_i] = tr_i.get_cached("noise_spectrum")["spec"]
 
             # Frequ of the Fourier spectrum (pre-event trace)
             str_i = "ft" + ind[i] + "_freq_pe"
-            tr[str_i] = tr_i.getCached("noise_spectrum")["freq"]
+            tr[str_i] = tr_i.get_cached("noise_spectrum")["freq"]
 
             # Smoothed Fourier spectrum of the pre-event trace
             str_i = "smooth_ft" + ind[i] + "_pe"
-            noise_spec = tr_i.getCached("smooth_noise_spectrum")["spec"]
+            noise_spec = tr_i.get_cached("smooth_noise_spectrum")["spec"]
             noise_spec = np.where(np.isnan(noise_spec), 0.0, noise_spec)
             tr[str_i] = noise_spec
 
             # SNR
             str_i = "snr" + ind[i]
-            tr[str_i] = tr_i.getCached("snr")["snr"]
+            tr[str_i] = tr_i.get_cached("snr")["snr"]
 
             # SNR freq
             str_i = "snr" + ind[i] + "_freq"
-            tr[str_i] = tr_i.getCached("snr")["freq"]
+            tr[str_i] = tr_i.get_cached("snr")["freq"]
 
         i = i + 1
 
     # P-wave arrival time
-    split_prov = st[0].getParameter("signal_split")
+    split_prov = st[0].get_parameter("signal_split")
     if isinstance(split_prov, list):
         split_prov = split_prov[0]
     split_time = split_prov["split_time"]
@@ -952,6 +952,6 @@ def computeQualityMetrics(st):
     delta_t = st[0].stats.delta
 
     # Compute the QM
-    qm = getClassificationMetrics(tr, p_pick, delta_t)
+    qm = get_classification_metrics(tr, p_pick, delta_t)
 
     return qm

@@ -20,7 +20,7 @@ def test_pga():
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=0,
         lon=0,

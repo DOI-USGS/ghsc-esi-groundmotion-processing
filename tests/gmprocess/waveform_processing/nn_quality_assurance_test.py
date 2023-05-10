@@ -27,7 +27,7 @@ def test_nnet():
             {"detrend": {"detrending_method": "linear"}},
             {"compute_snr": {"bandwidth": 20.0}},
             {"snr_check": {"max_freq": 5.0, "min_freq": 0.2, "threshold": 3.0}},
-            {"NNet_QA": {"acceptance_threshold": 0.5, "model_name": "CantWell"}},
+            {"nnet_qa": {"acceptance_threshold": 0.5, "model_name": "CantWell"}},
         ]
     }
     update_dict(conf, update)
@@ -41,7 +41,7 @@ def test_nnet():
 
     sc = StreamCollection(streams)
     test = process_streams(sc, event, conf)
-    nnet_dict = test[0].getStreamParam("nnet_qa")
+    nnet_dict = test[0].get_stream_param("nnet_qa")
     np.testing.assert_allclose(nnet_dict["score_HQ"], 0.9996686646819085, rtol=1e-3)
 
 

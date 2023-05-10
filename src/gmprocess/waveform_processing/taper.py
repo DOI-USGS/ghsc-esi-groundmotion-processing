@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 TAPER_TYPES = {
     "cosine": "Cosine",
@@ -25,7 +25,7 @@ TAPER_TYPES = {
 }
 
 
-@ProcessingStep
+@processing_step
 def taper(st, type="hann", width=0.05, side="both", config=None):
     """Taper streams.
 
@@ -51,7 +51,7 @@ def taper(st, type="hann", width=0.05, side="both", config=None):
         if tr.passed:
             tr.taper(max_percentage=width, type=type, side=side)
             window_type = TAPER_TYPES[type]
-            tr.setProvenance(
+            tr.set_provenance(
                 "taper",
                 {"window_type": window_type, "taper_width": width, "side": side},
             )

@@ -210,19 +210,19 @@ def build_report_latex(
 
         report += prov_latex
         report += "\n"
-        if st[0].hasParameter("signal_split"):
-            pick_method = st[0].getParameter("signal_split")["picker_type"]
+        if st[0].has_parameter("signal_split"):
+            pick_method = st[0].get_parameter("signal_split")["picker_type"]
             report += f"Pick Method: {str_for_latex(pick_method)}\n\n"
-        if "nnet_qa" in st.getStreamParamKeys():
-            score_lq = st.getStreamParam("nnet_qa")["score_LQ"]
-            score_hq = st.getStreamParam("nnet_qa")["score_HQ"]
+        if "nnet_qa" in st.get_stream_param_keys():
+            score_lq = st.get_stream_param("nnet_qa")["score_LQ"]
+            score_hq = st.get_stream_param("nnet_qa")["score_HQ"]
             report += f"Neural Network LQ score: {str_for_latex(str(score_lq))}\n\n"
             report += f"Neural Network HQ score: {str_for_latex(str(score_hq))}\n\n"
         if not st.passed:
             for tr in st:
                 if not tr.passed:
                     report += "Failure reason: %s\n\n" % str_for_latex(
-                        tr.getParameter("failure")["reason"]
+                        tr.get_parameter("failure")["reason"]
                     )
                     break
         report += "\\newpage\n\n"
@@ -305,7 +305,7 @@ def get_prov_latex(st):
     channelidx = np.argsort(channels).tolist()
 
     trace1 = st[channelidx.index(0)]
-    prov1 = trace1.getProvDataFrame().to_dict()
+    prov1 = trace1.get_prov_dataframe().to_dict()
     prov_ind = [v for v in prov1["Index"].values()]
 
     final_dict = {
@@ -316,7 +316,7 @@ def get_prov_latex(st):
 
     for i in channelidx[1:]:
         trace2 = st[i]
-        prov2 = trace2.getProvDataFrame().to_dict()
+        prov2 = trace2.get_prov_dataframe().to_dict()
         final_dict[f"{trace2.stats.channel} Value"] = [
             v for v in prov2["Process Value"].values()
         ]

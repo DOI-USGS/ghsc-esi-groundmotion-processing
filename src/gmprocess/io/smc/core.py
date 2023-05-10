@@ -212,7 +212,7 @@ def read_smc(filename, config=None, **kwargs):
     trace = StationTrace(data, header=stats)
 
     response = {"input_units": "counts", "output_units": "cm/s^2"}
-    trace.setProvenance("remove_response", response)
+    trace.set_provenance("remove_response", response)
 
     stream = StationStream(traces=[trace], config=config)
     return [stream]

@@ -36,18 +36,18 @@ def test_stream():
         trace = Trace(data=data, header=header)
         traces.append(trace)
     invstream = StationStream(traces=traces, inventory=inventory)
-    inventory2 = invstream.getInventory()
+    inventory2 = invstream.get_inventory()
     inv2_channel1 = inventory2.networks[0].stations[0].channels[0]
     inv_channel1 = inventory2.networks[0].stations[0].channels[0]
     assert inv_channel1.code == inv2_channel1.code
 
     # test the streamparam functionality
     statsdict = {"name": "Fred", "age": 34}
-    invstream.setStreamParam("stats", statsdict)
-    stream_params = invstream.getStreamParamKeys()
+    invstream.set_stream_param("stats", statsdict)
+    stream_params = invstream.get_stream_param_keys()
     stream_params.sort()
     assert stream_params == ["any_trace_failures", "stats"]
-    cmpdict = invstream.getStreamParam("stats")
+    cmpdict = invstream.get_stream_param("stats")
     assert statsdict == cmpdict
 
 

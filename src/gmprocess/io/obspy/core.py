@@ -4,7 +4,6 @@
 import glob
 import logging
 import os
-import pathlib
 import re
 
 from gmprocess.core.stationstream import StationStream

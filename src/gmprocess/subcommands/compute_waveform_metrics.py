@@ -74,7 +74,7 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
 
         for station_id in station_list:
             # Cannot parallelize IO to ASDF file
-            streams = self.workspace.getStreams(
+            streams = self.workspace.get_streams(
                 event.id,
                 stations=[station_id],
                 labels=[self.gmrecords.args.label],

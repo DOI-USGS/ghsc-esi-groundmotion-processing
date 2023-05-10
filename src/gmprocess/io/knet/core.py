@@ -201,7 +201,7 @@ def read_knet(filename, config=None, **kwargs):
     # create a Trace from the data and metadata
     trace = StationTrace(data.copy(), Stats(hdr.copy()), config=config)
     response = {"input_units": "counts", "output_units": "cm/s^2"}
-    trace.setProvenance("remove_response", response)
+    trace.set_provenance("remove_response", response)
 
     stream = StationStream(traces=[trace], config=config)
     return [stream]

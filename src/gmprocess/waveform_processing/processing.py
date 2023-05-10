@@ -114,10 +114,10 @@ def process_streams(streams, event, config=None, old_streams=None):
                 tr_old = old_stream[j]
                 # Check if old_streams have review parameters because it is not
                 # guaranteed
-                if tr_old.hasParameter("review"):
-                    review_dict = tr_old.getParameter("review")
+                if tr_old.has_parameter("review"):
+                    review_dict = tr_old.get_parameter("review")
                     # Transfer review parameter from old stream to new
-                    stream[j].setParameter("review", review_dict)
+                    stream[j].set_parameter("review", review_dict)
                     # Was it failed via manual review?
                     if "accepted" in review_dict:
                         if not review_dict["accepted"]:

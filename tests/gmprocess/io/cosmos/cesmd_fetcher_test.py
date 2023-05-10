@@ -26,10 +26,10 @@ def test_CESMDFetcher():
         fetcher = CESMDFetcher(
             utime, eqlat, eqlon, eqdepth, eqmag, email=email, rawdir=tmp_dir
         )
-        events = fetcher.getMatchingEvents(solve=False)
+        events = fetcher.get_matching_events(solve=False)
         assert len(events) == 1
         assert events[0]["mag"] == eqmag
-        stream_collection = fetcher.retrieveData(events[0])
+        stream_collection = fetcher.retrieve_data(events[0])
         assert len(stream_collection) == 1
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)

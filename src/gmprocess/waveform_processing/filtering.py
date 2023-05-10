@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
+@processing_step
 def highpass_filter(
     st, frequency_domain=True, filter_order=5, number_of_passes=1, config=None
 ):
@@ -65,7 +65,7 @@ def highpass_filter_trace(
     else:
         raise ValueError("number_of_passes must be 1 or 2.")
     try:
-        freq_dict = tr.getParameter("corner_frequencies")
+        freq_dict = tr.get_parameter("corner_frequencies")
         freq = freq_dict["highpass"]
 
         tr.filter(
@@ -82,7 +82,7 @@ def highpass_filter_trace(
     return tr
 
 
-@ProcessingStep
+@processing_step
 def lowpass_filter(
     st, frequency_domain=True, filter_order=5, number_of_passes=1, config=None
 ):
@@ -145,7 +145,7 @@ def lowpass_filter_trace(
     else:
         raise ValueError("number_of_passes must be 1 or 2.")
 
-    freq_dict = tr.getParameter("corner_frequencies")
+    freq_dict = tr.get_parameter("corner_frequencies")
     freq = freq_dict["lowpass"]
     try:
         tr.filter(

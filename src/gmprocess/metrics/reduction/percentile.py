@@ -69,12 +69,12 @@ class Percentile(Reduction):
         if isinstance(stream, np.ndarray):
             rdata = stream
         elif self.period is not None:
-            if "rotated_oscillator" in stream.getStreamParamKeys():
-                rdata = stream.getStreamParam("rotated_oscillator")
+            if "rotated_oscillator" in stream.get_stream_param_keys():
+                rdata = stream.get_stream_param("rotated_oscillator")
             else:
                 raise ValueError("Missing rotated oscillator response.")
-        elif "rotated" in stream.getStreamParamKeys():
-            rdata = stream.getStreamParam("rotated")
+        elif "rotated" in stream.get_stream_param_keys():
+            rdata = stream.get_stream_param("rotated")
         else:
             raise ValueError(
                 "Percentile reduction can only be applied after a rotation "

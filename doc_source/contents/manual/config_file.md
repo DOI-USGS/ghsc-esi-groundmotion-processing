@@ -89,7 +89,7 @@ is the link to it).
 
 ```{Hint}
 If you are familiar with python, you'll note that each available processing step is
-marked with the `@ProcessingStep` decorator. 
+marked with the `@processing_step` decorator. 
 ```
 
 Many sections of the config file are not of interest to most uses, such as the details of the `pickers` section. 

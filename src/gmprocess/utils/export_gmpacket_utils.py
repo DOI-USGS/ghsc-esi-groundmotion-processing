@@ -48,7 +48,7 @@ class GroundMotionPacketWriter(object):
         self._label = label
 
     def get_gmp_event(self, eventid):
-        scalar_event = self._workspace.getEvent(eventid)
+        scalar_event = self._workspace.get_event(eventid)
         # id, time, magnitude, lat, lon, depth)
         gmp_event = Event.from_params(
             eventid,
@@ -70,7 +70,7 @@ class GroundMotionPacketWriter(object):
         return gmp_housing
 
     def get_provenance(self, trace):
-        provdoc = trace.getProvenanceDocument()
+        provdoc = trace.get_provenance_document()
         provdict = json.loads(provdoc.serialize())
         provdict.pop("entity")
         provdict.pop("activity")
@@ -151,7 +151,7 @@ class GroundMotionPacketWriter(object):
         nstreams = 0
         ntraces = 0
         files = []
-        for eventid in self._workspace.getEventIds():
+        for eventid in self._workspace.get_event_ids():
             nevents += 1
             gmp_event = self.get_gmp_event(eventid)
             ds = self._workspace.dataset
@@ -159,7 +159,7 @@ class GroundMotionPacketWriter(object):
             gmp_provenance = None
             station_list = ds.waveforms.list()
             for station_id in station_list:
-                streams = self._workspace.getStreams(
+                streams = self._workspace.get_streams(
                     eventid, stations=[station_id], labels=[self._label]
                 )
                 gmp_streams = []
@@ -185,7 +185,7 @@ class GroundMotionPacketWriter(object):
                         sta = trace.stats.station
                         loc = trace.stats.location
 
-                        summary = self._workspace.getStreamMetrics(
+                        summary = self._workspace.get_stream_metrics(
                             eventid,
                             net,
                             sta,

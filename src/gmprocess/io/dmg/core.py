@@ -306,7 +306,7 @@ def _read_volume_one(filename, line_offset, location="", units="acc", config=Non
         acc_trace = resample_uneven_trace(acc_trace, times, acc_data, config=config)
 
     response = {"input_units": "counts", "output_units": "cm/s^2"}
-    acc_trace.setProvenance("remove_response", response)
+    acc_trace.set_provenance("remove_response", response)
 
     traces = [acc_trace]
     new_offset = skip_rows + max_rows + 1  # there is an end of record line
@@ -369,7 +369,7 @@ def _read_volume_two(filename, line_offset, location="", units="acc"):
         acc_trace = StationTrace(acc_data.copy(), Stats(hdr.copy()))
 
         response = {"input_units": "counts", "output_units": "cm/s^2"}
-        acc_trace.setProvenance("remove_response", response)
+        acc_trace.set_provenance("remove_response", response)
 
         if units == "acc":
             traces += [acc_trace]

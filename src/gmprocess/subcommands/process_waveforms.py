@@ -85,7 +85,7 @@ class ProcessWaveformsModule(base.SubcommandModule):
         for station_id in station_list:
             # Cannot parallelize IO to ASDF file
             config = self._get_config()
-            raw_streams = self.workspace.getStreams(
+            raw_streams = self.workspace.get_streams(
                 event.id,
                 stations=[station_id],
                 labels=["unprocessed"],
@@ -96,7 +96,7 @@ class ProcessWaveformsModule(base.SubcommandModule):
                 # being used for the result of THIS round of processing; thus, I'm
                 # using "old_streams" for the previously processed streams which
                 # contain the manually reviewed information
-                old_streams = self.workspace.getStreams(
+                old_streams = self.workspace.get_streams(
                     event.id,
                     stations=[station_id],
                     labels=[self.process_tag],
@@ -135,7 +135,7 @@ class ProcessWaveformsModule(base.SubcommandModule):
             overwrite = True
 
         for processed_stream in processed_streams:
-            self.workspace.addStreams(
+            self.workspace.add_streams(
                 event,
                 processed_stream,
                 label=self.process_tag,

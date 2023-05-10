@@ -122,7 +122,7 @@ class SubcommandModule(ABC):
 
         config = self._get_config()
 
-        self.pstreams = self.workspace.getStreams(
+        self.pstreams = self.workspace.get_streams(
             self.eventid, labels=[self.gmrecords.args.label], config=config
         )
 
@@ -178,7 +178,7 @@ class SubcommandModule(ABC):
         )
 
     def _get_labels(self):
-        labels = self.workspace.getLabels()
+        labels = self.workspace.get_labels()
         if len(labels):
             labels.remove("unprocessed")
         if not len(labels):

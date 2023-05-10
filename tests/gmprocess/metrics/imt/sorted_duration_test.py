@@ -16,7 +16,7 @@ def test_sorted_duration():
     stream = read_data(data_file)[0]
 
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=0,
         lon=0,

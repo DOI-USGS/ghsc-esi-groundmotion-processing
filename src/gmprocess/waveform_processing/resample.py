@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
+@processing_step
 def resample(st, new_sampling_rate=None, method=None, a=None, config=None):
     """Resample stream.
 
@@ -32,6 +32,6 @@ def resample(st, new_sampling_rate=None, method=None, a=None, config=None):
     for tr in st:
         if tr.passed:
             tr.interpolate(sampling_rate=new_sampling_rate, method=method, a=a)
-            tr.setProvenance("resample", {"new_sampling_rate": new_sampling_rate})
+            tr.set_provenance("resample", {"new_sampling_rate": new_sampling_rate})
 
     return st

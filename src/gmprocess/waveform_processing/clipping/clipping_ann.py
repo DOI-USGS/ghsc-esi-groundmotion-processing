@@ -67,29 +67,29 @@ class clipNet:
         # Load weights and biases
         # Weights first hidden layer
         data_path = os.path.join(NN_PATH, "weight_1.csv")
-        self.w_H1 = np.asarray(loadCSV(data_path))
+        self.w_H1 = np.asarray(load_csv(data_path))
 
         # Biases first hidden layer
         data_path = os.path.join(NN_PATH, "bias_1.csv")
-        self.b_H1 = np.asarray(loadCSV(data_path))
+        self.b_H1 = np.asarray(load_csv(data_path))
 
         # Weights output layer
         data_path = os.path.join(NN_PATH, "weight_output.csv")
-        self.w_output = np.asarray(loadCSV(data_path))
+        self.w_output = np.asarray(load_csv(data_path))
 
         # Biases output layer
         data_path = os.path.join(NN_PATH, "bias_output.csv")
-        self.b_output = np.asarray(loadCSV(data_path))
+        self.b_output = np.asarray(load_csv(data_path))
 
         # Second hidden layer
         if self.n_neuron_H2 != -1:
             # Weights second hidden layer
             data_path = os.path.join(NN_PATH, "weight_2.csv")
-            self.w_H2 = np.asarray(loadCSV(data_path))
+            self.w_H2 = np.asarray(load_csv(data_path))
 
             # Biases second hidden layer
             data_path = os.path.join(NN_PATH, "bias_2.csv")
-            self.b_H2 = np.asarray(loadCSV(data_path))
+            self.b_H2 = np.asarray(load_csv(data_path))
 
     def evaluate(self, v_input):
         """
@@ -145,7 +145,7 @@ class clipNet:
         return v_inter
 
 
-def loadCSV(data_path, row_ignore=0, col_ignore=0):
+def load_csv(data_path, row_ignore=0, col_ignore=0):
     """
     Load csv files from a given path and returns a list of list.
     For all imported data, check if is a number. If so, returns a
@@ -175,7 +175,7 @@ def loadCSV(data_path, row_ignore=0, col_ignore=0):
             # Input vector
             single_line = []
             for i in range(col_ignore, len(row)):
-                if isNumber(row[i]):
+                if is_number(row[i]):
                     single_line.append(float(row[i]))
                 else:
                     single_line.append(row[i])
@@ -235,7 +235,7 @@ def relu(v_input):
     return v_act
 
 
-def isNumber(s):
+def is_number(s):
     """
     Check if given input is a number.
 

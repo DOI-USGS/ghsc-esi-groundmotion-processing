@@ -91,7 +91,7 @@ class FDSNFetcher(DataFetcher):
         self.drop_non_free = drop_non_free
         self.stream_collection = stream_collection
 
-    def getMatchingEvents(self, solve=True):
+    def get_matching_events(self, solve=True):
         """Return a list of dictionaries matching input parameters.
 
         Args:
@@ -109,13 +109,13 @@ class FDSNFetcher(DataFetcher):
         """
         pass
 
-    def retrieveData(self):
+    def retrieve_data(self):
         """Retrieve data from many FDSN services, turn into StreamCollection.
 
         Args:
             event (dict):
                 Best dictionary matching input event, fields as above
-                in return of getMatchingEvents().
+                in return of get_matching_events().
 
         Returns:
             StreamCollection: StreamCollection object.

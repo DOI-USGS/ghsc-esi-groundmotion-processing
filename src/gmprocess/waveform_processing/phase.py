@@ -40,7 +40,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 
 
 # Adapted from MATLAB script
-def AICPicker(data, triggers, search_window, sps):
+def aic_picker(data, triggers, search_window, sps):
     refined_triggers = []
     data = data - np.median(data)
     searchwindowpts = int(sps * search_window)
@@ -80,7 +80,7 @@ def AICPicker(data, triggers, search_window, sps):
     return refined_triggers
 
 
-def STALTA_Earle(
+def sta_lta_earle(
     data, datao, sps, STAW, STAW2, LTAW, hanning, threshold, threshold2, threshdrop
 ):
     data_hil = hilbert(data)
@@ -130,7 +130,7 @@ def STALTA_Earle(
             triggers_off.append(i)
             trigger = False
 
-    refined_triggers = AICPicker(data, triggers_on, 4.0, sps)
+    refined_triggers = aic_picker(data, triggers_on, 4.0, sps)
 
     return (
         refined_triggers,
@@ -144,7 +144,7 @@ def STALTA_Earle(
     )
 
 
-def PowerPicker(
+def power_picker(
     tr,
     highpass=1.4,
     lowpass=6,
@@ -197,7 +197,7 @@ def PowerPicker(
 
     datahigh = butter_bandpass_filter(data, highpass, lowpass, sps, order=order)
 
-    rt = STALTA_Earle(
+    rt = sta_lta_earle(
         datahigh,
         data,
         sps,
@@ -420,7 +420,7 @@ def pick_yeck(stream):
         pidx_start = int(min_window * sr)
         snr = np.zeros(len(data))
         for pidx in range(pidx_start, len(data) - pidx_start):
-            snr_i = sub_calc_snr(data, pidx)
+            snr_i = calc_snr(data, pidx)
             snr[pidx] = snr_i
         snr = np.array(snr)
         pidx = snr.argmax()
@@ -442,13 +442,13 @@ def pick_yeck(stream):
 
 
 def pick_power(stream, picker_config=None, config=None):
-    """Wrapper around the PowerPicker.
+    """Wrapper around the power_picker.
 
     Args:
         stream (StationStream):
             Stream containing waveforms that need to be picked.
         picker_config (dict):
-            Dictionary with parameters for PowerPicker. See picker.yml.
+            Dictionary with parameters for power_picker. See picker.yml.
         config (dict):
             Configuration dictionary. Key value here is:
                 windows:
@@ -465,7 +465,7 @@ def pick_power(stream, picker_config=None, config=None):
     params = picker_config["power"]
     locs = []
     for trace in stream:
-        loc = PowerPicker(trace, **params)
+        loc = power_picker(trace, **params)
         locs.append(loc)
 
     locs = np.array(locs)
@@ -730,7 +730,7 @@ def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     catalog = []
     for idx, row in df_catalog.iterrows():
         event = ScalarEvent()
-        event.fromParams(
+        event.from_params(
             row["id"],
             row["time"],
             row["latitude"],
