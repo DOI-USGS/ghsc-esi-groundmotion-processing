@@ -63,10 +63,10 @@ class ExportMetricTablesModule(base.SubcommandModule):
                 )
                 continue
 
-            event_table, imc_tables, readmes = self.workspace.getTables(
+            event_table, imc_tables, readmes = self.workspace.get_tables(
                 self.gmrecords.args.label, config
             )
-            ev_fit_spec, fit_readme = self.workspace.getFitSpectraTable(
+            ev_fit_spec, fit_readme = self.workspace.get_fit_spectra_table(
                 self.eventid, self.gmrecords.args.label, config
             )
 
@@ -74,7 +74,7 @@ class ExportMetricTablesModule(base.SubcommandModule):
             # SNR. For now, I'm going to take it from the SA period list, but
             # this could be changed to something else, or even be set via the
             # config file.
-            snr_table, snr_readme = self.workspace.getSNRTable(
+            snr_table, snr_readme = self.workspace.get_snr_table(
                 self.eventid, self.gmrecords.args.label, config
             )
             self.workspace.close()

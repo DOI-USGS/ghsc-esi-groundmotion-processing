@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
+@processing_step
 def check_zero_crossings(st, min_crossings=0.1, config=None):
     """Requires a minimum zero crossing rate.
 
@@ -35,9 +35,9 @@ def check_zero_crossings(st, min_crossings=0.1, config=None):
         # not want to modify the trace but we only want to count the crossings
         # within the trimmed window
 
-        if tr.hasParameter("signal_end") and tr.passed:
-            etime = tr.getParameter("signal_end")["end_time"]
-            split_time = tr.getParameter("signal_split")["split_time"]
+        if tr.has_parameter("signal_end") and tr.passed:
+            etime = tr.get_parameter("signal_end")["end_time"]
+            split_time = tr.get_parameter("signal_split")["split_time"]
 
             sig_start = int((split_time - tr.stats.starttime) / tr.stats.delta)
             sig_end = int((etime - tr.stats.starttime) / tr.stats.delta)
@@ -50,7 +50,7 @@ def check_zero_crossings(st, min_crossings=0.1, config=None):
             z_rate = zero_count_tr / dur
 
             # Put results back into the original trace, not the copy
-            tr.setParameter("ZeroCrossingRate", {"crossing_rate": z_rate})
+            tr.set_parameter("ZeroCrossingRate", {"crossing_rate": z_rate})
 
             # Fail if zero crossing rate is too low
             if z_rate <= min_crossings:

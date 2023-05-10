@@ -44,7 +44,7 @@ def correct_baseline(trace, config=None):
     # Subtract the second derivative of the polynomial from the
     # acceleration trace
     trace.data -= polynomial_second_derivative(time_values)
-    trace.setParameter("baseline", {"polynomial_coefs": poly_cofs})
+    trace.set_parameter("baseline", {"polynomial_coefs": poly_cofs})
 
     return trace
 

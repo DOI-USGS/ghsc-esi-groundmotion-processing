@@ -48,7 +48,8 @@ class ConfigModule(base.SubcommandModule):
             "help": (
                 "Replace the config in the workspace files with the config "
                 "in the current project (no argument) or with a config.yml "
-                "in the directory specified. Do not specify the path to the config file!"
+                "in the directory specified. Do not specify the path to the config "
+                "file!"
             ),
             "default": "default",
         },
@@ -120,6 +121,6 @@ class ConfigModule(base.SubcommandModule):
                         )
                     # Write project config to workspace
                     logging.info(f"Adding config {event.id} workspace file.")
-                    workspace.addConfig(config=proj_config, force=True)
+                    workspace.add_config(config=proj_config, force=True)
 
         self._summarize_files_created()

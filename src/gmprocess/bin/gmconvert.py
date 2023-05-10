@@ -158,7 +158,7 @@ https://docs.obspy.org/packages/autogen/obspy.core.stream.Stream.write.html#supp
             streamid = stream[0].get_id()
         invfile = outdir / f"{streamid}.xml"
         inv_format = "STATIONXML"
-        inv = stream.getInventory()
+        inv = stream.get_inventory()
         logging.info(f"Writing inventory file {invfile}...")
         inv.write(str(invfile), format=inv_format)
 

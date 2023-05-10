@@ -61,7 +61,7 @@ class ExportProvenanceTablesModule(base.SubcommandModule):
                 self.workspace.close()
                 continue
 
-            provdata = self.workspace.getProvenance(
+            provdata = self.workspace.get_provenance(
                 self.eventid, labels=self.gmrecords.args.label
             )
             self.workspace.close()

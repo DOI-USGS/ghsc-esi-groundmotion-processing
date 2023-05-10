@@ -43,7 +43,7 @@ def skip_test_fetcher():
             config=config,
             stream_collection=False,
         )
-        fetcher.retrieveData()
+        fetcher.retrieve_data()
         filenames = next(os.walk(rawdir), (None, None, []))[2]
         assert len(filenames) == 12
     except Exception as e:

@@ -99,7 +99,7 @@ def resample_uneven_trace(
     else:
         raise ValueError("Unsupported method value.")
 
-    trace.setProvenance(
+    trace.set_provenance(
         "resample",
         {
             "record_length": duration,
@@ -109,7 +109,7 @@ def resample_uneven_trace(
         },
     )
 
-    trace.setParameter("raw_max", raw_max)
+    trace.set_parameter("raw_max", raw_max)
     return trace
 
 

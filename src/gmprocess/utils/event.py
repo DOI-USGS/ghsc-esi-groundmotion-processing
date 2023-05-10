@@ -19,7 +19,7 @@ class ScalarEvent(Event):
         super(ScalarEvent, self).__init__(*args, **kwargs)
 
     @classmethod
-    def fromEvent(cls, event):
+    def from_event(cls, event):
         eventobj = cls()
 
         # copy the arrays
@@ -50,7 +50,7 @@ class ScalarEvent(Event):
 
         return eventobj
 
-    def fromParams(self, id, time, lat, lon, depth, magnitude, mag_type=None):
+    def from_params(self, id, time, lat, lon, depth, magnitude, mag_type=None):
         """Create a ScalarEvent (subclass of Event).
 
         Args:
@@ -216,7 +216,7 @@ def get_event_object(dict_or_id):
     event = ScalarEvent()
     if "magnitude_type" not in event_dict.keys():
         event_dict["magnitude_type"] = None
-    event.fromParams(
+    event.from_params(
         event_dict["id"],
         event_dict["time"],
         event_dict["lat"],

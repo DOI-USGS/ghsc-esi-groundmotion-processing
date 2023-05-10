@@ -8,13 +8,13 @@ Methods for handling instrument response.
 import numpy as np
 import logging
 from gmprocess.core.stationtrace import PROCESS_LEVELS
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 ABBREV_UNITS = {"ACC": "cm/s^2", "VEL": "cm/s", "DISP": "cm"}
 M_TO_CM = 100.0
 
 
-@ProcessingStep
+@processing_step
 def remove_response(
     st,
     pre_filt=True,
@@ -62,12 +62,12 @@ def remove_response(
     output = "ACC"
 
     if inv is None:
-        inv = st.getInventory()
+        inv = st.get_inventory()
 
     # Check if the response information is already attached in the trace stats
     for tr in st:
         # Check if this trace has already been converted to physical units
-        if "remove_response" in tr.getProvenanceKeys():
+        if "remove_response" in tr.get_provenance_keys():
             logging.debug(
                 "Trace has already had instrument response removed. "
                 "Nothing to be done."
@@ -101,7 +101,7 @@ def remove_response(
                         zero_mean=True,
                         taper=False,
                     )
-                    tr.setProvenance(
+                    tr.set_provenance(
                         "remove_response",
                         {
                             "method": "remove_response",
@@ -142,7 +142,7 @@ def remove_response(
                     if len(paz.poles) == 0 and len(paz.zeros) == 0:
                         tr.remove_sensitivity(inventory=inv)
                         tr.data *= M_TO_CM  # Convert from m to cm
-                        tr.setProvenance(
+                        tr.set_provenance(
                             "remove_response",
                             {
                                 "method": "remove_sensitivity",
@@ -163,7 +163,7 @@ def remove_response(
                             taper=False,
                         )
                         tr.data *= M_TO_CM  # Convert from m to cm
-                        tr.setProvenance(
+                        tr.set_provenance(
                             "remove_response",
                             {
                                 "method": "remove_response",
@@ -198,7 +198,7 @@ def remove_response(
             )
             tr.remove_sensitivity(inventory=inv)
             tr.data *= M_TO_CM  # Convert from m to cm
-            tr.setProvenance(
+            tr.set_provenance(
                 "remove_response",
                 {
                     "method": "remove_sensitivity",

@@ -93,9 +93,9 @@ def read_unam(filename, config=None, **kwargs):
 
     # tell the trace that data has already been converted to physical units
     response = {"input_units": "counts", "output_units": "cm/s^2"}
-    trace1.setProvenance("remove_response", response)
-    trace2.setProvenance("remove_response", response)
-    trace3.setProvenance("remove_response", response)
+    trace1.set_provenance("remove_response", response)
+    trace2.set_provenance("remove_response", response)
+    trace3.set_provenance("remove_response", response)
 
     stream = StationStream(traces=[trace1, trace2, trace3], config=config)
     return [stream]

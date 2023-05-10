@@ -73,7 +73,7 @@ def test_fas():
 
     for tr in stream:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
-        tr.setProvenance("remove_response", response)
+        tr.set_provenance("remove_response", response)
 
     target_df = pd.read_pickle(fas_file)
     ind_vals = target_df.index.values
@@ -83,7 +83,7 @@ def test_fas():
     imts = ["fas" + str(p) for p in per]
     config = get_config()
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=37.0,
         lon=-122.0,

@@ -67,8 +67,8 @@ def test_corner_frequencies():
         if not stream.passed:
             continue
         stream = get_corner_frequencies(stream, event, method="snr")
-        if stream[0].hasParameter("corner_frequencies"):
-            cfdict = stream[0].getParameter("corner_frequencies")
+        if stream[0].has_parameter("corner_frequencies"):
+            cfdict = stream[0].get_parameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
     np.testing.assert_allclose(
@@ -76,8 +76,8 @@ def test_corner_frequencies():
     )
 
     st = processed_streams.select(station="THZ")[0]
-    lps = [tr.getParameter("corner_frequencies")["lowpass"] for tr in st]
-    hps = [tr.getParameter("corner_frequencies")["highpass"] for tr in st]
+    lps = [tr.get_parameter("corner_frequencies")["lowpass"] for tr in st]
+    hps = [tr.get_parameter("corner_frequencies")["highpass"] for tr in st]
     np.testing.assert_allclose(np.sort(lps), [50.0, 50.0, 100.0], atol=1e-6)
     np.testing.assert_allclose(
         np.sort(hps), [0.02437835, 0.02437835, 0.02437835], atol=1e-5
@@ -89,8 +89,8 @@ def test_corner_frequencies():
         if not stream.passed:
             continue
         stream = get_corner_frequencies(stream, event, method="snr")
-        if stream[0].hasParameter("corner_frequencies"):
-            cfdict = stream[0].getParameter("corner_frequencies")
+        if stream[0].has_parameter("corner_frequencies"):
+            cfdict = stream[0].get_parameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
 
@@ -99,8 +99,8 @@ def test_corner_frequencies():
     )
 
     st = processed_streams.select(station="HSES")[0]
-    lps = [tr.getParameter("corner_frequencies")["lowpass"] for tr in st]
-    hps = [tr.getParameter("corner_frequencies")["highpass"] for tr in st]
+    lps = [tr.get_parameter("corner_frequencies")["lowpass"] for tr in st]
+    hps = [tr.get_parameter("corner_frequencies")["highpass"] for tr in st]
 
     np.testing.assert_allclose(np.sort(lps), [100.0, 100.0, 100.0], atol=1e-6)
     np.testing.assert_allclose(
@@ -156,8 +156,8 @@ def test_corner_frequencies_magnitude():
         if not stream.passed:
             continue
         stream = get_corner_frequencies(stream, event, method="magnitude")
-        if stream[0].hasParameter("corner_frequencies"):
-            cfdict = stream[0].getParameter("corner_frequencies")
+        if stream[0].has_parameter("corner_frequencies"):
+            cfdict = stream[0].get_parameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
 

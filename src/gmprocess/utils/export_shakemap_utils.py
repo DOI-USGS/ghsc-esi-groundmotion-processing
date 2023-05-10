@@ -52,7 +52,7 @@ def create_json(
 
     station_features = []
 
-    streams = workspace.getStreams(event.id, labels=[label], config=config)
+    streams = workspace.get_streams(event.id, labels=[label], config=config)
     npassed = 0
     for stream in streams:
         if stream.passed:
@@ -93,7 +93,7 @@ def create_json(
         }
         nfeatures += 1
 
-        metrics = workspace.getStreamMetrics(
+        metrics = workspace.get_stream_metrics(
             event.id,
             properties["network_code"],
             properties["station_code"],
@@ -125,7 +125,7 @@ def create_json(
             channel = trace.stats.channel
 
             # get trace provenance
-            provthing = trace.getProvenanceDocument(base_prov=base_prov)
+            provthing = trace.get_provenance_document(base_prov=base_prov)
             provjson = provthing.serialize(format="json")
             provenance_dict = json.loads(provjson)
             provenance[channel] = provenance_dict

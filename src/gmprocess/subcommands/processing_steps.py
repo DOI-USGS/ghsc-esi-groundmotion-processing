@@ -10,7 +10,7 @@ base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 STEPS = LazyLoader("steps", globals(), "gmprocess.waveform_processing.processing_step")
 
 
-class ProcessingStepsModule(base.SubcommandModule):
+class processing_stepsModule(base.SubcommandModule):
     """Print a summary of the currently available processing steps."""
 
     epilog = """

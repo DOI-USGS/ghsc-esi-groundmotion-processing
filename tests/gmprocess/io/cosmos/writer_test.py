@@ -93,13 +93,13 @@ def get_sample_data(volume):
     datafile = TEST_DATA_DIR / "asdf" / "nc71126864" / "workspace.h5"
     workspace = StreamWorkspace.open(datafile)
     t1 = time.time()
-    eventid = workspace.getEventIds()[0]
+    eventid = workspace.get_event_ids()[0]
     t2 = time.time()
     print(f"{t2-t1:.2f} seconds to read eventid")
-    scalar_event = workspace.getEvent(eventid)
+    scalar_event = workspace.get_event(eventid)
 
     station = "CE.79435"
-    labels = workspace.getLabels()
+    labels = workspace.get_labels()
     if volume == Volume.RAW:
         labels.remove("default")
     elif volume == Volume.CONVERTED:
@@ -107,8 +107,8 @@ def get_sample_data(volume):
     else:
         labels.remove("unprocessed")
     plabel = labels[0]
-    streams = workspace.getStreams(eventid, stations=[station], labels=[plabel])
-    gmprocess_version = workspace.getGmprocessVersion()
+    streams = workspace.get_streams(eventid, stations=[station], labels=[plabel])
+    gmprocess_version = workspace.get_gmprocess_version()
     idx = gmprocess_version.find(".dev")
     gmprocess_version = gmprocess_version[0:idx]
     stream = streams[0]

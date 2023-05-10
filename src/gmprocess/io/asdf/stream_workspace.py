@@ -208,7 +208,7 @@ class StreamWorkspace(object):
         group_name = "config/config"
         config_exists = group_name in self.dataset._auxiliary_data_group
         if config_exists:
-            self.setConfig()
+            self.set_config()
 
     @classmethod
     def create(cls, filename, compression=None):
@@ -271,7 +271,7 @@ class StreamWorkspace(object):
             nstations = len(stations)
         return fmt % (nevents, nstations, nstreams)
 
-    def addEvent(self, event):
+    def add_event(self, event):
         """Add event object to file.
 
         Args:
@@ -309,7 +309,7 @@ class StreamWorkspace(object):
         jdict = json.loads(jsonstr)
         return jdict
 
-    def addConfig(self, config=None, force=False):
+    def add_config(self, config=None, force=False):
         """Add config to an ASDF dataset and workspace attribute.
 
         Args:
@@ -342,7 +342,7 @@ class StreamWorkspace(object):
             config_array, data_type="config", path="config", parameters={}
         )
 
-    def setConfig(self):
+    def set_config(self):
         """Get config from ASDF dataset and set as a workspace attribute."""
         group_name = "config/config"
         data_exists = group_name in self.dataset._auxiliary_data_group
@@ -363,11 +363,11 @@ class StreamWorkspace(object):
         update_dict(default_config, custom_config)
         self.config = default_config
 
-    def addGmprocessVersion(self, version):
+    def add_gmprocess_version(self, version):
         """Add gmprocess version to an ASDF file."""
         self.insert_aux(version, data_name="gmprocess_version", path="version")
 
-    def getGmprocessVersion(self):
+    def get_gmprocess_version(self):
         """Get gmprocess version from ASDF file."""
         group_name = "gmprocess_version/version"
         data_exists = group_name in self.dataset._auxiliary_data_group
@@ -377,7 +377,7 @@ class StreamWorkspace(object):
         gmprocess_version = "".join([chr(b) for b in bytelist])
         return gmprocess_version
 
-    def addStreams(
+    def add_streams(
         self, event, streams, label=None, gmprocess_version="unknown", overwrite=False
     ):
         """Add a sequence of StationStream objects to an ASDF file.
@@ -402,8 +402,8 @@ class StreamWorkspace(object):
         # To allow for multiple processed versions of the same Stream
         # let's keep a dictionary of stations and sequence number.
         eventid = _get_id(event)
-        if not self.hasEvent(eventid):
-            self.addEvent(event)
+        if not self.has_event(eventid):
+            self.add_event(event)
 
         # Creating a new provenance document and filling in the software
         # information for every trace can be slow, so here we create a
@@ -421,7 +421,7 @@ class StreamWorkspace(object):
         for stream in streams:
             logging.info(f"Adding waveforms for station {stream.get_id()}")
             # is this a raw file? Check the trace for provenance info.
-            is_raw = not len(stream[0].getProvenanceKeys())
+            is_raw = not len(stream[0].get_provenance_keys())
 
             if label is None:
                 tfmt = "%Y%m%d%H%M%S"
@@ -450,7 +450,7 @@ class StreamWorkspace(object):
 
             # add processing provenance info from traces
             if level == "processed":
-                provdocs = stream.getProvenanceDocuments(
+                provdocs = stream.get_provenance_documents(
                     base_prov=base_prov, gmprocess_version=gmprocess_version
                 )
                 for provdoc, trace in zip(provdocs, stream):
@@ -470,7 +470,7 @@ class StreamWorkspace(object):
             )
 
             # add supplemental stats, e.g., "standard" and "format_specific"
-            sup_stats = stream.getSupplementalStats()
+            sup_stats = stream.get_supplemental_stats()
             sup_stats_str = _stringify_dict(sup_stats)
             self.insert_aux(
                 json.dumps(sup_stats_str), "StreamSupplementalStats", stream_path
@@ -478,8 +478,8 @@ class StreamWorkspace(object):
 
             # add processing parameters from streams
             proc_params = {}
-            for key in stream.getStreamParamKeys():
-                value = stream.getStreamParam(key)
+            for key in stream.get_stream_param_keys():
+                value = stream.get_stream_param(key)
                 proc_params[key] = value
 
             if len(proc_params):
@@ -503,8 +503,8 @@ class StreamWorkspace(object):
                     ]
                 )
                 jdict = {}
-                for key in trace.getParameterKeys():
-                    value = trace.getParameter(key)
+                for key in trace.get_arameter_keys():
+                    value = trace.get_parameter(key)
                     jdict[key] = value
                 if len(jdict):
                     # NOTE: We would store this dictionary just as
@@ -519,8 +519,8 @@ class StreamWorkspace(object):
 
                 # Some processing data is computationally intensive to
                 # compute, so we store it in the 'Cache' group.
-                for specname in trace.getCachedNames():
-                    spectrum = trace.getCached(specname)
+                for specname in trace.get_cached_names():
+                    spectrum = trace.get_cached(specname)
                     # we expect many of these specnames to
                     # be joined with underscores.
                     name_parts = specname.split("_")
@@ -540,10 +540,10 @@ class StreamWorkspace(object):
                         except BaseException:
                             pass
 
-            inventory = stream.getInventory()
+            inventory = stream.get_inventory()
             self.dataset.add_stationxml(inventory)
 
-    def getEventIds(self):
+    def get_event_ids(self):
         """Return list of event IDs for events in ASDF file.
 
         Returns:
@@ -555,7 +555,7 @@ class StreamWorkspace(object):
             idlist.append(eid)
         return idlist
 
-    def getLabels(self):
+    def get_labels(self):
         """Return all of the processing labels.
 
         Returns:
@@ -568,7 +568,7 @@ class StreamWorkspace(object):
         labels = list(set(all_labels))
         return labels
 
-    def getStreamMetadata(self, eventid, label):
+    def get_stream_metadata(self, eventid, label):
         """Lightweght summary info of streams
 
         Args:
@@ -662,7 +662,7 @@ class StreamWorkspace(object):
             stream_info.append(tr_info)
         return stream_info
 
-    def getStreams(self, eventid, stations=None, labels=None, config=None):
+    def get_streams(self, eventid, stations=None, labels=None, config=None):
         """Get Stream from ASDF file given event id and input tags.
 
         Args:
@@ -700,13 +700,13 @@ class StreamWorkspace(object):
         streams = []
 
         if stations is None:
-            stations = self.getStations()
+            stations = self.get_stations()
         if labels is None:
-            labels = self.getLabels()
+            labels = self.get_labels()
         else:
             if not isinstance(labels, list):
                 labels = [labels]
-            all_labels = self.getLabels()
+            all_labels = self.get_labels()
             for label in labels:
                 if label not in all_labels:
                     logging.warning(f"Label {labels} not found in workspace")
@@ -751,7 +751,7 @@ class StreamWorkspace(object):
                     trace_path = format_nslct(trace.stats, tag)
                     if trace_path in self.dataset.provenance.list():
                         provdoc = self.dataset.provenance[trace_path]
-                        trace.setProvenanceDocument(provdoc)
+                        trace.set_provenance_document(provdoc)
 
                     # get the trace processing parameters
                     if net_sta in trace_auxholder:
@@ -761,7 +761,7 @@ class StreamWorkspace(object):
                             jsonstr = "".join([chr(b) for b in bytelist])
                             jdict = json.loads(jsonstr)
                             for key, value in jdict.items():
-                                trace.setParameter(key, value)
+                                trace.set_parameter(key, value)
 
                     # get the trace spectra arrays from auxiliary,
                     # repack into stationtrace object
@@ -783,7 +783,7 @@ class StreamWorkspace(object):
                                 else:
                                     spectra[specname] = {array_name: specarray}
                         for key, value in spectra.items():
-                            trace.setCached(key, value)
+                            trace.set_cached(key, value)
 
                     # get review information if it is present:
                     if "review" in auxdata:
@@ -813,7 +813,7 @@ class StreamWorkspace(object):
                                         review_dict["corner_frequencies"][
                                             "lowpass"
                                         ] = fc_dict["lowpass"].data[0]
-                                trace.setParameter("review", review_dict)
+                                trace.set_parameter("review", review_dict)
 
                     stream = StationStream(traces=[trace], config=config)
                     stream.tag = tag
@@ -827,7 +827,7 @@ class StreamWorkspace(object):
                     )
                     if proc_dict:
                         for key, value in proc_dict.items():
-                            stream.setStreamParam(key, value)
+                            stream.set_stream_param(key, value)
 
                     # get the supplemental stream parameters
                     supp_dict = self._get_aux_dict(
@@ -886,7 +886,7 @@ class StreamWorkspace(object):
         else:
             return None
 
-    def getStations(self):
+    def get_stations(self):
         """Get list of station codes within the file.
 
         Returns:
@@ -922,7 +922,7 @@ class StreamWorkspace(object):
             data_array, data_type=data_name, path=path, parameters={}
         )
 
-    def calcMetrics(
+    def calc_metrics(
         self,
         eventid,
         stations=None,
@@ -958,16 +958,16 @@ class StreamWorkspace(object):
             calc_waveform_metrics (bool):
                 Whether to calculate waveform metrics. Default is True.
         """
-        if not self.hasEvent(eventid):
+        if not self.has_event(eventid):
             fmt = "No event matching %s found in workspace."
             raise KeyError(fmt % eventid)
 
         if streams is None:
-            streams = self.getStreams(
+            streams = self.get_streams(
                 eventid, stations=stations, labels=labels, config=config
             )
 
-        event = self.getEvent(eventid)
+        event = self.get_event(eventid)
 
         # Load the rupture file
         origin = Origin(
@@ -1035,11 +1035,11 @@ class StreamWorkspace(object):
                 )
                 self.insert_aux(xmlstr, "StationMetrics", metricpath)
 
-    def setEventInfo(self):
+    def set_event_info(self):
         """Get a list of event info"""
         self.event_info = []
-        for eventid in self.getEventIds():
-            event = self.getEvent(eventid)
+        for eventid in self.get_event_ids():
+            event = self.get_event(eventid)
             self.event_info.append(
                 {
                     "id": eventid,
@@ -1052,7 +1052,7 @@ class StreamWorkspace(object):
                 }
             )
 
-    def setIMCtables(self, label):
+    def set_imc_tables(self, label):
         if hasattr(self, "config"):
             config = self.config
             default_config_file = constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
@@ -1067,9 +1067,8 @@ class StreamWorkspace(object):
         use_array = not config["read"]["use_streamcollection"]
 
         self.imc_tables = {}
-        for i, eventid in enumerate(self.getEventIds()):
-
-            st_meta = self.getStreamMetadata(
+        for i, eventid in enumerate(self.get_event_ids()):
+            st_meta = self.get_stream_metadata(
                 eventid,
                 label=label,
             )
@@ -1095,7 +1094,7 @@ class StreamWorkspace(object):
 
                 station = passed_traces[0]["station"]
                 network = passed_traces[0]["network"]
-                summary = self.getStreamMetrics(
+                summary = self.get_stream_metrics(
                     eventid,
                     network,
                     station,
@@ -1120,7 +1119,7 @@ class StreamWorkspace(object):
                         continue
                     self.imc_tables[imc].append(row)
 
-    def getTables(self, label, config):
+    def get_tables(self, label, config):
         """Retrieve dataframes containing event information and IMC/IMT
         metrics.
 
@@ -1169,8 +1168,8 @@ class StreamWorkspace(object):
                      - Column header
                      - Description
         """
-        self.setEventInfo()
-        self.setIMCtables(label)
+        self.set_event_info()
+        self.set_imc_tables(label)
         readme_tables = {}
 
         for key, table in self.imc_tables.items():
@@ -1209,7 +1208,7 @@ class StreamWorkspace(object):
         event_table = pd.DataFrame.from_dict(self.event_info)
         return (event_table, self.imc_tables, readme_tables)
 
-    def getFitSpectraTable(self, eventid, label, config):
+    def get_fit_spectra_table(self, eventid, label, config):
         """
         Returns a tuple of two pandas DataFrames. The first contains the
         fit_spectra parameters for each trace in the workspace matching
@@ -1230,13 +1229,13 @@ class StreamWorkspace(object):
                 by-trace basis.
         """
         fit_table = []
-        event = self.getEvent(eventid)
+        event = self.get_event(eventid)
         if not event:
             return (None, None)
 
         station_list = self.dataset.waveforms.list()
         for station_id in station_list:
-            streams = self.getStreams(
+            streams = self.get_streams(
                 event.resource_id.id.replace("smi:local/", ""),
                 stations=[station_id],
                 labels=[label],
@@ -1247,8 +1246,8 @@ class StreamWorkspace(object):
                 if not st.passed:
                     continue
                 for tr in st:
-                    if tr.hasParameter("fit_spectra"):
-                        fit_dict = tr.getParameter("fit_spectra")
+                    if tr.has_parameter("fit_spectra"):
+                        fit_dict = tr.get_parameter("fit_spectra")
                         fit_dict["EarthquakeId"] = eventid
                         fit_dict["EarthquakeTime"] = event.time
                         fit_dict["EarthquakeLatitude"] = event.latitude
@@ -1260,8 +1259,8 @@ class StreamWorkspace(object):
                         fit_dict["StationLatitude"] = tr.stats.coordinates.latitude
                         fit_dict["StationLongitude"] = tr.stats.coordinates.longitude
                         fit_dict["StationElevation"] = tr.stats.coordinates.elevation
-                        if tr.hasParameter("corner_frequencies"):
-                            freq_dict = tr.getParameter("corner_frequencies")
+                        if tr.has_parameter("corner_frequencies"):
+                            freq_dict = tr.get_parameter("corner_frequencies")
                             fit_dict["fmin"] = freq_dict["highpass"]
                             fit_dict["fmax"] = freq_dict["lowpass"]
                         fit_table.append(fit_dict)
@@ -1280,7 +1279,7 @@ class StreamWorkspace(object):
 
         return (df, readme)
 
-    def getSNRTable(self, eventid, label, config):
+    def get_snr_table(self, eventid, label, config):
         """
         Returns a tuple of two pandas DataFrames. The first contains the
         fit_spectra parameters for each trace in the workspace matching
@@ -1323,11 +1322,11 @@ class StreamWorkspace(object):
         periods = np.unique(periods)
 
         snr_table = []
-        event = self.getEvent(eventid)
+        event = self.get_event(eventid)
 
         station_list = self.dataset.waveforms.list()
         for station_id in station_list:
-            streams = self.getStreams(
+            streams = self.get_streams(
                 event.resource_id.id.replace("smi:local/", ""),
                 stations=[station_id],
                 labels=[label],
@@ -1338,7 +1337,7 @@ class StreamWorkspace(object):
                 if not st.passed:
                     continue
                 for tr in st:
-                    if tr.hasCached("snr"):
+                    if tr.has_cached("snr"):
                         snr_dict = self.__flatten_snr_dict(tr, periods)
                         snr_dict["EarthquakeId"] = eventid
                         snr_dict["EarthquakeTime"] = event.time
@@ -1380,7 +1379,7 @@ class StreamWorkspace(object):
     @staticmethod
     def __flatten_snr_dict(tr, periods):
         freq = np.sort(1 / periods)
-        tmp_dict = tr.getCached("snr")
+        tmp_dict = tr.get_cached("snr")
         interp = spint.interp1d(
             tmp_dict["freq"],
             np.clip(tmp_dict["snr"], 0, np.inf),
@@ -1397,7 +1396,7 @@ class StreamWorkspace(object):
             snr_dict[key] = s
         return snr_dict
 
-    def getStreamMetrics(
+    def get_stream_metrics(
         self,
         eventid,
         network,
@@ -1442,7 +1441,7 @@ class StreamWorkspace(object):
         # get the stream matching the eventid, station, and label
         if stream_metadata is None:
             station_id = f"{network}.{station}"
-            streams = self.getStreams(
+            streams = self.get_streams(
                 eventid, stations=[station_id], labels=[label], config=config
             )
             # Only get streams that passed and match network
@@ -1520,7 +1519,7 @@ class StreamWorkspace(object):
         summary = StationSummary.from_xml(xml_stream, xml_station)
         return summary
 
-    def summarizeLabels(self):
+    def summarize_labels(self):
         """
         Summarize the processing metadata associated with each label in the
         file.
@@ -1561,7 +1560,7 @@ class StreamWorkspace(object):
         df = pd.DataFrame(rows)
         return df
 
-    def getInventory(self):
+    def get_inventory(self):
         """Get an Obspy Inventory object from the ASDF file.
 
         Returns:
@@ -1584,7 +1583,7 @@ class StreamWorkspace(object):
 
         return inventory
 
-    def hasEvent(self, eventid):
+    def has_event(self, eventid):
         """Verify that the workspace file contains an event matching eventid.
 
         Args:
@@ -1599,7 +1598,7 @@ class StreamWorkspace(object):
                 return True
         return False
 
-    def getEvent(self, eventid):
+    def get_event(self, eventid):
         """Get a ScalarEvent object from the ASDF file.
 
         Args:
@@ -1615,10 +1614,10 @@ class StreamWorkspace(object):
             if event.resource_id.id.find(eventid) > -1:
                 eventobj = event
                 break
-        eventobj2 = ScalarEvent.fromEvent(eventobj) if eventobj else None
+        eventobj2 = ScalarEvent.from_event(eventobj) if eventobj else None
         return eventobj2
 
-    def getProvenance(self, eventid, stations=None, labels=None):
+    def get_provenance(self, eventid, stations=None, labels=None):
         """Return DataFrame with processing history matching input criteria.
 
                 Output will look like this:
@@ -1648,9 +1647,9 @@ class StreamWorkspace(object):
 
         """
         if stations is None:
-            stations = self.getStations()
+            stations = self.get_stations()
         if labels is None:
-            labels = self.getLabels()
+            labels = self.get_labels()
         cols = ["Record", "Processing Step", "Step Attribute", "Attribute Value"]
         df_dicts = []
         for provname in self.dataset.provenance.list():

@@ -290,7 +290,7 @@ def _read_channel(filename, line_offset, location="", config=None):
     # record that this data has been converted to g, if it has
     if hdr["standard"]["process_level"] != PROCESS_LEVELS["V0"]:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
-        trace.setProvenance("remove_response", response)
+        trace.set_provenance("remove_response", response)
 
     # set new offset
     new_offset = skiprows + nrows

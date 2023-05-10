@@ -167,11 +167,11 @@ class StationTrace(Trace):
           mapping between location code and the free_field property. For
           example, see the LOCATION_CODES variable core.py in
           `gmprocess.io.fdsn`.
-        - Methods (e.g., `getProvenance`, `setProvenance`) for tracking
+        - Methods (e.g., `get_provenance`, `set_provenance`) for tracking
           processing steps that have been performed. These are aligned with the
           SEIS-PROV standard for processing provenance, described here:
           http://seismicdata.github.io/SEIS-PROV/_generated_details.html#activities
-        - Methods (e.g., `getParameter` and `setParameter`) for tracking of
+        - Methods (e.g., `get_parameter` and `set_parameter`) for tracking of
           arbitrary metadata in the form of a dictionary as trace property
           (self.parameters).
     """
@@ -256,7 +256,7 @@ class StationTrace(Trace):
         super(StationTrace, self).__init__(data=data, header=header)
         self.provenance = []
         if prov_response is not None:
-            self.setProvenance("remove_response", prov_response)
+            self.set_provenance("remove_response", prov_response)
         self.parameters = {}
         self.cached = {}
         self.validate()
@@ -299,20 +299,20 @@ class StationTrace(Trace):
                 Reason given for failure.
 
         """
-        if self.hasParameter("review"):
-            review_dict = self.getParameter("review")
+        if self.has_parameter("review"):
+            review_dict = self.get_parameter("review")
             if review_dict["accepted"]:
                 return
         istack = inspect.stack()
         calling_module = istack[1][3]
-        self.setParameter("failure", {"module": calling_module, "reason": reason})
+        self.set_parameter("failure", {"module": calling_module, "reason": reason})
         trace_id = f"{self.id}"
         logging.info(f"{calling_module} - {trace_id} - {reason}")
 
     @property
     def passed(self):
         """Has this trace passed checks?"""
-        return not self.hasParameter("failure")
+        return not self.has_parameter("failure")
 
     def validate(self):
         """Ensure that all required metadata fields have been set.
@@ -345,7 +345,7 @@ class StationTrace(Trace):
             else:
                 self.stats.standard["structure_cosmos_code"] = 999
 
-        if "remove_response" not in self.getProvenanceKeys():
+        if "remove_response" not in self.get_provenance_keys():
             self.stats.standard.units = "raw counts"
             self.stats.standard.units_type = get_units_type(self.stats.channel)
 
@@ -409,7 +409,7 @@ class StationTrace(Trace):
         else:
             method = "gradient"
             self = super().differentiate(method=method)
-        self.setProvenance(
+        self.set_provenance(
             "differentiate",
             {
                 "differentiation_method": method,
@@ -451,7 +451,7 @@ class StationTrace(Trace):
 
         if demean:
             self.data -= np.mean(self.data)
-            self.setProvenance(
+            self.set_provenance(
                 "demean",
                 {
                     "input_units": self.stats.standard.units,
@@ -461,7 +461,7 @@ class StationTrace(Trace):
 
         if taper:
             self.taper(max_percentage=taper_width, type=taper_type, side=taper_side)
-            self.setProvenance(
+            self.set_provenance(
                 "taper",
                 {
                     "max_percentage": taper_width,
@@ -508,7 +508,7 @@ class StationTrace(Trace):
             output_units = input_units.replace("/s", "")
         else:
             output_units = input_units + "*s"
-        self.setProvenance(
+        self.set_provenance(
             "integrate",
             {
                 "integration_method": method,
@@ -558,7 +558,7 @@ class StationTrace(Trace):
             number_of_passes = 1
         if type == "lowpass":
             if not frequency_domain:
-                self.setProvenance(
+                self.set_provenance(
                     "lowpass_filter",
                     {
                         "filter_type": "Butterworth ObsPy",
@@ -586,7 +586,7 @@ class StationTrace(Trace):
                 filter = np.sqrt(1.0 + (self.signal_freq / freq) ** (2.0 * corners))
                 self.__apply_filter(filter)
 
-                self.setProvenance(
+                self.set_provenance(
                     "lowpass_filter",
                     {
                         "filter_type": "Butterworth gmprocess",
@@ -598,7 +598,7 @@ class StationTrace(Trace):
 
         elif type == "highpass":
             if not frequency_domain:
-                self.setProvenance(
+                self.set_provenance(
                     "highpass_filter",
                     {
                         "filter_type": "Butterworth ObsPy",
@@ -626,7 +626,7 @@ class StationTrace(Trace):
                 filter = np.sqrt(1.0 + (freq / self.signal_freq) ** (2.0 * corners))
                 self.__apply_filter(filter)
 
-                self.setProvenance(
+                self.set_provenance(
                     "highpass_filter",
                     {
                         "filter_type": "Butterworth gmprocess",
@@ -638,7 +638,7 @@ class StationTrace(Trace):
 
         elif type == "bandpass":
             if not frequency_domain:
-                self.setProvenance(
+                self.set_provenance(
                     "bandpass",
                     {
                         "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
@@ -669,7 +669,7 @@ class StationTrace(Trace):
                 filter *= np.sqrt(1.0 + (self.signal_freq / freqmax) ** (2.0 * corners))
                 self.__apply_filter(filter)
 
-                self.setProvenance(
+                self.set_provenance(
                     "bandpass",
                     {
                         "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
@@ -682,7 +682,7 @@ class StationTrace(Trace):
                 )
         elif type == "bandstop":
             if not frequency_domain:
-                self.setProvenance(
+                self.set_provenance(
                     "bandstop",
                     {
                         "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
@@ -715,7 +715,7 @@ class StationTrace(Trace):
                 filter = 1 - filter
                 self.__apply_filter(filter)
 
-                self.setProvenance(
+                self.set_provenance(
                     "bandstop",
                     {
                         "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
@@ -731,7 +731,7 @@ class StationTrace(Trace):
 
         return self
 
-    def getProvenanceKeys(self):
+    def get_provenance_keys(self):
         """Get a list of all available provenance keys.
 
         Returns:
@@ -744,7 +744,7 @@ class StationTrace(Trace):
             pkeys.append(provdict["prov_id"])
         return pkeys
 
-    def getProvenance(self, prov_id):
+    def get_provenance(self, prov_id):
         """Get seis-prov compatible attributes whose id matches prov_id.
 
         See http://seismicdata.github.io/SEIS-PROV/_generated_details.html
@@ -764,7 +764,7 @@ class StationTrace(Trace):
                 matching_prov.append(provdict["prov_attributes"])
         return matching_prov
 
-    def setProvenance(self, prov_id, prov_attributes):
+    def set_provenance(self, prov_id, prov_attributes):
         """Update a trace's provenance information.
 
         Args:
@@ -787,7 +787,7 @@ class StationTrace(Trace):
                 self.stats.standard.units_type = "unknown"
         self.validate()
 
-    def getAllProvenance(self):
+    def get_all_provenance(self):
         """Get internal list of processing history.
 
         Returns:
@@ -798,7 +798,7 @@ class StationTrace(Trace):
         """
         return self.provenance
 
-    def getProvenanceDocument(self, base_prov=None, gmprocess_version="unknown"):
+    def get_provenance_document(self, base_prov=None, gmprocess_version="unknown"):
         """Generate a provenance document.
 
         Args:
@@ -818,7 +818,7 @@ class StationTrace(Trace):
         else:
             pr = _get_waveform_entity(self, copy.deepcopy(base_prov))
         sequence = 1
-        for provdict in self.getAllProvenance():
+        for provdict in self.get_all_provenance():
             provid = provdict["prov_id"]
             prov_attributes = provdict["prov_attributes"]
             if provid not in ACTIVITIES:
@@ -829,7 +829,7 @@ class StationTrace(Trace):
             sequence += 1
         return pr
 
-    def setProvenanceDocument(self, provdoc):
+    def set_provenance_document(self, provdoc):
         software = {}
         person = {}
         for record in provdoc.get_records():
@@ -865,12 +865,12 @@ class StationTrace(Trace):
                     if isinstance(attr_val, datetime):
                         attr_val = UTCDateTime(attr_val)
                     params[key] = attr_val
-                self.setProvenance(sptype, params)
+                self.set_provenance(sptype, params)
 
-            self.setParameter("software", software)
-            self.setParameter("user", person)
+            self.set_parameter("software", software)
+            self.set_parameter("user", person)
 
-    def hasParameter(self, param_id):
+    def has_parameter(self, param_id):
         """Check to see if Trace contains a given parameter.
 
         Args:
@@ -881,7 +881,7 @@ class StationTrace(Trace):
         """
         return param_id in self.parameters
 
-    def setParameter(self, param_id, param_attributes):
+    def set_parameter(self, param_id, param_attributes):
         """Add to the StationTrace's set of arbitrary metadata.
 
         Args:
@@ -892,7 +892,7 @@ class StationTrace(Trace):
         """
         self.parameters[param_id] = param_attributes
 
-    def setCached(self, name, array_dict):
+    def set_cached(self, name, array_dict):
         """Store a dictionary of arrays in StationTrace.
 
         Args:
@@ -905,7 +905,7 @@ class StationTrace(Trace):
         """
         self.cached[name] = array_dict
 
-    def getCached(self, name, missing_none=False):
+    def get_cached(self, name, missing_none=False):
         """Retrieve a dictionary of arrays.
 
         Args:
@@ -923,13 +923,13 @@ class StationTrace(Trace):
                 raise KeyError(f"{name} not in set of spectra arrays.")
         return self.cached[name]
 
-    def hasCached(self, name):
+    def has_cached(self, name):
         """Check if StationTrace has cached attribute."""
         if name not in self.cached:
             return False
         return True
 
-    def getCachedNames(self):
+    def get_cached_names(self):
         """Return list of arrays that have been cached.
 
         Returns:
@@ -937,7 +937,7 @@ class StationTrace(Trace):
         """
         return list(self.cached.keys())
 
-    def getParameterKeys(self):
+    def get_arameter_keys(self):
         """Get a list of all available parameter keys.
 
         Returns:
@@ -945,7 +945,7 @@ class StationTrace(Trace):
         """
         return list(self.parameters.keys())
 
-    def getParameter(self, param_id, missing_none=False):
+    def get_parameter(self, param_id, missing_none=False):
         """Retrieve some arbitrary metadata.
 
         Args:
@@ -965,7 +965,7 @@ class StationTrace(Trace):
                 raise KeyError(f"Parameter {param_id} not found in StationTrace")
         return self.parameters[param_id]
 
-    def getProvDataFrame(self):
+    def get_prov_dataframe(self):
         columns = ["Process Step", "Process Attribute", "Process Value"]
         df = pd.DataFrame(columns=columns)
         values = []
@@ -973,7 +973,7 @@ class StationTrace(Trace):
         steps = []
         indices = []
         index = 0
-        for activity in self.getAllProvenance():
+        for activity in self.get_all_provenance():
             provid = activity["prov_id"]
             provstep = ACTIVITIES[provid]["label"]
             prov_attrs = activity["prov_attributes"]
@@ -995,7 +995,7 @@ class StationTrace(Trace):
         df = pd.DataFrame(mdict)
         return df
 
-    def getProvSeries(self):
+    def get_prov_series(self):
         """Return a pandas Series containing the processing history for the
         trace.
 
@@ -1014,7 +1014,7 @@ class StationTrace(Trace):
         values = []
         attributes = []
         steps = []
-        for activity in self.getAllProvenance():
+        for activity in self.get_all_provenance():
             provid = activity["prov_id"]
             provstep = ACTIVITIES[provid]["label"]
             prov_attrs = activity["prov_attributes"]

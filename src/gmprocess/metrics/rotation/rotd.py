@@ -32,10 +32,10 @@ class Rotd(Rotation):
         horizontals = self._get_horizontals()
         osc1, osc2 = horizontals[0].data, horizontals[1].data
         rotd = [self.rotate(osc1, osc2, combine=True)]
-        streams.setStreamParam("rotated", rotd)
-        if horizontals[0].hasCached("upsampled"):
-            up_osc1 = horizontals[0].getCached("upsampled")["data"]
-            up_osc2 = horizontals[1].getCached("upsampled")["data"]
+        streams.set_stream_param("rotated", rotd)
+        if horizontals[0].has_cached("upsampled"):
+            up_osc1 = horizontals[0].get_cached("upsampled")["data"]
+            up_osc2 = horizontals[1].get_cached("upsampled")["data"]
             up_rotd = [self.rotate(up_osc1, up_osc2, combine=True)]
-            streams.setStreamParam("upsampled_rotated", up_rotd)
+            streams.set_stream_param("upsampled_rotated", up_rotd)
         return streams

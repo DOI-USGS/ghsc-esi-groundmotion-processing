@@ -657,7 +657,7 @@ class MetricsController(object):
                 # resampling happens in place
                 rtr.resample(new_sample_rate, window=None)
                 upsampled_dict = {"data": rtr.data, "dt": rtr.stats.delta, "np": new_np}
-                tr.setCached("upsampled", upsampled_dict)
+                tr.set_cached("upsampled", upsampled_dict)
 
     def _format(self, result, steps):
         """

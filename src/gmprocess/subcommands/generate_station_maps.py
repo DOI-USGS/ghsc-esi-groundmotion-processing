@@ -61,7 +61,7 @@ class GenerateHTMLMapModule(base.SubcommandModule):
 
             pstreams = []
             for station_id in station_list:
-                streams = self.workspace.getStreams(
+                streams = self.workspace.get_streams(
                     event.id,
                     stations=[station_id],
                     labels=[self.gmrecords.args.label],

@@ -25,7 +25,7 @@ def test_sa():
         vtrace.integrate()
         sa_target[vtrace.stats["channel"]] = np.abs(vtrace.max())
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=0,
         lon=0,

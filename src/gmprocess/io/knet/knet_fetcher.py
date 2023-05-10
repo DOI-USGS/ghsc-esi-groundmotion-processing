@@ -227,7 +227,7 @@ class KNETFetcher(DataFetcher):
         self.drop_non_free = drop_non_free
         self.stream_collection = stream_collection
 
-    def getMatchingEvents(self, solve=True):
+    def get_matching_events(self, solve=True):
         """Return a list of dictionaries matching input parameters.
 
         Args:
@@ -322,18 +322,18 @@ class KNETFetcher(DataFetcher):
             events.append(edict)
 
         if solve and len(events) > 1:
-            event = self.solveEvents(events)
+            event = self.solve_events(events)
             events = [event]
 
         return events
 
-    def retrieveData(self, event_dict):
+    def retrieve_data(self, event_dict):
         """Retrieve data from NIED, turn into StreamCollection.
 
         Args:
             event (dict):
                 Best dictionary matching input event, fields as above
-                in return of getMatchingEvents().
+                in return of get_matching_events().
 
         Returns:
             StreamCollection: StreamCollection object.

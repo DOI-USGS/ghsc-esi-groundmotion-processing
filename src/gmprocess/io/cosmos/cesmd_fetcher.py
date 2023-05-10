@@ -180,7 +180,7 @@ class CESMDFetcher(DataFetcher):
         self.drop_non_free = drop_non_free
         self.stream_collection = stream_collection
 
-    def getMatchingEvents(self, solve=True):
+    def get_matching_events(self, solve=True):
         """Return a list of dictionaries matching input parameters.
 
         Args:
@@ -229,25 +229,25 @@ class CESMDFetcher(DataFetcher):
             events.append(tevent.copy())
 
         if solve and len(events) > 1:
-            event = self.solveEvents(events)
+            event = self.solve_events(events)
             events = [event]
         self.metadata = metadata
 
         return events
 
-    def retrieveData(self, event_dict):
+    def retrieve_data(self, event_dict):
         """Retrieve data from CESMD, turn into StreamCollection.
 
         Args:
             event (dict):
                 Best dictionary matching input event, fields as above
-                in return of getMatchingEvents().
+                in return of get_matching_events().
 
         Returns:
             StreamCollection: StreamCollection object.
         """
         if self.metadata is None:
-            raise Exception("Must call getMatchingEvents() first.")
+            raise Exception("Must call get_matching_events() first.")
 
         # get matching event in metadata
         has_event = False

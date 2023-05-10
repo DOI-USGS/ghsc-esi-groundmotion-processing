@@ -33,13 +33,15 @@ def draw_stations_map(pstreams, event, event_dir):
     failed_st = np.array([not st.passed for st in pstreams])
 
     failed_tr = np.array(
-        [[tr.hasParameter("failure") for tr in st] for st in pstreams], dtype="object"
+        [[tr.has_parameter("failure") for tr in st] for st in pstreams], dtype="object"
     )[failed_st]
 
     failure_reasons = list(
         pd.Series(
             [
-                next(tr for tr in st if not tr.passed).getParameter("failure")["reason"]
+                next(tr for tr in st if not tr.passed).get_parameter("failure")[
+                    "reason"
+                ]
                 for st in pstreams
                 if not st.passed
             ],

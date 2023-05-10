@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-from multiprocessing.sharedctypes import Value
-
-
 def get_channel_name(
     sample_rate, is_acceleration=True, is_vertical=False, is_north=True
 ):

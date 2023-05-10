@@ -40,9 +40,9 @@ def test_zero_crossings():
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:
-            assert tr.hasParameter("ZeroCrossingRate")
+            assert tr.has_parameter("ZeroCrossingRate")
     np.testing.assert_allclose(
-        test[0][0].getParameter("ZeroCrossingRate")["crossing_rate"],
+        test[0][0].get_parameter("ZeroCrossingRate")["crossing_rate"],
         0.008888888888888889,
         atol=1e-5,
     )

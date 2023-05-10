@@ -17,7 +17,7 @@ datadir = TEST_DATA_DIR / "fdsnfetch"
 
 def test_radial_transverse():
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="test",
         lat=47.149,
         lon=-122.7266667,
@@ -80,7 +80,7 @@ def test_radial_transverse():
 
     for tr in st2:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
-        tr.setProvenance("remove_response", response)
+        tr.set_provenance("remove_response", response)
 
     summary = StationSummary.from_stream(st2, ["radial_transverse"], ["pga"], event)
     pgmdf = summary.pgms

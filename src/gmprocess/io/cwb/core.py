@@ -112,13 +112,13 @@ def read_cwb(filename, config=None, **kwargs):
 
     response = {"input_units": "counts", "output_units": "cm/s^2"}
     trace_z = StationTrace(data=data[:, 1], header=stats_z)
-    trace_z.setProvenance("remove_response", response)
+    trace_z.set_provenance("remove_response", response)
 
     trace_h1 = StationTrace(data=data[:, 2], header=stats_h1)
-    trace_h1.setProvenance("remove_response", response)
+    trace_h1.set_provenance("remove_response", response)
 
     trace_h2 = StationTrace(data=data[:, 3], header=stats_h2)
-    trace_h2.setProvenance("remove_response", response)
+    trace_h2.set_provenance("remove_response", response)
 
     stream = StationStream([trace_z, trace_h1, trace_h2], config=config)
     return [stream]

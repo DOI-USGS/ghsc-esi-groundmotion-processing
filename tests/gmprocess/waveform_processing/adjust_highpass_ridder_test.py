@@ -27,7 +27,7 @@ def test_auto_fchp():
 
     for st in sc:
         for tr in st:
-            tr.setParameter(
+            tr.set_parameter(
                 "corner_frequencies",
                 {"type": "constant", "highpass": 0.001, "lowpass": 20},
             )
@@ -41,7 +41,7 @@ def test_auto_fchp():
             config=config,
         )
         for tr in tmp_st:
-            initial_corners = tr.getParameter("corner_frequencies")
+            initial_corners = tr.get_parameter("corner_frequencies")
             output_fchp.append(initial_corners["highpass"])
 
     target_fchp = np.array(

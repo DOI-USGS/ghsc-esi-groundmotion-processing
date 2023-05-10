@@ -46,12 +46,12 @@ def generate_workspace():
         )
 
         workspace = StreamWorkspace.open(tfilename)
-        raw_streams = workspace.getStreams(
+        raw_streams = workspace.get_streams(
             EVENTID, labels=["unprocessed"], config=config
         )
         pstreams = process_streams(raw_streams, event, config=config)
-        workspace.addStreams(event, pstreams, label=LABEL)
-        workspace.calcMetrics(event.id, labels=[LABEL], config=config)
+        workspace.add_streams(event, pstreams, label=LABEL)
+        workspace.calc_metrics(event.id, labels=[LABEL], config=config)
     finally:
         if existing_config_data is not None:
             with open(STREC_CONFIG_PATH, "wt") as f:

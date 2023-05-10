@@ -94,7 +94,7 @@ def test_usc():
 
     # Verify that the stream was resampled correctly due to uneven spacing
     assert (
-        meta_stream[0].getProvenance("resample")[0]["method"]
+        meta_stream[0].get_provenance("resample")[0]["method"]
         == "Linear interpolation of unevenly spaced samples"
     )
     assert stats.sampling_rate == 200

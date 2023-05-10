@@ -379,8 +379,8 @@ class TextHeader(object):
         self.set_header_value("data_maximum_time", maxtime)
 
         # line 12
-        lowpass_info = trace.getProvenance("lowpass_filter")
-        highpass_info = trace.getProvenance("highpass_filter")
+        lowpass_info = trace.get_provenance("lowpass_filter")
+        highpass_info = trace.get_provenance("highpass_filter")
         self.set_header_value("low_band_hz", highpass_info[0]["corner_frequency"])
         self.set_header_value("low_band_sec", 1 / highpass_info[0]["corner_frequency"])
         self.set_header_value("high_band_hz", lowpass_info[0]["corner_frequency"])
@@ -481,8 +481,8 @@ class IntHeader(object):
 
         # Filtering/processing parameters
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.getProvenance("lowpass_filter")[0]
-            highpass_info = trace.getProvenance("highpass_filter")[0]
+            lowpass_info = trace.get_provenance("lowpass_filter")[0]
+            highpass_info = trace.get_provenance("highpass_filter")[0]
             self.header[5][9] = NONCAUSAL_BUTTERWORTH_FILTER
             if highpass_info["number_of_passes"] == 1:
                 self.header[5][9] = CAUSAL_BUTTERWORTH_FILTER
@@ -560,8 +560,8 @@ class FloatHeader(object):
             sensor_sensitivity = (1 / volts_to_counts) * instrument_sensitivity * sp.g
             self.header[6][5] = sensor_sensitivity  # volts/g
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.getProvenance("lowpass_filter")[0]
-            highpass_info = trace.getProvenance("highpass_filter")[0]
+            lowpass_info = trace.get_provenance("lowpass_filter")[0]
+            highpass_info = trace.get_provenance("highpass_filter")[0]
             self.header[8][5] = highpass_info["corner_frequency"]
             self.header[9][2] = lowpass_info["corner_frequency"]
 
@@ -687,17 +687,17 @@ class CosmosWriter(object):
         t_float = []
         t_data = []
         t_write = []
-        for eventid in self._workspace.getEventIds():
+        for eventid in self._workspace.get_event_ids():
             nevents += 1
-            scalar_event = self._workspace.getEvent(eventid)
-            gmprocess_version = self._workspace.getGmprocessVersion()
+            scalar_event = self._workspace.get_event(eventid)
+            gmprocess_version = self._workspace.get_gmprocess_version()
             # remove "dirty" stuff from gmprocess version
             idx = gmprocess_version.find(".dev")
             gmprocess_version = gmprocess_version[0:idx]
             ds = self._workspace.dataset
             station_list = ds.waveforms.list()
             for station_id in station_list:
-                streams = self._workspace.getStreams(
+                streams = self._workspace.get_streams(
                     eventid, stations=[station_id], labels=[self._label]
                 )
                 for stream in streams:

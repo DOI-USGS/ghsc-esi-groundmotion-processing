@@ -38,7 +38,7 @@ class StreamArray(object):
                     stream_tag = st.tag
                 else:
                     stream_tag = None
-                stream_params_keys = st.getStreamParamKeys()
+                stream_params_keys = st.get_stream_param_keys()
                 for tr in st:
                     new_st = StationStream(traces=[tr], config=config)
                     new_st.id = ".".join(
@@ -53,7 +53,7 @@ class StreamArray(object):
                         new_st.tag = stream_tag
                     if len(stream_params_keys):
                         for k in stream_params_keys:
-                            new_st.setStreamParam(k, st.getStreamParam(k))
+                            new_st.set_stream_param(k, st.get_stream_param(k))
                     new_st.use_array = True
                     newstreams.append(new_st)
         self.streams = newstreams

@@ -72,7 +72,7 @@ def test_lowpass_max():
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:
-            freq_dict = tr.getParameter("corner_frequencies")
+            freq_dict = tr.get_parameter("corner_frequencies")
             np.testing.assert_allclose(freq_dict["lowpass"], 18.0)
 
 

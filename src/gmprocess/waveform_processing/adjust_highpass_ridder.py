@@ -5,12 +5,12 @@ import inspect
 from esi_core.gmprocess.waveform_processing.auto_fchp import get_fchp
 from gmprocess.waveform_processing.taper import taper
 from gmprocess.waveform_processing.filtering import highpass_filter
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 FORDER = 5.0
 
 
-@ProcessingStep
+@processing_step
 def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
     """Search for highpass corner using Ridder's method.
 
@@ -61,7 +61,7 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
     for tr in st:
         if not tr.passed:
             continue
-        initial_corners = tr.getParameter("corner_frequencies")
+        initial_corners = tr.get_parameter("corner_frequencies")
         if initial_corners["type"] == "reviewed":
             continue
 
@@ -85,7 +85,7 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
             continue
 
         if new_f_hp > initial_f_hp:
-            tr.setParameter(
+            tr.set_parameter(
                 "corner_frequencies",
                 {
                     "type": "snr_polyfit",

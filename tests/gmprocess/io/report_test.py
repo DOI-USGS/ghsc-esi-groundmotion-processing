@@ -15,8 +15,8 @@ def test_report():
         eventdir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
         ws_file = eventdir / "workspace.h5"
         ws = StreamWorkspace.open(ws_file)
-        sc = ws.getStreams("ci38457511")
-        event = ws.getEvent("ci38457511")
+        sc = ws.get_streams("ci38457511")
+        event = ws.get_event("ci38457511")
 
         report.build_report_latex(
             st_list=sc.streams,

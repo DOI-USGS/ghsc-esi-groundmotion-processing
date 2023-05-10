@@ -80,14 +80,14 @@ def read_at2(dfile, horient=0.0):
     g_to_cmss = 980.665
     tr = StationTrace(np.array(data.copy()) * g_to_cmss, Stats(hdr.copy()))
     response = {"input_units": "counts", "output_units": "cm/s^2"}
-    tr.setProvenance("remove_response", response)
+    tr.set_provenance("remove_response", response)
     return tr
 
 
 def test_high_freq_sa():
     # Dummy event
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="", time="20001-01 00:00:00", lat=0, lon=0, depth=0, magnitude=0
     )
     t1 = time.time()

@@ -91,7 +91,7 @@ def test_rotd():
 
     for tr in st:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
-        tr.setProvenance("remove_response", response)
+        tr.set_provenance("remove_response", response)
 
     target_pga50 = 4.1221200279448444
     target_sa1050 = 10.716249471749395
@@ -100,7 +100,7 @@ def test_rotd():
     target_sa3050 = 1.1232860465386469
     # Dummy event
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=44.0,
         lon=-123.0,

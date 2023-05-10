@@ -9,10 +9,10 @@ import numpy as np
 from gmprocess.waveform_processing.integrate import get_vel
 from gmprocess.waveform_processing.integrate import get_disp
 from gmprocess.utils.config import get_config
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 
-@ProcessingStep
+@processing_step
 def check_tail(st, duration=5.0, max_vel_ratio=0.3, max_dis_ratio=0.9, config=None):
     """Check for abnormally arge values in the tail of the stream.
 
@@ -94,5 +94,5 @@ def check_tail(st, duration=5.0, max_vel_ratio=0.3, max_dis_ratio=0.9, config=No
             "max_dis_ratio": max_dis_ratio,
             "start_time": new_start_time,
         }
-        tr.setParameter("tail_conf", tail_conf)
+        tr.set_parameter("tail_conf", tail_conf)
     return st

@@ -28,17 +28,17 @@ def test_trace():
     }
     inventory = get_inventory()
     invtrace = StationTrace(data=data, header=header, inventory=inventory)
-    invtrace.setProvenance("detrend", {"detrending_method": "demean"})
-    invtrace.setParameter("failed", True)
-    invtrace.setParameter("corner_frequencies", [1, 2, 3])
-    invtrace.setParameter("metadata", {"name": "Fred"})
+    invtrace.set_provenance("detrend", {"detrending_method": "demean"})
+    invtrace.set_parameter("failed", True)
+    invtrace.set_parameter("corner_frequencies", [1, 2, 3])
+    invtrace.set_parameter("metadata", {"name": "Fred"})
 
-    assert invtrace.getProvenance("detrend")[0] == {"detrending_method": "demean"}
-    assert invtrace.getParameter("failed")
-    assert invtrace.getParameter("corner_frequencies") == [1, 2, 3]
-    assert invtrace.getParameter("metadata") == {"name": "Fred"}
+    assert invtrace.get_provenance("detrend")[0] == {"detrending_method": "demean"}
+    assert invtrace.get_parameter("failed")
+    assert invtrace.get_parameter("corner_frequencies") == [1, 2, 3]
+    assert invtrace.get_parameter("metadata") == {"name": "Fred"}
 
-    prov = invtrace.getProvSeries()
+    prov = invtrace.get_prov_series()
     assert prov[0] == "demean"
 
 

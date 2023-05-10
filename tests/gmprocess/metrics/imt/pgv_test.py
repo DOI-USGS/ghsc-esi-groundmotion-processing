@@ -31,7 +31,7 @@ def test_pgv():
     pgv_target["H2"] = pgv_target["HN2"]
     pgv_target["Z"] = pgv_target["HNZ"]
     event = ScalarEvent()
-    event.fromParams(
+    event.from_params(
         id="",
         lat=0,
         lon=0,

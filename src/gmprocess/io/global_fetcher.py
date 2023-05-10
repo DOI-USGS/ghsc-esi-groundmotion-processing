@@ -110,19 +110,19 @@ def fetch_data(
     streams = []
     for fetcher in instances:
         if "FDSN" in str(fetcher):
-            tstreams = fetcher.retrieveData()
+            tstreams = fetcher.retrieve_data()
             if streams:
                 streams = streams + tstreams
             else:
                 streams = tstreams
 
         else:
-            events = fetcher.getMatchingEvents(solve=True)
+            events = fetcher.get_matching_events(solve=True)
             if not len(events):
                 msg = "No event matching %s found by class %s"
                 logging.warn(msg % (esummary, str(fetcher)))
                 continue
-            tstreams = fetcher.retrieveData(events[0])
+            tstreams = fetcher.retrieve_data(events[0])
             if streams:
                 streams = streams + tstreams
             else:

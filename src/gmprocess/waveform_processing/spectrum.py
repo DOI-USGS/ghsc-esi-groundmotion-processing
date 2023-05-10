@@ -8,13 +8,13 @@ This module is for computation of theoretical amplitude spectrum methods.
 import numpy as np
 from scipy.optimize import minimize
 from obspy.geodetics.base import gps2dist_azimuth
-from gmprocess.waveform_processing.processing_step import ProcessingStep
+from gmprocess.waveform_processing.processing_step import processing_step
 
 OUTPUT_UNITS = ["ACC", "VEL", "DISP"]
 M_TO_KM = 1.0 / 1000
 
 
-@ProcessingStep
+@processing_step
 def fit_spectra(
     st,
     event,
@@ -72,7 +72,7 @@ def fit_spectra(
     for tr in st:
         # Only do this for horizontal channels for which the smoothed spectra
         # has been computed.
-        if tr.hasCached("smooth_signal_spectrum") and tr.hasParameter(
+        if tr.has_cached("smooth_signal_spectrum") and tr.has_parameter(
             "corner_frequencies"
         ):
             event_mag = event.magnitude
@@ -89,7 +89,7 @@ def fit_spectra(
             )
 
             # Use the smoothed spectra for fitting
-            smooth_signal_dict = tr.getCached("smooth_signal_spectrum")
+            smooth_signal_dict = tr.get_cached("smooth_signal_spectrum")
             freq = np.array(smooth_signal_dict["freq"])
             obs_spec = np.array(smooth_signal_dict["spec"])
 
@@ -114,7 +114,7 @@ def fit_spectra(
             bounds = (moment_bounds, stress_bounds)
 
             # Frequency limits for cost function
-            freq_dict = tr.getParameter("corner_frequencies")
+            freq_dict = tr.get_parameter("corner_frequencies")
             fmin = freq_dict["highpass"]
             fmax = freq_dict["lowpass"]
 
@@ -195,7 +195,7 @@ def fit_spectra(
                 "mean_squared_error": mean_squared_error,
                 "R2": r_squared,
             }
-            tr.setParameter("fit_spectra", fit_spectra_dict)
+            tr.set_parameter("fit_spectra", fit_spectra_dict)
 
     return st
 

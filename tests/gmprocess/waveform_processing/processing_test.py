@@ -73,7 +73,7 @@ def test_free_field():
         reason = ""
         for trace in pstream:
             if not trace.passed:
-                reason = trace.getParameter("failure")["reason"]
+                reason = trace.get_parameter("failure")["reason"]
                 break
         if is_free:
             assert reason.startswith("SNR check")
