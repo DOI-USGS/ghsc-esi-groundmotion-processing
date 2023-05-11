@@ -51,8 +51,7 @@ def test_scalar():
     assert event.magnitude == mag
     assert event.magnitude_type == mag_type
 
-    event = ScalarEvent()
-    event.from_params(eid, time, lat, lon, depth, mag, mag_type)
+    event = ScalarEvent.from_params(eid, time, lat, lon, depth, mag, mag_type)
     assert isinstance(event, Event)
     assert event.origins[0].resource_id == eid
     assert event.origins[0].time == time

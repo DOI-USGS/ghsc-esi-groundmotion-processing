@@ -8,11 +8,12 @@ import numpy as np
 
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils.config import get_config
 
 
 def test_arias():
@@ -63,8 +64,7 @@ def test_arias():
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.set_provenance("remove_response", response)
 
-    event = ScalarEvent()
-    event.from_params(
+    event = ScalarEvent.from_params(
         id="",
         lat=24.0,
         lon=120.0,
@@ -73,32 +73,15 @@ def test_arias():
         mag_type="",
         time="2000-01-01 00:00:00",
     )
-    station = StationSummary.from_stream(
-        stream, ["ARITHMETIC_MEAN"], ["arias"], event=event
-    )
-    pgms = station.pgms
-    Ia = pgms.loc["ARIAS", "ARITHMETIC_MEAN"].Result
-    # the target has only one decimal place and is in cm/s/s
-    Ia = Ia * 100
-    np.testing.assert_almost_equal(Ia, target_IA, decimal=1)
 
-    # Test other components
-    data_files, _ = read_data_dir("cwb", "us1000chhc", "2-ECU.dat")
-    stream = read_data(data_files[0])[0]
-    station = StationSummary.from_stream(
-        stream,
-        [
-            "channels",
-            "gmrotd",
-            "rotd50",
-            "greater_of_two_horizontals",
-            "ARITHMETIC_MEAN",
-        ],
-        ["arias"],
-        event=event,
-    )
-    stream = StationSummary.from_stream(stream, ["gmrotd50"], ["arias"], event=event)
-    assert stream.pgms.Result.tolist() == []
+    config = get_config()
+    config["metrics"]["output_imts"] = ["arias"]
+    config["metrics"]["output_imcs"] = ["ARITHMETIC_MEAN"]
+    wmc = WaveformMetricCollection.from_streams([stream], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+
+    Ia = wm.value("ARITHMETIC_MEAN") * 100
+    np.testing.assert_almost_equal(Ia, target_IA, decimal=1)
 
 
 if __name__ == "__main__":

@@ -5,21 +5,21 @@ import logging
 import pathlib
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
-from gmprocess.metrics.station_summary import get_ps2ff_interpolation
 
 np = LazyLoader("np", globals(), "numpy")
 ob = LazyLoader("ob", globals(), "obspy.geodetics.base")
 oqgeo = LazyLoader("oqgeo", globals(), "openquake.hazardlib.geo.geodetic")
-rupt = LazyLoader("rupt", globals(), "esi_utils_rupture")
+origin = LazyLoader("rupt", globals(), "esi_utils_rupture.origin")
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 utils = LazyLoader("utils", globals(), "gmprocess.utils")
 rupt_utils = LazyLoader("rupt_utils", globals(), "gmprocess.utils.rupture_utils")
 ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-station_summary = LazyLoader(
-    "station_summary", globals(), "gmprocess.metrics.station_summary"
+sta_collection = LazyLoader(
+    "sta_collection", globals(), "gmprocess.metrics.station_metric_collection"
 )
+sta_xml = LazyLoader("sta_xml", globals(), "gmprocess.io.asdf.station_metrics_xml")
 confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
 
 M_PER_KM = 1000
@@ -40,7 +40,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             gmrecords:
                 GMrecordsApp instance.
         """
-        logging.info(f"Running subcommand '{self.command_name}'")
+        logging.info("Running subcommand '%s'", self.command_name)
 
         self.gmrecords = gmrecords
         self._check_arguments()
@@ -48,8 +48,10 @@ class ComputeStationMetricsModule(base.SubcommandModule):
 
         for ievent, event in enumerate(self.events):
             logging.info(
-                f"Computing station metrics for event "
-                f"{event.id} ({1+ievent} of {len(self.events)})..."
+                "Computing station metrics for event %s (%s of %s)...",
+                event.id,
+                1 + ievent,
+                len(self.events),
             )
             self._event_station_metrics(event)
 
@@ -61,8 +63,9 @@ class ComputeStationMetricsModule(base.SubcommandModule):
         workname = event_dir / utils.constants.WORKSPACE_NAME
         if not workname.is_file():
             logging.info(
-                f"No workspace file found for event {self.eventid}. Please run "
-                "subcommand 'assemble' to generate workspace file."
+                "No workspace file found for event %s. Please run "
+                "subcommand 'assemble' to generate workspace file.",
+                self.eventid,
             )
             logging.info("Continuing to next event.")
             return event.id
@@ -78,7 +81,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             return event.id
 
         rupture_file = rupt_utils.get_rupture_file(event_dir)
-        origin = rupt.origin.Origin(
+        origin_obj = origin.Origin(
             {
                 "id": self.eventid,
                 "netid": "",
@@ -91,15 +94,10 @@ class ComputeStationMetricsModule(base.SubcommandModule):
                 "time": event.time,
             }
         )
-        self.origin = origin
+        self.origin = origin_obj
+
         if isinstance(rupture_file, pathlib.Path):
             rupture_file = str(rupture_file)
-        rupture = rupt.factory.get_rupture(origin, rupture_file)
-        if isinstance(rupture, rupt.point_rupture.PointRupture):
-            self._get_ps2ff(event)
-        else:
-            self.rrup_interp = None
-            self.rjb_interp = None
 
         for station_id in station_list:
             streams = self.workspace.get_streams(
@@ -108,49 +106,36 @@ class ComputeStationMetricsModule(base.SubcommandModule):
                 labels=[self.gmrecords.args.label],
                 config=config,
             )
-            if not len(streams):
+            if not streams:
                 logging.error(
                     "No matching streams found. Aborting computing station "
-                    f"metrics for {station_id} for {event.id}."
+                    "metrics for %s for %s.",
+                    station_id,
+                    event.id,
                 )
                 continue
 
-            for st in streams:
-                summary = station_summary.StationSummary.from_config(
-                    st,
-                    event=event,
-                    config=config,
-                    calc_waveform_metrics=False,
-                    calc_station_metrics=True,
-                    rupture=rupture,
-                    rrup_interp=self.rrup_interp,
-                    rjb_interp=self.rjb_interp,
-                )
+            for stream in streams:
+                if not stream.passed:
+                    continue
 
-                xmlstr = summary.get_station_xml()
-                if config["read"]["use_streamcollection"]:
-                    chancode = st.get_inst()
-                else:
-                    chancode = st[0].stats.channel
-                metricpath = "/".join(
-                    [
-                        ws.format_netsta(st[0].stats),
-                        ws.format_nslit(st[0].stats, chancode, self.eventid),
-                    ]
+                smc = sta_collection.StationMetricCollection.from_streams(
+                    [stream], event, config, rupture_file=rupture_file
                 )
+                # we know there is only one element in the station_metrics list because
+                # we only gave it one stream.
+                station_xml = sta_xml.StationMetricsXML(smc.station_metrics[0])
+                xmlstr = station_xml.to_xml()
                 self.workspace.insert_aux(
                     xmlstr,
                     "StationMetrics",
-                    metricpath,
+                    smc.stream_paths[0],
                     overwrite=self.gmrecords.args.overwrite,
                 )
         logging.info(
-            "Added station metrics to workspace files with tag "
-            f"'{self.gmrecords.args.label}'."
+            "Added station metrics to workspace files with tag '%s'.",
+            self.gmrecords.args.label,
         )
 
         self.workspace.close()
         return event.id
-
-    def _get_ps2ff(self, event):
-        self.rrup_interp, self.rjb_interp = get_ps2ff_interpolation(event)

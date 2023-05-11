@@ -114,13 +114,13 @@ def test_controller():
         "QUADRATIC_MEAN",
     ]
     for col in ["PGA", "PGV", "SA(1.000)", "SA(2.000)", "SA(0.300)"]:
-        imcs = pgms.loc[col].index.tolist()
+        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
         assert len(imcs) == len(target_imcs)
         np.testing.assert_array_equal(np.sort(imcs), np.sort(target_imcs))
 
     # testing for fas
     for col in ["FAS(1.000)", "FAS(2.000)", "FAS(0.300)"]:
-        imcs = pgms.loc[col].index.tolist()
+        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
         assert len(imcs) == 9
         np.testing.assert_array_equal(
             np.sort(imcs),
@@ -138,7 +138,7 @@ def test_controller():
         )
 
     # testing for arias
-    imcs = pgms.loc["ARIAS"].index.tolist()
+    imcs = pgms.loc[pgms["IMT"] == "ARIAS"]["IMC"].tolist()
     assert len(imcs) == 9
     np.testing.assert_array_equal(
         np.sort(imcs),
@@ -179,13 +179,13 @@ def test_controller():
         "GREATER_OF_TWO_HORIZONTALS",
     ]
     for col in ["PGA", "PGV", "SA(1.000)", "SA(2.000)", "SA(0.300)"]:
-        imcs = pgms.loc[col].index.tolist()
+        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
         assert len(imcs) == len(target_imcs)
         np.testing.assert_array_equal(np.sort(imcs), np.sort(target_imcs))
 
     # testing for fas
     for col in ["FAS(1.000)", "FAS(2.000)", "FAS(0.300)"]:
-        imcs = pgms.loc[col].index.tolist()
+        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
         assert len(imcs) == 9
         np.testing.assert_array_equal(
             np.sort(imcs),
@@ -203,7 +203,7 @@ def test_controller():
         )
 
     # testing for arias
-    imcs = pgms.loc["ARIAS"].index.tolist()
+    imcs = pgms.loc[pgms["IMT"] == "ARIAS"]["IMC"].tolist()
     assert len(imcs) == 9
     np.testing.assert_array_equal(
         np.sort(imcs),
@@ -358,7 +358,8 @@ def test_end_to_end():
         target_imt = target[0]
         target_imc = target[1]
         value = target[2]
-        df = pgms.loc[target_imt, target_imc]
+        select = (pgms["IMT"] == target_imt) & (pgms["IMC"] == target_imc)
+        df = pgms.loc[select]
         assert len(df) == 1
 
         np.testing.assert_array_almost_equal(df["Result"], value, decimal=10)

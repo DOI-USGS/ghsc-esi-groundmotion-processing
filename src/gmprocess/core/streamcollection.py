@@ -18,7 +18,6 @@ import numpy as np
 from gmprocess.core.streamarray import StreamArray
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import REV_PROCESS_LEVELS
-from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.io.read_directory import directory_to_streams
 from gmprocess.utils.config import get_config
 
@@ -103,15 +102,16 @@ class StreamCollection(StreamArray):
                     newstreams.append(st)
                 else:
                     logging.debug(
-                        f"Omitting station trace {st[0].id} from stream collection "
-                        "because it is not free field."
+                        "Omitting station trace %s from stream collection "
+                        "because it is not free field.",
+                        st[0].id,
                     )
             else:
                 newstreams.append(st)
 
         self.streams = newstreams
         if handle_duplicates:
-            if len(self.streams):
+            if self.streams:
                 self.__handle_duplicates(
                     max_dist_tolerance,
                     preference_order,
@@ -279,7 +279,7 @@ class StreamCollection(StreamArray):
             StreamCollection instance.
         """
         config = get_config()
-        streams, missed_files, errors = directory_to_streams(directory, config=config)
+        streams, _, _ = directory_to_streams(directory, config=config)
 
         # Might eventually want to include some of the missed files and
         # error info but don't have a sensible place to put it currently.
@@ -299,97 +299,6 @@ class StreamCollection(StreamArray):
 
         streams = [StationStream([tr], config=config) for tr in traces]
         return cls(streams, config=config)
-
-    def to_dataframe(self, event, imcs=None, imts=None):
-        """Get a summary dataframe of streams.
-
-        Note: The PGM columns underneath each channel will be variable
-        depending on the units of the Stream being passed in (velocity
-        sensors can only generate PGV) and on the imtlist passed in by
-        user. Spectral acceleration columns will be formatted as SA(0.3)
-        for 0.3 second spectral acceleration, for example.
-
-        Args:
-            directory (str):
-                Directory of ground motion files (streams).
-            event (gmprocess.utils.event.ScalarEvent):
-                A ScalarEvent object.
-            imcs (list):
-                Strings designating desired components to create in table.
-            imts (list):
-                Strings designating desired PGMs to create in table.
-
-        Returns:
-            DataFrame: Pandas dataframe containing columns:
-                - STATION Station code.
-                - NAME Text description of station.
-                - LOCATION Two character location code.
-                - SOURCE Long form string containing source network.
-                - NETWORK Short network code.
-                - LAT Station latitude
-                - LON Station longitude
-                - DISTANCE Epicentral distance (km) (if epicentral lat/lon
-                  provided)
-                - HN1 East-west channel (or H1) (multi-index with pgm columns):
-                    - PGA Peak ground acceleration (%g).
-                    - PGV Peak ground velocity (cm/s).
-                    - SA(0.3) Pseudo-spectral acceleration at 0.3 seconds (%g).
-                    - SA(1.0) Pseudo-spectral acceleration at 1.0 seconds (%g).
-                    - SA(3.0) Pseudo-spectral acceleration at 3.0 seconds (%g).
-                - HN2 North-south channel (or H2) (multi-index with pgm
-                  columns):
-                    - PGA Peak ground acceleration (%g).
-                    - PGV Peak ground velocity (cm/s).
-                    - SA(0.3) Pseudo-spectral acceleration at 0.3 seconds (%g).
-                    - SA(1.0) Pseudo-spectral acceleration at 1.0 seconds (%g).
-                    - SA(3.0) Pseudo-spectral acceleration at 3.0 seconds (%g).
-                - HNZ Vertical channel (or HZ) (multi-index with pgm columns):
-                    - PGA Peak ground acceleration (%g).
-                    - PGV Peak ground velocity (cm/s).
-                    - SA(0.3) Pseudo-spectral acceleration at 0.3 seconds (%g).
-                    - SA(1.0) Pseudo-spectral acceleration at 1.0 seconds (%g).
-                    - SA(3.0) Pseudo-spectral acceleration at 3.0 seconds (%g).
-                - GREATER_OF_TWO_HORIZONTALS (multi-index with pgm columns):
-                    - PGA Peak ground acceleration (%g).
-                    - PGV Peak ground velocity (cm/s).
-                    - SA(0.3) Pseudo-spectral acceleration at 0.3 seconds (%g).
-                    - SA(1.0) Pseudo-spectral acceleration at 1.0 seconds (%g).
-                    - SA(3.0) Pseudo-spectral acceleration at 3.0 seconds (%g).
-        """
-        streams = self.streams
-
-        if imcs is None:
-            station_summary_imcs = DEFAULT_IMCS
-        else:
-            station_summary_imcs = imcs
-        if imts is None:
-            station_summary_imts = DEFAULT_IMTS
-        else:
-            station_summary_imts = imts
-
-        if imcs is None:
-            station_summary_imcs = DEFAULT_IMCS
-        else:
-            station_summary_imcs = imcs
-        if imts is None:
-            station_summary_imts = DEFAULT_IMTS
-        else:
-            station_summary_imts = imts
-
-        subdfs = []
-        for stream in streams:
-            if not stream.passed:
-                continue
-            # if len(stream) < 3:
-            #     continue
-            stream_summary = StationSummary.from_stream(
-                stream, station_summary_imcs, station_summary_imts, event
-            )
-            summary = stream_summary.summary
-            subdfs += [summary]
-        dataframe = pd.concat(subdfs, axis=0).reset_index(drop=True)
-
-        return dataframe
 
     def __str__(self):
         """String summary of the StreamCollection."""
@@ -543,15 +452,17 @@ class StreamCollection(StreamArray):
                     preferred_traces.remove(tr_pref)
                     logging.info(
                         "Trace %s (%s) is a duplicate and "
-                        "has been removed from the StreamCollection."
-                        % (tr_pref.id, tr_pref.stats.standard.source_file)
+                        "has been removed from the StreamCollection.",
+                        tr_pref.id,
+                        tr_pref.stats.standard.source_file,
                     )
                     preferred_traces.append(tr_to_add)
                 else:
                     logging.info(
                         "Trace %s (%s) is a duplicate and "
-                        "has been removed from the StreamCollection."
-                        % (tr_to_add.id, tr_to_add.stats.standard.source_file)
+                        "has been removed from the StreamCollection.",
+                        tr_to_add.id,
+                        tr_to_add.stats.standard.source_file,
                     )
 
             else:

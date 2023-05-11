@@ -224,12 +224,13 @@ class StationStream(Stream):
         if len(self):
             stats = self.traces[0].stats
             if hasattr(self, "use_array") and self.use_array:
+                trace = self[0]
                 id_str = ".".join(
                     [
-                        self[0].stats.network,
-                        self[0].stats.station,
-                        self[0].stats.location,
-                        self[0].stats.channel,
+                        trace.stats.network,
+                        trace.stats.station,
+                        trace.stats.location,
+                        trace.stats.channel,
                     ],
                 )
             else:
@@ -313,10 +314,9 @@ class StationStream(Stream):
         else:
             pass_str = " (failed)"
         ind_str = " " * indent
-        out = "%s StationTrace(s) in StationStream%s:\n%s" % (
-            ind_str + str(len(self.traces)),
-            pass_str,
-            ind_str,
+        out = (
+            f"{ind_str}{len(self.traces)} StationTrace(s) in StationStream"
+            f"{pass_str}:\n{ind_str}"
         )
         lc = [_i.__str__(id_length, indent) for _i in self]
         out += ("\n" + ind_str).join(lc)
@@ -378,7 +378,7 @@ class StationStream(Stream):
         """Extract an ObsPy inventory object from a StationStream."""
         networks = [trace.stats.network for trace in self]
         if len(set(networks)) > 1:
-            raise Exception("Input stream has stations from multiple networks.")
+            raise ValueError("Input stream has stations from multiple networks.")
 
         # We'll first create all the various objects. These strongly follow the
         # hierarchy of StationXML files.
@@ -402,7 +402,6 @@ class StationStream(Stream):
         )
         channels = []
         for trace in self:
-            logging.debug(f"trace: {trace}")
             channel = _channel_from_stats(trace.stats)
             channels.append(channel)
 
@@ -511,7 +510,7 @@ def _channel_from_stats(stats):
         response = Response(instrument_sensitivity=sensitivity)
 
     comments = Comment(stats.standard.comments)
-    logging.debug(f"channel: {stats.channel}")
+    logging.debug("channel: %s", stats.channel)
     channel = Channel(
         stats.channel,
         stats.location,

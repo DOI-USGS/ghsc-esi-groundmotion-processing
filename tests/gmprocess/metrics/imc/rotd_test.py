@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 
 import numpy as np
 
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils.config import get_config
 
 
 def test_rotd():
@@ -99,8 +101,7 @@ def test_rotd():
     target_sa0350 = 10.091461811808575
     target_sa3050 = 1.1232860465386469
     # Dummy event
-    event = ScalarEvent()
-    event.from_params(
+    event = ScalarEvent.from_params(
         id="",
         lat=44.0,
         lon=-123.0,
@@ -109,21 +110,24 @@ def test_rotd():
         mag_type="",
         time="2000-01-01 00:00:00",
     )
-    station = StationSummary.from_stream(
-        st, ["rotd50"], ["pga", "pgv", "sa0.3", "sa1.0", "sa3.0"], event=event
-    )
 
-    pgms = station.pgms
-    pga = pgms.loc["PGA", "ROTD(50.0)"].Result
-    pgv = pgms.loc["PGV", "ROTD(50.0)"].Result
-    SA10 = pgms.loc["SA(1.000)", "ROTD(50.0)"].Result
-    SA03 = pgms.loc["SA(0.300)", "ROTD(50.0)"].Result
-    SA30 = pgms.loc["SA(3.000)", "ROTD(50.0)"].Result
-    np.testing.assert_allclose(pga, target_pga50)
-    np.testing.assert_allclose(SA10, target_sa1050)
-    np.testing.assert_allclose(pgv, target_pgv50)
-    np.testing.assert_allclose(SA03, target_sa0350)
-    np.testing.assert_allclose(SA30, target_sa3050)
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pga", "pgv", "sa"]
+    config["metrics"]["sa"]["periods"]["defined_periods"] = [0.3, 1.0, 3.0]
+    config["metrics"]["output_imcs"] = ["rotd50"]
+    wmc = WaveformMetricCollection.from_streams([st], event, config)
+    wml = wmc.waveform_metrics[0].metric_list
+
+    wml_values = [w.value("ROTD(50.0)") for w in wml]
+    target_vlues = [
+        4.1221200279448444,
+        6.2243050413999645,
+        10.091461811808575,
+        10.716249471749395,
+        1.1232860465386469,
+    ]
+
+    np.testing.assert_allclose(wml_values, target_vlues)
 
 
 def test_exceptions():
@@ -133,10 +137,16 @@ def test_exceptions():
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
     stream1 = stream_v2.select(channel="HN1")
-    pgms = StationSummary.from_stream(stream1, ["rotd50"], ["pga"], event=event).pgms
-    assert np.isnan(pgms.loc["PGA", "ROTD(50.0)"].Result)
+
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pga"]
+    config["metrics"]["output_imcs"] = ["rotd50"]
+    wmc = WaveformMetricCollection.from_streams([stream1], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+    assert np.isnan(wm.value("ROTD(50.0)"))
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_rotd()
     test_exceptions()

@@ -7,7 +7,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.constants import TEST_DATA_DIR
@@ -75,8 +75,7 @@ def test_fas():
     freqs = 1 / per
     imts = ["fas" + str(p) for p in per]
     config = get_config()
-    event = ScalarEvent()
-    event.from_params(
+    event = ScalarEvent.from_params(
         id="",
         lat=33.0,
         lon=-120.0,
@@ -85,22 +84,20 @@ def test_fas():
         mag_type="",
         time="2000-01-01 00:00:00",
     )
-    summary = StationSummary.from_stream(
-        stream,
-        ["greater_of_two_horizontals"],
-        imts,
-        bandwidth=30,
-        config=config,
-        event=event,
-    )
 
-    pgms = summary.pgms
-    # pgms.to_pickle(fas_file)
-    for idx, f in enumerate(freqs):
-        fstr = f"FAS({1 / f:.3f})"
-        fval1 = pgms.loc[fstr, "GREATER_OF_TWO_HORIZONTALS"].Result
-        fval2 = target_df.loc[fstr, "GREATER_OF_TWO_HORIZONTALS"].Result
-        np.testing.assert_allclose(fval1, fval2, rtol=1e-5, atol=1e-5)
+    config["metrics"]["output_imts"] = ["fas"]
+    config["metrics"]["output_imcs"] = ["greater_of_two_horizontals"]
+    config["metrics"]["fas"]["periods"]["use_array"] = False
+    config["metrics"]["fas"]["periods"]["defined_periods"] = per.tolist()
+    wmc = WaveformMetricCollection.from_streams([stream], event, config)
+    wml = wmc.waveform_metrics[0]
+    target_repr = (
+        "3 metric(s) in list:\n"
+        "  FAS(T=0.0300, B=20.0): GREATER_OF_TWO_HORIZONTALS=0.002\n"
+        "  FAS(T=0.1410, B=20.0): GREATER_OF_TWO_HORIZONTALS=0.034\n"
+        "  FAS(T=0.7940, B=20.0): GREATER_OF_TWO_HORIZONTALS=0.036\n"
+    )
+    assert wml.__repr__() == target_repr
 
 
 if __name__ == "__main__":

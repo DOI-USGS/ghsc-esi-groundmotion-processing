@@ -67,8 +67,7 @@ def get_events(eventids, textfile, eventinfo, directory, outdir=None):
         dep = float(eventinfo[4])
         mag = float(eventinfo[5])
         mag_type = str(eventinfo[6])
-        event = ScalarEvent()
-        event.from_params(eid, time, lat, lon, dep, mag, mag_type)
+        event = ScalarEvent.from_params(eid, time, lat, lon, dep, mag, mag_type)
         events = [event]
     elif directory is not None:
         events = events_from_directory(directory)

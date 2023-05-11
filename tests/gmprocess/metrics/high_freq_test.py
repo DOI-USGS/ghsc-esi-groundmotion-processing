@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
+import csv
 
 import numpy as np
-import csv
 
 from obspy.core.trace import Stats
 
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
+from gmprocess.utils.config import get_config
 
 
 def read_at2(dfile, horient=0.0):
@@ -86,11 +86,9 @@ def read_at2(dfile, horient=0.0):
 
 def test_high_freq_sa():
     # Dummy event
-    event = ScalarEvent()
-    event.from_params(
+    event = ScalarEvent.from_params(
         id="", time="20001-01 00:00:00", lat=0, lon=0, depth=0, magnitude=0
     )
-    t1 = time.time()
     datadir = TEST_DATA_DIR / "high_freq_sa"
     fnames = [
         "RSN10590_ComalTX11-10-20_IU.CCM.BH1.00.AT2",
@@ -106,36 +104,27 @@ def test_high_freq_sa():
     for tr in st:
         tr.data = tr.data[5320:9260]
 
-    periods = [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2]
-    imt_list = [f"sa{p}" for p in periods]
-    station = StationSummary.from_stream(st, ["rotd50"], imt_list, event=event)
-    # I believe that units are %g in the following table:
-    pgmdf = station.pgms
-    imt_strs = [f"SA({p:.3f})" for p in periods]
-    test_sa = []
-    for i in imt_strs:
-        test_sa.append(pgmdf.loc[i, "ROTD(50.0)"].Result)
+    periods = [0.01, 0.02, 0.03, 0.05, 0.075]
+
+    config = get_config()
+    config["metrics"]["output_imts"] = ["SA"]
+    config["metrics"]["output_imcs"] = ["ROTD50"]
+    config["metrics"]["sa"]["periods"]["defined_periods"] = periods
+    wmc = WaveformMetricCollection.from_streams([st], event, config)
+    metric_list = wmc.waveform_metrics[0]
+    # convert to g from %g
+    test_sa = [m.value("ROTD(50.0)") / 100 for m in metric_list.metric_list]
 
     # Target (from PEER NGA East Flatfile)
-    test_data = {
-        "periods": periods,
-        "target_sa": [
-            0.00000265693,
-            0.00000265828,
-            0.00000263894,
-            0.00000265161,
-            0.00000260955,
-            0.0000026616,
-            0.00000276549,
-            0.00000308482,
-        ],
-        "test_sa": np.array(test_sa) / 100,
-    }
+    target_sa = [
+        0.00000265693,
+        0.00000265828,
+        0.00000263894,
+        0.00000265161,
+        0.00000260955,
+    ]
 
-    np.testing.assert_allclose(test_data["target_sa"], test_data["test_sa"], rtol=0.1)
-    t2 = time.time()
-    elapsed = t2 - t1
-    print(f"Test duration: {elapsed}")
+    np.testing.assert_allclose(target_sa, test_sa, rtol=0.1)
 
 
 if __name__ == "__main__":

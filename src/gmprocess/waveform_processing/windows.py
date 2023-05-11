@@ -23,7 +23,7 @@ from gmprocess.waveform_processing.phase import (
     pick_travel,
 )
 from gmprocess.utils.config import get_config
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.models import load_model
 from gmprocess.waveform_processing.processing_step import processing_step
 
@@ -480,8 +480,12 @@ def trim_multiple_events(
         return st
 
     # Calculate the recorded PGA for this record
-    stasum = StationSummary.from_stream(st, ["ROTD(50.0)"], ["PGA"])
-    recorded_pga = stasum.get_pgm("PGA", "ROTD(50.0)")
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pga"]
+    config["metrics"]["output_imcs"] = ["greater_of_two_horizontals"]
+    wmc = WaveformMetricCollection.from_streams([st], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+    recorded_pga = wm.value("GREATER_OF_TWO_HORIZONTALS")
 
     # Load the GMPE model
     gmpe = load_model(gmpe)
