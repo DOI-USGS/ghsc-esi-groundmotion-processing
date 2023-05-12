@@ -27,7 +27,7 @@ from gmprocess.core.stationtrace import (
 )
 from gmprocess.core.streamarray import StreamArray
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.metrics.station_summary import XML_UNITS, StationSummary
+from gmprocess.metrics.station_summary import UNITS, StationSummary
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.event import ScalarEvent
@@ -106,13 +106,13 @@ FLATFILE_COLUMNS = {
 }
 
 FLATFILE_IMT_COLUMNS = {
-    "PGA": f"Peak ground acceleration ({XML_UNITS['pga']})",
-    "PGV": f"Peak ground velocity ({XML_UNITS['pgv']})",
-    "SA(X)": f"Pseudo-spectral acceleration ({XML_UNITS['sa']}) at X seconds",
-    "FAS(X)": f"Fourier amplitude spectrum value ({XML_UNITS['fas']}) at X seconds",
-    "DURATIONp-q": f"p-q percent significant duration ({XML_UNITS['duration']})",
-    "SORTED_DURATION": f"Sorted significant duration ({XML_UNITS['duration']})",
-    "ARIAS": f"Arias intensity ({XML_UNITS['arias']})",
+    "PGA": f"Peak ground acceleration ({UNITS['pga']})",
+    "PGV": f"Peak ground velocity ({UNITS['pgv']})",
+    "SA(X)": f"Pseudo-spectral acceleration ({UNITS['sa']}) at X seconds",
+    "FAS(X)": f"Fourier amplitude spectrum value ({UNITS['fas']}) at X seconds",
+    "DURATIONp-q": f"p-q percent significant duration ({UNITS['duration']})",
+    "SORTED_DURATION": f"Sorted significant duration ({UNITS['duration']})",
+    "ARIAS": f"Arias intensity ({UNITS['arias']})",
 }
 
 # List of columns in the fit_spectra_parameters file, along README descriptions

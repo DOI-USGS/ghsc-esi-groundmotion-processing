@@ -24,7 +24,15 @@ WORKSPACE_NAME = "workspace.h5"
 WORKSPACE_NAME_OLD = "workspace.hdf"
 
 
-UNITS = {"PGA": r"%g", "PGV": r"cm/s", "SA": r"%g"}
+UNITS = {
+    "pga": "%g",
+    "pgv": "cm/s",
+    "sa": "%g",
+    "arias": "m/s",
+    "fas": "cm/s",
+    "duration": "s",
+    "sorted_duration": "s",
+}
 
 # Converts acceleration units to cm/s/s
 # Converts velocity units to cm/s

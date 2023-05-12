@@ -15,24 +15,8 @@ from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import GAL_TO_PCTG, METRICS_XML_FLOAT_STRING_FORMAT
 from gmprocess.metrics.exception import PGMException
 from gmprocess.metrics.gather import gather_pgms
+from gmprocess.metrics.utils import component_to_channel
 from gmprocess.core.stationstream import StationStream
-
-
-def _get_channel_dict(channel_names):
-    channel_names = sorted(channel_names)
-    channel_dict = {}
-    reverse_dict = {}
-    channel_number = 1
-    for channel_name in channel_names:
-        if channel_name.endswith("Z"):
-            channel_dict["Z"] = channel_name
-        else:
-            cname = "H%i" % channel_number
-            channel_number += 1
-            channel_dict[cname] = channel_name
-
-    reverse_dict = {v: k for k, v in channel_dict.items()}
-    return (channel_dict, reverse_dict)
 
 
 class MetricsController(object):
@@ -477,7 +461,7 @@ class MetricsController(object):
             # the "first horizontal channel".
             if "channels" in imt_imc:
                 channel_names = list(c2.keys())
-                (self.channel_dict, reverse_dict) = _get_channel_dict(channel_names)
+                (self.channel_dict, reverse_dict) = component_to_channel(channel_names)
                 new_c2 = {}
                 for channel, value in c2.items():
                     newchannel = reverse_dict[channel]
