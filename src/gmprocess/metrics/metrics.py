@@ -3,56 +3,88 @@
 
 from abc import ABC, abstractmethod
 
-from lxml import etree
-
 from gmprocess.utils import constants
-
-DEFAULT_DAMPING = 0.05
 
 
 class Metric(ABC):
-    @property
-    @abstractmethod
-    def units(self):
-        pass
+    def __repr__(self):
+        id = self.identifier
+        comps = ", ".join({f"{k}={v:.3f}" for (k, v) in self._values.items()})
+        return f"{id}: {comps}"
+
+    def to_dict(self):
+        """Return a dictionary representation of the Metric object."""
+        return {
+            "values": list(self._values.values()),
+            "components": self.components,
+            "type": self._type,
+            "format_type": self._format_type,
+            "units": self._units,
+            "metric_attributes": self.metric_attributes,
+            "component_to_channel": self.component_to_channel,
+        }
 
     @property
-    @abstractmethod
-    def values(self):
-        pass
-
-    @property
-    @abstractmethod
     def type(self):
+        """Type is the metric type and does not include metric attributes.
+
+        Note that this is the simplest name and we define it to be identical to the
+        name of the Metric subclass.
+        """
+        return self._type
+
+    @property
+    @abstractmethod
+    def identifier(self):
+        """The identifier includes metric attributes, but not values/components."""
         pass
 
-    def to_xml(self):
-        root = etree.Element("waveform_metrics")
-        imtstr = self.type.lower()
-        units = self.units
-        attrs = self.metric_attributes
+    @property
+    def values(self):
+        """Values is a dictionary with keys for components."""
+        return self._values
 
-        fmt = constants.METRICS_XML_FLOAT_STRING_FORMAT
+    @property
+    def units(self):
+        """String representation of metric units."""
+        return self._units
 
-        attdict = {"units": units}
+    @property
+    def components(self):
+        """The available components."""
+        return list(self._values.keys())
 
-        for att, atval in attrs.items():
-            if isinstance(atval, str):
-                attdict[att] = atval
-            else:
-                attdict[att] = fmt[att] % atval
+    def value(self, component):
+        """Return the value for the specified component"""
+        return self._values[component]
 
-        imt_tag = etree.SubElement(root, imtstr, attrib=attdict)
+    @staticmethod
+    def metric_from_dict(dict):
+        """Class factory to create a Metric subclass instance from a dictionary.
 
-        for imc in self.components:
-            imcstr = imc.lower().replace("(", "").replace(")", "")
-            if self.component_to_channel and imc in self.component_to_channel:
-                attributes = {"original_channel": self.component_to_channel[imc]}
-            else:
-                attributes = {}
-            imc_tag = etree.SubElement(imt_tag, imcstr, attrib=attributes)
-            imc_tag.text = fmt[self._format_type] % self.value(imc)
-        return etree.tostring(root, encoding="unicode")
+        Args:
+            dict (dict):
+                A dictionary with the structure of the dictionary that is returned by
+                Metric.to_dict().
+        """
+        # List of subclasses
+        metric_subclasses = Metric.__subclasses__()
+
+        # Dictionary for selecting a subclass
+        sub_dict = {m.__name__: m for m in metric_subclasses}
+
+        # Name of subclass is in the "type" key
+        selected_class = sub_dict[dict["type"]]
+
+        # Prepare the arguments to construct a class instance
+        cargs = dict.copy()
+        rm_keys = ["type", "format_type", "units"]
+        for k in rm_keys:
+            cargs.pop(k)
+        attr = cargs.pop("metric_attributes")
+        for k, v in attr.items():
+            cargs[k] = v
+        return selected_class(**cargs)
 
 
 class PGA(Metric):
@@ -72,33 +104,14 @@ class PGA(Metric):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
-        self._type = "PGA"
+        self._type = self.__class__.__name__
         self._format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {}
         self.component_to_channel = component_to_channel
 
     @property
-    def values(self):
-        return self._values
-
-    @property
-    def units(self):
-        return self._units
-
-    @property
-    def type(self):
-        return self._type
-
-    @property
-    def components(self):
-        return self._values.keys()
-
-    def value(self, component):
-        """Return the value for the specified component"""
-        return self._values[component]
-
-    def __repr__(self):
+    def identifier(self):
         return "PGA"
 
 
@@ -119,33 +132,14 @@ class PGV(Metric):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
-        self._type = "PGV"
+        self._type = self.__class__.__name__
         self._format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {}
         self.component_to_channel = component_to_channel
 
     @property
-    def values(self):
-        return self._values
-
-    @property
-    def units(self):
-        return self._units
-
-    @property
-    def type(self):
-        return self._type
-
-    @property
-    def components(self):
-        return self._values.keys()
-
-    def value(self, component):
-        """Return the value for the specified component"""
-        return self._values[component]
-
-    def __repr__(self):
+    def identifier(self):
         return "PGV"
 
 
@@ -172,7 +166,7 @@ class SA(Metric):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
-        self._type = "SA"
+        self._type = self.__class__.__name__
         self._format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {
@@ -182,26 +176,7 @@ class SA(Metric):
         self.component_to_channel = component_to_channel
 
     @property
-    def values(self):
-        return self._values
-
-    @property
-    def units(self):
-        return self._units
-
-    @property
-    def type(self):
-        return self._type
-
-    @property
-    def components(self):
-        return self._values.keys()
-
-    def value(self, component):
-        """Return the value for the specified component"""
-        return self._values[component]
-
-    def __repr__(self):
+    def identifier(self):
         attrs = self.metric_attributes
         return f"SA(T={attrs['period']:.4f}, D={attrs['damping']:.3f})"
 
@@ -226,7 +201,7 @@ class Duration(Metric):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
-        self._type = "Duration"
+        self._type = self.__class__.__name__
         self._format_type = "duration"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {
@@ -235,25 +210,6 @@ class Duration(Metric):
         self.component_to_channel = component_to_channel
 
     @property
-    def values(self):
-        return self._values
-
-    @property
-    def units(self):
-        return self._units
-
-    @property
-    def type(self):
-        return self._type
-
-    @property
-    def components(self):
-        return self._values.keys()
-
-    def value(self, component):
-        """Return the value for the specified component"""
-        return self._values[component]
-
-    def __repr__(self):
+    def identifier(self):
         attrs = self.metric_attributes
         return f"Duration({attrs['interval']})"

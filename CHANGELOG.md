@@ -1,4 +1,6 @@
 ## main
+ - Define new Metrics class to improving handling of intensity metrics.
+ - Define new MetricsXML class to isolate the conversion of metrics into an XML.
  - Refactor summary plot code.
  - Optimize getTables method.
  - Bugfixes

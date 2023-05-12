@@ -7,38 +7,26 @@ from gmprocess.metrics import metrics
 
 def test_metrics():
     test_sa = metrics.SA([0.71], ["H1"], period=1.0)
-    assert test_sa.__repr__() == "SA(T=1.0000, D=5.000)"
-    xml_str = test_sa.to_xml()
-    xml_target = (
-        '<waveform_metrics><sa units="%g" period="1.000" damping="5.00">'
-        "<h1>0.71</h1></sa></waveform_metrics>"
-    )
-    assert xml_str == xml_target
+    assert test_sa.__repr__() == "SA(T=1.0000, D=5.000): H1=0.710"
+    assert test_sa.identifier == "SA(T=1.0000, D=5.000)"
+    assert test_sa.units == "%g"
+    assert test_sa.value("H1") == 0.71
 
-    test_pga = metrics.PGA([0.14], ["H1"])
-    assert test_pga.__repr__() == "PGA"
-    xml_str = test_pga.to_xml()
-    xml_target = (
-        '<waveform_metrics><pga units="%g"><h1>0.14</h1></pga></waveform_metrics>'
-    )
-    assert xml_str == xml_target
+    test_sa_dict = test_sa.to_dict()
+    test_sa2 = metrics.Metric.metric_from_dict(test_sa_dict)
+    assert test_sa2.__repr__() == "SA(T=1.0000, D=5.000): H1=0.710"
+
+    test_pga = metrics.PGA([0.14, 0.2], ["H1", "H2"])
+    assert test_pga.values["H1"] == 0.14
+    comps = test_pga.components
+    assert len(comps) == 2
+    assert "H1" in comps and "H2" in comps
 
     test_pgv = metrics.PGV([0.23], ["H2"])
-    assert test_pgv.__repr__() == "PGV"
-    xml_str = test_pgv.to_xml()
-    xml_target = (
-        '<waveform_metrics><pgv units="cm/s"><h2>0.23</h2></pgv></waveform_metrics>'
-    )
-    assert xml_str == xml_target
+    assert test_pgv.__repr__() == "PGV: H2=0.230"
 
     test_duration = metrics.Duration([3.24], ["H2"], "5-95")
-    assert test_duration.__repr__() == "Duration(5-95)"
-    xml_str = test_duration.to_xml()
-    xml_target = (
-        '<waveform_metrics><duration units="s" interval="5-95">'
-        "<h2>3.24</h2></duration></waveform_metrics>"
-    )
-    assert xml_str == xml_target
+    assert test_duration.__repr__() == "Duration(5-95): H2=3.240"
 
 
 if __name__ == "__main__":
