@@ -14,7 +14,6 @@ import prov.model
 from gmprocess.core.stationtrace import NS_SEIS, _get_person_agent, _get_software_agent
 from gmprocess.io.cosmos.core import BUILDING_TYPES
 from gmprocess.utils.constants import EVENT_TIMEFMT, COMPONENTS, UNITS
-from gmprocess.metrics.station_summary import XML_UNITS
 
 
 def create_json(
@@ -221,11 +220,11 @@ def get_station_feature(stream, metrics, coordinates, expanded_imts=False):
         station_amps = {k: v for k, v in zip(imts, zip(imt_lower, imt_units))}
     else:
         station_amps = {
-            "SA(0.300)": ("sa(0.3)", UNITS["SA"]),
-            "SA(1.000)": ("sa(1.0)", UNITS["SA"]),
-            "SA(3.000)": ("sa(3.0)", UNITS["SA"]),
-            "PGA": ("pga", UNITS["PGA"]),
-            "PGV": ("pgv", UNITS["PGV"]),
+            "SA(0.300)": ("sa(0.3)", UNITS["sa"]),
+            "SA(1.000)": ("sa(1.0)", UNITS["sa"]),
+            "SA(3.000)": ("sa(3.0)", UNITS["sa"]),
+            "PGA": ("pga", UNITS["pga"]),
+            "PGV": ("pgv", UNITS["pgv"]),
         }
 
     channel_dict = metrics.channel_dict
@@ -290,10 +289,10 @@ def get_components(metrics, stream, config):
                 fourier_periods.append(period)
             elif imt.startswith("DURATION"):
                 # TODO - Make interval something retrievable from metrics
-                units = XML_UNITS[imt.lower()]
+                units = UNITS[imt.lower()]
                 measures[imt] = {"value": imt_value, "units": units, "interval": "5-95"}
             else:
-                units = XML_UNITS[imt.lower()]
+                units = UNITS[imt.lower()]
                 measures[imt] = {"value": imt_value, "units": units}
 
         if imc in ["H1", "H2", "Z"]:
@@ -338,14 +337,14 @@ def get_components(metrics, stream, config):
             measures["as_recorded"] = False
         components[imcname] = measures
         if len(spectral_values):
-            units = XML_UNITS["sa"]
+            units = UNITS["sa"]
             damping = metrics.damping
             sa_dict = {"units": units, "damping": damping, "method": "absolute"}
             sa_dict["values"] = spectral_values
             sa_dict["periods"] = spectral_periods
             components[imcname]["SA"] = sa_dict
         if len(fourier_amplitudes):
-            units = XML_UNITS["fas"]
+            units = UNITS["fas"]
             fas_dict = {
                 "units": units,
                 "values": fourier_amplitudes,

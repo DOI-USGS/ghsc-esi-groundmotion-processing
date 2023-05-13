@@ -20,7 +20,7 @@ from gmprocess.utils.config import get_config
 from gmprocess.utils.tables import find_float, get_table_row
 
 
-XML_UNITS = {
+UNITS = {
     "pga": "%g",
     "pgv": "cm/s",
     "sa": "%g",
@@ -755,12 +755,12 @@ class StationSummary(object):
         for imt in self.imts:
             imtstr = imt.lower()
             units = None
-            if imtstr in XML_UNITS:
-                units = XML_UNITS[imtstr]
+            if imtstr in UNITS:
+                units = UNITS[imtstr]
             else:
-                for key in XML_UNITS.keys():
+                for key in UNITS.keys():
                     if imtstr.startswith(key):
-                        units = XML_UNITS[key]
+                        units = UNITS[key]
                         break
             if units is None:
                 raise KeyError(f"Could not find units for IMT {imtstr}")

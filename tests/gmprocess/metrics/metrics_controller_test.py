@@ -8,7 +8,8 @@ import pandas as pd
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.metrics.exception import PGMException
-from gmprocess.metrics.metrics_controller import MetricsController, _get_channel_dict
+from gmprocess.metrics.metrics_controller import MetricsController
+from gmprocess.metrics.utils import component_to_channel
 from gmprocess.core.stationstream import StationStream
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import TEST_DATA_DIR
@@ -18,43 +19,43 @@ config = get_config()
 
 def test_get_channel_dict():
     channel_names1 = ["HNN", "HNE", "HNZ"]
-    cdict, _ = _get_channel_dict(channel_names1)
+    cdict, _ = component_to_channel(channel_names1)
     assert sorted(cdict.keys()) == ["H1", "H2", "Z"]
 
     channel_names2 = ["HN1", "HN2", "HNZ"]
-    cdict, _ = _get_channel_dict(channel_names2)
+    cdict, _ = component_to_channel(channel_names2)
     assert sorted(cdict.keys()) == ["H1", "H2", "Z"]
 
     channel_names3 = ["HN1", "HNE", "HNZ"]
-    cdict, _ = _get_channel_dict(channel_names3)
+    cdict, _ = component_to_channel(channel_names3)
     assert sorted(cdict.keys()) == ["H1", "H2", "Z"]
 
     channel_names4 = ["HN1", "HNZ"]
-    cdict, _ = _get_channel_dict(channel_names4)
+    cdict, _ = component_to_channel(channel_names4)
     assert sorted(cdict.keys()) == ["H1", "Z"]
 
     channel_names5 = ["HN2", "HN3", "HNZ"]
-    cdict, _ = _get_channel_dict(channel_names5)
+    cdict, _ = component_to_channel(channel_names5)
     assert sorted(cdict.keys()) == ["H1", "H2", "Z"]
 
     channel_names6 = ["HN2", "HN3"]
-    cdict, _ = _get_channel_dict(channel_names6)
+    cdict, _ = component_to_channel(channel_names6)
     assert sorted(cdict.keys()) == ["H1", "H2"]
 
     channel_names7 = ["HN2", "HNZ"]
-    cdict, _ = _get_channel_dict(channel_names7)
+    cdict, _ = component_to_channel(channel_names7)
     assert sorted(cdict.keys()) == ["H1", "Z"]
 
     channel_names8 = ["HN2"]
-    cdict, _ = _get_channel_dict(channel_names8)
+    cdict, _ = component_to_channel(channel_names8)
     assert sorted(cdict.keys()) == ["H1"]
 
     channel_names9 = ["HN1"]
-    cdict, _ = _get_channel_dict(channel_names9)
+    cdict, _ = component_to_channel(channel_names9)
     assert sorted(cdict.keys()) == ["H1"]
 
     channel_names10 = ["HNZ"]
-    cdict, _ = _get_channel_dict(channel_names10)
+    cdict, _ = component_to_channel(channel_names10)
     assert sorted(cdict.keys()) == ["Z"]
 
 
