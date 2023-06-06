@@ -12,8 +12,10 @@ def test_path_utils():
     EVENTID = "us1000778i"
     LABEL = "ptest"
     datafiles, event = read_data_dir("geonet", EVENTID, "*.V1A")
-    stream = read_data(datafiles[0])[0]
-    trace = stream[0]
+    # select NZ.HSES
+    datafile = [df for df in datafiles if "HSES" in df][0]
+    stream = read_data(datafile)[0]
+    trace = [tr for tr in stream if tr.stats.channel == "HN1"][0]
     tag = f"{EVENTID}_{LABEL}"
     config = get_config()
 
