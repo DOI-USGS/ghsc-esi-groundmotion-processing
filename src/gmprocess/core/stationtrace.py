@@ -16,14 +16,15 @@ import numpy as np
 import pandas as pd
 import prov
 import prov.model
-from gmprocess.io.cosmos.data_structures import BUILDING_TYPES
-from gmprocess.io.seedname import get_units_type
-
-# local imports
-from gmprocess.utils.config import get_config
 from obspy.core.trace import Trace
 from obspy.core.utcdatetime import UTCDateTime
 from scipy.integrate import cumtrapz
+
+# local imports
+from gmprocess.utils.config import get_config
+from gmprocess.io.cosmos.data_structures import BUILDING_TYPES
+from gmprocess.io.seedname import get_units_type
+
 
 UNITS = {"acc": "cm/s^2", "vel": "cm/s"}
 REVERSE_UNITS = {
@@ -215,10 +216,10 @@ class StationTrace(Trace):
                 header["coordinates"] = coords
                 header["standard"] = standard
                 header["format_specific"] = format_specific
-            except BaseException as e:
+            except BaseException as err:
                 raise ValueError(
-                    "Failed to construct required metadata from inventory "
-                    "and input header data with exception: %s" % e
+                    f"Failed to construct required metadata from inventory "
+                    "and input header data with exception: {err}"
                 )
         elif inventory is None and header is not None and "standard" not in header:
             # End up here for ObsPy without an inventory (e.g., SAC).
@@ -307,7 +308,7 @@ class StationTrace(Trace):
         calling_module = istack[1][3]
         self.set_parameter("failure", {"module": calling_module, "reason": reason})
         trace_id = f"{self.id}"
-        logging.info(f"{calling_module} - {trace_id} - {reason}")
+        logging.info("%s - %s - %s", calling_module, trace_id, reason)
 
     @property
     def passed(self):
@@ -375,19 +376,19 @@ class StationTrace(Trace):
                     required_errors.append(key)
 
         type_error_msg = ""
-        if len(type_errors):
+        if type_errors:
             fmt = 'The following standard keys have the wrong type: "%s"'
             tpl = ",".join(type_errors)
             type_error_msg = fmt % tpl
 
         required_error_msg = ""
-        if len(required_errors):
+        if required_errors:
             fmt = 'The following standard keys are required: "%s"'
             tpl = ",".join(required_errors)
             required_error_msg = fmt % tpl
 
         error_msg = type_error_msg + "\n" + required_error_msg
-        if len(error_msg.strip()):
+        if error_msg.strip():
             raise KeyError(error_msg)
 
     def differentiate(self, frequency=True):
@@ -737,7 +738,7 @@ class StationTrace(Trace):
         Returns:
             list: List of available provenance keys.
         """
-        if not len(self.provenance):
+        if not self.provenance:
             return []
         pkeys = []
         for provdict in self.provenance:
@@ -757,7 +758,7 @@ class StationTrace(Trace):
             list: Sequence of prov_attribute dictionaries (see URL above).
         """
         matching_prov = []
-        if not len(self.provenance):
+        if not self.provenance:
             return matching_prov
         for provdict in self.provenance:
             if provdict["prov_id"] == prov_id:
@@ -823,7 +824,7 @@ class StationTrace(Trace):
             prov_attributes = provdict["prov_attributes"]
             if provid not in ACTIVITIES:
                 fmt = "Unknown or invalid processing parameter %s"
-                logging.debug(fmt % provid)
+                logging.debug(fmt, provid)
                 continue
             pr = _get_activity(pr, provid, prov_attributes, sequence)
             sequence += 1
@@ -1135,11 +1136,9 @@ def _stats_from_inventory(data, inventory, seed_id, start_time):
     standard["instrument"] = ""
     standard["sensor_serial_number"] = ""
     if channel.sensor is not None:
-        standard["instrument"] = "%s %s %s %s" % (
-            channel.sensor.type,
-            channel.sensor.manufacturer,
-            channel.sensor.model,
-            channel.sensor.description,
+        standard["instrument"] = (
+            f"{channel.sensor.type} {channel.sensor.manufacturer} "
+            f"{channel.sensor.model} {channel.sensor.description}"
         )
         if channel.sensor.serial_number is not None:
             standard["sensor_serial_number"] = channel.sensor.serial_number
@@ -1191,7 +1190,7 @@ def _stats_from_inventory(data, inventory, seed_id, start_time):
         if hasattr(response, "instrument_sensitivity"):
             units = response.instrument_sensitivity.input_units
             if "/" in units:
-                num, denom = units.split("/")
+                num, _ = units.split("/")
                 if num.lower() not in LENGTH_CONVERSIONS:
                     raise KeyError(
                         f"Sensitivity input units of {units} are not supported."
@@ -1242,7 +1241,7 @@ def _stats_from_header(header, config):
         standard["horizontal_orientation"] = float(header["sac"]["cmpaz"])
         # Note: vertical orientatin is defined here as angle from horizontal
         standard["vertical_orientation"] = 90.0 - float(header["sac"]["cmpinc"])
-        if "units_type" not in standard.keys() or standard["units_type"] == "":
+        if "units_type" not in standard or standard["units_type"] == "":
             utype = get_units_type(header["channel"])
             standard["units_type"] = utype
             standard["units"] = UNITS[utype]

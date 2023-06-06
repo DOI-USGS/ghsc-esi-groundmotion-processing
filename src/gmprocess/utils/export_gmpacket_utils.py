@@ -23,6 +23,8 @@ from gmpacket.provenance import Provenance
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
+from gmprocess.metrics.gather import gather_pgms
 
 METRIC_INFO = {
     "PGA": ("Peak ground acceleration", "%g"),
@@ -30,11 +32,11 @@ METRIC_INFO = {
     "SA": ("Spectral acceleration", "%g"),
     "DURATION": ("Earthquake duration", "s"),
     "FAS": ("Fourier Amplitude Spectra", "cm/s"),
-    "SORTED_DURATION": (
+    "SORTEDDURATION": (
         "Sorted earthquake duration",
         "s",
     ),
-    "ARIAS": ("Earthquake arias intensity", "m/s"),
+    "ARIASINTENSITY": ("Earthquake arias intensity", "m/s"),
 }
 
 VERSION = "0.1dev"
@@ -93,32 +95,32 @@ class GroundMotionPacketWriter(object):
         )
         return gmp_trace_props
 
-    def get_metrics(self, summary, channel, net, sta):
+    def get_metrics(self, waveform_metric_list, channel, net, sta):
         array_metrics = {
             "DURATION": DurationMetricHolder(),
-            "SA": SAMetricHolder(summary.damping),
+            "SA": SAMetricHolder(0.05),
             "FAS": FASMetricHolder(),
         }
         gmp_metrics = []
-        for metric in summary.imts:
-            logging.info(f"Outputting metric {net}.{sta}.{channel}.{metric}")
-            data_value = summary.get_pgm(metric, channel)
+        for metric in waveform_metric_list.metric_list:
+            logging.info("Outputting metric %s.%s.%s.%s", net, sta, channel, metric)
+            data_value = metric.value(channel)
             if data_value is None:
                 continue
-            if re.match("DURATION", metric) is not None:
+            if re.match("Duration", metric.type) is not None:
                 metric_holder = array_metrics["DURATION"]
                 metric_holder.add_value(data_value, metric)
-            elif re.match("SA", metric) is not None:
+            elif re.match("SA", metric.type) is not None:
                 metric_holder = array_metrics["SA"]
                 metric_holder.add_value(data_value, metric)
-            elif re.match("FAS", metric) is not None:
+            elif re.match("FAS", metric.type) is not None:
                 metric_holder = array_metrics["FAS"]
                 metric_holder.add_value(data_value, metric)
             else:
-                description, units = METRIC_INFO[metric]
+                description, units = METRIC_INFO[metric.type.upper()]
                 gmp_metprops = MetricProperties(
                     description=description,
-                    name=metric,
+                    name=metric.type,
                     units=units,
                 )
                 gmp_metric = Metric(properties=gmp_metprops, values=data_value)
@@ -126,7 +128,7 @@ class GroundMotionPacketWriter(object):
         for metric_type, metric_holder in array_metrics.items():
             dimensions = metric_holder.get_dimensions()
             values = metric_holder.get_values()
-            if not len(values) or not len(values[0]):
+            if not values or not values[0]:
                 continue
             description, units = METRIC_INFO[metric_type]
             gmp_metprops = MetricProperties(
@@ -147,10 +149,12 @@ class GroundMotionPacketWriter(object):
         return gmp_metrics
 
     def write(self):
+        available_imcs = [x for x in gather_pgms()[1]]
         nevents = 0
         nstreams = 0
         ntraces = 0
         files = []
+        wmc = WaveformMetricCollection.from_workspace(self._workspace)
         for eventid in self._workspace.get_event_ids():
             nevents += 1
             gmp_event = self.get_gmp_event(eventid)
@@ -166,8 +170,8 @@ class GroundMotionPacketWriter(object):
                 for stream in streams:
                     if not stream.passed:
                         continue
-                    logging.info(f"Writing stream {stream.id}...")
-                    network, station, instrument = stream.get_id().split(".")
+                    logging.info("Writing stream %s...", stream.id)
+                    _, _, instrument = stream.get_id().split(".")
                     gmp_housing = self.get_housing()
                     gmp_stream_props = StreamProperties(
                         band_code=instrument[0],
@@ -184,25 +188,27 @@ class GroundMotionPacketWriter(object):
                         net = trace.stats.network
                         sta = trace.stats.station
                         loc = trace.stats.location
-
-                        summary = self._workspace.get_stream_metrics(
-                            eventid,
-                            net,
-                            sta,
-                            self._label,
-                        )
+                        for sp, wm, sm in zip(
+                            wmc.stream_paths, wmc.waveform_metrics, wmc.stream_metadata
+                        ):
+                            if f"{net}.{sta}" in sp:
+                                waveform_metric_list = wm
+                                stream_metadata = sm
+                                break
                         gmp_traces = []
-                        for channel in summary.components:
+                        for channel in waveform_metric_list.metric_list[0].components:
                             gmp_metrics = None
                             as_recorded = True
-                            for imc in summary.available_imcs:
-                                if channel.lower() in imc:
+                            for imc in available_imcs:
+                                if imc in channel.lower():
                                     as_recorded = False
                                     break
                             gmp_trace_props = self.get_trace_properties(
                                 trace, channel, loc, as_recorded
                             )
-                            gmp_metrics = self.get_metrics(summary, channel, net, sta)
+                            gmp_metrics = self.get_metrics(
+                                waveform_metric_list, channel, net, sta
+                            )
                             gmp_trace = Trace(
                                 properties=gmp_trace_props, metrics=gmp_metrics
                             )
@@ -231,7 +237,7 @@ class GroundMotionPacketWriter(object):
                     properties=gmp_feature_props,
                 )
                 gmp_features.append(gmp_feature)
-            if len(gmp_features):
+            if gmp_features:
                 gmp_packet = GroundMotionPacket(
                     event=gmp_event,
                     provenance=gmp_provenance,
@@ -276,8 +282,8 @@ class SAMetricHolder(MetricHolder):
         self.values = [[]]
         self.metric_type = "SA"
 
-    def add_value(self, value, metric_name):
-        period = float(re.search(self.float_pat, metric_name).group())
+    def add_value(self, value, metric):
+        period = metric.metric_attributes["period"]
         self.values[0].append(value)
         self.dimensions["axis_values"][1].append(period)
 
@@ -293,8 +299,8 @@ class FASMetricHolder(MetricHolder):
         self.values = [[]]
         self.metric_type = "FAS"
 
-    def add_value(self, value, metric_name):
-        period = float(re.search(self.float_pat, metric_name).group())
+    def add_value(self, value, metric):
+        period = metric.metric_attributes["period"]
         self.values[0].append(value)
         self.dimensions["axis_values"][0].append(period)
 
@@ -310,10 +316,9 @@ class DurationMetricHolder(MetricHolder):
         self.values = [[]]
         self.metric_type = "DURATION"
 
-    def add_value(self, value, metric_name):
-        start_percentage, end_percentage = [
-            int(v) for v in re.findall(self.int_pat, metric_name)
-        ]
+    def add_value(self, value, metric):
+        interval = metric.metric_attributes["interval"].split("-")
+        start_percentage, end_percentage = [int(i) for i in interval]
         self.dimensions["axis_values"][0].append(start_percentage)
         self.dimensions["axis_values"][1].append(end_percentage)
         self.values[0].append(value)

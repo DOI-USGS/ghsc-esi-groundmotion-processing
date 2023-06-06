@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 
-import logging
 import os
 import shutil
 import tempfile
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 import pytest
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
-from gmprocess.metrics.station_summary import StationSummary
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_config
 from gmprocess.utils.test_utils import read_data_dir
@@ -62,9 +59,7 @@ def configure_strec():
     else:
         STREC_CONFIG_PATH.parent.mkdir()
     # where is the strec test data folder
-    test_strec_dir = (
-        Path(__file__).parent / ".." / ".." / ".." / "data" / "strec"
-    ).resolve()
+    test_strec_dir = (Path(".") / "tests" / "data" / "strec").resolve()
     strec_config_str = TEST_STREC_CONFIG.replace(
         "[TEST_STREC_DIR]", str(test_strec_dir)
     )
@@ -75,21 +70,16 @@ def configure_strec():
 
 
 def test_stream_workspace_methods():
-    print("****At the top!******")
     tdir = Path(tempfile.mkdtemp())
     try:
         eventid = "usb000syza"
-        datafiles, event = read_data_dir("knet", eventid, "*")
-        datadir = Path(datafiles[0]).parent
-        raw_streams = StreamCollection.from_directory(datadir)
+        _, event = read_data_dir("knet", eventid, "*")
 
         ws = StreamWorkspace.create(tdir / "workspace.h5")
-        with pytest.raises(KeyError):
-            ws.calc_metrics(eventid)
 
         # make sure that strec is configured
+        existing_config_data = configure_strec()
         try:
-            existing_config_data = configure_strec()
             ws.add_event(event)
             outevent = ws.get_event(eventid)
             strec_params = ws.get_strec(outevent)
@@ -131,18 +121,8 @@ def test_stream_workspace_methods():
             if existing_config_data is not None:
                 with open(STREC_CONFIG_PATH, "wt") as f:
                     f.write(existing_config_data)
-
-        tabs = ws.get_tables(label="raw", config=CONFIG)
-        assert isinstance(tabs[0], pd.core.frame.DataFrame)
-        assert tabs[1] == {}
-        assert tabs[2] == {}
-
-        ws.add_streams(event, raw_streams, label="raw", overwrite=True)
-
-        sm = ws.get_stream_metrics(eventid, "CI", "XX", "raw")
-        assert sm is None
-
         ws.close()
+
         with pytest.raises(OSError):
             StreamWorkspace.open(tdir / "nonexistance_file.h5")
 
@@ -180,27 +160,6 @@ def test_stream_workspace():
             "Japan National Research Institute for Earth Science and Disaster "
             "Resilience"
         )
-
-        stream1 = raw_streams[0]
-        # Get metrics from station summary for raw streams
-        config["metrics"]["sa"]["periods"]["defined_periods"] = [0.3, 1.0, 3.0]
-        summary1 = StationSummary.from_config(stream1, config=config, event=event)
-        s1_df_in = summary1.pgms.sort_values(["IMT", "IMC"])
-        array1 = s1_df_in["Result"].to_numpy()
-
-        # Compare to metrics from get_stream_metrics for raw streams
-        workspace.calc_metrics(eventid, labels=["raw"], config=config)
-        summary1_a = workspace.get_stream_metrics(
-            event.id,
-            stream1[0].stats.network,
-            stream1[0].stats.station,
-            "raw",
-            config=config,
-        )
-        s1_df_out = summary1_a.pgms.sort_values(["IMT", "IMC"])
-        array2 = s1_df_out["Result"].to_numpy()
-
-        np.testing.assert_allclose(array1, array2, atol=1e-6, rtol=1e-6)
         workspace.close()
     except Exception as e:
         raise (e)
@@ -215,35 +174,8 @@ def test_stream_workspace_ucla_review():
     assert len(st) == 8
 
 
-def test_get_stream_metrics():
-    workspace = constants.TEST_DATA_DIR / "ucla_review" / "workspace.h5"
-    ws = StreamWorkspace.open(workspace)
-
-    # make sure that get_strec method returns None appropriately
-    event = ws.get_event(ws.get_event_ids()[0])
-    assert ws.get_strec(event) is None
-
-    # to raise warning that no metrics are available
-    ws.get_stream_metrics("se60324281", "ET", "GFM", "default")
-
-    workspace = (
-        constants.TEST_DATA_DIR
-        / "demo_steps"
-        / "exports"
-        / "ci38457511"
-        / "workspace.h5"
-    )
-    ws = StreamWorkspace.open(workspace)
-    sm = ws.get_stream_metrics("ci38457511", "CI", "CCC", "default")
-    assert sm.pgms.shape == (104, 1)
-
-    # Raises a warning that no stream was found
-    ws.get_stream_metrics("ci38457511", "CI", "AAA", "default")
-
-
 if __name__ == "__main__":
     os.environ["CALLED_FROM_PYTEST"] = "True"
     test_stream_workspace_methods()
     test_stream_workspace()
     test_stream_workspace_ucla_review()
-    test_get_stream_metrics()

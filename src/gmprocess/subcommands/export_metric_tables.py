@@ -11,6 +11,7 @@ ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
 const = LazyLoader("const", globals(), "gmprocess.utils.constants")
 tables = LazyLoader("tables", globals(), "gmprocess.utils.tables")
 confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
+flat_mod = LazyLoader("flatmod", globals(), "gmprocess.io.asdf.flatfile")
 
 
 class ExportMetricTablesModule(base.SubcommandModule):
@@ -30,7 +31,7 @@ class ExportMetricTablesModule(base.SubcommandModule):
             gmrecords:
                 GMrecordsApp instance.
         """
-        logging.info(f"Running subcommand '{self.command_name}'")
+        logging.info("Running subcommand '%s'", self.command_name)
 
         self.gmrecords = gmrecords
         self._check_arguments()
@@ -38,17 +39,19 @@ class ExportMetricTablesModule(base.SubcommandModule):
 
         for ievent, event in enumerate(self.events):
             logging.info(
-                f"Creating tables for event {event.id} "
-                f"({1+ievent} of {len(self.events)})..."
+                "Creating tables for event %s (%s of %s)...",
+                event.id,
+                1 + ievent,
+                len(self.events),
             )
             self.eventid = event.id
             event_dir = gmrecords.data_path / self.eventid
             workname = event_dir / const.WORKSPACE_NAME
             if not workname.is_file():
                 logging.warning(
-                    f"No workspace file found for event {self.eventid}. Please run "
-                    "subcommand 'assemble' to generate workspace file. "
-                    "Continuing to next event."
+                    "No workspace file found for event %s. Please run subcommand "
+                    "'assemble' to generate workspace file. Continuing to next event.",
+                    self.eventid,
                 )
                 continue
 
@@ -58,25 +61,20 @@ class ExportMetricTablesModule(base.SubcommandModule):
 
             if "StationMetrics" not in self.workspace.dataset.auxiliary_data:
                 logging.warning(
-                    f"Station metrics not found in workspace for event {self.eventid}."
-                    "Continuing to next event."
+                    "Station metrics not found in workspace for event %s."
+                    "Continuing to next event.",
+                    self.eventid,
                 )
                 continue
 
-            event_table, imc_tables, readmes = self.workspace.get_tables(
-                self.gmrecords.args.label, config
-            )
-            ev_fit_spec, fit_readme = self.workspace.get_fit_spectra_table(
-                self.eventid, self.gmrecords.args.label, config
-            )
+            flatfile = flat_mod.Flatfile(self.workspace)
+            event_table, imc_tables, readmes = flatfile.get_tables()
+            ev_fit_spec, fit_readme = flatfile.get_fit_spectra_table()
 
-            # We need to have a consistent set of frequencies for reporting the
-            # SNR. For now, I'm going to take it from the SA period list, but
-            # this could be changed to something else, or even be set via the
-            # config file.
-            snr_table, snr_readme = self.workspace.get_snr_table(
-                self.eventid, self.gmrecords.args.label, config
-            )
+            # We need to have a consistent set of frequencies for reporting the SNR.
+            # For now, I'm going to take it from the SA period list, but this could be
+            # changed to something else, or even be set via the config file.
+            snr_table, snr_readme = flatfile.get_snr_table()
             self.workspace.close()
 
             outdir = gmrecords.data_path
@@ -135,11 +133,11 @@ class ExportMetricTablesModule(base.SubcommandModule):
                         continue
                     else:
                         if self.gmrecords.args.overwrite:
-                            logging.info(f"Overwriting file: {filename}")
+                            logging.info("Overwriting file: %s", filename)
                             mode = "w"
                             header = True
                         else:
-                            logging.info(f"Appending to file: {filename}")
+                            logging.info("Appending to file: %s", filename)
                             mode = "a"
                             header = False
                 else:

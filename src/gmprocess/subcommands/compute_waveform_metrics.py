@@ -9,11 +9,13 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-station_summary = LazyLoader(
-    "station_summary", globals(), "gmprocess.metrics.station_summary"
-)
 const = LazyLoader("const", globals(), "gmprocess.utils.constants")
 confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
+path_utils = LazyLoader("path_utils", globals(), "gmprocess.io.asdf.path_utils")
+wf_collection = LazyLoader(
+    "wf_collection", globals(), "gmprocess.metrics.waveform_metric_collection"
+)
+wf_xml = LazyLoader("wf_xml", globals(), "gmprocess.io.asdf.waveform_metrics_xml")
 
 
 class ComputeWaveformMetricsModule(base.SubcommandModule):
@@ -31,7 +33,7 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
             gmrecords:
                 GMrecordsApp instance.
         """
-        logging.info(f"Running subcommand '{self.command_name}'")
+        logging.info("Running subcommand '%s'", self.command_name)
 
         self.gmrecords = gmrecords
         self._check_arguments()
@@ -39,8 +41,10 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
 
         for ievent, event in enumerate(self.events):
             logging.info(
-                f"Computing waveform metrics for event {event.id} "
-                f"({1+ievent} of {len(self.events)})..."
+                "Computing waveform metrics for event %s (%s of %s)...",
+                event.id,
+                1 + ievent,
+                len(self.events),
             )
             self._compute_event_waveform_metrics(event)
 
@@ -52,8 +56,9 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
         workname = event_dir / const.WORKSPACE_NAME
         if not workname.is_file():
             logging.info(
-                "No workspace file found for event {self.eventid}. Please run "
-                "subcommand 'assemble' to generate workspace file."
+                "No workspace file found for event %s. Please run "
+                "subcommand 'assemble' to generate workspace file.",
+                self.eventid,
             )
             logging.info("Continuing to next event.")
             return event.id
@@ -64,8 +69,9 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
         self._get_labels()
         config = self._get_config()
 
-        summaries = []
-        metricpaths = []
+        # Start with an empty metric_collection and we will append to it.
+        metric_collection = wf_collection.WaveformMetricCollection()
+
         if self.gmrecords.args.num_processes:
             futures = []
             executor = ProcessPoolExecutor(
@@ -80,67 +86,60 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
                 labels=[self.gmrecords.args.label],
                 config=config,
             )
-            if not len(streams):
+            if not streams:
                 logging.warning(
                     "No matching streams found. Aborting computation of station "
-                    f"metrics for {station_id} for {event.id}."
+                    "metrics for %s for %s.",
+                    station_id,
+                    event.id,
                 )
                 continue
 
             for stream in streams:
                 if not stream.passed:
                     continue
-                if config["read"]["use_streamcollection"]:
-                    chancode = stream.get_inst()
-                else:
-                    chancode = stream[0].stats.channel
-                metricpaths.append(
-                    "/".join(
-                        [
-                            ws.format_netsta(stream[0].stats),
-                            ws.format_nslit(stream[0].stats, chancode, stream.tag),
-                        ]
-                    )
-                )
-                logging.info(f"Calculating waveform metrics for {stream.get_id()}...")
+
+                logging.info("Calculating waveform metrics for %s...", stream.get_id())
+
                 if self.gmrecords.args.num_processes > 0:
                     future = executor.submit(
-                        station_summary.StationSummary.from_config,
-                        stream=stream,
-                        config=config,
+                        wf_collection.WaveformMetricCollection.from_streams,
+                        streams=[stream],
                         event=event,
-                        calc_waveform_metrics=True,
-                        calc_station_metrics=False,
+                        config=config,
+                        label=self.gmrecords.args.label,
                     )
                     futures.append(future)
                 else:
-                    summaries.append(
-                        station_summary.StationSummary.from_config(
-                            stream,
-                            event=event,
-                            config=config,
-                            calc_waveform_metrics=True,
-                            calc_station_metrics=False,
+                    metric_collection.append(
+                        wf_collection.WaveformMetricCollection.from_streams(
+                            [stream], event, config, self.gmrecords.args.label
                         )
                     )
 
         if self.gmrecords.args.num_processes:
             # Collect the processed streams
-            summaries = [future.result() for future in futures]
+            metric_collections = [future.result() for future in futures]
+            for met_col in metric_collections:
+                metric_collection.append(met_col)
             executor.shutdown()
 
         # Cannot parallelize IO to ASDF file
         logging.info(
-            "Adding waveform metrics to workspace files "
-            "with tag '%s'." % self.gmrecords.args.label
+            "Adding waveform metrics to workspace files with tag '%s'.",
+            self.gmrecords.args.label,
         )
-        for i, summary in enumerate(summaries):
-            xmlstr = summary.get_metric_xml()
-            metricpath = metricpaths[i]
+
+        for waveform_metric, metric_path in zip(
+            metric_collection.waveform_metrics,
+            metric_collection.stream_paths,
+        ):
+            metric_xml = wf_xml.WaveformMetricsXML(waveform_metric.metric_list)
+            xmlstr = metric_xml.to_xml()
             self.workspace.insert_aux(
                 xmlstr,
                 "WaveFormMetrics",
-                metricpath,
+                metric_path,
                 overwrite=self.gmrecords.args.overwrite,
             )
 

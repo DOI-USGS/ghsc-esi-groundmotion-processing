@@ -1,30 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 
 import numpy as np
 import scipy.constants as sp
 from obspy import read, read_inventory
 from obspy.geodetics import gps2dist_azimuth
+from obspy.core.utcdatetime import UTCDateTime
 
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils.config import get_config
 
 datadir = TEST_DATA_DIR / "fdsnfetch"
 
 
 def test_radial_transverse():
-    event = ScalarEvent()
-    event.from_params(
+    event = ScalarEvent.from_params(
         id="test",
         lat=47.149,
         lon=-122.7266667,
         depth=0,
         magnitude=5.0,
         mag_type="",
-        time="2016-11-13 11:02:56",
+        time=UTCDateTime.strptime("2016-11-13 11:02:56", "%Y-%m-%d %H:%M:%S"),
     )
     st = read(str(datadir / "resp_cor" / "UW.ALCT.--.*.MSEED"))
 
@@ -82,12 +84,16 @@ def test_radial_transverse():
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.set_provenance("remove_response", response)
 
-    summary = StationSummary.from_stream(st2, ["radial_transverse"], ["pga"], event)
-    pgmdf = summary.pgms
-    R = pgmdf.loc["PGA", "HNR"].Result
-    T = pgmdf.loc["PGA", "HNT"].Result
-    np.testing.assert_almost_equal(pgms[0], sp.g * R)
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pga"]
+    config["metrics"]["output_imcs"] = ["radial_transverse"]
+    wmc = WaveformMetricCollection.from_streams([st2], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
 
+    R = wm.value("HNR")
+    T = wm.value("HNT")
+
+    np.testing.assert_almost_equal(pgms[0], sp.g * R)
     np.testing.assert_almost_equal(pgms[1], sp.g * T)
 
     # Test with a station whose channels are not aligned to E-N
@@ -95,59 +101,25 @@ def test_radial_transverse():
     SEW_inv = read_inventory(datadir / "inventory_sew.xml")
     stalat, stalon = inv[0][0][0].latitude, inv[0][0][0].longitude
 
-    # This needs to be checked. The target data doesn't appear to be
-    # correct. This can be updated when a tolerance is added to the rotate
-    # method.
-    """traces = []
-    for tr in SEW_st:
-        tr.stats.coordinates = {'latitude': stalat,
-                                'longitude': stalon}
-        tr.stats.standard = {'corner_frequency': np.nan,
-            'station_name': '',
-            'source': 'json',
-            'instrument': '',
-            'instrument_period': np.nan,
-            'source_format': 'json',
-            'comments': '',
-            'structure_type': '',
-            'sensor_serial_number': '',
-            'process_level': 'raw counts',
-            'process_time': '',
-            'horizontal_orientation':
-             SEW_inv.get_channel_metadata(tr.get_id())['azimuth'],
-            'units': 'acc',
-            'instrument_damping': np.nan}
-        traces += [StationTrace(tr.data, tr.stats)]
-    baz = gps2dist_azimuth(stalat, stalon,
-                           event.latitude, event.longitude)[1]
-    SEW_st_copy = StationStream(traces)
-    SEW_st_copy.rotate(method='->NE', inventory=SEW_inv)
-    SEW_st_copy.rotate(method='NE->RT', back_azimuth=baz)
-    pgms = np.abs(SEW_st_copy.max())
-
-    summary = StationSummary.from_stream(
-        SEW_st, ['radial_transverse'], ['pga'], event)
-
-    np.testing.assert_almost_equal(
-        pgms[1], sp.g * summary.pgms['PGA']['R'])
-
-    np.testing.assert_almost_equal(
-        pgms[2], sp.g * summary.pgms['PGA']['T'])"""
-
     # Test failure case without two horizontal channels
     copy1 = st2.copy()
     copy1[0].stats.channel = copy1[0].stats.channel[:-1] + "3"
-    pgms = StationSummary.from_stream(copy1, ["radial_transverse"], ["pga"], event).pgms
-    assert np.isnan(pgms.loc["PGA", "HNR"].Result)
-    assert np.isnan(pgms.loc["PGA", "HNT"].Result)
+
+    wmc = WaveformMetricCollection.from_streams([copy1], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+    assert np.isnan(wm.value("HNR"))
+    assert np.isnan(wm.value("HNT"))
 
     # Test failure case when channels are not orthogonal
     copy3 = st2.copy()
     copy3[0].stats.standard.horizontal_orientation = 100
-    pgms = StationSummary.from_stream(copy3, ["radial_transverse"], ["pga"], event).pgms
-    assert np.isnan(pgms.loc["PGA", "HNR"].Result)
-    assert np.isnan(pgms.loc["PGA", "HNT"].Result)
+    wmc = WaveformMetricCollection.from_streams([copy3], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+
+    assert np.isnan(wm.value("HNR"))
+    assert np.isnan(wm.value("HNT"))
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_radial_transverse()

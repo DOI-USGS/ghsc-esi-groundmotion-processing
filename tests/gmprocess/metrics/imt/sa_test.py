@@ -10,9 +10,10 @@ import numpy as np
 
 # local imports
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils.config import get_config
 
 
 def test_sa():
@@ -24,8 +25,8 @@ def test_sa():
         vtrace = trace.copy()
         vtrace.integrate()
         sa_target[vtrace.stats["channel"]] = np.abs(vtrace.max())
-    event = ScalarEvent()
-    event.from_params(
+
+    event = ScalarEvent.from_params(
         id="",
         lat=0,
         lon=0,
@@ -34,42 +35,17 @@ def test_sa():
         mag_type="",
         time="2000-01-01 00:00:00",
     )
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        station_summary = StationSummary.from_stream(
-            stream_v2,
-            [
-                "greater_of_two_horizontals",
-                "geometric_mean",
-                "rotd50",
-                "arithmetic_mean",
-                "rotd100",
-                "gmrotd50",
-                "channels",
-            ],
-            ["sa1.0", "sa0.01", "saincorrect"],
-            event=event,
-        )
-    pgms = station_summary.pgms
-    assert "SA(1.000)" in pgms.index.get_level_values(0)
-    np.testing.assert_allclose(
-        pgms.loc["SA(1.000)", "ARITHMETIC_MEAN"].Result, 110.47168962900042
-    )
-    np.testing.assert_allclose(
-        pgms.loc["SA(1.000)", "GEOMETRIC_MEAN"].Result, 107.42183990654802
-    )
-    np.testing.assert_allclose(
-        pgms.loc["SA(1.000)", "ROTD(50.0)"].Result, 106.03202302692158
-    )
-    np.testing.assert_allclose(
-        pgms.loc["SA(1.000)", "ROTD(100.0)"].Result, 146.90233501240979
-    )
-    # Check high frequency SA
-    np.testing.assert_allclose(pgms.loc["SA(0.010)", "ROTD(100.0)"].Result, 120.187153)
-    np.testing.assert_allclose(pgms.loc["SA(0.010)", "GMROTD(50.0)"].Result, 95.355300)
-    np.testing.assert_allclose(pgms.loc["SA(0.010)", "H1"].Result, 106.716122)
-    np.testing.assert_allclose(pgms.loc["SA(0.010)", "H2"].Result, 90.497883)
-    np.testing.assert_allclose(pgms.loc["SA(0.010)", "GMROTD(50.0)"].Result, 95.355300)
+
+    config = get_config()
+    config["metrics"]["output_imts"] = ["sa"]
+    config["metrics"]["sa"]["periods"]["defined_periods"] = [1.0]
+    config["metrics"]["output_imcs"] = ["channels", "rotd50"]
+    wmc = WaveformMetricCollection.from_streams([stream_v2], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+
+    np.testing.assert_allclose(wm.value("H1"), 136.25041187387066)
+    np.testing.assert_allclose(wm.value("H2"), 84.69296738413027)
+    np.testing.assert_allclose(wm.value("ROTD(50.0)"), 106.03202302692148)
 
 
 if __name__ == "__main__":

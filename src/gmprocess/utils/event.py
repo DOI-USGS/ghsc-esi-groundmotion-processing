@@ -4,22 +4,32 @@
 import logging
 from json.decoder import JSONDecodeError
 
-from gmprocess.utils.download_utils import get_event_data
-
 from obspy.core.event.event import Event
 from obspy.core.event.magnitude import Magnitude
 from obspy.core.event.origin import Origin
 from obspy.core.utcdatetime import UTCDateTime
 
+from gmprocess.utils.download_utils import get_event_data
+
 
 class ScalarEvent(Event):
-    """Class to represent a flattened Event with only 1 origin and 1 magnitude."""
+    """Class to represent a flattened Event with only 1 origin and 1 magnitude.
 
-    def __init__(self, *args, **kwargs):
-        super(ScalarEvent, self).__init__(*args, **kwargs)
+    Note that depth in obspy's Origin object is in meters, but we use km.
+
+    Also, be careful because we have a similar object with the same name:
+    esi_utils_rupture.origin.Origin.
+
+    """
 
     @classmethod
     def from_event(cls, event):
+        """Create a ScalarEvent from an obspy Event object.
+
+        Args:
+            event (obspy.core.event.event.Event):
+                And obspy Event object.
+        """
         eventobj = cls()
 
         # copy the arrays
@@ -50,7 +60,8 @@ class ScalarEvent(Event):
 
         return eventobj
 
-    def from_params(self, id, time, lat, lon, depth, magnitude, mag_type=None):
+    @classmethod
+    def from_params(cls, id, time, lat, lon, depth, magnitude, mag_type=None):
         """Create a ScalarEvent (subclass of Event).
 
         Args:
@@ -69,21 +80,24 @@ class ScalarEvent(Event):
             mag_type (str):
                 Magnitude type of earthqake.
         """
+        event = cls()
         if isinstance(time, str):
             try:
                 time = UTCDateTime(time)
-            except BaseException as e:
-                fmt = 'Can\'t make UTCDateTime from string "%s" - error "%s"'
-                raise TypeError(fmt % (time, str(e)))
+            except BaseException as err:
+                logging.info("Can not make UTCDateTime from string.")
+                raise err
 
+        # Convert depth to m for obspy's origin object
         origin = Origin(
             resource_id=id, time=time, longitude=lon, latitude=lat, depth=depth * 1000
         )
 
-        self.origins = [origin]
+        event.origins = [origin]
         magnitude = Magnitude(resource_id=id, mag=magnitude, magnitude_type=mag_type)
-        self.magnitudes = [magnitude]
-        self.resource_id = id
+        event.magnitudes = [magnitude]
+        event.resource_id = id
+        return event
 
     def __repr__(self):
         if not hasattr(self, "origins") or not hasattr(self, "magnitudes"):
@@ -95,7 +109,7 @@ class ScalarEvent(Event):
             self.latitude,
             self.longitude,
             self.depth_km,
-            self.magnitude,
+            self.magnitude / 1000,
             self.magnitude_type,
         )
         return fmt % tpl
@@ -172,9 +186,11 @@ def get_event_dict(eventid):
     """
     event_data = get_event_data(eventid)
     if event_data["id"] != eventid:
-        logging.warn(
+        logging.warning(
             "Event ID %s is no longer preferred. Updating with the "
-            "preferred event ID: %s." % (eventid, event_data["id"])
+            "preferred event ID: %s.",
+            eventid,
+            event_data["id"],
         )
     event_dict = {
         "id": event_data["id"],
@@ -193,7 +209,7 @@ def get_event_object(dict_or_id):
     (see get_event_dict).
 
     Args:
-        eventid (dict_or_id):
+        eventid (dict, str):
             Event ID that can be found in ComCat, or dict.
 
     Returns:
@@ -202,21 +218,21 @@ def get_event_object(dict_or_id):
     if isinstance(dict_or_id, str):
         try:
             event_dict = get_event_dict(dict_or_id)
-        except JSONDecodeError as e:
+        except JSONDecodeError as err:
             logging.info(
-                "JSONDecodeError error encountered while retrieving event "
-                f"info for {dict_or_id}:"
+                "JSONDecodeError error encountered while retrieving event info for %s:",
+                dict_or_id,
             )
-            logging.info(f"Error: {e}")
+            logging.info("Error: %s", err)
             return None
     elif isinstance(dict_or_id, dict):
         event_dict = dict_or_id.copy()
     else:
-        raise Exception("Unknown input parameter to get_event_info()")
-    event = ScalarEvent()
+        raise ValueError("Unknown input parameter to get_event_info()")
+
     if "magnitude_type" not in event_dict.keys():
         event_dict["magnitude_type"] = None
-    event.from_params(
+    event = ScalarEvent.from_params(
         event_dict["id"],
         event_dict["time"],
         event_dict["lat"],

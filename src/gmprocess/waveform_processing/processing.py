@@ -130,9 +130,15 @@ def process_streams(streams, event, config=None, old_streams=None):
             step_name = key_list[0]
 
             logging.debug(f"Processing step: {step_name}")
-            step_args = processing_step_dict[step_name]
+
             if step_name not in all_processing_steps:
                 raise ValueError(f"Processing step {step_name} is not valid.")
+
+            # This funny business here is because we need to copy step_args, but
+            # sometimes it is None in which case an exception would be raised.
+            step_args = None
+            if processing_step_dict[step_name] is not None:
+                step_args = processing_step_dict[step_name].copy()
 
             # Event is required by some steps and has to be handled specially.
             # There must be a better solution for this...

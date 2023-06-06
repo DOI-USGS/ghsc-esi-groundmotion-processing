@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections.abc import Iterable
+from itertools import compress, chain
+
 import numpy as np
 import pandas as pd
 import folium
 import folium.plugins
-from collections.abc import Iterable
-from itertools import compress, chain
 
 OCEAN_COLOR = "#96e8ff"
 LAND_COLOR = "#ededaf"

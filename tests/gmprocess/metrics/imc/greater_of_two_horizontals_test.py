@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 
 # third party imports
 import numpy as np
 
 # local imports
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.config import get_config
 
 
 def test_greater_of_two_horizontals():
@@ -16,12 +18,14 @@ def test_greater_of_two_horizontals():
     )
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
-    station_summary = StationSummary.from_stream(
-        stream_v2, ["greater_of_two_horizontals"], ["pga"], event=event
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pga"]
+    config["metrics"]["output_imcs"] = ["greater_of_two_horizontals"]
+    wmc = WaveformMetricCollection.from_streams([stream_v2], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+    np.testing.assert_almost_equal(
+        wm.value("GREATER_OF_TWO_HORIZONTALS"), 99.24999872535474
     )
-    pgms = station_summary.pgms
-    greater = pgms.loc["PGA", "GREATER_OF_TWO_HORIZONTALS"].Result
-    np.testing.assert_almost_equal(greater, 99.3173469387755, decimal=1)
 
 
 if __name__ == "__main__":

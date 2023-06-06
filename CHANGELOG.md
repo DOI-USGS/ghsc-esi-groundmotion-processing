@@ -1,6 +1,10 @@
 ## main
  - Define new Metrics class to improving handling of intensity metrics.
  - Define new MetricsXML class to isolate the conversion of metrics into an XML.
+ - Refactor StationSummary into multiple separate classes:
+   - WaveformMetric, WaveformMetricList, WaveformMetricCollection, WaveformMetricsXML
+   - StationMetric, StationMetricCollection
+ - Pulled out flatfile stuff from StreamWorkspace into a Flatfile class, and put ASDF path stuff into path_utils.py.
  - Refactor summary plot code.
  - Optimize getTables method.
  - Bugfixes

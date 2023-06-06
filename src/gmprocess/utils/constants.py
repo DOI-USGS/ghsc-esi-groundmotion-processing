@@ -18,7 +18,9 @@ CONFIG_FILE_TEST = "config_test.yml"
 PICKER_FILE = "picker.yml"
 MODULE_FILE = "modules.yml"
 RUPTURE_FILE = "rupture.json"
+
 GAL_TO_PCTG = 1.0 / sp.g
+M_PER_KM = 1000
 
 WORKSPACE_NAME = "workspace.h5"
 WORKSPACE_NAME_OLD = "workspace.hdf"
@@ -28,10 +30,10 @@ UNITS = {
     "pga": "%g",
     "pgv": "cm/s",
     "sa": "%g",
-    "arias": "m/s",
+    "ariasintensity": "m/s",
     "fas": "cm/s",
     "duration": "s",
-    "sorted_duration": "s",
+    "sortedduration": "s",
 }
 
 # Converts acceleration units to cm/s/s

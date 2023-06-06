@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Std library imports
 from collections import OrderedDict
 import importlib
@@ -11,11 +14,11 @@ from obspy import Stream
 import pandas as pd
 
 # Local imports
-from gmprocess.utils.config import get_config
+from gmprocess.utils.config import get_config, get_config_imts_imcs
 from gmprocess.utils.constants import GAL_TO_PCTG, METRICS_XML_FLOAT_STRING_FORMAT
 from gmprocess.metrics.exception import PGMException
 from gmprocess.metrics.gather import gather_pgms
-from gmprocess.metrics.utils import component_to_channel
+from gmprocess.metrics import utils
 from gmprocess.core.stationstream import StationStream
 
 
@@ -169,49 +172,12 @@ class MetricsController(object):
         """
         if config is None:
             config = get_config()
-        metrics = config["metrics"]
-        config_imts = [imt.lower() for imt in metrics["output_imts"]]
-        imcs = [imc.lower() for imc in metrics["output_imcs"]]
-        # append periods for sa and fas, interval for duration
-        imts = []
-        for imt in config_imts:
-            if imt == "sa":
-                if metrics["sa"]["periods"]["use_array"]:
-                    start = metrics["sa"]["periods"]["start"]
-                    stop = metrics["sa"]["periods"]["stop"]
-                    num = metrics["sa"]["periods"]["num"]
-                    if metrics["sa"]["periods"]["spacing"] == "logspace":
-                        periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-                    else:
-                        periods = np.linspace(start, stop, num=num)
-                    for period in periods:
-                        imts += ["sa" + str(period)]
-                else:
-                    for period in metrics["sa"]["periods"]["defined_periods"]:
-                        imts += ["sa" + str(period)]
-            elif imt == "fas":
-                if metrics["fas"]["periods"]["use_array"]:
-                    start = metrics["fas"]["periods"]["start"]
-                    stop = metrics["fas"]["periods"]["stop"]
-                    num = metrics["fas"]["periods"]["num"]
-                    if metrics["fas"]["periods"]["spacing"] == "logspace":
-                        periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-                    else:
-                        periods = np.linspace(start, stop, num=num)
-                    for period in periods:
-                        imts += ["fas" + str(period)]
-                else:
-                    for period in metrics["fas"]["periods"]["defined_periods"]:
-                        imts += ["fas" + str(period)]
-            elif imt == "duration":
-                for interval in metrics["duration"]["intervals"]:
-                    imts += ["duration" + interval]
-            else:
-                imts += [imt]
-        damping = metrics["sa"]["damping"]
-        smoothing = metrics["fas"]["smoothing"]
-        bandwidth = metrics["fas"]["bandwidth"]
-        allow_nans = metrics["fas"]["allow_nans"]
+
+        imts, imcs = get_config_imts_imcs(config)
+        damping = config["metrics"]["sa"]["damping"]
+        smoothing = config["metrics"]["fas"]["smoothing"]
+        bandwidth = config["metrics"]["fas"]["bandwidth"]
+        allow_nans = config["metrics"]["fas"]["allow_nans"]
         controller = cls(
             imts,
             imcs,
@@ -272,7 +238,7 @@ class MetricsController(object):
                     continue
                 imt = "fas"
             elif imt.startswith("duration"):
-                interval = self._parse_interval(imt)
+                interval = utils.parse_interval(imt)
                 if interval is None:
                     continue
                 imt = "duration"
@@ -284,7 +250,7 @@ class MetricsController(object):
                 # ROTD and GMROTD imcs include a period which must be parsed
                 # from the imc string
                 if "rot" in imc:
-                    percentile = self._parse_percentile(imc)
+                    percentile = utils.parse_percentile(imc)
                     if imc.startswith("gm"):
                         imc = "gmrotd"
                     else:
@@ -447,10 +413,10 @@ class MetricsController(object):
                     inspect.getmembers(c2_mod, inspect.isclass), "Combination"
                 )
                 c2 = c2_cls(red).result
-            except BaseException as e:
+            except BaseException as exc:
                 # raise e
                 msg = (
-                    f"Error in calculation of {imt_imc}: {str(e)}.  "
+                    f"Error in calculation of {imt_imc}: {str(exc)}.  "
                     "Result cell will be set to np.nan."
                 )
                 logging.warning(msg)
@@ -461,7 +427,9 @@ class MetricsController(object):
             # the "first horizontal channel".
             if "channels" in imt_imc:
                 channel_names = list(c2.keys())
-                (self.channel_dict, reverse_dict) = component_to_channel(channel_names)
+                (self.channel_dict, reverse_dict) = utils.component_to_channel(
+                    channel_names
+                )
                 new_c2 = {}
                 for channel, value in c2.items():
                     newchannel = reverse_dict[channel]
@@ -483,7 +451,7 @@ class MetricsController(object):
         if df.empty:
             return df
         else:
-            return df.set_index(["IMT", "IMC"])
+            return df  # df.set_index(["IMT", "IMC"])
 
     def perform_first_steps(
         self, period, percentile, s1, s2, s3, transform_path, rotation_path
@@ -769,6 +737,49 @@ class MetricsController(object):
             if cls_tupple[1].__bases__[0].__name__ == base_class:
                 return cls_tupple[1]
 
+    def _get_max_period(self):
+        periods = []
+        for imt in self.imts:
+            period = self._parse_period(imt)
+            if period is not None:
+                periods.append(float(period))
+        if periods:
+            return max(periods)
+        else:
+            return None
+
+    def _get_min_period(self):
+        periods = []
+        for imt in self.imts:
+            period = self._parse_period(imt)
+            if period is not None:
+                periods.append(float(period))
+        if periods:
+            return min(periods)
+        else:
+            return None
+
+    def clean_imts(self):
+        cleaned_imts = set()
+        for idx, imt in enumerate(self.imts):
+            if imt.startswith("fas"):
+                period = utils.parse_period(imt)
+                if period is None:
+                    continue
+                cleaned_imts.add(
+                    f"fas({METRICS_XML_FLOAT_STRING_FORMAT['period']})" % float(period)
+                )
+            elif imt.startswith("sa"):
+                period = utils.parse_period(imt)
+                if period is None:
+                    continue
+                cleaned_imts.add(
+                    f"sa({METRICS_XML_FLOAT_STRING_FORMAT['period']})" % float(period)
+                )
+            else:
+                cleaned_imts.add(imt)
+        self.imts = cleaned_imts
+
     @staticmethod
     def _parse_period(imt):
         """
@@ -848,46 +859,3 @@ class MetricsController(object):
         else:
             percentile = None
         return percentile
-
-    def _get_max_period(self):
-        periods = []
-        for imt in self.imts:
-            period = self._parse_period(imt)
-            if period is not None:
-                periods.append(float(period))
-        if periods:
-            return max(periods)
-        else:
-            return None
-
-    def _get_min_period(self):
-        periods = []
-        for imt in self.imts:
-            period = self._parse_period(imt)
-            if period is not None:
-                periods.append(float(period))
-        if periods:
-            return min(periods)
-        else:
-            return None
-
-    def clean_imts(self):
-        cleaned_imts = set()
-        for idx, imt in enumerate(self.imts):
-            if imt.startswith("fas"):
-                period = self._parse_period(imt)
-                if period is None:
-                    continue
-                cleaned_imts.add(
-                    f"fas({METRICS_XML_FLOAT_STRING_FORMAT['period']})" % float(period)
-                )
-            elif imt.startswith("sa"):
-                period = self._parse_period(imt)
-                if period is None:
-                    continue
-                cleaned_imts.add(
-                    f"sa({METRICS_XML_FLOAT_STRING_FORMAT['period']})" % float(period)
-                )
-            else:
-                cleaned_imts.add(imt)
-        self.imts = cleaned_imts

@@ -729,8 +729,7 @@ def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     df_catalog["depth"].clip(lower=0, inplace=True)
     catalog = []
     for idx, row in df_catalog.iterrows():
-        event = ScalarEvent()
-        event.from_params(
+        event = ScalarEvent.from_params(
             row["id"],
             row["time"],
             row["latitude"],

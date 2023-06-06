@@ -45,7 +45,7 @@ def test_gmpacket_writer(datafile=None, save_file=False):
     try:
         tempdir = pathlib.Path(tempfile.mkdtemp())
         packet_writer = GroundMotionPacketWriter(tempdir, datafile, label="default")
-        files, nevents, nstreams, ntraces = packet_writer.write()
+        files, _, _, _ = packet_writer.write()
 
         jsonfile = files[0]
         packet = GroundMotionPacket.load_from_json(jsonfile)
@@ -68,7 +68,7 @@ def test_gmpacket_writer(datafile=None, save_file=False):
             "location": "--",
             "PGA(%g)": 47.028,
             "PGV(cm/s)": 78.356,
-            "SORTED_DURATION(s)": 5.89,
+            "SortedDuration(s)": 5.89,
             "DURATION(s)_Start_percentage_5.0%_End_percentage_75.0%": 8.61,
             "DURATION(s)_Start_percentage_5.0%_End_percentage_95.0%": 11.28,
             "SA(%g)_critical_damping_5.0%_period_0.01s": 47.803,
@@ -94,7 +94,7 @@ def test_gmpacket_writer(datafile=None, save_file=False):
             "SA(%g)_critical_damping_5.0%_period_7.5s": 2.8145,
         }
         df = packet.to_dataframe()
-        for key, newvalue in df.iloc[0].to_dict().items():
+        for key, newvalue in df.iloc[1].to_dict().items():
             cmpvalue = cmp_dict[key]
             if isinstance(newvalue, str):
                 assert newvalue == cmpvalue

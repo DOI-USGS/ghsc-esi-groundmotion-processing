@@ -33,11 +33,6 @@ def test_compute_waveform_metrics(script_runner):
         assert "Adding waveform metrics to workspace files with" in ret.stderr
         assert "Calculating waveform metrics for CI.CCC.HN" in ret.stderr
 
-        # ret = script_runner.run(
-        #     "gmrecords", "-n", "2", "-o", "compute_waveform_metrics"
-        # )
-        # assert ret.success
-
     except Exception as ex:
         raise ex
     finally:

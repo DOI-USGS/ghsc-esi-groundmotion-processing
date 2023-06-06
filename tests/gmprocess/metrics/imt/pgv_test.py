@@ -10,9 +10,10 @@ import numpy as np
 
 # local imports
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils.config import get_config
 
 
 def test_pgv():
@@ -25,13 +26,7 @@ def test_pgv():
         vtrace.integrate()
         pgv_target[vtrace.stats["channel"]] = np.abs(vtrace.max())
 
-    # we've replaced HN1 etc. with H1 so channel names are not the same as
-    # the original trace
-    pgv_target["H1"] = pgv_target["HN1"]
-    pgv_target["H2"] = pgv_target["HN2"]
-    pgv_target["Z"] = pgv_target["HNZ"]
-    event = ScalarEvent()
-    event.from_params(
+    event = ScalarEvent.from_params(
         id="",
         lat=0,
         lon=0,
@@ -40,21 +35,16 @@ def test_pgv():
         mag_type="",
         time="2000-01-01 00:00:00",
     )
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        station_summary = StationSummary.from_stream(
-            stream_v2,
-            ["channels", "greater_of_two_horizontals", "gmrotd50"],
-            ["pgv", "sa1.0", "saincorrect"],
-            event=event,
-        )
-    pgv_df = station_summary.pgms.loc["PGV"]
-    HN1 = pgv_df.loc["H1"].Result
-    HN2 = pgv_df.loc["H2"].Result
-    HNZ = pgv_df.loc["Z"].Result
-    np.testing.assert_almost_equal(HN2, pgv_target["H2"])
-    np.testing.assert_almost_equal(HN1, pgv_target["H1"])
-    np.testing.assert_almost_equal(HNZ, pgv_target["Z"])
+
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pgv"]
+    config["metrics"]["output_imcs"] = ["channels"]
+    wmc = WaveformMetricCollection.from_streams([stream_v2], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+
+    np.testing.assert_almost_equal(wm.value("H2"), pgv_target["HN2"])
+    np.testing.assert_almost_equal(wm.value("H1"), pgv_target["HN1"])
+    np.testing.assert_almost_equal(wm.value("Z"), pgv_target["HNZ"])
 
 
 if __name__ == "__main__":

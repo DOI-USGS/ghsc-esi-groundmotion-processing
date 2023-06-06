@@ -3,7 +3,6 @@
 
 import os
 import numpy as np
-import json
 
 from obspy import UTCDateTime
 
@@ -11,7 +10,6 @@ from gmprocess.io.read_directory import directory_to_streams
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.utils.logging import setup_logger
 from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.event import get_event_object
 
 setup_logger()
 
@@ -77,13 +75,6 @@ def test_StreamCollection():
     # Check the from_directory method
     sc_test = StreamCollection.from_directory(directory)
     assert len(sc_test) == 1
-
-    # Test to_dataframe
-    jsonfile = os.path.join(directory, "event.json")
-    with open(jsonfile, "rt", encoding="utf-8") as f:
-        event = get_event_object(json.load(f))
-    dmg_df = sc_test.to_dataframe(event)
-    np.testing.assert_allclose(dmg_df["H1"]["PGA"], 0.145615, atol=1e5)
 
     # Check the from_traces method
     traces = []

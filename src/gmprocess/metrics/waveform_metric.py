@@ -6,11 +6,20 @@ from abc import ABC, abstractmethod
 from gmprocess.utils import constants
 
 
-class Metric(ABC):
+class WaveformMetric(ABC):
+    """Base class for waveform metric classes."""
+
     def __repr__(self):
-        id = self.identifier
         comps = ", ".join({f"{k}={v:.3f}" for (k, v) in self._values.items()})
-        return f"{id}: {comps}"
+        return f"{self.identifier}: {comps}"
+
+    def __init__(self):
+        self._values = None
+        self._type = None
+        self.format_type = None
+        self._units = None
+        self.metric_attributes = None
+        self.component_to_channel = None
 
     def to_dict(self):
         """Return a dictionary representation of the Metric object."""
@@ -18,7 +27,7 @@ class Metric(ABC):
             "values": list(self._values.values()),
             "components": self.components,
             "type": self._type,
-            "format_type": self._format_type,
+            "format_type": self.format_type,
             "units": self._units,
             "metric_attributes": self.metric_attributes,
             "component_to_channel": self.component_to_channel,
@@ -37,7 +46,6 @@ class Metric(ABC):
     @abstractmethod
     def identifier(self):
         """The identifier includes metric attributes, but not values/components."""
-        pass
 
     @property
     def values(self):
@@ -59,25 +67,25 @@ class Metric(ABC):
         return self._values[component]
 
     @staticmethod
-    def metric_from_dict(dict):
+    def metric_from_dict(mdict):
         """Class factory to create a Metric subclass instance from a dictionary.
 
         Args:
-            dict (dict):
+            mdict (dict):
                 A dictionary with the structure of the dictionary that is returned by
                 Metric.to_dict().
         """
         # List of subclasses
-        metric_subclasses = Metric.__subclasses__()
+        metric_subclasses = WaveformMetric.__subclasses__()
 
         # Dictionary for selecting a subclass
         sub_dict = {m.__name__: m for m in metric_subclasses}
 
         # Name of subclass is in the "type" key
-        selected_class = sub_dict[dict["type"]]
+        selected_class = sub_dict[mdict["type"]]
 
         # Prepare the arguments to construct a class instance
-        cargs = dict.copy()
+        cargs = mdict.copy()
         rm_keys = ["type", "format_type", "units"]
         for k in rm_keys:
             cargs.pop(k)
@@ -87,7 +95,9 @@ class Metric(ABC):
         return selected_class(**cargs)
 
 
-class PGA(Metric):
+class PGA(WaveformMetric):
+    """WaveformMetric subclass for PGA."""
+
     def __init__(self, values, components, component_to_channel=None):
         """Construct a PGA metric object.
 
@@ -100,12 +110,13 @@ class PGA(Metric):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
         """
+        super().__init__()
         if len(values) != len(components):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self._format_type = "pgm"
+        self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {}
         self.component_to_channel = component_to_channel
@@ -115,7 +126,9 @@ class PGA(Metric):
         return "PGA"
 
 
-class PGV(Metric):
+class PGV(WaveformMetric):
+    """WaveformMetric subclass for PGV."""
+
     def __init__(self, values, components, component_to_channel=None):
         """Construct a PGV metric object.
 
@@ -128,12 +141,13 @@ class PGV(Metric):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
         """
+        super().__init__()
         if len(values) != len(components):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self._format_type = "pgm"
+        self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {}
         self.component_to_channel = component_to_channel
@@ -143,7 +157,9 @@ class PGV(Metric):
         return "PGV"
 
 
-class SA(Metric):
+class SA(WaveformMetric):
+    """WaveformMetric subclass for SA, spectral acceleration."""
+
     def __init__(
         self, values, components, period, damping=5.0, component_to_channel=None
     ):
@@ -162,12 +178,13 @@ class SA(Metric):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
         """
+        super().__init__()
         if len(values) != len(components):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self._format_type = "pgm"
+        self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {
             "period": period,
@@ -181,7 +198,59 @@ class SA(Metric):
         return f"SA(T={attrs['period']:.4f}, D={attrs['damping']:.3f})"
 
 
-class Duration(Metric):
+class FAS(WaveformMetric):
+    """WaveformMetric subclass for FAS, Fourier amplitude spectra."""
+
+    def __init__(
+        self,
+        values,
+        components,
+        period,
+        smoothing=20.0,
+        method="Konno-Omachi",
+        component_to_channel=None,
+    ):
+        """Construct a FAS metric object.
+
+        Args:
+            values (list):
+                List of FAS values.
+            components (list):
+                List of the components that map to the FAS values.
+            period (float):
+                Period for this fAS (in seconds).
+            smoothing (float):
+                Smoothing bandwidth parameter; default is 20.
+            method (str):
+                Smoothing method; default is Konno-Omachi.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "pgm"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {
+            "period": period,
+            "smoothing": smoothing,
+            "method": method,
+        }
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        attrs = self.metric_attributes
+        return f"FAS(T={attrs['period']:.4f}, B={attrs['smoothing']:.1f})"
+
+
+class Duration(WaveformMetric):
+    """WaveformMetric subclass for duration."""
+
     def __init__(self, values, components, interval, component_to_channel=None):
         """Construct a Duration metric object.
 
@@ -197,12 +266,13 @@ class Duration(Metric):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
         """
+        super().__init__()
         if len(values) != len(components):
             raise ValueError("Length of values must equal length of components.")
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self._format_type = "duration"
+        self.format_type = "duration"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {
             "interval": interval,
@@ -213,3 +283,65 @@ class Duration(Metric):
     def identifier(self):
         attrs = self.metric_attributes
         return f"Duration({attrs['interval']})"
+
+
+class SortedDuration(WaveformMetric):
+    """WaveformMetric subclass for sorted duration."""
+
+    def __init__(self, values, components, component_to_channel=None):
+        """Construct a SortedDuration metric object.
+
+        Args:
+            values (list):
+                List of Duration values.
+            components (list):
+                List of the components that map to the Duration values.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "duration"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {}
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        return "SortedDuration"
+
+
+class AriasIntensity(WaveformMetric):
+    """WaveformMetric subclass for Arias Intensity."""
+
+    def __init__(self, values, components, component_to_channel=None):
+        """Construct a AriasIntensity metric object.
+
+        Args:
+            values (list):
+                List of Duration values.
+            components (list):
+                List of the components that map to the Duration values.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "arias"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {}
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        return "AriasIntensity"

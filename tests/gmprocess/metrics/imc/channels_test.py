@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 
 # third party imports
 import numpy as np
 
 # local imports
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.config import get_config
 
 
 def test_channels():
@@ -16,20 +18,16 @@ def test_channels():
     )
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
-    station_summary = StationSummary.from_stream(
-        stream_v2, ["channels"], ["pga"], event=event
-    )
-    pgms = station_summary.pgms
-    np.testing.assert_almost_equal(
-        pgms.loc["PGA", "H2"].Result, 81.28979591836733, decimal=1
-    )
-    np.testing.assert_almost_equal(
-        pgms.loc["PGA", "H1"].Result, 99.3173469387755, decimal=1
-    )
-    np.testing.assert_almost_equal(
-        pgms.loc["PGA", "Z"].Result, 183.89693877551022, decimal=1
-    )
+    config = get_config()
+    config["metrics"]["output_imts"] = ["pga"]
+    config["metrics"]["output_imcs"] = ["channels"]
+    wmc = WaveformMetricCollection.from_streams([stream_v2], event, config)
+    wm = wmc.waveform_metrics[0].metric_list[0]
+    np.testing.assert_almost_equal(wm.value("H2"), 81.23467239067368)
+    np.testing.assert_almost_equal(wm.value("H1"), 99.24999872535474)
+    np.testing.assert_almost_equal(wm.value("Z"), 183.7722361866693)
 
 
 if __name__ == "__main__":
+    os.environ["CALLED_FROM_PYTEST"] = "True"
     test_channels()

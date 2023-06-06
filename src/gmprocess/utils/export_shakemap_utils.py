@@ -14,6 +14,11 @@ import prov.model
 from gmprocess.core.stationtrace import NS_SEIS, _get_person_agent, _get_software_agent
 from gmprocess.io.cosmos.core import BUILDING_TYPES
 from gmprocess.utils.constants import EVENT_TIMEFMT, COMPONENTS, UNITS
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
+from gmprocess.metrics.station_metric_collection import StationMetricCollection
+
+# Will need to update this when we support additional damping values.
+DEFAULT_DAMPING = 5.0
 
 
 def create_json(
@@ -52,11 +57,11 @@ def create_json(
     station_features = []
 
     streams = workspace.get_streams(event.id, labels=[label], config=config)
-    npassed = 0
-    for stream in streams:
-        if stream.passed:
-            npassed += 1
-    if not npassed:
+    waveform_collection = WaveformMetricCollection.from_workspace(
+        workspace, label=label
+    )
+    station_collection = StationMetricCollection.from_workspace(workspace)
+    if not waveform_collection.waveform_metrics:
         logging.info("No strong motion data found that passes tests. Exiting.")
         return (None, None, 0)
 
@@ -69,22 +74,23 @@ def create_json(
     base_prov = _get_software_agent(base_prov, gmprocess_version)
 
     nfeatures = 0
-    for stream in streams:
-        if not stream.passed:
-            continue
-
+    for wml, wm_meta, sm in zip(
+        waveform_collection.waveform_metrics,
+        waveform_collection.stream_metadata,
+        station_collection.station_metrics,
+    ):
         # Station is the feature, and properties contain
         # channel dictionary with all information about the metrics
         feature = OrderedDict()
         properties = OrderedDict()
-        properties["network_code"] = stream[0].stats.network
-        properties["station_code"] = stream[0].stats.station
-        # properties['location_code'] = stream[0].stats.location
-        properties["name"] = stream[0].stats.standard["station_name"]
-        properties["provider"] = stream[0].stats.standard["source"]
-        properties["instrument"] = stream[0].stats.standard["instrument"]
-        properties["source_format"] = stream[0].stats.standard["source_format"]
-        struct_desc = stream[0].stats.standard["structure_type"]
+        properties["network_code"] = wm_meta[0]["network"]
+        properties["station_code"] = wm_meta[0]["station"]
+        # properties['location_code'] = wm_meta[0]["location"]
+        properties["name"] = wm_meta[0]["station_name"]
+        properties["provider"] = wm_meta[0]["source"]
+        properties["instrument"] = ""
+        properties["source_format"] = wm_meta[0]["standard"]["source_format"]
+        struct_desc = wm_meta[0]["standard"]["structure_type"]
         struct_type = _get_cosmos_code(struct_desc)
         properties["station_housing"] = {
             "cosmos_code": struct_type,
@@ -92,35 +98,29 @@ def create_json(
         }
         nfeatures += 1
 
-        metrics = workspace.get_stream_metrics(
-            event.id,
-            properties["network_code"],
-            properties["station_code"],
-            label,
-            config=config,
-        )
-
-        if metrics is None:
-            continue
-
         coordinates = [
-            stream[0].stats.coordinates.longitude,
-            stream[0].stats.coordinates.latitude,
-            stream[0].stats.coordinates.elevation,
+            wm_meta[0]["longitude"],
+            wm_meta[0]["latitude"],
+            wm_meta[0]["elevation"],
         ]
 
         station_feature = get_station_feature(
-            stream, metrics, coordinates, expanded_imts=expanded_imts
+            wm_meta, wml, sm, coordinates, expanded_imts=expanded_imts
         )
         if station_feature is not None:
             station_features.append(station_feature)
 
-        components = get_components(metrics, stream, config)
+        sel_stream = streams.select(
+            network=properties["network_code"],
+            station=properties["station_code"],
+            instrument=wm_meta[0]["channel"][0:2],
+        )[0]
+        components = get_components(wml, sel_stream, config)
         properties["components"] = components
 
         provenance = {}
 
-        for trace in stream:
+        for trace in sel_stream:
             channel = trace.stats.channel
 
             # get trace provenance
@@ -187,33 +187,31 @@ def _get_cosmos_code(desc):
         return 51
 
 
-def get_station_feature(stream, metrics, coordinates, expanded_imts=False):
-    scode = f"{stream[0].stats.network}.{stream[0].stats.station}"
+def get_station_feature(wm_meta, wml, sm, coordinates, expanded_imts=False):
+    scode = f"{wm_meta[0]['network']}.{wm_meta[0]['station']}"
     station_feature = OrderedDict()
     station_properties = OrderedDict()
     station_feature["type"] = "Feature"
     station_feature["id"] = scode
-    station_properties["name"] = stream[0].stats.standard["station_name"]
+    station_properties["name"] = wm_meta[0]["station_name"]
 
-    station_properties["code"] = stream[0].stats.station
-    station_properties["network"] = stream[0].stats.network
-    station_properties["distance"] = metrics.distances["epicentral"]
-    # station_properties['source'] = stream[0].stats.standard['source']
-    station_properties["source"] = stream[0].stats.network
+    station_properties["code"] = wm_meta[0]["station"]
+    station_properties["network"] = wm_meta[0]["network"]
+    station_properties["distance"] = sm.repi
+    station_properties["source"] = wm_meta[0]["source"]
     station_channels = []
     station_channel_names = ["H1", "H2", "Z"]
 
+    imt_df = wml.to_df()
     if expanded_imts:
-        imts = list(
-            set([i[0] for i in metrics.pgms.index.to_numpy() if i[0].startswith("SA")])
-        )
+        imts = list(set([i for i in imt_df["IMT"].to_numpy() if i.startswith("SA")]))
         imt_lower = [s.lower() for s in imts]
-        imt_units = [UNITS["SA"]] * len(imts)
-        if "PGA" in metrics.pgms.index:
+        imt_units = [UNITS["sa"]] * len(imts)
+        if "PGA" in imt_df["IMT"].tolist():
             imts.append("PGA")
             imt_lower.append("pga")
             imt_units.append(UNITS["PGA"])
-        if "PGV" in metrics.pgms.index:
+        if "PGV" in imt_df["IMT"].tolist():
             imts.append("PGV")
             imt_lower.append("pgv")
             imt_units.append(UNITS["PGV"])
@@ -227,15 +225,20 @@ def get_station_feature(stream, metrics, coordinates, expanded_imts=False):
             "PGV": ("pgv", UNITS["pgv"]),
         }
 
-    channel_dict = metrics.channel_dict
+    comp_to_chan = wml.metric_list[0].component_to_channel
 
     for channel_name in station_channel_names:
         station_channel = OrderedDict()
-        if channel_name in metrics.components:
-            station_channel["name"] = channel_dict[channel_name]
+        if channel_name in comp_to_chan:
+            station_channel["name"] = comp_to_chan[channel_name]
             station_amplitudes = []
             for gm_imt, station_tuple in station_amps.items():
-                imt_value = metrics.get_pgm(gm_imt, channel_name)
+                imt_value = float(
+                    imt_df.loc[
+                        (imt_df["IMT"] == gm_imt) & (imt_df["IMC"] == channel_name),
+                        "Result",
+                    ]
+                )
                 station_amplitude = OrderedDict()
                 station_amplitude["name"] = station_tuple[0]
                 station_amplitude["ln_sigma"] = 0
@@ -245,7 +248,7 @@ def get_station_feature(stream, metrics, coordinates, expanded_imts=False):
                 station_amplitudes.append(station_amplitude.copy())
             station_channel["amplitudes"] = station_amplitudes
             station_channels.append(station_channel)
-    if len(station_channels):
+    if station_channels:
         station_properties["channels"] = station_channels
     else:
         return None
@@ -254,10 +257,14 @@ def get_station_feature(stream, metrics, coordinates, expanded_imts=False):
     return station_feature
 
 
-def get_components(metrics, stream, config):
+def get_components(wml, stream, config):
     FLOAT_MATCH = r"[0-9]*\.[0-9]*"
     components = OrderedDict()
-    for imc in metrics.components:
+    imt_df = wml.to_df()
+    all_components = list(set(imt_df["IMC"]))
+    imts = list(set(imt_df["IMT"]))
+    comp_to_chan = wml.metric_list[0].component_to_channel
+    for imc in all_components:
         if imc in ["H1", "H2", "Z"]:
             imtlist = COMPONENTS["CHANNELS"]
         else:
@@ -267,7 +274,7 @@ def get_components(metrics, stream, config):
         spectral_periods = []
         fourier_amplitudes = []
         fourier_periods = []
-        for imt in metrics.imts:
+        for imt in imts:
             if imt.startswith("FAS"):
                 imtstr = "FAS"
             elif imt.startswith("SA"):
@@ -276,7 +283,9 @@ def get_components(metrics, stream, config):
                 imtstr = imt
             if imtstr not in imtlist:
                 continue
-            imt_value = metrics.get_pgm(imt, imc)
+            imt_value = float(
+                imt_df.loc[(imt_df["IMT"] == imt) & (imt_df["IMC"] == imc), "Result"]
+            )
             if np.isnan(imt_value):
                 imt_value = "null"
             if imt.startswith("SA"):
@@ -296,35 +305,31 @@ def get_components(metrics, stream, config):
                 measures[imt] = {"value": imt_value, "units": units}
 
         if imc in ["H1", "H2", "Z"]:
-            imcname = metrics.channel_dict[imc]
+            imcname = comp_to_chan[imc]
             measures["as_recorded"] = True
-            ttrace = stream.select(component=imcname[-1])
+            for tr in stream:
+                if tr.stats.channel.endswith(imcname[-1]):
+                    trace = tr
+                    break
             azimuth = np.nan
             dip = np.nan
-            if len(ttrace):
-                trace = ttrace[0]
-                sampling_rate = trace.stats.sampling_rate
-                location_code = trace.stats.location
-                peak_acc = trace.data.max()
-                start = trace.stats.starttime
-                delta = trace.stats.delta
-                idx = np.where([trace.data >= peak_acc])[1][0]
-                peak_pga_time = (start + (delta * idx)).strftime(EVENT_TIMEFMT)
-                vel_trace = trace.copy()
-                vel_trace.integrate(config)
-                peak_vel = vel_trace.data.max()
-                start = vel_trace.stats.starttime
-                delta = vel_trace.stats.delta
-                idx = np.where([vel_trace.data >= peak_vel])[1][0]
-                peak_pgv_time = (start + (delta * idx)).strftime(EVENT_TIMEFMT)
-                if "horizontal_orientation" in trace.stats.standard:
-                    azimuth = trace.stats.standard["horizontal_orientation"]
-                dip = trace.stats.standard["vertical_orientation"]
-            else:
-                sampling_rate = np.nan
-                location_code = ""
-                peak_pga_time = np.nan
-                peak_pgv_time = np.nan
+            sampling_rate = trace.stats.sampling_rate
+            location_code = trace.stats.location
+            peak_acc = trace.data.max()
+            start = trace.stats.starttime
+            delta = trace.stats.delta
+            idx = np.where([trace.data >= peak_acc])[1][0]
+            peak_pga_time = (start + (delta * idx)).strftime(EVENT_TIMEFMT)
+            vel_trace = trace.copy()
+            vel_trace.integrate(config)
+            peak_vel = vel_trace.data.max()
+            start = vel_trace.stats.starttime
+            delta = vel_trace.stats.delta
+            idx = np.where([vel_trace.data >= peak_vel])[1][0]
+            peak_pgv_time = (start + (delta * idx)).strftime(EVENT_TIMEFMT)
+            if "horizontal_orientation" in trace.stats.standard:
+                azimuth = trace.stats.standard["horizontal_orientation"]
+            dip = trace.stats.standard["vertical_orientation"]
 
             measures["samples_per_second"] = sampling_rate
             measures["location_code"] = location_code
@@ -336,14 +341,14 @@ def get_components(metrics, stream, config):
             imcname = imc
             measures["as_recorded"] = False
         components[imcname] = measures
-        if len(spectral_values):
+        if spectral_values:
             units = UNITS["sa"]
-            damping = metrics.damping
+            damping = DEFAULT_DAMPING
             sa_dict = {"units": units, "damping": damping, "method": "absolute"}
             sa_dict["values"] = spectral_values
             sa_dict["periods"] = spectral_periods
             components[imcname]["SA"] = sa_dict
-        if len(fourier_amplitudes):
+        if fourier_amplitudes:
             units = UNITS["fas"]
             fas_dict = {
                 "units": units,
