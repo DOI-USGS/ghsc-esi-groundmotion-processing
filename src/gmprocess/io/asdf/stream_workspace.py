@@ -418,7 +418,7 @@ class StreamWorkspace(object):
             for trace in stream:
                 trace_path = get_trace_path(trace, tag)
                 jdict = {}
-                for key in trace.get_arameter_keys():
+                for key in trace.get_parameter_keys():
                     value = trace.get_parameter(key)
                     jdict[key] = value
                 if len(jdict):
