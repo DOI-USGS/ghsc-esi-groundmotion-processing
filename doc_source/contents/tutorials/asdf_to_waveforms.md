@@ -80,7 +80,7 @@ for more info), there is a method for constructing it from the workspace
 file
 
 ```{code-cell} ipython3
-sc = workspace.getStreams(
+sc = workspace.get_streams(
   'nc72282711', stations=['NP.1737'], labels=['default'])
 sc.describe()
 ```
@@ -91,12 +91,12 @@ data.
 
 ```{code-cell} ipython3
 sta_st = sc[0]
-print(sta_st[0].getProvDataFrame())
+print(sta_st[0].get_prov_dataframe())
 ```
 
 You can also get the entire provenance document for all stations.
 
 ```{code-cell} ipython3
-prov = workspace.getProvenance('nc72282711', labels=['default'])
+prov = workspace.get_provenance('nc72282711', labels=['default'])
 print(prov)
 ```
