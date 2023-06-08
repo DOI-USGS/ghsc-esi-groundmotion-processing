@@ -48,8 +48,8 @@ print(station_list)
 As an illustration, we will plot the vertical component on a map for a few stations such that clicking on the station will popup a figure of the corresponding vertical component time-series. 
 
 ```{code-cell} ipython3
-event = workspace.getEvent('uw10530748')
-pstreams = workspace.getStreams('uw10530748', labels=['default'])
+event = workspace.get_event('uw10530748')
+pstreams = workspace.get_streams('uw10530748', labels=['default'])
 ```
 
 In order to handle lengthy time-series, we need disable the maximum row count of 5000 that altair uses to keep performance in check. There are alternative options that can be used to improve performance if we were working with a larger dataset. See the following documentation for more information: 

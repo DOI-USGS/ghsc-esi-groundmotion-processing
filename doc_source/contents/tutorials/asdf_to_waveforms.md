@@ -39,7 +39,7 @@ waveform label is "default" unless the user has set the label for the
 processed waveforms.
 
 ```{code-cell} ipython3
-labels = workspace.getLabels()
+labels = workspace.get_labels()
 print(labels)
 ```
 
@@ -47,7 +47,7 @@ It is generally possible to have multiple events in an ASDF file, but gmprocess
 follows a convention of having one event per ASDF file. 
 
 ```{code-cell} ipython3
-eventids = workspace.getEventIds()
+eventids = workspace.get_event_ids()
 print(eventids)
 ```
 
