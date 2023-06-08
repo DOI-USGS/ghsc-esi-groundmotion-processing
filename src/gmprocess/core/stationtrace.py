@@ -938,7 +938,7 @@ class StationTrace(Trace):
         """
         return list(self.cached.keys())
 
-    def get_arameter_keys(self):
+    def get_parameter_keys(self):
         """Get a list of all available parameter keys.
 
         Returns:
