@@ -115,6 +115,7 @@ def test_stream_workspace_methods():
                 "ProbabilityStableShallow": 0.0,
                 "ProbabilityVolcanicShallow": 0.0,
                 "ProbabilityActiveDeep": 0.0,
+                "DistanceToBackarc": 0.0,
             }
             assert_cmp_with_nans(strec_params, cmp_params)
         finally:
