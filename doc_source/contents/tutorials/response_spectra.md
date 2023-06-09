@@ -36,7 +36,7 @@ from gmprocess.utils.config import get_config
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.event import get_event_object
 from gmprocess.utils.constants import DATA_DIR
-from gmprocess.metrics.waveform_metrics_collection import WaveformMetricsCollection
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 ```
 
 Now we will read in some records from we keep in the repository for testing
@@ -83,8 +83,10 @@ station CI.CCC
 
 ```{code-cell} ipython3
 # Compute response spectra for one of the processed streams
-summary = StationSummary.from_config(psc.select(station="CCC")[0], event=event, config=conf)
-print(summary.pgms)
+# summary = StationSummary.from_config(psc.select(station="CCC")[0], event=event, config=conf)
+# print(summary.pgms)
+wmc = WaveformMetricCollection.from_streams(psc.select(station="CCC")[0], event=event, config=conf)
+print(wmc.waveform_metrics)
 ```
 
 The `pgms` attribute is a Pandas dataframe, indexed by the IMTs and IMCs. 
