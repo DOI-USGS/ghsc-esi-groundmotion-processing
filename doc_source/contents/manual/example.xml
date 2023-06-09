@@ -3,11 +3,10 @@
   <Source>Taiwan Strong Motion Instrumentation Program via Central Weather Bureau</Source>
   <Module>ObsPy 1.4.0</Module>
   <ModuleURI>https://www.obspy.org</ModuleURI>
-  <Created>2022-12-28T18:45:46.260854Z</Created>
+  <Created>2023-06-09T19:52:05.956546Z</Created>
   <Network code="TW">
     <Description>source</Description>
     <Station code="EAS">
-      <Description>{"standard": {"instrument_period": NaN, "instrument_damping": NaN, "process_time": "", "process_level": "uncorrected physical units", "structure_type": "", "corner_frequency": NaN, "source_file": "1-EAS.dat", "source_format": "cwb"}, "format_specific": {"dc_offset_z": -0.837, "dc_offset_h1": -2.273, "dc_offset_h2": -0.778}}</Description>
       <Latitude unit="DEGREES">22.381</Latitude>
       <Longitude unit="DEGREES">120.857</Longitude>
       <Elevation unit="METERS">0.0</Elevation>

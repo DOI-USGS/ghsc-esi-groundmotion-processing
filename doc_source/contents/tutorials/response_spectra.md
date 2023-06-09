@@ -36,7 +36,7 @@ from gmprocess.utils.config import get_config
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.event import get_event_object
 from gmprocess.utils.constants import DATA_DIR
-from gmprocess.metrics.station_summary import StationSummary
+from gmprocess.metrics.waveform_metrics_collection import WaveformMetricsCollection
 ```
 
 Now we will read in some records from we keep in the repository for testing
