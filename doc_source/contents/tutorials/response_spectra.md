@@ -70,7 +70,7 @@ metrics, including the response spectra
 
 ```{code-cell} ipython3
 :tags: [remove-stderr]
-# Process the straems
+# Process the streams
 psc = process_streams(sc, event, conf)
 psc.describe()
 ```
