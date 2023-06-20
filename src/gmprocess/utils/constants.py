@@ -77,8 +77,6 @@ METRICS_XML_FLOAT_STRING_FORMAT = {
     "back_azimuth": "%.2f",
     "vs30": "%.2f",
     "distance": "%.2f",
-    "duration": "%.8g",
-    "sorted_duration": "%.8g",
 }
 
 # Default float format when we don't have a preference

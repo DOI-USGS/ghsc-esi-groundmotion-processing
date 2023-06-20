@@ -272,7 +272,7 @@ class Duration(WaveformMetric):
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self.format_type = "duration"
+        self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {
             "interval": interval,
@@ -293,9 +293,9 @@ class SortedDuration(WaveformMetric):
 
         Args:
             values (list):
-                List of Duration values.
+                List of Sorted Duration values.
             components (list):
-                List of the components that map to the Duration values.
+                List of the components that map to the Sorted Duration values.
             component_to_channel (dict):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
@@ -306,7 +306,7 @@ class SortedDuration(WaveformMetric):
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self.format_type = "duration"
+        self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {}
         self.component_to_channel = component_to_channel
@@ -324,9 +324,9 @@ class AriasIntensity(WaveformMetric):
 
         Args:
             values (list):
-                List of Duration values.
+                List of Arias Intensity values.
             components (list):
-                List of the components that map to the Duration values.
+                List of the components that map to the Arias Intensity values.
             component_to_channel (dict):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
@@ -337,7 +337,7 @@ class AriasIntensity(WaveformMetric):
 
         self._values = dict(zip(components, values))
         self._type = self.__class__.__name__
-        self.format_type = "arias"
+        self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {}
         self.component_to_channel = component_to_channel
