@@ -454,7 +454,7 @@ Require a minimum sample rate.
     
 ```
 
-## NNet_QA
+## nnet_qa
 ```
 Apply the neural network QA algorithm by Bellagamba et al. (2019),
 

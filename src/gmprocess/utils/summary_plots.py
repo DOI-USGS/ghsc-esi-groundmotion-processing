@@ -335,7 +335,7 @@ class SummaryPlot:
         self.xlim = self.ax.get_xlim()
 
     def plot_snr(self):
-        if "corner_frequencies" in self.tr.get_arameter_keys():
+        if "corner_frequencies" in self.tr.get_parameter_keys():
             hp = self.tr.get_parameter("corner_frequencies")["highpass"]
             lp = self.tr.get_parameter("corner_frequencies")["lowpass"]
             self.ax.axvline(hp, color="black", linestyle="--", label="Highpass")

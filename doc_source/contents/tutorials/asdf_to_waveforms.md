@@ -39,7 +39,7 @@ waveform label is "default" unless the user has set the label for the
 processed waveforms.
 
 ```{code-cell} ipython3
-labels = workspace.getLabels()
+labels = workspace.get_labels()
 print(labels)
 ```
 
@@ -47,7 +47,7 @@ It is generally possible to have multiple events in an ASDF file, but gmprocess
 follows a convention of having one event per ASDF file. 
 
 ```{code-cell} ipython3
-eventids = workspace.getEventIds()
+eventids = workspace.get_event_ids()
 print(eventids)
 ```
 
@@ -80,7 +80,7 @@ for more info), there is a method for constructing it from the workspace
 file
 
 ```{code-cell} ipython3
-sc = workspace.getStreams(
+sc = workspace.get_streams(
   'nc72282711', stations=['NP.1737'], labels=['default'])
 sc.describe()
 ```
@@ -91,12 +91,12 @@ data.
 
 ```{code-cell} ipython3
 sta_st = sc[0]
-print(sta_st[0].getProvDataFrame())
+print(sta_st[0].get_prov_dataframe())
 ```
 
 You can also get the entire provenance document for all stations.
 
 ```{code-cell} ipython3
-prov = workspace.getProvenance('nc72282711', labels=['default'])
+prov = workspace.get_provenance('nc72282711', labels=['default'])
 print(prov)
 ```

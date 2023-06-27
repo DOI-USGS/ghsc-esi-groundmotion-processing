@@ -100,7 +100,7 @@ datadir = Path("..") / ".." / ".." / "tests" / "data" / "cwb" / "us1000chhc"
 # cwb files are stored as three channels per file.
 datafile = datadir / "1-EAS.dat"
 stream = read_data(datafile)[0]
-inventory = stream.getInventory()
+inventory = stream.get_inventory()
 
 stream.write("example.mseed", format="MSEED")
 inventory.write("example.xml", format="STATIONXML")
