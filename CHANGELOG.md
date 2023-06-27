@@ -8,8 +8,10 @@
  - Pulled out flatfile stuff from StreamWorkspace into a Flatfile class, and put ASDF path stuff into path_utils.py.
  - Refactor summary plot code.
  - Optimize getTables method.
+ - Temporarily remove response spectra tutorial
  - Bugfixes
    - Knet reader wasn't getting the project config file.
+   - Fix documentation rendering issues introduced by recent refactoring.
 
 ## 1.2.7 / 2023-04-28
  - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
