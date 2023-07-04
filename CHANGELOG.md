@@ -10,6 +10,7 @@
  - Optimize getTables method.
  - Temporarily remove response spectra tutorial
  - Bugfixes
+   - Update BeautifulSoup4 min version to be 4.11.0
    - Knet reader wasn't getting the project config file.
    - Fix documentation rendering issues introduced by recent refactoring.
 
