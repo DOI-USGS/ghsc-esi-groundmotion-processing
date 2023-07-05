@@ -9,8 +9,6 @@ from gmprocess.io.asdf.core import is_asdf, read_asdf, write_asdf
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
 
-from stream_workspace_test import STREC_CONFIG_PATH, configure_strec
-
 
 def test_asdf():
     eventid = "us1000778i"
@@ -22,23 +20,17 @@ def test_asdf():
         for dfile in datafiles:
             raw_streams += read_data(dfile)
 
-        try:
-            existing_config_data = configure_strec()
-            write_asdf(tfile, raw_streams, event)
+        write_asdf(tfile, raw_streams, event)
 
-            assert is_asdf(tfile)
-            assert not is_asdf(datafiles[0])
+        assert is_asdf(tfile)
+        assert not is_asdf(datafiles[0])
 
-            outstreams = read_asdf(tfile)
-            assert len(outstreams) == len(raw_streams)
+        outstreams = read_asdf(tfile)
+        assert len(outstreams) == len(raw_streams)
 
-            write_asdf(tfile, raw_streams, event, label="foo")
-            outstreams2 = read_asdf(tfile, label="foo")
-            assert len(outstreams2) == len(raw_streams)
-        finally:
-            if existing_config_data is not None:
-                with open(STREC_CONFIG_PATH, "wt") as f:
-                    f.write(existing_config_data)
+        write_asdf(tfile, raw_streams, event, label="foo")
+        outstreams2 = read_asdf(tfile, label="foo")
+        assert len(outstreams2) == len(raw_streams)
 
     except Exception as e:
         raise (e)

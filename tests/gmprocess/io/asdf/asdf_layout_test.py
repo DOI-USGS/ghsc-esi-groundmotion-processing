@@ -8,8 +8,6 @@ import tempfile
 # third party imports
 import h5py
 
-from stream_workspace_test import STREC_CONFIG_PATH, configure_strec
-
 from gmprocess.io.asdf.core import write_asdf
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 
@@ -40,37 +38,29 @@ def generate_workspace():
     for dfile in datafiles:
         raw_data += read_data(dfile)
 
-    existing_config_data = configure_strec()
-    try:
-        write_asdf(tfilename, raw_data, event, label="unprocessed")
-        del raw_data
+    write_asdf(tfilename, raw_data, event, label="unprocessed")
+    del raw_data
 
-        config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
+    config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
 
-        workspace = StreamWorkspace.open(tfilename)
-        raw_streams = workspace.get_streams(
-            EVENTID, labels=["unprocessed"], config=config
-        )
-        pstreams = process_streams(raw_streams, event, config=config)
-        workspace.add_streams(event, pstreams, label=LABEL)
-        workspace.add_config(config)
+    workspace = StreamWorkspace.open(tfilename)
+    raw_streams = workspace.get_streams(EVENTID, labels=["unprocessed"], config=config)
+    pstreams = process_streams(raw_streams, event, config=config)
+    workspace.add_streams(event, pstreams, label=LABEL)
+    workspace.add_config(config)
 
-        wmc = WaveformMetricCollection.from_streams(pstreams, event, config, LABEL)
-        for wm, sp in zip(wmc.waveform_metrics, wmc.stream_paths):
-            wxml = WaveformMetricsXML(wm.metric_list)
-            xmlstr = wxml.to_xml()
-            workspace.insert_aux(xmlstr, "WaveFormMetrics", sp)
+    wmc = WaveformMetricCollection.from_streams(pstreams, event, config, LABEL)
+    for wm, sp in zip(wmc.waveform_metrics, wmc.stream_paths):
+        wxml = WaveformMetricsXML(wm.metric_list)
+        xmlstr = wxml.to_xml()
+        workspace.insert_aux(xmlstr, "WaveFormMetrics", sp)
 
-        smc = StationMetricCollection.from_streams(pstreams, event, config)
-        for sm, sp in zip(smc.station_metrics, smc.stream_paths):
-            sxml = StationMetricsXML(sm)
-            xmlstr = sxml.to_xml()
-            workspace.insert_aux(xmlstr, "StationMetrics", sp)
-        workspace.close()
-    finally:
-        if existing_config_data is not None:
-            with open(STREC_CONFIG_PATH, "wt") as f:
-                f.write(existing_config_data)
+    smc = StationMetricCollection.from_streams(pstreams, event, config)
+    for sm, sp in zip(smc.station_metrics, smc.stream_paths):
+        sxml = StationMetricsXML(sm)
+        xmlstr = sxml.to_xml()
+        workspace.insert_aux(xmlstr, "StationMetrics", sp)
+    workspace.close()
 
     return tfilename
 

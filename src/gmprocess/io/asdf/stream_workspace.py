@@ -18,8 +18,6 @@ from h5py.h5py_warnings import H5pyDeprecationWarning
 from obspy.core.utcdatetime import UTCDateTime
 from ruamel.yaml import YAML
 
-from strec.subtype import SubductionSelector
-
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import (
     NS_SEIS,
@@ -135,27 +133,7 @@ class StreamWorkspace(object):
         Args:
             event (Event): Obspy event object.
         """
-        self.insert_strec(event)
         self.dataset.add_quakeml(event)
-
-    def insert_strec(self, event):
-        """Insert STREC results into auxiliary data"""
-        selector = SubductionSelector()
-        tensor_params = None
-        if hasattr(event, "id"):
-            _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
-        strec_params = selector.getSubductionType(
-            event.latitude,
-            event.longitude,
-            event.depth_km,
-            event.magnitude,
-            eventid=event.id,
-            tensor_params=tensor_params,
-        ).to_dict()
-        strec_params_str = _stringify_dict(strec_params)
-        dtype = "StrecParameters"
-        strec_path = f"STREC/{event.id}"
-        self.insert_aux(json.dumps(strec_params_str), dtype, strec_path, True)
 
     @staticmethod
     def hdfdata_to_str(hdfdata):
@@ -170,18 +148,6 @@ class StreamWorkspace(object):
         """
         bytelist = hdfdata[:].tolist()
         return "".join([chr(b) for b in bytelist])
-
-    def get_strec(self, event):
-        """Get STREC results from auxiliary data"""
-        eventid = event.id.replace("smi:local/", "")
-        aux_data = self.dataset.auxiliary_data
-        if "StrecParameters" not in aux_data:
-            return None
-        jsonstr = self.hdfdata_to_str(
-            aux_data["StrecParameters"]["STREC"][eventid].data
-        )
-        jdict = json.loads(jsonstr)
-        return jdict
 
     def add_config(self, config=None, force=False):
         """Add config to an ASDF dataset and workspace attribute.

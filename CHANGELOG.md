@@ -9,6 +9,7 @@
  - Refactor summary plot code.
  - Optimize getTables method.
  - Temporarily remove response spectra tutorial
+ - Remove support for STREC; it will be added to the gmprocess database repo.
  - Bugfixes
    - Update BeautifulSoup4 min version to be 4.11.0
    - Knet reader wasn't getting the project config file.
