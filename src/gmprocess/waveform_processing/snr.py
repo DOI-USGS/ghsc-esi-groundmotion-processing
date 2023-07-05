@@ -26,8 +26,8 @@ def compute_snr(st, event, bandwidth=20.0, config=None):
     Args:
         st (StationStream):
            Trace of data.
-        event_magnitude (float):
-           Earthquake magnitude.
+        event (ScalarEvent):
+           ScalarEvent object.
         bandwidth (float):
            Konno-Omachi smoothing bandwidth parameter.
         config (dict):
