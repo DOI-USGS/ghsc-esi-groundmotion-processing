@@ -935,7 +935,7 @@ def _stringify_dict(indict):
 
 
 def _get_id(event):
-    eid = event.origins[0].resource_id.id
+    eid = event.origins[0].resource_id.id.replace("smi:local/", "")
     return eid
 
 
