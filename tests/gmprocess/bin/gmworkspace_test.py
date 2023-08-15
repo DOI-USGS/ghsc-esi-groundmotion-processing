@@ -57,7 +57,7 @@ DESCRIBE = (
     "    NET.ST01.10.HNZ__TSTART_TEND__EV0_label dims=(3000) type=float64\n"
 )
 
-
+@pytest.fixture
 def generate_workspace():
     """Generate simple HDF5 with ASDF layout for testing."""
     tdir = tempfile.mkdtemp()
@@ -139,36 +139,27 @@ def generate_workspace():
     provenance.create_dataset("NET.ST00_EV1", data=np.ones((4000,), dtype="uint8"))
     provenance.create_dataset("NET.ST01_EV0", data=np.ones((3500,), dtype="uint8"))
     h5.close()
-    return tfilename
 
-
-def setup_module(module):
-    setup_module.tfilename = generate_workspace()
-    setup_module.gmworkspace = "gmworkspace"
-    return
-
-
-def teardown_module(module):
-    tdir = os.path.split(setup_module.tfilename)[0]
-    shutil.rmtree(tdir, ignore_errors=True)
-    return
-
+    yield tfilename
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="Does not work in Windows")
-def test_describe():
-    tfilename = setup_module.tfilename
-    gmworkspace = setup_module.gmworkspace
+def test_describe(generate_workspace):
+    tfilename = generate_workspace
+    gmworkspace="gmworkspace"
     output = subprocess.check_output(
         [gmworkspace, "--filename=" + tfilename, "--describe"]
+    )
+    output = subprocess.check_output(
+        ["gmworkspace", "--filename=" + tfilename, "--describe"]
     )
     assert DESCRIBE == output.decode()
     return
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="Does not work in Windows")
-def test_storage():
-    tfilename = setup_module.tfilename
-    gmworkspace = setup_module.gmworkspace
+def test_storage(generate_workspace):
+    tfilename = generate_workspace
+    gmworkspace="gmworkspace"
     output = subprocess.check_output(
         [gmworkspace, "--filename=" + tfilename, "--compute-storage"]
     )
