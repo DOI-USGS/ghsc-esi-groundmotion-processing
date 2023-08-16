@@ -39,6 +39,13 @@ class AssembleModule(base.SubcommandModule):
 
         data_path = self.gmrecords.data_path
         overwrite = self.gmrecords.args.overwrite
+        label = self.gmrecords.args.label
+
+        # label does not get automatically assigned "default" if no input is provided,
+        # so it is assigned here
+        if label is None:
+            label = "default"
+
         conf = self.gmrecords.conf
         version = self.gmrecords.gmprocess_version
         results = []
@@ -59,6 +66,7 @@ class AssembleModule(base.SubcommandModule):
                     overwrite,
                     conf,
                     version,
+                    label,
                 )
                 futures.append(future)
             results = [future.result() for future in futures]
@@ -69,7 +77,7 @@ class AssembleModule(base.SubcommandModule):
                     f"Assembling event {event.id} ({1+ievent} of {len(self.events)})..."
                 )
                 results.append(
-                    self._assemble_event(event, data_path, overwrite, conf, version)
+                    self._assemble_event(event, data_path, overwrite, conf, version, label)
                 )
 
         for res in results:
@@ -81,7 +89,7 @@ class AssembleModule(base.SubcommandModule):
     # Note: I think that we need to make this a static method in order to be able to
     # call it with ProcessPoolExecutor.
     @staticmethod
-    def _assemble_event(event, data_path, overwrite, conf, version):
+    def _assemble_event(event, data_path, overwrite, conf, version, label):
         event_dir = data_path / event.id
         event_dir.mkdir(exist_ok=True)
         workname = event_dir / constants.WORKSPACE_NAME
@@ -101,6 +109,7 @@ class AssembleModule(base.SubcommandModule):
             config=conf,
             directory=data_path,
             gmprocess_version=version,
+            label=label,
         )
         workspace.close()
         return workname

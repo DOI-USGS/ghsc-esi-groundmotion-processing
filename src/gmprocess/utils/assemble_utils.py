@@ -21,7 +21,7 @@ TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
 FLOAT_PATTERN = r"[-+]?[0-9]*\.?[0-9]+"
 
 
-def assemble(event, config, directory, gmprocess_version):
+def assemble(event, config, directory, gmprocess_version, label):
     """Download data or load data from local directory, turn into Streams.
 
     Args:
@@ -37,6 +37,8 @@ def assemble(event, config, directory, gmprocess_version):
             located in `proj_dir/abc123/raw/`.
         gmprocess_version (str):
             Software version for gmprocess.
+        label (str):
+            Process label, applied to the workspace.add_rupture function
 
     Returns:
         tuple:
@@ -80,6 +82,7 @@ def assemble(event, config, directory, gmprocess_version):
 
     workspace = StreamWorkspace(workname)
     workspace.add_event(event)
+    workspace.add_rupture(event, label=label)
     logging.debug("workspace.dataset.events:")
     logging.debug(workspace.dataset.events)
     workspace.add_gmprocess_version(gmprocess_version)
