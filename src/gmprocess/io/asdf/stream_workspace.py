@@ -9,6 +9,7 @@ import logging
 import re
 import warnings
 from pathlib import Path
+from gmprocess.utils.rupture_utils import get_rupture_file
 
 import numpy as np
 import pandas as pd
@@ -34,6 +35,7 @@ from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.event import ScalarEvent
 from gmprocess.io.asdf import workspace_constants as wc
+from gmprocess.io.asdf.rupture import Rupture
 from gmprocess.io.asdf.path_utils import (
     get_stream_name,
     get_stream_path,
@@ -305,6 +307,40 @@ class StreamWorkspace(object):
         else:
             raise ValueError(f"{net_sta} not in StreamSupplementalStats")
         return stats_dict
+    
+    def add_rupture(self, event, label):
+        """Inserts information from the rupture model into the workspace.
+
+        Args:
+            event (Event): 
+                Obspy event object.
+            label (str):
+                Process label, user can input this from gmrecords assemble subcommand,
+                "default" if no input.
+        """
+        eventid = _get_id(event)
+        workspace_file = self.dataset.filename
+        workspace_path = Path(workspace_file)
+        event_dir = workspace_path.parent.absolute()
+        event_dir = str(event_dir)
+        
+        rupture_file = get_rupture_file(event_dir)
+
+        if rupture_file is not None:
+            rupture_file = str(rupture_file)
+            rupture_result = Rupture.from_shakemap(rupture_file, event)
+
+            cells = np.array(rupture_result.cells)
+            vertices = np.array(rupture_result.vertices)
+            description = rupture_result.description
+            reference = rupture_result.reference
+
+            rupture_path = eventid + "_" + label
+
+            self.dataset.add_auxiliary_data(cells, data_type="RuptureModels", path=rupture_path + "/Cells", parameters={})
+            self.dataset.add_auxiliary_data(vertices, data_type="RuptureModels", path = rupture_path + "/Vertices", parameters = {})
+            self.insert_aux(description, data_name="RuptureModels", path = rupture_path + "/Description")
+            self.insert_aux(reference, data_name="RuptureModels", path = rupture_path + "/Reference")
 
     def add_streams(
         self, event, streams, label=None, gmprocess_version="unknown", overwrite=False
