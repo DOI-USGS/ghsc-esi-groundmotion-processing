@@ -39,7 +39,7 @@ UNITS = {
 DIMENSION_UNITS = {
     "period": "s",
     "damping": "%",
-    "interval": "%" ,
+    "interval": "%",
 }
 
 # Converts acceleration units to cm/s/s
