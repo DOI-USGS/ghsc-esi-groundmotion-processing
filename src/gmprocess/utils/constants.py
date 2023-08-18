@@ -36,6 +36,12 @@ UNITS = {
     "sortedduration": "s",
 }
 
+DIMENSION_UNITS = {
+    "period": "s",
+    "damping": "%",
+    "interval": "%",
+}
+
 # Converts acceleration units to cm/s/s
 # Converts velocity units to cm/s
 # Converts displacement units to cm
