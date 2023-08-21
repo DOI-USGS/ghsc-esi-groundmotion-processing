@@ -1,23 +1,22 @@
 # stdlib imports
-from datetime import datetime, timedelta
 import logging
-
+from datetime import datetime, timedelta
 
 # third party imports
-import pytz
-from obspy.core.utcdatetime import UTCDateTime
 import numpy as np
+import pytz
 
 # local imports
-from gmprocess.io.fetcher import DataFetcher, _get_first_value
-from gmprocess.io.read import read_data
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.utils.config import get_config
 from gmprocess.io.cosmos.cesmd_search import (
-    get_records,
     get_metadata,
+    get_records,
     get_stations_dataframe,
 )
+from gmprocess.io.fetcher import DataFetcher, _get_first_value
+from gmprocess.io.read import read_data
+from gmprocess.utils.config import get_config
+from obspy.core.utcdatetime import UTCDateTime
 
 # default values for this fetcher
 # if None specified in constructor, AND no parameters specified in
@@ -121,7 +120,7 @@ class CESMDFetcher(DataFetcher):
                     cfg_eq_radius = float(fetch_cfg["eq_radius"])
                 if "station_radius" in fetch_cfg:
                     cfg_station_radius = float(fetch_cfg["station_radius"])
-                if "dt" in fetch_cfg:
+                if "eq_dt" in fetch_cfg:
                     cfg_eq_dt = float(fetch_cfg["eq_dt"])
                 if "email" in fetch_cfg:
                     cfg_email = fetch_cfg["email"]

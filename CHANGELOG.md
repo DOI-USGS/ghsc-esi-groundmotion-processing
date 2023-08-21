@@ -14,6 +14,7 @@
    - Update BeautifulSoup4 min version to be 4.11.0
    - Knet reader wasn't getting the project config file.
    - Fix documentation rendering issues introduced by recent refactoring.
+   - Configuration option for CESMD fetcher earthquake time window was not being parsed.
 
 ## 1.2.7 / 2023-04-28
  - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
