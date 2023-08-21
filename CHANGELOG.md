@@ -1,4 +1,6 @@
 ## main
+ 
+## 1.2.8 / 2023-08-21
  - Change resample method to use default Hanning window (was not using a window previously).
  - Define new Metrics class to improving handling of intensity metrics.
  - Define new MetricsXML class to isolate the conversion of metrics into an XML.
