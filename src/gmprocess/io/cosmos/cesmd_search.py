@@ -1,16 +1,16 @@
 # stdlib imports
-import zipfile
 import io
+import logging
 import os.path
+import zipfile
 from datetime import timedelta
 from pathlib import Path
 
 # third party imports
-import logging
-from requests import Session, Request
-from requests.exceptions import ConnectionError
-import pandas as pd
 import numpy as np
+import pandas as pd
+from requests import Request, Session
+from requests.exceptions import ConnectionError
 
 URL_TEMPLATE = "https://strongmotioncenter.org/wserv/records/query"
 RETURN_TYPES = ["dataset", "metadata"]
