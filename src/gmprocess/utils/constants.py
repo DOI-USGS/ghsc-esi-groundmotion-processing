@@ -43,6 +43,21 @@ DIMENSION_UNITS = {
     "end percentage": "%",
 }
 
+STATION_METRIC_UNITS = {
+    "repi": "km",
+    "rhyp": "km",
+    "rrup_mean": "km",
+    "rrup_var": "km",
+    "rjb_mean": "km",
+    "rjb_var": "km",
+    "gc2_rx": "km",
+    "gc2_ry": "km",
+    "gc2_ry0": "km",
+    "gc2_U": "km",
+    "gc2_T": "km",
+    "back_azimuth": "degrees",
+}
+
 # Converts acceleration units to cm/s/s
 # Converts velocity units to cm/s
 # Converts displacement units to cm
