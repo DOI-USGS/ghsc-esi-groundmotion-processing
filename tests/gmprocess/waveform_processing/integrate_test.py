@@ -6,14 +6,16 @@ from gmprocess.waveform_processing.integrate import get_disp, get_vel
 from gmprocess.utils.config import get_config
 
 
-def test_get_disp():
-    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def test_get_disp(load_integrate_test_waveforms):
+    # data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
+    # data_files.sort()
+    # streams = []
+    # for f in data_files:
+    #     streams += read_data(f)
 
-    sc = StreamCollection(streams)
+    # sc = StreamCollection(streams)
+    
+    sc = load_integrate_test_waveforms
 
     config = get_config()
     config["integration"]["frequency"] = True
@@ -67,14 +69,16 @@ def test_get_disp():
     np.testing.assert_allclose(final_disp, target_final_disp, atol=1e-6)
 
 
-def test_get_vel():
-    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def test_get_vel(load_integrate_test_waveforms):
+    # data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
+    # data_files.sort()
+    # streams = []
+    # for f in data_files:
+    #     streams += read_data(f)
 
-    sc = StreamCollection(streams)
+    # sc = StreamCollection(streams)
+
+    sc = load_integrate_test_waveforms
 
     config = get_config()
     config["integration"]["frequency"] = True
@@ -102,15 +106,17 @@ def test_get_vel():
     np.testing.assert_allclose(final_vel, target_final_vel, atol=1e-6)
 
 
-def test_integrate_taper():
-    data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def test_integrate_taper(load_integrate_test_waveforms):
+    # data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
+    # data_files.sort()
+    # streams = []
+    # for f in data_files:
+    #     streams += read_data(f)
 
-    sc = StreamCollection(streams)
+    # sc = StreamCollection(streams)
 
+    sc = load_integrate_test_waveforms
+    
     config = get_config()
     config["integration"]["taper"]["taper"] = True
 

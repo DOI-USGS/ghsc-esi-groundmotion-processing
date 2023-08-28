@@ -13,14 +13,14 @@ from gmprocess.waveform_processing.corner_frequencies import get_corner_frequenc
 from gmprocess.waveform_processing.snr import compute_snr, snr_check
 
 
-def test_corner_frequencies():
+def test_corner_frequencies(setup_corner_freq_test):
     # Default config has 'constant' corner frequency method, so the need
     # here is to force the 'snr' method.
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+    # streams, event = geonet_waveforms
+    streams, event, processed_streams = setup_corner_freq_test
 
+    # Select only the V1A files from geonet test data
+    streams = streams[::2]
     sc = StreamCollection(streams)
 
     config = get_config()
@@ -103,47 +103,45 @@ def test_corner_frequencies():
     )
 
 
-def test_corner_frequencies_magnitude():
+def test_corner_frequencies_magnitude(setup_corner_freq_test):
     # Default config has 'constant' corner frequency method, so the need
     # here is to force the 'magnitude' method.
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+    # streams, event = geonet_waveforms2
 
-    sc = StreamCollection(streams)
+    # # Select only the V1A files from geonet test data
+    # # streams = streams[::2]
+    # sc = StreamCollection(streams)
 
-    config = get_config()
+    # config = get_config()
 
-    window_conf = config["windows"]
+    # window_conf = config["windows"]
 
-    processed_streams = sc.copy()
-    for st in processed_streams:
-        if st.passed:
-            # Estimate noise/signal split time
-            event_time = event.time
-            event_lon = event.longitude
-            event_lat = event.latitude
-            st = signal_split(st, event)
+    # processed_streams = sc.copy()
+    # for st in processed_streams:
+    #     if st.passed:
+    #         # Estimate noise/signal split time
+    #         st = signal_split(st, event)
 
-            # Estimate end of signal
-            end_conf = window_conf["signal_end"]
-            event_mag = event.magnitude
-            print(st)
-            st = signal_end(
-                st,
-                event_time=event_time,
-                event_lon=event_lon,
-                event_lat=event_lat,
-                event_mag=event_mag,
-                **end_conf,
-            )
-            wcheck_conf = window_conf["window_checks"]
-            st = window_checks(
-                st,
-                min_noise_duration=wcheck_conf["min_noise_duration"],
-                min_signal_duration=wcheck_conf["min_signal_duration"],
-            )
+    #         # Estimate end of signal
+    #         end_conf = window_conf["signal_end"]
+    #         event_mag = event.magnitude
+    #         print(st)
+    #         st = signal_end(
+    #             st,
+    #             event_time=event.time,
+    #             event_lon=event.longitude,
+    #             event_lat=event.latitude,
+    #             event_mag=event_mag,
+    #             **end_conf,
+    #         )
+    #         wcheck_conf = window_conf["window_checks"]
+    #         st = window_checks(
+    #             st,
+    #             min_noise_duration=wcheck_conf["min_noise_duration"],
+    #             min_signal_duration=wcheck_conf["min_signal_duration"],
+    #         )
+
+    _, event, processed_streams = setup_corner_freq_test
 
     lp = []
     hp = []

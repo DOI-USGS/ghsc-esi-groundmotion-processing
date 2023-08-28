@@ -7,7 +7,7 @@ from gmprocess.io.read import read_data
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.logging import setup_logger
 from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils.config import update_config, get_config
+from gmprocess.utils.config import get_config, update_dict, update_config
 from gmprocess.utils.constants import TEST_DATA_DIR
 
 CONFIG = get_config()
@@ -15,13 +15,30 @@ CONFIG = get_config()
 setup_logger()
 
 
-def test_process_streams():
+def test_process_streams(geonet_uncorected_waveforms):
     # Loma Prieta test station (nc216859)
+    # ???
 
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+    # data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
+    # streams = []
+    # for f in data_files:
+    #     streams += read_data(f)
+
+    # Update default rather than loading static config
+    # config = get_config()
+
+    # update = {
+    #     "processing": [
+    #         {"snr_check": {"min_freq": 0.2}},
+    #     ],
+    #     # "sa": [
+    #     #     {"periods": {"use_array": True, "defined_periods": 0.3}},
+    #     # ]
+    # }
+
+    # update_dict(config, update)
+
+    streams, event = geonet_uncorected_waveforms
 
     sc = StreamCollection(streams)
 
@@ -50,12 +67,12 @@ def test_process_streams():
         trace_maxes, np.array([157.81244924, 240.37952095, 263.6015194]), rtol=1e-5
     )
 
+    # x: array([158.99, 239.48, 258.44])
+    # y: array([157.812449, 240.379521, 263.601519])
 
-def test_free_field():
-    data_files, event = read_data_dir("kiknet", "usp000hzq8")
-    raw_streams = []
-    for dfile in data_files:
-        raw_streams += read_data(dfile)
+
+def test_free_field(kiknet_usp000hzq8):
+    raw_streams, event = kiknet_usp000hzq8
 
     sc = StreamCollection(raw_streams)
 
@@ -77,16 +94,22 @@ def test_free_field():
             assert reason == "Failed free field sensor check."
 
 
-def test_check_instrument():
-    data_files, event = read_data_dir("fdsn", "nc51194936", "*.mseed")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def test_check_instrument(fdsn_nc51194936):
+    config = get_config()
+
+    # Update default rather than loading static config
+    update = {
+        "processing": [
+            {"check_instrument": {"n_max": 3, "n_min": 1, "require_two_horiz": True}},
+        ]
+    }
+    update_dict(config, update)
+
+    streams, event = fdsn_nc51194936
 
     sc = StreamCollection(streams)
     sc.describe()
 
-    config = update_config(str(TEST_DATA_DIR / "config_test_check_instr.yml"), CONFIG)
     test = process_streams(sc, event, config=config)
 
     for sta, expected in [("CVS", True), ("GASB", True), ("SBT", False)]:

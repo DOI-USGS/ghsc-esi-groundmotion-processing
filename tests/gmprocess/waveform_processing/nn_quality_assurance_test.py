@@ -12,7 +12,7 @@ from gmprocess.utils.config import get_config, update_dict
 setup_logger()
 
 
-def test_nnet():
+def test_nnet(geonet_single_station):
     conf = get_config()
 
     update = {
@@ -26,12 +26,7 @@ def test_nnet():
     }
     update_dict(conf, update)
 
-    data_files, event = read_data_dir(
-        "geonet", "us1000778i", "20161113_110300_HSES_20.V1A"
-    )
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+    streams, event = geonet_single_station
 
     sc = StreamCollection(streams)
     test = process_streams(sc, event, conf)
