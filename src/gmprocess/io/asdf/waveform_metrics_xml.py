@@ -118,6 +118,8 @@ def etag2type(etag):
         etag_type = "Duration"
     elif etag.startswith("sorted"):
         etag_type = "SortedDuration"
+    elif etag.startswith("arias"):
+        etag_type = "AriasIntensity"
     else:
         etag_type = etag.upper()
     return etag_type
