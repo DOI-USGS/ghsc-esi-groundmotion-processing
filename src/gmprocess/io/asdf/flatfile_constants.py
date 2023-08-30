@@ -81,7 +81,7 @@ FLATFILE_IMT_COLUMNS = {
         f"p-q percent significant duration ({constants.UNITS['duration']})"
     ),
     "SORTEDDURATION": (f"Sorted significant duration ({constants.UNITS['duration']})"),
-    "ARIAS": f"Arias intensity ({constants.UNITS['ariasintensity']})",
+    "ARIASINTENSITY": f"Arias intensity ({constants.UNITS['ariasintensity']})",
 }
 
 # List of columns in the fit_spectra_parameters file, along README descriptions

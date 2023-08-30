@@ -1,6 +1,7 @@
 ## main
  - Added station metric units to constants.
  - Bugfixes
+   - Resolve key error that was preventing writing of metric tables when Arias Intensity was requested. 
    - Resolve bug that occurs when multiple channels/stations are present in the invetory when trying to retrieve the sampling rate for the metric table.
 
 ## 1.2.8 / 2023-08-21
