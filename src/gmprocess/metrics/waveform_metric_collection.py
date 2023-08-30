@@ -200,17 +200,25 @@ class WaveformMetricCollection(MetricCollection):
 
             if len(inventory.networks) > 1:
                 raise ValueError("More than 1 network found for waveform.")
-            # if len(inventory.networks[0].stations) > 1:
-            #     raise ValueError("More than 1 station found for waveform.")
 
             if inventory.sender is not None and inventory.sender != inventory.source:
                 source = f"{inventory.source},{inventory.sender}"
             else:
                 source = inventory.source
 
-            for ch in inventory.networks[0].stations[0]:
-                if ch.code[0:2] == chan[0:2]:
-                    sampling_rate = ch.sample_rate
+            # Sort out sampling rate
+            sampling_rate = None
+            for inet in inventory.networks:
+                if (inet.code != net) or (sampling_rate is not None):
+                    break
+                for ista in inet.stations:
+                    if (ista.code != sta) or (sampling_rate is not None):
+                        break
+                    for ichan in ista:
+                        if ichan.code[0:2] == chan[0:2]:
+                            sampling_rate = ichan.sample_rate
+                            break
+
             tr_info = []
             for stream_name in stream_names:
                 trace_chan = re.split("[._]", stream_name)[3]

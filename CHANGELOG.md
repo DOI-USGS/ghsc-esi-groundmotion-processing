@@ -1,5 +1,7 @@
 ## main
- - Added station metric units to constants.  
+ - Added station metric units to constants.
+ - Bugfixes
+   - Resolve bug that occurs when multiple channels/stations are present in the invetory when trying to retrieve the sampling rate for the metric table.
 
 ## 1.2.8 / 2023-08-21
  - Change resample method to use default Hanning window (was not using a window previously).
