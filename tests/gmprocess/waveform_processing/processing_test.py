@@ -19,32 +19,44 @@ def test_process_streams(geonet_uncorected_waveforms):
     # Loma Prieta test station (nc216859)
     # ???
 
-    # data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    # streams = []
-    # for f in data_files:
-    #     streams += read_data(f)
-
     # Update default rather than loading static config
-    # config = get_config()
+    config = get_config()
+
+    proc_config = config['processing']
 
     # update = {
     #     "processing": [
-    #         {"snr_check": {"min_freq": 0.2}},
+    #         {"detrend": {'detrending_method': 'linear'}},
+    #         {"detrend": {'detrending_method': 'demean'}},
+    #         {"remove_response": {"pre_filt": "True", "f1": 0.001, "f2": 0.005, "f3": None, "f4": None, "water_level": 60.0}},
+    #         {"detrend": {'detrending_method': 'linear'}},
+    #         {"detrend": {'detrending_method': 'demean'}},
+    #         {"compute_snr": {"bandwidth": 20.0}},
+    #         {"snr_check": {'threshold': 3.0, 'min_freq': 0.2, 'max_freq': 5.0, 'f0_options': {'stress_drop': 10, 'shear_vel': 3.7, 'ceiling': 2.0}}},
+    #         {"get_corner_frequencies": {"method": "constant", "constant": {"highpass": 0.08, "lowpass": 20.0}, "magnitude": {"minmag": [-999.0, 3.5, 5.5], "highpass": [0.5, 0.3, 0.1], "lowpass": [25.0, 35.0, 40.0]}, "snr": {"same_horz": "True"}}},
+    #         {"cut": {"sec_before_split": 2.0}},
+    #         {"taper": {"type": "hann", "width": 0.05, "side": "both"}},
     #     ],
     #     # "sa": [
     #     #     {"periods": {"use_array": True, "defined_periods": 0.3}},
-    #     # ]
+    #     # ],
     # }
-
     # update_dict(config, update)
+
+    # update = {
+    #     "snr_check": {'threshold': 3.0, 'min_freq': 0.2, 'max_freq': 5.0, 'f0_options': {'stress_drop': 10, 'shear_vel': 3.7, 'ceiling': 2.0}},
+    # }
+    # Index 11 is the `snr_check` field
+    # update_dict(config['processing'][11], update)
+    # update_dict(config, update)
+
+    config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
 
     streams, event = geonet_uncorected_waveforms
 
     sc = StreamCollection(streams)
 
     sc.describe()
-
-    config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
 
     test = process_streams(sc, event, config=config)
 
