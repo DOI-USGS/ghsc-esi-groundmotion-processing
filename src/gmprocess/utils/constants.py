@@ -96,6 +96,7 @@ METRICS_XML_FLOAT_STRING_FORMAT = {
     "pgm": "%.8g",
     "period": "%.3f",
     "damping": "%.2f",
+    "smoothing": "%.2f",
     "back_azimuth": "%.2f",
     "vs30": "%.2f",
     "distance": "%.2f",
