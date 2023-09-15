@@ -117,7 +117,7 @@ class WaveformMetricCollection(MetricCollection):
             metric_list = metric.list()
             if len(metric_list) > 1:
                 stream_path = ""
-                for met in metric:
+                for met in metric_list:
                     met_label = met.split("_")[-1]
                     if met_label == label:
                         stream_path = met
