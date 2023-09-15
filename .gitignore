@@ -16,6 +16,7 @@ docs/
 doc_source/_build
 doc_source/contents/tutorials/data
 doc_source/contents/tutorials/*.log
+*code-workspace*
 .vscode/
 dask-worker-space/
 # Vim tags
