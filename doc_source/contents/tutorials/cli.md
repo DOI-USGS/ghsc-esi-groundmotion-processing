@@ -114,7 +114,7 @@ The console message indicates that the `workspace.h5` ASDF file has been created
 
 ```{note}
 The [Seismic Data](https://seismic-data.org/) folks have developed a graphical user interface to explore ASDF data sets called [ASDF Sextant](https://github.com/SeismicData/asdf_sextant) and this may be useful for browsing the contents of the ASDF file.
-Since ASDF is an HDF5 specification, it can also be loaded in most programming languages using [HDF5](https://www.hdfgroup.org/solutions/hdf5/) libraries.
+Since ASDF is an HDF5 specification, it can also be loaded in most programming languages using [HDF5](https://www.hdfgroup.org/solutions/hdf5/) libraries. 
 ```
 
 ## Process Waveforms
