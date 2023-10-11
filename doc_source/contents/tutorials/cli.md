@@ -80,7 +80,7 @@ We now have earthquake rupture information and raw waveforms in the `data/cli` d
 cwd: .
 ---
 :::
-
+**Note** the 'tree' command may not be available and this part can be skipped.
 From the directory tree above, you can see how `gmrecords` organizes the data directory:
 
 - within the root data directory there are subdirectories for each event named
@@ -174,10 +174,10 @@ We show plots from the summaries for 5 stations.
 ### Report Explanation
 
 The full report for each station also includes the provenance table and failure reason (not shown here).
-The **first row** of plots is the acceleration time series, the **second row** of plots is the velocity time series, and the **third row** of plots is the displacement time series.
-The vertical dashed red line indicates the boundary between the signal and noise windows.
+The **first row** of plots is the acceleration time series. The vertical dashed red line indicates the boundary between the signal and noise windows where it is about 1--2 seconds before the P-wave arrival time. The **second row** of plots is the velocity time series, and the **third row** of plots is the displacement time series. The blue and red colors indicate the signal and noise respectively.
+
 The **fourth row** of plots gives the raw and smoothed Fourier amplitude spectra, where the dashed black curve is a Brune spectra fit to the data, and the vertical dashed line is the corner frequency.
-The **fifth row** of plots is the signal-to-noise ratio (SNR), where the vertical grey lines indicate the band where the SNR criteria are required, the horizontal grey line is the minimum SNR, and the vertical black dashed lines are the selected bandpass filter corners.
+The **fifth row** of plots is the signal-to-noise ratio (SNR), where the vertical grey lines indicate the band where the SNR criteria are required, the horizontal grey line is the minimum SNR, and the vertical black dashed lines are the selected bandpass filter corners. **Note:** Due to recent changes in code development, your output may not look exactly like the one shown.
 
 ## Compute Station Metrics
 
