@@ -213,8 +213,8 @@ Compute SNR dictionaries for a stream, looping over all traces.
     Args:
         st (StationStream):
            Trace of data.
-        event_magnitude (float):
-           Earthquake magnitude.
+        event (ScalarEvent):
+           ScalarEvent object.
         bandwidth (float):
            Konno-Omachi smoothing bandwidth parameter.
         config (dict):
