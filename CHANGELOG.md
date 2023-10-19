@@ -1,4 +1,6 @@
 ## main
+
+## 1.2.9 / 2023-10-19
  - Added station metric units to constants.
  - Bugfixes
    - Resolve key error that was preventing writing of metric tables when Arias Intensity was requested. 
