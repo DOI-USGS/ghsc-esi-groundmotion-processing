@@ -1,5 +1,11 @@
 # Initial Setup
 
+The initial setup includes two steps:
+ 1. Project setup
+ 2. STREC setup
+
+## Project setup
+
 In order to simplify the command line interface, the `gmrecords` command makes use of "projects".
 You can have many projects configured on your system, and a project can have data from many events.
 A project is essentially a way to encapsulate the configuration and data directories so that they do not need to be specified as command line arguments.
@@ -49,3 +55,13 @@ The arguments are
 ```
 
 The [Command Line Interface](../tutorials/cli) tutorial provides an example of how to create system-level projects.
+
+## STREC setup
+
+[STREC](https://code.usgs.gov/ghsc/esi/strec) is the code for getting seismotectonic
+information about an earthquake. This is used, for example, to select which ground 
+motion model is appropriate. It is installed as a dependency, but the following
+command needs to be run to to set up the config files and download relevant data:
+```
+strec_cfg update --gcmt
+```
