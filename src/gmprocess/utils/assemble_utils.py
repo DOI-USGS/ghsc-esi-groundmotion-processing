@@ -81,12 +81,12 @@ def assemble(event, config, directory, gmprocess_version, label):
         workname.unlink()
 
     workspace = StreamWorkspace(workname)
+    workspace.add_config(config=config)
     workspace.add_event(event)
     workspace.add_rupture(event, label=label)
     logging.debug("workspace.dataset.events:")
     logging.debug(workspace.dataset.events)
     workspace.add_gmprocess_version(gmprocess_version)
-    workspace.add_config(config=config)
     workspace.add_streams(
         event,
         stream_array,

@@ -80,6 +80,7 @@ def test_stream_workspace_methods():
         # make sure that strec is configured
         existing_config_data = configure_strec()
         try:
+            ws.add_config()
             ws.add_event(event)
             outevent = ws.get_event(eventid)
             strec_params = ws.get_strec(outevent)
@@ -151,6 +152,7 @@ def test_stream_workspace():
     try:
         tfile = tdir / "test.hdf"
         workspace = StreamWorkspace(tfile)
+        workspace.add_config(config=config)
         workspace.add_event(event)
         workspace.add_streams(event, raw_streams, label="raw")
         workspace.add_streams(event, processed_streams, label="processed")

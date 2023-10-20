@@ -536,4 +536,6 @@ error_notification:
     mail_host: None
     subject: None
     from_address: None
-    to_addresses: None 
+    to_addresses: None
+strec:
+    enabled: True
