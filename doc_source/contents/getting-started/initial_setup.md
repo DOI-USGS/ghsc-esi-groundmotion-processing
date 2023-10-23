@@ -62,6 +62,6 @@ The [Command Line Interface](../tutorials/cli) tutorial provides an example of h
 information about an earthquake. This is used, for example, to select which ground 
 motion model is appropriate. It is installed as a dependency, but the following
 command needs to be run to to set up the config files and download relevant data:
-```
-strec_cfg update --gcmt
+```{code-block}
+strec_cfg update [--datafolder /PATH/TO/STREC_DATA_DIR] --gcmt
 ```
