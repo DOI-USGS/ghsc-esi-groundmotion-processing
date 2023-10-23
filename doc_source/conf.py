@@ -54,7 +54,7 @@ version = release
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "autoapi.extension",
+    # "autoapi.extension",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.autosummary",
@@ -72,8 +72,8 @@ myst_enable_extensions = [
     "deflist",
 ]
 
-autoapi_dirs = ["../src/gmprocess"]
-autoapi_add_toctree_entry = False
+# autoapi_dirs = ["../src/gmprocess"]
+# autoapi_add_toctree_entry = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
