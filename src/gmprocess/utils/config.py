@@ -214,6 +214,7 @@ CONF_SCHEMA = Schema(
             "from_address": Or(None, str),
             "to_addresses": Or(None, str),
         },
+        "strec": {"enabled": bool},
     }
 )
 

@@ -1,4 +1,9 @@
 ## main
+ - Add config option to enable/disable STREC.
+ - Documentation
+   - Add STREC configuration to initial setup instructions
+ - Bugfixes
+   - Add STREC configuration to .gitlab-ci.yml
 
 ## 1.2.9 / 2023-10-19
  - Added station metric units to constants.

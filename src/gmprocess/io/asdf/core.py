@@ -78,5 +78,6 @@ def write_asdf(filename, streams, event, label=None):
             Label to append to all streams being added to ASDF file.
     """
     workspace = StreamWorkspace(filename)
+    workspace.add_config()
     workspace.add_streams(event, streams, label=label, gmprocess_version=VERSION)
     workspace.close()

@@ -80,43 +80,45 @@ def test_stream_workspace_methods():
         # make sure that strec is configured
         existing_config_data = configure_strec()
         try:
+            ws.add_config()
             ws.add_event(event)
             outevent = ws.get_event(eventid)
             strec_params = ws.get_strec(outevent)
             cmp_params = {
-                "TectonicRegion": "Subduction",
-                "FocalMechanism": "RS",
-                "TensorType": "Mww",
-                "TensorSource": "us",
-                "KaganAngle": 31.006964460128113,
                 "CompositeVariability": np.nan,
-                "NComposite": 0,
-                "DistanceToStable": 652.6654705874242,
                 "DistanceToActive": 416.1843055109172,
-                "DistanceToSubduction": 0.0,
-                "DistanceToHotSpot": 3716.302616840036,
-                "Oceanic": False,
-                "DistanceToOceanic": 230.75252636076507,
+                "DistanceToBackarc": 0.0,
                 "DistanceToContinental": 0.0,
-                "SlabModelRegion": "Ryukyu",
+                "DistanceToOceanic": 230.7525263607655,
+                "DistanceToStable": 652.6654705874242,
+                "DistanceToSubduction": 0.0,
+                "DistanceToVolcanic": 3716.302616840036,
+                "FocalMechanism": "RS",
+                "KaganAngle": 31.006964460128096,
+                "NComposite": 0,
+                "Oceanic": False,
+                "ProbabilityActive": 0.0,
+                "ProbabilityActiveDeep": 0.0,
+                "ProbabilityActiveShallow": 0.0,
+                "ProbabilityStable": 0.0,
+                "ProbabilityStableShallow": 0.0,
+                "ProbabilitySubduction": 1.0,
+                "ProbabilitySubductionCrustal": 0.8652238784260651,
+                "ProbabilitySubductionInterface": 0.13477612157393487,
+                "ProbabilitySubductionIntraslab": 0.0,
+                "ProbabilityVolcanic": 0.0,
+                "ProbabilityVolcanicShallow": 0.0,
                 "SlabModelDepth": 138.8086700439453,
                 "SlabModelDepthUncertainty": 17.509645462036133,
                 "SlabModelDip": 31.167997360229492,
-                "SlabModelStrike": 240.8999481201172,
                 "SlabModelMaximumDepth": 47,
-                "ProbabilityActive": 0.0,
-                "ProbabilityStable": 0.0,
-                "ProbabilitySubduction": 1.0,
-                "ProbabilityVolcanic": 0.0,
-                "ProbabilitySubductionCrustal": 0.8652238784260652,
-                "ProbabilitySubductionInterface": 0.1347761215739348,
-                "ProbabilitySubductionIntraslab": 0.0,
-                "ProbabilityActiveShallow": 0.0,
-                "ProbabilityStableShallow": 0.0,
-                "ProbabilityVolcanicShallow": 0.0,
-                "ProbabilityActiveDeep": 0.0,
-                "DistanceToBackarc": 0.0,
+                "SlabModelRegion": "Ryukyu",
+                "SlabModelStrike": 240.8999481201172,
+                "TectonicRegion": "Subduction",
+                "TensorSource": "us",
+                "TensorType": "Mww",
             }
+
             assert_cmp_with_nans(strec_params, cmp_params)
         finally:
             if existing_config_data is not None:
@@ -150,6 +152,7 @@ def test_stream_workspace():
     try:
         tfile = tdir / "test.hdf"
         workspace = StreamWorkspace(tfile)
+        workspace.add_config(config=config)
         workspace.add_event(event)
         workspace.add_streams(event, raw_streams, label="raw")
         workspace.add_streams(event, processed_streams, label="processed")

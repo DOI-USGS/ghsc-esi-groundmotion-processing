@@ -45,6 +45,7 @@ run tests and coverage:
     - *upstream
   script:
     - pip install -e .[test]
+    - strec_cfg update --datafolder /home/usgs-user/ --gcmt
     - pytest -x --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
     - coverage xml
   stage: test
@@ -79,6 +80,7 @@ pages:
 
   script:
     - pip install -e .[doc]
+    - strec_cfg update --datafolder /home/usgs-user/ --gcmt
     - cd doc_source
     - conda activate base
     - bash makedocs.sh
