@@ -52,7 +52,7 @@ def test_gmpacket_writer(datafile=None, save_file=False):
 
         cmp_dict = {
             "id": "ci38457511",
-            "time": "2019-07-06T03:19:53Z",
+            "time": "2019-07-06T03:19:53.040000",
             "magnitude": 7.1,
             "event_longitude": -117.6,
             "event_latitude": 35.77,
