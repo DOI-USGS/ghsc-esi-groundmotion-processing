@@ -113,7 +113,7 @@ pip install -e .[test,dev,doc,build]
 
 ## Tests
 
-If you are installing from soruce and included the optional `test` dependencies in the install step, then you can run the unit tests in the root directory of the repository:
+If you are installing from source and included the optional `test` dependencies in the install step, then you can run the unit tests in the root directory of the repository:
 
 ```
 pytest .
