@@ -43,7 +43,7 @@ cwd: .
 :::
 
 At this point we have an empty `data/cli` directory.
-The `conf/cli` directory has two files: `fetchers/yml` and `user.yml`.
+The `conf/cli` directory has two files: `fetchers.yml` and `user.yml`.
 These configuration files hold parameters that override default values provided with the source code.
 See [Configuration File](../manual/config_file) for more information.
 
@@ -132,7 +132,7 @@ Note that the console messages indicate that some of the traces failed due to cl
 
 ## Generate Report
 
-The `generate_report` subcommand will generate a PDF report for each earthquake.
+The `generate_report` subcommand will generate a PDF report for each earthquake, if latex is installed.
 The report is useful to review which streams failed and why.
 The report gives a 1-page summary per station that includes:
 

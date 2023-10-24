@@ -23,7 +23,7 @@ The reason for this system is that
 
 In many cases, you may want to turn off or turn on specific fetchers. 
 This is done with the `enabled` key within each fetcher. 
-For example, to turn off the a fetcher you would need to add the following code to a `*.yml` in the project conf directory:
+For example, to turn off a fetcher you would need to add the following code to a `*.yml` in the project conf directory:
 
 ```yaml
 fetchers:
@@ -46,9 +46,9 @@ conf/
 
 ## The "processing" section
 
-The `processing` section behaves somewhat differently than other sections because it is how you control the pocessing steps. 
+The `processing` section behaves somewhat differently than other sections because it is how you control the processing steps. 
 In many cases, processing steps must be repeated, such as the `detrend` step. 
-Here is an exmaple of the processing section that specifies the processing steps but does not specify any of the function arguments except for the `detrend` step:
+Here is an example of the processing section that specifies the processing steps but does not specify any of the function arguments except for the `detrend` step:
 
 ```yaml
 processing:
@@ -93,7 +93,7 @@ marked with the `@processing_step` decorator.
 ```
 
 Many sections of the config file are not of interest to most uses, such as the details of the `pickers` section. 
-However, the `p_arrival_shift` value is very useful if you are collecting data in a region where the travel time picks are often later than the actual p-wave arrival, causing some of the shaking to be placed in the "noise" window, which in tern causes the record to fail the signal-to-noise ratio test.
+However, the `p_arrival_shift` value is very useful if you are collecting data in a region where the travel time picks are often later than the actual p-wave arrival, causing some of the shaking to be placed in the "noise" window, which in turn causes the record to fail the signal-to-noise ratio test.
 
 Please post any questions or issues that you have regarding the config to the GitLab
 [issues](https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/issues) page. 
@@ -101,7 +101,7 @@ Please post any questions or issues that you have regarding the config to the Gi
 
 ## The "fetchers" section
 
-The `download` subcommand will look for data from providers configurd in the `fetchers` section of the config file.
+The `download` subcommand will look for data from providers configured in the `fetchers` section of the config file.
 The subsections correspond to different data retrieval methods, such as the International Federation of Digital Seismograph Networks ([FDSN](https://www.fdsn.org/)). 
 The options are:
   1. `FDSNFetcher` for getting data from FDSN services,
@@ -121,9 +121,9 @@ fetchers:
 
 The FDSNFetcher section is organized to mimic obspy's [mass_downloader](https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.mass_downloader.html), which is what gmprocess uses to interact with FDSN web services. 
 Thus, there are three main subsections:
-  - `domain` - this specifies the search extent and be be either `circular` or `rectangular`, as detremined by the `type` key. 
-    There are additional subsectiosn for options specific to each of these types.
-  - `restrictions` - this section corresponds to argumetnts to obspy's [Restrictions](https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.mass_downloader.restrictions.Restrictions.html) class.
+  - `domain` - this specifies the search extent and be either `circular` or `rectangular`, as determined by the `type` key. 
+    There are additional subsections for options specific to each of these types.
+  - `restrictions` - this section corresponds to arguments to obspy's [Restrictions](https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.mass_downloader.restrictions.Restrictions.html) class.
     The exception is that here you can set the `time_before` and `time_after` keys (relative to the earthquake origin time), which will be translated into the `Restrictions` arguments of `starttime` and `endtime`. 
   - `providers` - This section is `None` by default and in this case it will use obspy's list of providers given as `URL_MAPPINGS` in the [FDSN header](https://github.com/obspy/obspy/blob/master/obspy/clients/fdsn/header.py) module. If it is not `None` then it must be a list of dictionaries and more details are given below.
 
@@ -143,7 +143,7 @@ If you want to use a provider that is not available in the `URL_MAPPINGS` dictio
 
 ### CESMDFetcher
 
-In order to use the `CESMDFetcher` you have to povide an email address that is registered at <www.strongmotioncenter.org>. 
+In order to use the `CESMDFetcher` you have to provide an email address that is registered at <www.strongmotioncenter.org>. 
 The other options are explained here:
 
 ```yaml
@@ -192,19 +192,19 @@ The `KNETFetcher` options are explained here:
 
 This section contains some miscellaneous options for data readers. 
 A particularly important option is `use_streamcollection`, which is `True` by default. 
-The `StreamCollection` class in gmprocess groups channels from the same instrument together and tries to enorce a bunch of useful requirements.
-However, these are not desiable for all projects. By setting this to `False`, each channel will be analyzed independently.
+The `StreamCollection` class in gmprocess groups channels from the same instrument together and tries to enforce a bunch of useful requirements.
+However, these are not desirable for all projects. By setting this to `False`, each channel will be analyzed independently.
 This is useful for structural arrays that may have complicated configurations, but comes at the cost of not allowing the computation of some waveform metric types (such as RotDxx, which requires two orthogonal horizontal components that are aligned in time).
 
 ## The "windows" section
 
-This section defines how the signa and noise windows are estimated and some relevant QA checks.
-The beginning of the signal window is based on an estiamted P-wave arrival time, and the relevant options are set in the "pickers" section of the config file. 
-The end of the signal window is defined in the `signal_end` subsection here, and the primary choise is set with the `method` key:
+This section defines how the signal and noise windows are estimated and some relevant QA checks.
+The beginning of the signal window is based on an estimated P-wave arrival time, and the relevant options are set in the "pickers" section of the config file. 
+The end of the signal window is defined in the `signal_end` subsection here, and the primary choice is set with the `method` key:
    - `velocity`: Set the end of the signal can be set using a phase velocity; this option makes use of the keys `vmin` and `floor`.
    - `model`: Set the end of the signal window using a shaking duration model; this options makes use of the keys `model` and `epsilon`.
    - `magnitude`: Use the magnitude-based signal end as defined by CISN, which is `magnitude/2` (units of minutes).
-   - `none`: Use the full available record; this is useful if the records have already been trimmed to a resonable level and you do not wish to further reduce trace duration.
+   - `none`: Use the full available record; this is useful if the records have already been trimmed to a reasonable level and you do not wish to further reduce trace duration.
 
 ## The "check_stream" section
 
@@ -215,7 +215,7 @@ The default is `True`.
 
 ## The "colocated" section
 
-This section inclues options for handling colocated instruments. 
+This section includes options for handling colocated instruments. 
 More details are given in the default config file:
 ```yaml
 colocated:
@@ -254,7 +254,7 @@ colocated:
 ## The "duplicate" section
 
 This section is for handling duplicate data when creating a StreamCollection. 
-This includes a spatial tolanace for classifying stations as colocated (`max_dist_tolerance`), as well as options for which data to prefer in the case that data is duplicated (e.g., available from multiple sources in different formats).
+This includes a spatial tolerance for classifying stations as colocated (`max_dist_tolerance`), as well as options for which data to prefer in the case that data is duplicated (e.g., available from multiple sources in different formats).
 
 ## The "build_report" section
 
@@ -351,7 +351,7 @@ differentiation:
 ## The "pickers" section 
 
 This section is for options that determine how the P-wave arrival time is estimated.
-We do not recommend modifing this section unless you are experiencing problems with the start time of the signal window.
+We do not recommend modifying this section unless you are experiencing problems with the start time of the signal window.
 Please see the default config file for additional details.
 
 % Indices and tables
