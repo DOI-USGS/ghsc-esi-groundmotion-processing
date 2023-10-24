@@ -102,6 +102,9 @@ class WaveformMetricList(object):
                     "interval": imt.replace("duration", ""),
                 }
                 fixed_imt = "Duration"
+            elif imt.startswith("cav"):
+                metric_attributes = {}
+                fixed_imt = "CAVIntensity"
             elif imt.startswith("arias"):
                 metric_attributes = {}
                 fixed_imt = "AriasIntensity"

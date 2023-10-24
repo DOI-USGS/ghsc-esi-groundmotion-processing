@@ -37,6 +37,7 @@ UNITS = {
     "pgv": "cm/s",
     "sa": "%g",
     "ariasintensity": "m/s",
+    "cavintensity": "g-s",
     "fas": "cm/s",
     "duration": "s",
     "sortedduration": "s",
