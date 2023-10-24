@@ -164,11 +164,11 @@ class ProjectsModule(base.SubcommandModule):
         cmd = f"strec_cfg update --datafolder {NEW_STREC_FOLDER} --slab --gcmt"
         res, stdout, stderr = get_command_output(cmd)
         if not res:
-            logging.CRITICAL(
+            logging.critical(
                 f"Failed to configure STREC code with command {cmd}. Output:"
             )
-            logging.CRITICAL(f"\n'{stdout}'")
-            logging.CRITICAL(f"\n'{stderr}'")
+            logging.critical(f"\n'{stdout}'")
+            logging.critical(f"\n'{stderr}'")
         else:
             logging.info(f"Successfully installed STREC with {cmd}.")
 
