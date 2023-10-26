@@ -195,7 +195,7 @@ class SA(WaveformMetric):
     @property
     def identifier(self):
         attrs = self.metric_attributes
-        return f"SA(T={attrs['period']:.4f}, D={attrs['damping']:.3f})"
+        return f"SA(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
 
 
 class FAS(WaveformMetric):
@@ -245,7 +245,7 @@ class FAS(WaveformMetric):
     @property
     def identifier(self):
         attrs = self.metric_attributes
-        return f"FAS(T={attrs['period']:.4f}, B={attrs['smoothing']:.1f})"
+        return f"FAS(T={float(attrs['period']):.4f}, B={float(attrs['smoothing']):.1f})"
 
 
 class Duration(WaveformMetric):
