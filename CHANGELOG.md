@@ -5,6 +5,7 @@
    - Add STREC configuration to initial setup instructions
  - Bugfixes
    - Add STREC configuration to .gitlab-ci.yml
+   - Add missing DIMENSION_UNITS in constants module.
 
 ## 1.2.9 / 2023-10-19
  - Added station metric units to constants.
