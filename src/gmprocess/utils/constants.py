@@ -41,6 +41,8 @@ DIMENSION_UNITS = {
     "damping": "%",
     "start percentage": "%",
     "end percentage": "%",
+    "smoothing": "",
+    "method": "",
 }
 
 STATION_METRIC_UNITS = {
