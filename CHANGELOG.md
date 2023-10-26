@@ -1,5 +1,6 @@
 ## main
  - Add config option to enable/disable STREC.
+ - Add method to retrieve rupture model geometry info from workspace.
  - Documentation
    - Add STREC configuration to initial setup instructions
  - Bugfixes

@@ -319,6 +319,7 @@ class StreamWorkspace(object):
                 Process label, user can input this from gmrecords assemble subcommand,
                 "default" if no input.
         """
+
         eventid = _get_id(event)
         workspace_file = self.dataset.filename
         workspace_path = Path(workspace_file)
@@ -358,6 +359,53 @@ class StreamWorkspace(object):
             self.insert_aux(
                 reference, data_name="RuptureModels", path=rupture_path + "/Reference"
             )
+
+    def get_rupture(self, event, label="default"):
+        """Retrieves cells, vertices, description, and reference for a rupture.
+
+        Args:
+            event (Event): 
+                Obspy event object.
+            label (str):
+                Process label, "default" if no input.
+        Returns:
+            dict: Keys are cells, vertices, description, and reference.
+            
+            Cells and vertices are numpy arrays. The Vertices dataset is 
+            a 2D array [#vertices, spaceDim] where spaceDim=3. The Cells 
+            dataset is a 2D array [#cells, #corners] where #corners is 
+            the number of vertices in a cell. In general, we will have 
+            quadrilaterals (#corners=4) or triangles (#corners=3).
+        """
+
+        eventid = _get_id(event)
+        aux_data = self.dataset.auxiliary_data
+
+        if "RuptureModels" not in aux_data:
+            return None
+        
+        try:
+            rupture_model = aux_data["RuptureModels"][eventid + "_" + label]
+        except:
+            raise Exception("There does not exist a rupture model with that eventid and label")
+
+        cells = rupture_model["Cells"].data
+        cells = np.array(cells)
+
+        vertices = rupture_model["Vertices"].data
+        vertices = np.array(vertices)
+
+        description = self.hdfdata_to_str(rupture_model["Description"].data)
+        reference = self.hdfdata_to_str(rupture_model["Reference"].data)
+        
+        rup_dict = {
+            "cells": cells,
+            "vertices": vertices,
+            "description": description,
+            "reference": reference
+        }
+
+        return rup_dict
 
     def add_streams(
         self, event, streams, label=None, gmprocess_version="unknown", overwrite=False
