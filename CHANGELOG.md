@@ -1,6 +1,7 @@
 ## main
  - Add config option to enable/disable STREC.
  - Add method to retrieve rupture model geometry info from workspace.
+ - Add clipping probability as a trace processing parameter; remove it from failure message.
  - Documentation
    - Add STREC configuration to initial setup instructions
  - Bugfixes
