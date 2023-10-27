@@ -7,6 +7,7 @@
    - Add STREC configuration to .gitlab-ci.yml
    - Add missing DIMENSION_UNITS in constants module.
    - Fix bug in event depth. 
+   - Fix bug that prevented metric tables from exporting when colocation is turned off. 
 
 ## 1.2.9 / 2023-10-19
  - Added station metric units to constants.
