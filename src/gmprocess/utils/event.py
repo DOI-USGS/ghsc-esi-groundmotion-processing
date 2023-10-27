@@ -197,7 +197,7 @@ def get_event_dict(eventid):
         "time": UTCDateTime(event_data["properties"]["time"] / 1000),
         "lat": event_data["geometry"]["coordinates"][1],
         "lon": event_data["geometry"]["coordinates"][0],
-        "depth": event_data["geometry"]["coordinates"][2] / 1000,
+        "depth": event_data["geometry"]["coordinates"][2],
         "magnitude": event_data["properties"]["mag"],
         "magnitude_type": event_data["properties"]["magType"],
     }

@@ -89,7 +89,7 @@ def test_event():
             "time": UTCDateTime(2019, 3, 1, 8, 50, 42, 591000),
             "lat": -14.7131,
             "lon": -70.1546,
-            "depth": 0.267,
+            "depth": 267.0,
             "magnitude": 7,
             "magnitude_type": "mww",
         }
