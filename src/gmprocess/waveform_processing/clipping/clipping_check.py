@@ -77,6 +77,7 @@ def check_clipping(st, event, threshold=0.2, config=None):
 
     if prob_clip >= threshold:
         for tr in st:
-            tr.fail(f"Failed clipping check: prob_clip = {prob_clip:.2f}.")
+            tr.fail("Failed clipping check.")
+            tr.set_parameter("clipping_probability", {"probability": prob_clip})
 
     return st
