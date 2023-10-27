@@ -91,12 +91,13 @@ class StationMetricCollection(MetricCollection):
             return
 
         for metric in workspace.dataset.auxiliary_data.StationMetrics:
-            if len(metric.list()) > 1:
-                raise ValueError("Too many elements in metric group.")
-            stream_path = metric.list()[0]
-            metric_data = workspace.hdfdata_to_str(metric[stream_path].data)
-            self.station_metrics.append(StationMetricsXML.from_xml(metric_data).metrics)
-            self.stream_paths.append(stream_path)
+            metric_list = metric.list()
+            for stream_path in metric_list:
+                metric_data = workspace.hdfdata_to_str(metric[stream_path].data)
+                self.station_metrics.append(
+                    StationMetricsXML.from_xml(metric_data).metrics
+                )
+                self.stream_paths.append(stream_path)
 
     def calculate_metrics(
         self, streams, event, config, rupture_file=None, label="default"
