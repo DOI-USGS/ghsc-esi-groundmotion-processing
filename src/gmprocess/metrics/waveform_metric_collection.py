@@ -115,19 +115,15 @@ class WaveformMetricCollection(MetricCollection):
 
         for metric in workspace.dataset.auxiliary_data.WaveFormMetrics:
             metric_list = metric.list()
-            if len(metric_list) > 1:
-                stream_path = ""
-                for met in metric:
-                    met_label = met.split("_")[-1]
-                    if met_label == label:
-                        stream_path = met
-                if not stream_path:
-                    raise ValueError(f"Did not find label {label} in WaveformMetrics.")
-            else:
-                stream_path = metric_list[0]
-            metric_data = workspace.hdfdata_to_str(metric[stream_path].data)
-            self.waveform_metrics.append(WaveformMetricsXML.from_xml(metric_data))
-            self.stream_paths.append(stream_path)
+            for met in metric_list:
+                met_label = met.split("_")[-1]
+                if met_label == label:
+                    stream_path = met
+                    metric_data = workspace.hdfdata_to_str(metric[stream_path].data)
+                    self.waveform_metrics.append(
+                        WaveformMetricsXML.from_xml(metric_data)
+                    )
+                    self.stream_paths.append(stream_path)
 
     def calculate_metrics(self, streams, event, config, label="default"):
         """Calculate waveform metrics from a list of streams.
