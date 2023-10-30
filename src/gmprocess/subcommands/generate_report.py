@@ -119,20 +119,27 @@ class GenerateReportModule(base.SubcommandModule):
             if not len(streams):
                 logging.info("No matching streams found. Cannot generate report.")
                 return
+            streams_raw = self.workspace.get_streams(
+                event.id,
+                stations=[station_id],
+                labels=["unprocessed"],
+                config=config,
+            ) if "unprocessed" in self.workspace.get_labels() else None
 
-            for stream in streams:
+            for stream, stream_raw in zip(streams, streams_raw):
                 pstreams.append(stream)
                 if self.gmrecords.args.num_processes > 0:
                     future = executor.submit(
                         _summary_plot,
                         stream,
+                        stream_raw,
                         plot_dir,
                         event,
                         config,
                     )
                     futures.append(future)
                 else:
-                    results.append(_summary_plot(stream, plot_dir, event, config))
+                    results.append(_summary_plot(stream, stream_raw, plot_dir, event, config))
 
         if self.gmrecords.args.num_processes:
             # Collect the results??
@@ -148,6 +155,6 @@ class GenerateReportModule(base.SubcommandModule):
         return pstreams
 
 
-def _summary_plot(stream, plot_dir, event, config):
-    sp = splot.SummaryPlot(stream, plot_dir, event, config)
+def _summary_plot(stream, stream_raw, plot_dir, event, config):
+    sp = splot.SummaryPlot(stream, stream_raw, plot_dir, event, config)
     return sp.plot()
