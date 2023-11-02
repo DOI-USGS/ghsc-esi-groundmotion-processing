@@ -76,7 +76,7 @@ STREAMBLOCK = """
        {\\normalsize [STATION]};
 \\end{tikzpicture}
 
-\\includegraphics[height=5.75in]
+\\includegraphics[height=0.65\\textheight]
     {[PLOTPATH]}
 
 
@@ -103,7 +103,7 @@ Code version: [VERSION]
 
 \\vspace{1cm}
 
-\\includegraphics[width=0.9\\textwidth]
+\\includegraphics[width=\\textwidth]
     {[MAPPATH]}
 
 [MOVEOUT_PAGE]
@@ -117,7 +117,7 @@ Code version: [VERSION]
 """
 
 moveout_page_tex = """
-\\includegraphics[width=0.9\\textwidth]
+\\includegraphics[width=\\textwidth]
     {[MOVEOUTPATH]}
 """
 
