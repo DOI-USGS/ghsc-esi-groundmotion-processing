@@ -5,6 +5,7 @@
 
 import copy
 import json
+import io
 import logging
 import re
 import warnings
@@ -155,24 +156,10 @@ class StreamWorkspace(object):
             eventid=event.id,
             tensor_params=tensor_params,
         ).to_dict()
-        strec_params_str = _stringify_dict(strec_params)
+        strec_params_str = dict_to_str(strec_params)
         dtype = "StrecParameters"
         strec_path = f"STREC/{event.id}"
-        self.insert_aux(json.dumps(strec_params_str), dtype, strec_path, True)
-
-    @staticmethod
-    def hdfdata_to_str(hdfdata):
-        """Convert hdf data to a string.
-
-        Args:
-            hdfdata:
-                HDF Dataset.
-
-        Returns:
-            String.
-        """
-        bytelist = hdfdata[:].tolist()
-        return "".join([chr(b) for b in bytelist])
+        self.insert_aux(strec_params_str, dtype, strec_path, True)
 
     def get_strec(self, event):
         """Get STREC results from auxiliary data"""
@@ -180,9 +167,7 @@ class StreamWorkspace(object):
         aux_data = self.dataset.auxiliary_data
         if "StrecParameters" not in aux_data:
             return None
-        jsonstr = self.hdfdata_to_str(
-            aux_data["StrecParameters"]["STREC"][eventid].data
-        )
+        jsonstr = array_to_str(aux_data["StrecParameters"]["STREC"][eventid].data[:])
         jdict = json.loads(jsonstr)
         return jdict
 
@@ -320,7 +305,7 @@ class StreamWorkspace(object):
                 "default" if no input.
         """
 
-        eventid = _get_id(event)
+        eventid = self._get_id(event)
         workspace_file = self.dataset.filename
         workspace_path = Path(workspace_file)
         event_dir = workspace_path.parent.absolute()
@@ -378,7 +363,7 @@ class StreamWorkspace(object):
             quadrilaterals (#corners=4) or triangles (#corners=3).
         """
 
-        eventid = _get_id(event)
+        eventid = self._get_id(event)
         aux_data = self.dataset.auxiliary_data
 
         if "RuptureModels" not in aux_data:
@@ -395,8 +380,8 @@ class StreamWorkspace(object):
         vertices = rupture_model["Vertices"].data
         vertices = np.array(vertices)
 
-        description = self.hdfdata_to_str(rupture_model["Description"].data)
-        reference = self.hdfdata_to_str(rupture_model["Reference"].data)
+        description = array_to_str(rupture_model["Description"].data)
+        reference = array_to_str(rupture_model["Reference"].data)
         
         rup_dict = {
             "cells": cells,
@@ -431,7 +416,7 @@ class StreamWorkspace(object):
 
         # To allow for multiple processed versions of the same Stream
         # let's keep a dictionary of stations and sequence number.
-        eventid = _get_id(event)
+        eventid = self._get_id(event)
         if not self.has_event(eventid):
             self.add_event(event)
 
@@ -492,9 +477,8 @@ class StreamWorkspace(object):
 
             # add supplemental stats, e.g., "standard" and "format_specific"
             sup_stats = stream.get_supplemental_stats()
-            sup_stats_str = _stringify_dict(sup_stats)
             self.insert_aux(
-                json.dumps(sup_stats_str), "StreamSupplementalStats", stream_path
+                dict_to_str(sup_stats), "StreamSupplementalStats", stream_path
             )
 
             # add processing parameters from streams
@@ -504,15 +488,9 @@ class StreamWorkspace(object):
                 proc_params[key] = value
 
             if len(proc_params):
-                # NOTE: We would store this dictionary just as the parameters
-                # dictionary, but HDF cannot handle nested dictionaries. Also, this
-                # seems like a lot of effort just to store a string in HDF, but other
-                # approaches failed. Suggestions are welcome.
-                proc_params_str = _stringify_dict(proc_params)
                 dtype = "StreamProcessingParameters"
-
                 self.insert_aux(
-                    json.dumps(proc_params_str), dtype, stream_path, overwrite
+                    dict_to_str(proc_params), dtype, stream_path, overwrite
                 )
 
             # add processing parameters from traces
@@ -523,15 +501,8 @@ class StreamWorkspace(object):
                     value = trace.get_parameter(key)
                     jdict[key] = value
                 if len(jdict):
-                    # NOTE: We would store this dictionary just as
-                    # the parameters dictionary, but HDF cannot handle
-                    # nested dictionaries.
-                    # Also, this seems like a lot of effort
-                    # just to store a string in HDF, but other
-                    # approached failed. Suggestions are welcome.
-                    jdict = _stringify_dict(jdict)
                     dtype = "TraceProcessingParameters"
-                    self.insert_aux(json.dumps(jdict), dtype, trace_path, overwrite)
+                    self.insert_aux(dict_to_str(jdict), dtype, trace_path, overwrite)
 
                 # Some processing data is computationally intensive to
                 # compute, so we store it in the 'Cache' group.
@@ -817,11 +788,11 @@ class StreamWorkspace(object):
         stations = self.dataset.waveforms.list()
         return stations
 
-    def insert_aux(self, datastr, data_name, path, overwrite=False):
+    def insert_aux(self, data_str, data_name, path, overwrite=False):
         """Insert a string (usually json or xml) into Auxilliary array.
 
         Args:
-            datastr (str):
+            data_str (str):
                 String containing data to insert into Aux array.
             data_name (str):
                 What this data should be called in the ASDF file.
@@ -838,8 +809,7 @@ class StreamWorkspace(object):
         if overwrite and data_exists:
             del self.dataset._auxiliary_data_group[group_name]
 
-        databuf = datastr.encode("utf-8")
-        data_array = np.frombuffer(databuf, dtype=np.uint8)
+        data_array = str_to_array(data_str)
         self.dataset.add_auxiliary_data(
             data_array, data_type=data_name, path=path, parameters={}
         )
@@ -875,7 +845,7 @@ class StreamWorkspace(object):
             row = pd.Series(index=cols, dtype=object)
             row["Label"] = label
             provdoc = self.dataset.provenance[ptag]
-            user, software = _get_agents(provdoc)
+            user, software = self._get_agents(provdoc)
             row["UserID"] = user["id"]
             row["UserName"] = user["name"]
             row["UserEmail"] = user["email"]
@@ -1023,47 +993,57 @@ class StreamWorkspace(object):
 
         return df
 
+    @staticmethod
+    def _get_id(event):
+        eid = event.origins[0].resource_id.id.replace("smi:local/", "")
+        return eid
 
-def _stringify_dict(indict):
-    for key, value in indict.items():
+    @staticmethod
+    def _get_agents(provdoc):
+        software = {}
+        person = {}
+        jdict = json.loads(provdoc.serialize())
+        for key, value in jdict["agent"].items():
+            is_person = re.search("sp[0-9]{3}_pp", key) is not None
+            is_software = re.search("sp[0-9]{3}_sa", key) is not None
+            if is_person:
+                person["id"] = value["prov:label"]
+                if "seis_prov:email" in value:
+                    person["email"] = value["seis_prov:email"]
+                if "seis_prov:name" in value:
+                    person["name"] = value["seis_prov:name"]
+            elif is_software:
+                software["name"] = value["seis_prov:software_name"]
+                software["version"] = value["seis_prov:software_version"]
+            else:
+                pass
+
+        if "name" not in person:
+            person["name"] = ""
+        if "email" not in person:
+            person["email"] = ""
+        return (person, software)
+
+
+def dict_to_str(indict):
+    def _serializer(value):
         if isinstance(value, UTCDateTime):
-            indict[key] = value.strftime(TIMEFMT_MS)
-        elif isinstance(value, bytes):
-            indict[key] = value.decode("utf-8")
-        elif isinstance(value, dict):
-            indict[key] = _stringify_dict(value)
-    return indict
+            return value.strftime(TIMEFMT_MS)
+        if hasattr(value, "__dict__"):
+            return value.__dict__
+        if isinstance(value, bytes):
+            return value.decode()
+        raise ValueError(f"Could not serialize {value} of type {type(value)}.")
+    return json.dumps(indict, default=_serializer)
 
 
-def _get_id(event):
-    eid = event.origins[0].resource_id.id.replace("smi:local/", "")
-    return eid
+def str_to_array(value):
+    return np.frombuffer(value.encode("utf-8"), dtype=np.uint8)
 
 
-def _get_agents(provdoc):
-    software = {}
-    person = {}
-    jdict = json.loads(provdoc.serialize())
-    for key, value in jdict["agent"].items():
-        is_person = re.search("sp[0-9]{3}_pp", key) is not None
-        is_software = re.search("sp[0-9]{3}_sa", key) is not None
-        if is_person:
-            person["id"] = value["prov:label"]
-            if "seis_prov:email" in value:
-                person["email"] = value["seis_prov:email"]
-            if "seis_prov:name" in value:
-                person["name"] = value["seis_prov:name"]
-        elif is_software:
-            software["name"] = value["seis_prov:software_name"]
-            software["version"] = value["seis_prov:software_version"]
-        else:
-            pass
-
-    if "name" not in person:
-        person["name"] = ""
-    if "email" not in person:
-        person["email"] = ""
-    return (person, software)
+def array_to_str(data):
+    str_buffer = io.BytesIO(data[:])
+    return str_buffer.read().decode()
 
 
 def camel_case_split(identifier):
