@@ -34,7 +34,7 @@ plt.rcParams["agg.path.chunksize"] = 10000
 class SummaryPlot:
     """Class to make stream summary plot."""
 
-    def __init__(self, st, directory, event, config=None):
+    def __init__(self, st, st_raw, directory, event, config=None):
         """Stream summary plot.
 
         Args:
@@ -49,6 +49,7 @@ class SummaryPlot:
 
         """
         self.st = st
+        self.st_raw = st_raw
         self.stream_id = st.get_id()
         self.directory = Path(directory)
         self.event = event
@@ -70,6 +71,7 @@ class SummaryPlot:
             # i is the plot column index
             self.ax = self.axs[i]
             self.tr = self.st[idx]
+            self.tr_raw = self.st_raw[idx] if self.st_raw else None
             self.tr_vel = self.st_vel[idx]
             self.tr_dis = self.st_dis[idx]
             if i > 2:
@@ -78,31 +80,44 @@ class SummaryPlot:
             self.get_trace_info()
             self.compute_model_spectra()
 
+            i_ax = i
+            if self.tr_raw:
+                self.ax = self.axs[i_ax]
+                self.plot_raw()
+                if i == 0:
+                    self.ax.set_ylabel("Raw")
+
             # acceleration is plotted on first row of plots
+            i_ax += self.ntrace
+            self.ax = self.axs[i_ax]
             self.plot_acceleration()
             if i == 0:
                 self.ax.set_ylabel("Acceleration (cm/s/s)")
 
             # velocity is plooted on second row of plots
-            self.ax = self.axs[i + self.ntrace]
+            i_ax += self.ntrace
+            self.ax = self.axs[i_ax]
             self.plot_velocity()
             if i == 0:
                 self.ax.set_ylabel("Velocity (cm/s)")
 
             # displacement is plotted on third row of plots
-            self.ax = self.axs[i + 2 * self.ntrace]
+            i_ax += self.ntrace
+            self.ax = self.axs[i_ax]
             self.plot_displacement()
             if i == 0:
                 self.ax.set_ylabel("Displacement (cm)")
 
             # Fourier spectra are plotted on fourth row of plots
-            self.ax = self.axs[i + 3 * self.ntrace]
+            i_ax += self.ntrace
+            self.ax = self.axs[i_ax]
             self.plot_spectra()
             if i == 0:
                 self.ax.set_ylabel("Normalized Amplitude (cm*s$^{-1.5}$)")
 
             # SNR is plotted on fifth row of plots
-            self.ax = self.axs[i + 4 * self.ntrace]
+            i_ax += self.ntrace
+            self.ax = self.axs[i_ax]
             self.plot_snr()
             if i == 0:
                 self.ax.set_ylabel("SNR")
@@ -110,9 +125,6 @@ class SummaryPlot:
         # Do not save files if running tests
         file_name = None
         if "CALLED_FROM_PYTEST" not in os.environ:
-            plt.subplots_adjust(
-                left=0.08, right=0.97, hspace=0.3, wspace=0.25, top=0.97
-            )
             file_name = self.directory / f"{self.event.id}_{self.stream_id}.png"
             plt.savefig(fname=file_name)
             plt.close("all")
@@ -131,10 +143,13 @@ class SummaryPlot:
 
     def setup_figure(self):
         "Setup figure"
-        nrows = 5
+        nrows = 6
         self.ntrace = min(len(self.st), 3)
-        fig = plt.figure(figsize=(3.9 * self.ntrace, 10))
-        gs = fig.add_gridspec(nrows, self.ntrace, height_ratios=[1, 1, 1, 2, 2])
+        fig = plt.figure(figsize=(3.9 * self.ntrace, 11))
+        gs = fig.add_gridspec(nrows, self.ntrace, height_ratios=[1, 1, 1, 1, 2, 2])
+        fig.subplots_adjust(
+            left=0.08, right=0.98, hspace=0.3, wspace=0.25, top=0.97, bottom=0.05
+        )
         self.axs = [plt.subplot(g) for g in gs]
         if self.st.passed:
             plt.suptitle(
@@ -180,17 +195,19 @@ class SummaryPlot:
                 kappa=self.fit_spectra_dict["kappa"],
             )
 
-    def plot_acceleration(self):
+    def plot_raw(self):
+        trace_status = " (passed)" if self.tr.passed else " (failed)"
+        trace_title = self.tr.get_id() + trace_status
         if self.tr.passed:
-            trace_status = " (passed)"
+            self.ax.set_title(trace_title)
         else:
-            trace_status = " (failed)"
-            trace_title = self.tr.get_id() + trace_status
             self.ax.set_title(trace_title, color="red")
 
-        trace_title = self.tr.get_id() + trace_status
-        self.ax.set_title(trace_title)
+        dtimes = self.tr_raw.times(type="relative")
+        self.ax.plot(dtimes, self.tr_raw.data, "k", linewidth=0.5)
+        self.ax.tick_params(axis="both", which="major", labelsize=5)
 
+    def plot_acceleration(self):
         pga = np.max(np.abs(self.tr.data)) / UNIT_CONVERSIONS["g"]
         dtimes = self.tr.times(type="relative")
         self.ax.plot(dtimes, self.tr.data, "k", linewidth=0.5)
