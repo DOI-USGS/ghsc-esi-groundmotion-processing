@@ -1,89 +1,94 @@
 ## main
 
- - Add unprocessed waveform to summary plots.
- - Add config option to enable/disable STREC.
- - Add method to retrieve rupture model geometry info from workspace.
- - Add clipping probability as a trace processing parameter; remove it from failure message.
- - Documentation
-   - Add STREC configuration to initial setup instructions
- - Bugfixes
-   - Add STREC configuration to .gitlab-ci.yml
-   - Add missing DIMENSION_UNITS in constants module.
-   - Fix bug in event depth. 
-   - Fix bug that prevented metric tables from exporting when colocation is turned off. 
+- Add unprocessed waveform to summary plots.
+- Add config option to enable/disable STREC.
+- Add method to retrieve rupture model geometry info from workspace.
+- Add clipping probability as a trace processing parameter; remove it from failure message.
+- Documentation
+  - Add STREC configuration to initial setup instructions
+- Bugfixes
+  - Add STREC configuration to .gitlab-ci.yml
+  - Add missing DIMENSION_UNITS in constants module.
+  - Fix bug in event depth. 
+  - Fix bug that prevented metric tables from exporting when colocation is turned off. 
 
 ## 1.2.9 / 2023-10-19
- - Added station metric units to constants.
- - Bugfixes
-   - Resolve key error that was preventing writing of metric tables when Arias Intensity was requested. 
-   - Resolve bug that occurs when multiple channels/stations are present in the invetory when trying to retrieve the sampling rate for the metric table.
+
+- Added station metric units to constants.
+- Bugfixes
+  - Resolve key error that was preventing writing of metric tables when Arias Intensity was requested. 
+  - Resolve bug that occurs when multiple channels/stations are present in the invetory when trying to retrieve the sampling rate for the metric table.
 
 ## 1.2.8 / 2023-08-21
- - Change resample method to use default Hanning window (was not using a window previously).
- - Define new Metrics class to improving handling of intensity metrics.
- - Define new MetricsXML class to isolate the conversion of metrics into an XML.
- - Define new Rupture class which adds rupture model information to workspace file.
- - Refactor StationSummary into multiple separate classes:
-   - WaveformMetric, WaveformMetricList, WaveformMetricCollection, WaveformMetricsXML
-   - StationMetric, StationMetricCollection
- - Pulled out flatfile stuff from StreamWorkspace into a Flatfile class, and put ASDF path stuff into path_utils.py.
- - Refactor summary plot code.
- - Optimize getTables method.
- - Temporarily remove response spectra tutorial
- - Bugfixes
-   - Update BeautifulSoup4 min version to be 4.11.0
-   - Knet reader wasn't getting the project config file.
-   - Fix documentation rendering issues introduced by recent refactoring.
-   - Configuration option for CESMD fetcher earthquake time window was not being parsed.
+
+- Change resample method to use default Hanning window (was not using a window previously).
+- Define new Metrics class to improving handling of intensity metrics.
+- Define new MetricsXML class to isolate the conversion of metrics into an XML.
+- Define new Rupture class which adds rupture model information to workspace file.
+- Refactor StationSummary into multiple separate classes:
+  - WaveformMetric, WaveformMetricList, WaveformMetricCollection, WaveformMetricsXML
+  - StationMetric, StationMetricCollection
+- Pulled out flatfile stuff from StreamWorkspace into a Flatfile class, and put ASDF path stuff into path_utils.py.
+- Refactor summary plot code.
+- Optimize getTables method.
+- Temporarily remove response spectra tutorial
+- Bugfixes
+  - Update BeautifulSoup4 min version to be 4.11.0
+  - Knet reader wasn't getting the project config file.
+  - Fix documentation rendering issues introduced by recent refactoring.
+  - Configuration option for CESMD fetcher earthquake time window was not being parsed.
 
 ## 1.2.7 / 2023-04-28
- - Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
- - Update workspace so that when the config attribute is set, any missing values entries are filled in with defaults.
- - Moved supplemental stream info out of StationXML description field and into auxiliary data.
- - Added a "fix_inventory" utility script to move data supplemental stream data from StationXML to auxiliary data in existing workspace files.
- - Bugfixes
-   - Avoid gmpacket export error when no records are present.
- - Adding support for STREC (https://code.usgs.gov/ghsc/esi/strec#table-of-contents) in gmprocess - 
+
+- Add the "no_noise" option to the "windows" section of the config to allow for processing older waveforms that did not include pre-event noise. 
+- Update workspace so that when the config attribute is set, any missing values entries are filled in with defaults.
+- Moved supplemental stream info out of StationXML description field and into auxiliary data.
+- Added a "fix_inventory" utility script to move data supplemental stream data from StationXML to auxiliary data in existing workspace files.
+- Bugfixes
+  - Avoid gmpacket export error when no records are present.
+- Adding support for STREC (https://code.usgs.gov/ghsc/esi/strec#table-of-contents) in gmprocess- 
    probabilities of different regimes and supporting STREC information are now added to the auxiliary 
    data section of the workspace.
 
 ## 1.2.6 / 2023-03-18
- - Update URL in download code.
- - Bugfixes
-   - Config wasn't being passed to COSMOS reader, or to StreamArray.
-   - Fix units in ground motion packet output.
+
+- Update URL in download code.
+- Bugfixes
+  - Config wasn't being passed to COSMOS reader, or to StreamArray.
+  - Fix units in ground motion packet output.
 
 ## 1.2.5 / 2023-03-17
- - Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
- - Added support for passing in a config directory to `gmrecords config -u`
- - Add support for bounds in FDSN providers.
- - Added bandpass and bandstop filter types for StationTrace. Improved modularity of low/high pass filter code.
- - Added unit tests for the StationTrace filter types.
- - Added event depth to gmprocess reports
- - Updated pphase_test to use StationTrace object instead of obspy trace
- - Allowed string for label parameter in getStreams() method
- - Added warning if label not found in workspace file when using getStreams() method 
- - Bugfixes
-   - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
-   - Fixed bug in StationTrace filters where the bandpass option was not implemented and no warning was given.
-   - Fixed bug in fdsn_fetcher.py that caused either URL or name-based data providers to fail on download
-   - Allow more date formats for time stamps in Engineering Strong Motion (ESM) ASCII reader.
-   - Adjust test configuration to allow test-specific config files to be used without sometimes being overwritten
+
+- Updated obspy data reader to allow station XML base names to match corresponding miniseed file names.
+- Added support for passing in a config directory to `gmrecords config-u`
+- Add support for bounds in FDSN providers.
+- Added bandpass and bandstop filter types for StationTrace. Improved modularity of low/high pass filter code.
+- Added unit tests for the StationTrace filter types.
+- Added event depth to gmprocess reports
+- Updated pphase_test to use StationTrace object instead of obspy trace
+- Allowed string for label parameter in getStreams() method
+- Added warning if label not found in workspace file when using getStreams() method 
+- Bugfixes
+  - Fixed bug in station_summary.py that was using deprecated _quadrilaterals property of EdgeRupture class.
+  - Fixed bug in StationTrace filters where the bandpass option was not implemented and no warning was given.
+  - Fixed bug in fdsn_fetcher.py that caused either URL or name-based data providers to fail on download
+  - Allow more date formats for time stamps in Engineering Strong Motion (ESM) ASCII reader.
+  - Adjust test configuration to allow test-specific config files to be used without sometimes being overwritten
 
 ## 1.2.4 / 2023-02-09
 
- - Add config option to send email on errors.
- - Handle unexpected exception zip checking in `assemble` subcommand
- - Limit histogram clipping algorithm to 100 largest peaks and stop algorithm once we find one clipping region (positive and negative).
- - Improved email alert error message.
- - Removed unnecessary loops from corner frequency method.
- - Bugfixes
-   - Use event depth in km, not m, in hypocentral and rupture distance calculations. Bug was introduced in v1.2.3.
-   - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
-   - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
- - Added command to create [ground motion packet](https://github.com/SCEDC/ground-motion-packet/#description-of-gmp-a-geojson-specification-for-ground-motion-metrics) files.
- - Alter how TEST_DATA_DIR is constructed in constanst.py to facilitate running local tests with PyTest against a Conda-Forge or PyPi installed gmprocess distribution 
- - Updated reader for the Engineering Strong Motion (ESM) ascii format.
+- Add config option to send email on errors.
+- Handle unexpected exception zip checking in `assemble` subcommand
+- Limit histogram clipping algorithm to 100 largest peaks and stop algorithm once we find one clipping region (positive and negative).
+- Improved email alert error message.
+- Removed unnecessary loops from corner frequency method.
+- Bugfixes
+  - Use event depth in km, not m, in hypocentral and rupture distance calculations. Bug was introduced in v1.2.3.
+  - Account for pre-event noise duration, event noise duration, and shaking duration in signal-to-noise calculation. Plot normalized spectra in report.
+  - Raise exceptions that were trapped for but not raised by the addition of the email alert notifications. 
+- Added command to create [ground motion packet](https://github.com/SCEDC/ground-motion-packet/#description-of-gmp-a-geojson-specification-for-ground-motion-metrics) files.
+- Alter how TEST_DATA_DIR is constructed in constanst.py to facilitate running local tests with PyTest against a Conda-Forge or PyPi installed gmprocess distribution 
+- Updated reader for the Engineering Strong Motion (ESM) ascii format.
 
 ## 1.2.3 / 2022-12-23
 
@@ -97,9 +102,9 @@
 
 - Adding "Merge Request Guidelines" and "Release Steps" sections to developer resources. 
 - Improve projects subcommand.
-  - Always prompt for names of 'data' and 'conf' directories with reasonable defaults.
-  - Provide appropriate error message when attempting to list, switch, or delete projects when none exist.
-  - Allow use of projects subcommand from Python scripts.
+- Always prompt for names of 'data' and 'conf' directories with reasonable defaults.
+- Provide appropriate error message when attempting to list, switch, or delete projects when none exist.
+- Allow use of projects subcommand from Python scripts.
 - Fixes SAC format units conversion issue. 
 - Add lp_max option for lowpass_max_frequency method.
 - Add the `autoprocess` subcommand, which requires moving some subcommand arguments
@@ -273,5 +278,3 @@
 ## 1.0.0 / 2019-09-25
 
 - Initial release.
-
-
