@@ -14,6 +14,7 @@ from gmprocess.metrics.metrics_controller import MetricsController
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 from gmprocess.utils.config import get_config_imts_imcs
 from gmprocess.io.asdf.path_utils import get_stream_path
+from gmprocess.io.asdf.stream_workspace import array_to_str
 
 
 class WaveformMetricCollection(MetricCollection):
@@ -119,7 +120,7 @@ class WaveformMetricCollection(MetricCollection):
                 met_label = met.split("_")[-1]
                 if met_label == label:
                     stream_path = met
-                    metric_data = workspace.hdfdata_to_str(metric[stream_path].data)
+                    metric_data = array_to_str(metric[stream_path].data)
                     self.waveform_metrics.append(
                         WaveformMetricsXML.from_xml(metric_data)
                     )

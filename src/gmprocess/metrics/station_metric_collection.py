@@ -18,6 +18,7 @@ from gmprocess.metrics.base_metric_collection import MetricCollection
 from gmprocess.metrics.station_metric import StationMetric
 from gmprocess.io.asdf.station_metrics_xml import StationMetricsXML
 from gmprocess.io.asdf.path_utils import get_stream_path
+from gmprocess.io.asdf.stream_workspace import array_to_str
 
 
 class StationMetricCollection(MetricCollection):
@@ -93,7 +94,7 @@ class StationMetricCollection(MetricCollection):
         for metric in workspace.dataset.auxiliary_data.StationMetrics:
             metric_list = metric.list()
             for stream_path in metric_list:
-                metric_data = workspace.hdfdata_to_str(metric[stream_path].data)
+                metric_data = array_to_str(metric[stream_path].data)
                 self.station_metrics.append(
                     StationMetricsXML.from_xml(metric_data).metrics
                 )
