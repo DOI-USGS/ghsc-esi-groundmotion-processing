@@ -12,7 +12,8 @@
   - Add missing DIMENSION_UNITS in constants module.
   - Fix bug in event depth.
   - Fix bug that prevented metric tables from exporting when colocation is turned off.
-  - Avoid bug in FAS output to gmpacket. 
+  - Avoid bug in FAS output to gmpacket.
+  - Modify fetcher imports to avoid errors resulting from .DS_store or similar files.
 
 ## 1.2.9 / 2023-10-19
 

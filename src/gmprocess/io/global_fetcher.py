@@ -12,16 +12,10 @@ from .fetcher import DataFetcher
 from gmprocess.utils.config import get_config
 from gmprocess.io.utils import _walk
 
-SKIP_MODS = [
-    "fetcher.py",
-    "global_fetcher.py",
-    "nga.py",
-    "read.py",
-    "read_directory.py",
-    "report.py",
-    "seedname.py",
-    "stream.py",
-    "utils.py",
+FETCHER_DIRS = [
+    "cosmos",
+    "knet",
+    "obspy",
 ]
 
 
@@ -97,7 +91,7 @@ def fetch_data(
             fmt = 'Could not instantiate Fetcher %s, due to error\n "%s"'
             tpl = (fetchname, str(e))
             msg = fmt % tpl
-            logging.warn(msg)
+            logging.warning(msg)
             errors.append(msg)
             continue
         xmin, xmax, ymin, ymax = fetchinst.BOUNDS
@@ -118,9 +112,9 @@ def fetch_data(
 
         else:
             events = fetcher.get_matching_events(solve=True)
-            if not len(events):
+            if not events:
                 msg = "No event matching %s found by class %s"
-                logging.warn(msg % (esummary, str(fetcher)))
+                logging.warning(msg, esummary, str(fetcher))
                 continue
             tstreams = fetcher.retrieve_data(events[0])
             if streams:
@@ -150,13 +144,16 @@ def find_fetchers(lat, lon):
 
     fetchers = {}
     root = pathlib.Path(__file__).parent
-    for mod_file in _walk(root):
-        if str(mod_file).find("__") >= 0:
-            continue
-        idx = max(loc for loc, val in enumerate(mod_file.parts) if val == "gmprocess")
-        mod_tuple = mod_file.parts[idx:]
-        if mod_tuple[-1] in SKIP_MODS:
-            continue
+    for fdir in FETCHER_DIRS:
+        fetcher_path = root / fdir
+        for cfile in _walk(fetcher_path):
+            if str(cfile).endswith("_fetcher.py"):
+                fetcher_mod = cfile
+                break
+        idx = max(
+            loc for loc, val in enumerate(fetcher_mod.parts) if val == "gmprocess"
+        )
+        mod_tuple = fetcher_mod.parts[idx:]
         mod_name = ".".join(mod_tuple)
         if mod_name.endswith(".py"):
             mod_name = mod_name[:-3]

@@ -28,8 +28,8 @@ def is_binary(filename):
     # quick check to see if this is a binary or text file
     textchars = bytearray({7, 8, 9, 10, 12, 13, 27} | set(range(0x20, 0x100)) - {0x7F})
 
-    def is_binary_string(bytes):
-        return bool(bytes.translate(None, textchars))
+    def is_binary_string(st_bytes):
+        return bool(st_bytes.translate(None, textchars))
 
     return is_binary_string(open(filename, "rb").read(1024))
 
@@ -164,9 +164,9 @@ def _walk_and_unzip(directory):
         if is_zip:
             try:
                 has_zips = True
-                with zipfile.ZipFile(path, "r") as zip:
-                    for m in zip.namelist():
-                        zip.extract(m, str(path.parent))
+                with zipfile.ZipFile(path, "r") as zipf:
+                    for m in zipf.namelist():
+                        zipf.extract(m, str(path.parent))
             except Exception as err:
                 logging.warning(f"Could not unzip {path}. {str(err)}")
             path.unlink()
