@@ -91,11 +91,187 @@ fetchers:
             minimum_interstation_distance_in_m: 0.0
 
         providers:
-            # Example:
-            # - IRIS:
-            # - IS: 
-            #     url: https://seis.gsi.gov.il/
-            # - NCEDC: 
+            - AUSPASS:
+                bounds:
+                - 103.651901
+                - 151.9907
+                - -44.9425
+                - 1.1267
+                url: http://auspass.edu.au
+            - BGR:
+                bounds:
+                - -10.3351472
+                - 16.209699999999998
+                - -72.706175
+                - 56.7177
+                url: http://eida.bgr.de
+            - ETH:
+                bounds:
+                - -88.685139
+                - 93.59834
+                - 9.843528
+                - 52.60745
+                url: http://eida.ethz.ch
+            - GEONET:
+                bounds:
+                - -180.0
+                - -167.927612069
+                - -46.024042464
+                - -11.80534542
+                url: http://service.geonet.org.nz
+            - GEOFON:
+                bounds:
+                - -176.6116667
+                - 149.1597
+                - -73.6707
+                - 61.9013
+                url: http://geofon.gfz-potsdam.de
+            - GFZ:
+                bounds:
+                - -176.6116667
+                - 149.1597
+                - -73.6707
+                - 61.9013
+                url: http://geofon.gfz-potsdam.de
+            - ICGC:
+                bounds:
+                - -17.552500000000002
+                - 5.16244
+                - 26.0718
+                - 44.946905
+                url: http://ws.icgc.cat
+            - INGV:
+                bounds:
+                - -8.8569
+                - 40.4273
+                - 27.9275
+                - 52.3502
+                url: http://webservices.ingv.it
+            - IPGP:
+                bounds:
+                - -180.0
+                - 150.996325
+                - -77.1065
+                - 50.216313
+                url: http://ws.ipgp.fr
+            - IRIS:
+                bounds:
+                - -180.0
+                - 151.9814
+                - -92.0
+                - 61.9992
+                url: http://service.iris.edu
+            - IRISPH5:
+                bounds:
+                - -157.28845
+                - 131.391315
+                - -81.434704
+                - 59.8629
+                url: http://service.iris.edu
+            - IS:
+                bounds:
+                - 30.0
+                - 43.0
+                - 26.0
+                - 37.5
+                url: https://seis.gsi.gov.il/
+            - KNMI:
+                bounds:
+                - -65.24875
+                - 9.119599000000001
+                - 15.4714
+                - 55.5812
+                url: http://rdsa.knmi.nl
+            - KOERI:
+                bounds:
+                - 23.8987
+                - 46.2384
+                - 33.0157
+                - 44.0195
+                url: http://eida.koeri.boun.edu.tr
+            - LMU:
+                bounds:
+                - -118.449997
+                - 25.228785
+                - 31.610000999999997
+                - 52.592397
+                url: http://erde.geophysik.uni-muenchen.de
+            - NCEDC:
+                bounds:
+                - -159.90602
+                - -62.793836
+                - 15.69915
+                - 66.92458
+            - NIEP:
+                bounds:
+                - -81.0581837
+                - 31.8723
+                - -15.07207207
+                - 52.9305
+                url: http://eida-sc3.infp.ro
+            - NOA:
+                bounds:
+                - 16.917674
+                - 36.04
+                - 31.0749
+                - 44.8505
+                url: http://eida.gein.noa.gr
+            - ODC:
+                bounds:
+                - -70.95787
+                - 48.63
+                - -79.875
+                - 61.8576
+                url: http://www.orfeus-eu.org
+            - ORFEUS:
+                bounds:
+                - -70.95787
+                - 48.63
+                - -79.875
+                - 61.8576
+                url: http://www.orfeus-eu.org
+            - RESIF:
+                bounds:
+                - -180.0
+                - 150.996325
+                - -77.1065
+                - 54.807
+                url: http://ws.resif.fr
+            - RASPISHAKE:
+                bounds:
+                - -178.5268901
+                - 151.8820382
+                - -88.28828829
+                - 61.94594595
+                url: https://fdsnws.raspberryshakedata.com
+            - SCEDC:
+                bounds:
+                - -159.90602
+                - 74.700264
+                - -35.454085
+                - 60.3877
+                url: http://service.scedc.caltech.edu
+            - TEXNET:
+                bounds:
+                - -106.985193
+                - -92.17877
+                - 24.57328
+                - 38.44401
+                url: http://rtserve.beg.utexas.edu
+            - UIB-NORSAR:
+                bounds:
+                - 0.5299999999999998
+                - 19.61
+                - -74.008201
+                - 61.9703
+                url: http://eida.geo.uib.no
+            - USP:
+                bounds:
+                - -86.11142
+                - 150.996325
+                - -66.7744
+                - 58.4293
+                url: http://sismo.iag.usp.br
 
         # authentication:
             # For each of the FDSN providers, a username and password
