@@ -119,13 +119,6 @@ fetchers:
                 - -46.024042464
                 - -11.80534542
                 url: http://service.geonet.org.nz
-            - GEOFON:
-                bounds:
-                - -176.6116667
-                - 149.1597
-                - -73.6707
-                - 61.9013
-                url: http://geofon.gfz-potsdam.de
             - GFZ:
                 bounds:
                 - -176.6116667
