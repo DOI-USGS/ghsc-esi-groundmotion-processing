@@ -120,11 +120,11 @@ def _get_format(filename, config):
     elif len(formats) == 2 and "gmobspy" in formats:
         return formats[formats != "gmobspy"][0]
     elif len(formats) == 0:
-        raise Exception(f"No format found for file {filename!r}.")
+        raise ValueError(f"No format found for file {filename!r}.")
     else:
-        raise Exception(
-            "Multiple formats passing: %r. Please retry file %r "
-            "with a specified format." % (formats.tolist(), filename)
+        raise ValueError(
+            f"Multiple formats passing: {formats.tolist()}. Please retry "
+            f"file {filename} with a specified format."
         )
 
 
@@ -158,8 +158,8 @@ def _validate_format(filename, config, read_format):
         is_method = getattr(reader_module, is_name)
     else:
         logging.warning(
-            "Not a supported format %r. "
-            "Attempting to find a supported format." % read_format
+            "Not a supported format %r. Attempting to find a supported format.",
+            read_format,
         )
         return _get_format(filename, config)
     # Check that the format passes tests

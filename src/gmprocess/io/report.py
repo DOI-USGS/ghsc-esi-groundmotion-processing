@@ -116,7 +116,7 @@ Code version: [VERSION]
 
 """
 
-moveout_page_tex = """
+MOVEOUT_PAGE_TEX = """
 \\includegraphics[width=\\textwidth]
     {[MOVEOUTPATH]}
 """
@@ -168,16 +168,16 @@ def build_report_latex(
     # Does the map exist?
     map_file = directory / "stations_map.png"
     if map_file.is_file():
-        TB = TITLEBLOCK.replace("[MAPPATH]", "stations_map.png")
+        title_block = TITLEBLOCK.replace("[MAPPATH]", "stations_map.png")
 
-        TB = TB.replace("[VERSION]", gmprocess_version)
+        title_block = title_block.replace("[VERSION]", gmprocess_version)
         moveout_file = directory / "moveout_plot.png"
         if moveout_file.is_file():
-            TB = TB.replace("[MOVEOUT_PAGE]", moveout_page_tex)
-            TB = TB.replace("[MOVEOUTPATH]", "moveout_plot.png")
+            title_block = title_block.replace("[MOVEOUT_PAGE]", MOVEOUT_PAGE_TEX)
+            title_block = title_block.replace("[MOVEOUTPATH]", "moveout_plot.png")
         else:
-            TB = TB.replace("[MOVEOUT_PAGE]", "")
-        report += TB
+            title_block = title_block.replace("[MOVEOUT_PAGE]", "")
+        report += title_block
 
     # Loop over each StationStream and append it's page to the report
     # do not include more than three.
@@ -191,13 +191,14 @@ def build_report_latex(
         streamid = st.get_id()
         # Even on windows, latex needs the path to use linux-style forward slashs.
         plot_path = f"plots/{event_id}_{streamid}.png"
-        SB = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
-        SB = SB.replace(
+        st_block = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
+        st_block = st_block.replace(
             "[EVENT]",
-            f"{str_for_latex(event_id)} - M{event.magnitude} - {event_depth} km - {timestr}",
+            f"{str_for_latex(event_id)} - M{event.magnitude}, "
+            f"depth: {event_depth} km - {timestr}",
         )
-        SB = SB.replace("[STATION]", st.get_id())
-        report += SB
+        st_block = st_block.replace("[STATION]", st.get_id())
+        report += st_block
 
         try:
             prov_latex = get_prov_latex(st)
@@ -221,9 +222,8 @@ def build_report_latex(
         if not st.passed:
             for tr in st:
                 if not tr.passed:
-                    report += "Failure reason: %s\n\n" % str_for_latex(
-                        tr.get_parameter("failure")["reason"]
-                    )
+                    fail_reason = str_for_latex(tr.get_parameter("failure")["reason"])
+                    report += f"Failure reason: {fail_reason}\n\n"
                     break
         report += "\\newpage\n\n"
 
@@ -277,7 +277,6 @@ def build_report_latex(
                 print(stderr.decode())
         except BaseException:
             report_file = ""
-            pass
         finally:
             os.chdir(current_directory)
     else:
@@ -322,8 +321,7 @@ def get_prov_latex(st):
         ]
 
     last_row = -1
-    for i in range(len(prov_ind)):
-        row = prov_ind[i]
+    for i, row in enumerate(prov_ind):
         if row == last_row:
             final_dict["Process Step"][i] = ""
             continue
