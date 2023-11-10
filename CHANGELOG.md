@@ -9,8 +9,9 @@
 - Bugfixes
   - Add STREC configuration to .gitlab-ci.yml
   - Add missing DIMENSION_UNITS in constants module.
-  - Fix bug in event depth. 
-  - Fix bug that prevented metric tables from exporting when colocation is turned off. 
+  - Fix bug in event depth.
+  - Fix bug that prevented metric tables from exporting when colocation is turned off.
+  - Avoid bug in FAS output to gmpacket. 
 
 ## 1.2.9 / 2023-10-19
 

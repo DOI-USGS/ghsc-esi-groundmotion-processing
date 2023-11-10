@@ -126,6 +126,9 @@ class GroundMotionPacketWriter(object):
                 gmp_metric = Metric(properties=gmp_metprops, values=data_value)
                 gmp_metrics.append(gmp_metric)
         for metric_type, metric_holder in array_metrics.items():
+            if metric_type == "FAS":
+                logging.warning("FAS metric type not fully supported by gmpacket yet.")
+                continue
             dimensions = metric_holder.get_dimensions()
             values = metric_holder.get_values()
             if not values or not values[0]:
@@ -136,10 +139,7 @@ class GroundMotionPacketWriter(object):
                 name=metric_holder.metric_type,
                 units=units,
             )
-            try:
-                gmp_metdims = MetricDimensions(**dimensions)
-            except BaseException:
-                gmp_metdims = MetricDimensions(**dimensions)
+            gmp_metdims = MetricDimensions(**dimensions)
             gmp_metric = Metric(
                 properties=gmp_metprops,
                 dimensions=gmp_metdims,
