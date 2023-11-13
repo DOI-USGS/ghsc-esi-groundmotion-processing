@@ -36,7 +36,7 @@ DIST_MAX = 500
 class SearchParameters(object):
     """Class for sorting out dynamic search parameters."""
 
-    def __init__(self, magnitude, config, strec):
+    def __init__(self, magnitude, config, strec=None):
         """Initialize SearchParamters object.
 
         Args:
@@ -61,15 +61,19 @@ class SearchParameters(object):
 
     def _compute_distance(self):
         dpars = self.config["fetchers"]["search_parameters"]["distance"]
-        strec_dict = self.strec.results
-        region_probabilities = []
-        regions = []
-        for region, strec_prob in REGION_PROB_KEYS.items():
-            regions.append(region)
-            region_probabilities.append(strec_dict[strec_prob])
+        if self.strec is not None:
+            strec_dict = self.strec.results
+            region_probabilities = []
+            regions = []
+            for region, strec_prob in REGION_PROB_KEYS.items():
+                regions.append(region)
+                region_probabilities.append(strec_dict[strec_prob])
 
-        selected_region = regions[np.argmax(region_probabilities)]
-        selected_model_name = self.config["gmm_selection"][selected_region]
+            selected_region = regions[np.argmax(region_probabilities)]
+            selected_model_name = self.config["gmm_selection"][selected_region]
+        else:
+            # Use StableShallow as the conservative choice
+            selected_model_name = self.config["gmm_selection"]["StableShallow"]
         selected_model = load_model(selected_model_name)
         pga_threshold = dpars["pga"]
 

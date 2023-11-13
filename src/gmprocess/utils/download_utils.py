@@ -54,6 +54,7 @@ def download(event, event_dir, config):
     rawdir = get_rawdir(event_dir)
 
     # Run STREC if enabled and results are not already downloaded
+    strec = None
     if config["strec"]["enabled"]:
         strec_file = event_dir / "strec_results.json"
         if strec_file.exists():
