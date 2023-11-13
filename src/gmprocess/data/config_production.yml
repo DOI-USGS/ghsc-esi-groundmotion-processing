@@ -1,6 +1,14 @@
 # -----------------------------------------------------------------------------
 # This section is for configuring data fetching routines.
 fetchers:
+    search_parameters:
+        enabled: True
+        duration:
+            c0: 0.0
+            c1: 0.5
+        distance: 
+            model: strec
+            pga: 0.01
     KNETFetcher:
         # Enable this fetcher?
         enabled: True
@@ -573,6 +581,18 @@ metrics:
 #         column_header: example_column_header
 #         readme_entry: example_readme_entry
 #         units: example_units
+
+# -----------------------------------------------------------------------------
+# This section is ground motion model selection given the tectonic region
+# Model abbreviaitons are defined in modules.yml
+gmm_selection:
+    ActiveShallow: Bea14
+    ActiveDeep: Ask14
+    VolcanicShallow: Atk10
+    SubductionIntraslab: Pea20slab
+    SubductionInterface: Pea20inter
+    SubductionCrustal: Ask14
+    StableShallow: AB06
 
 # -----------------------------------------------------------------------------
 # This section is for options for integration method

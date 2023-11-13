@@ -5,6 +5,9 @@
 - Add method to retrieve rupture model geometry info from workspace.
 - Add clipping probability as a trace processing parameter; remove it from failure message.
 - Change default config to specify providers.
+- Move STREC download to occur in "download" subcommand; results are stored in "strec_results.json" in event directory.
+- Add optional search parameters to be based on magnitude for duration and PGA threshold for distance.
+- Restrict NCEDC provider bounds.
 - Documentation
   - Add STREC configuration to initial setup instructions
 - Bugfixes

@@ -11,6 +11,21 @@ modules:
     AS16:
         - AfshariStewart2016
         - openquake.hazardlib.gsim.afshari_stewart_2016
-    B14:
+    Bea14:
         - BooreEtAl2014
         - openquake.hazardlib.gsim.boore_2014
+    Ask14:
+        - AbrahamsonEtAl2014
+        - openquake.hazardlib.gsim.abrahamson_2014
+    Pea20inter:
+        - ParkerEtAl2020SInter
+        - openquake.hazardlib.gsim.parker_2020
+    Pea20slab:
+        - ParkerEtAl2020SSlab
+        - openquake.hazardlib.gsim.parker_2020
+    Atk10:
+        - Atkinson2010Hawaii
+        - openquake.hazardlib.gsim.boore_atkinson_2008
+    AB06:
+        - AtkinsonBoore2006Modified2011
+        - openquake.hazardlib.gsim.atkinson_boore_2006

@@ -7,10 +7,15 @@ import inspect
 import logging
 import pathlib
 
+import numpy as np
+
+from obspy.geodetics import kilometers2degrees
+
 # local imports
 from .fetcher import DataFetcher
 from gmprocess.utils.config import get_config
 from gmprocess.io.utils import _walk
+from gmprocess.io.dynamic_search_parameters import SearchParameters
 
 FETCHER_DIRS = [
     "cosmos",
@@ -29,6 +34,7 @@ def fetch_data(
     rawdir=None,
     drop_non_free=True,
     stream_collection=True,
+    strec=None,
 ):
     """Retrieve data using any DataFetcher subclass.
 
@@ -52,12 +58,30 @@ def fetch_data(
             Option to ignore non-free-field (borehole, sensors on structures, etc.)
         stream_collection (bool):
             Construct and return a StreamCollection instance?
+        strec (STREC):
+            STREC object.
 
      Returns:
         StreamCollection: StreamCollection object.
     """
     if config is None:
         config = get_config()
+
+    # Update the search parameters for the fetchers if it is enabled
+    if config["fetchers"]["search_parameters"]["enabled"]:
+        search_pars = SearchParameters(magnitude, config, strec)
+        update_distance = np.round(search_pars.distance)
+        logging.info(f"Updating search radius to {update_distance} km")
+        config["fetchers"]["KNETFetcher"]["radius"] = update_distance
+        config["fetchers"]["CESMDFetcher"]["eq_radius"] = update_distance
+        fdsn_conf = config["fetchers"]["FDSNFetcher"]
+        fdsn_conf["domain"]["circular"]["maxradius"] = kilometers2degrees(
+            update_distance
+        )
+        # convert min to sec
+        update_duration = np.round(search_pars.duration * 60)
+        logging.info(f"Updating time_after to {update_duration} sec")
+        fdsn_conf["restrictions"]["time_after"] = update_duration
 
     tfetchers = find_fetchers(lat, lon)
 
