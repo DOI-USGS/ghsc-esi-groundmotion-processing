@@ -56,7 +56,7 @@ class AutoShakemapModule(base.SubcommandModule):
         },
         {
             "long_flag": "--skip-download",
-            "help": "Skip data downlaod step.",
+            "help": "Skip data download step.",
             "default": False,
             "action": "store_true",
         },
