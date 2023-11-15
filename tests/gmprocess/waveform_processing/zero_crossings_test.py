@@ -2,14 +2,14 @@ import numpy as np
 from obspy import UTCDateTime
 
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils.event import get_event_object
 from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils import constants
+from gmprocess.utils import event_utils
 
 
 def test_zero_crossings():
-    datadir = TEST_DATA_DIR / "zero_crossings"
+    datadir = constants.TEST_DATA_DIR / "zero_crossings"
     sc = StreamCollection.from_directory(str(datadir))
     sc.describe()
 
@@ -31,7 +31,7 @@ def test_zero_crossings():
         "depth": 46.7,
         "magnitude": 7.1,
     }
-    event = get_event_object(edict)
+    event = event_utils.ScalarEvent.from_params(**edict)
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:

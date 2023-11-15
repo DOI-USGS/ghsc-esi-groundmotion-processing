@@ -7,13 +7,13 @@ from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
+from gmprocess.utils import event_utils
 
 
 def test_rotd():
-    datadir = TEST_DATA_DIR / "process"
+    datadir = constants.TEST_DATA_DIR / "process"
     # Create a stream and station summary, convert from m/s^2 to cm/s^2 (GAL)
     osc1_data = np.genfromtxt(datadir / "ALCTENE.UW..sac.acc.final.txt")
     osc2_data = np.genfromtxt(datadir / "ALCTENN.UW..sac.acc.final.txt")
@@ -99,7 +99,7 @@ def test_rotd():
     target_sa0350 = 10.091461811808575
     target_sa3050 = 1.1232860465386469
     # Dummy event
-    event = ScalarEvent.from_params(
+    event = event_utils.ScalarEvent.from_params(
         id="",
         lat=44.0,
         lon=-123.0,

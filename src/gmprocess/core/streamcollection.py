@@ -171,7 +171,7 @@ class StreamCollection(StreamArray):
                             dist_thresh = d
                     ```
 
-            event (gmprocess.utils.event.ScalarEvent):
+            event (gmprocess.utils.event_utils.ScalarEvent):
                 A ScalarEvent object.
         """
         # Do we have different large distnce preference?

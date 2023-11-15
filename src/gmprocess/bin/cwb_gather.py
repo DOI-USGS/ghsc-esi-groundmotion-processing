@@ -14,8 +14,8 @@ from obspy import read, read_inventory
 import configobj
 
 # local imports
-from gmprocess.utils.event import get_event_object
-from gmprocess.utils.download_utils import create_event_file, download_rupture_file
+from gmprocess.utils import event_utils
+from gmprocess.utils import download_utils
 
 
 def read_stations():
@@ -198,7 +198,7 @@ def main():
     if not event_file.is_file():
         msg = f"Error: Failed to create {event_file}."
     print(msg)
-    download_rupture_file(args.event, str(event_path))
+    download_utils.download_rupture_file(args.event, str(event_path))
     rupture_file = event_path / "rupture.json"
     msg = f"Created rupture file at {rupture_file}."
     if not rupture_file.is_file():

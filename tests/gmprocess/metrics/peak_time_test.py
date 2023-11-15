@@ -5,13 +5,15 @@ from obspy.core.utcdatetime import UTCDateTime
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.reduction.max import Max
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.utils.event import ScalarEvent
-from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.utils.config import get_config
+from gmprocess.utils import event_utils
+from gmprocess.utils import test_utils
 
 
 def test_get_peak_time():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
+    datafiles, _ = test_utils.read_data_dir(
+        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
+    )
     datafile = datafiles[0]
     stream1 = read_geonet(datafile)[0]
     max_cls = Max(stream1).result
@@ -21,7 +23,7 @@ def test_get_peak_time():
     assert len(max_cls) == 1
 
     stream2 = read_geonet(datafile)[0]
-    event = ScalarEvent.from_params(
+    event = event_utils.ScalarEvent.from_params(
         id="us1000778i",
         lat=-42.6925,
         lon=173.021944,

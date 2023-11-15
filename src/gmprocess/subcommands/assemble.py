@@ -114,3 +114,21 @@ class AssembleModule(base.SubcommandModule):
         )
         workspace.close()
         return workname
+
+def events_from_json_files(data_dir, event_ids):
+    events = []
+    for event_id in event_ids:
+        event_dir = data_dir / event_id
+        json_filename = event_dir / EVENT_FILE
+        if json_filename.is_file():
+            event = ScalarEvent.from_json(json_filename)
+            events.append(event)
+        else:
+            raise ValueError(
+                f"Could not find event JSON file for event {event_id}.")
+
+    # "events" elements are None if an error occurred, e.g., bad event id is specified.
+    events = [e for e in events if e is not None]
+
+    return events
+

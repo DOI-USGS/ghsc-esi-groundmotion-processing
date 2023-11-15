@@ -6,9 +6,9 @@ from obspy.core.trace import Stats
 
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.event import ScalarEvent
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
+from gmprocess.utils import constants
+from gmprocess.utils import event_utils
 from gmprocess.utils.config import get_config
 
 
@@ -83,10 +83,10 @@ def read_at2(dfile, horient=0.0):
 
 def test_high_freq_sa():
     # Dummy event
-    event = ScalarEvent.from_params(
+    event = event_utils.ScalarEvent.from_params(
         id="", time="20001-01 00:00:00", lat=0, lon=0, depth=0, magnitude=0
     )
-    datadir = TEST_DATA_DIR / "high_freq_sa"
+    datadir = constants.TEST_DATA_DIR / "high_freq_sa"
     fnames = [
         "RSN10590_ComalTX11-10-20_IU.CCM.BH1.00.AT2",
         "RSN10590_ComalTX11-10-20_IU.CCM.BH2.00.AT2",

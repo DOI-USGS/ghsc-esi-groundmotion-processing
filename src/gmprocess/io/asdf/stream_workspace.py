@@ -20,12 +20,14 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.core.streamarray import StreamArray
 from gmprocess.core.streamcollection import StreamCollection
+
 from gmprocess.core import provenance
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.rupture_utils import get_rupture_file
-from gmprocess.utils.event import ScalarEvent
+from gmprocess.core import scalar_event
 from gmprocess.utils.strec import STREC
+
 from gmprocess.io.asdf import workspace_constants as wc
 from gmprocess.io.asdf.rupture import Rupture
 from gmprocess.io.asdf.path_utils import (
@@ -34,6 +36,10 @@ from gmprocess.io.asdf.path_utils import (
     get_trace_name,
     get_trace_path,
 )
+from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils import constants
+from gmprocess.utils import event_utils
+from gmprocess.utils import strec
 
 TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -144,10 +150,10 @@ class StreamWorkspace(object):
         event_dir = workspace_path.parent.absolute()
         strec_json = event_dir / "strec_results.json"
         if strec_json.exists():
-            strec = STREC.from_file(strec_json)
+            strec_info = strec.STREC.from_file(strec_json)
         else:
-            strec = STREC.from_event(event)
-        strec_params_str = dict_to_str(strec.results)
+            strec_info = strec.STREC.from_event(event)
+        strec_params_str = dict_to_str(strec_info.results)
         dtype = "StrecParameters"
         strec_path = f"STREC/{event.id}"
         self.insert_aux(strec_params_str, dtype, strec_path, True)
@@ -904,7 +910,7 @@ class StreamWorkspace(object):
             if event.resource_id.id.find(eventid) > -1:
                 eventobj = event
                 break
-        eventobj2 = ScalarEvent.from_event(eventobj) if eventobj else None
+        eventobj2 = scalar_event.ScalarEvent.from_obspy(eventobj) if eventobj else None
         return eventobj2
 
     def get_provenance(self, eventid, stations=None, labels=None):

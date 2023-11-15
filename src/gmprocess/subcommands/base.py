@@ -130,7 +130,6 @@ class SubcommandModule(ABC):
         #  **stopping** at the first condition that is met:
         #     1) Use event ids if event id is not None
         #     2) Use textfile if it is not None
-        #     3) Use event info if it is not None
         #     4) Use directory if it is not None
         #     5) Use outdir if it is not None
         # So in order to ever make use of the 'outdir' argument, we need to
@@ -154,9 +153,6 @@ class SubcommandModule(ABC):
         else:
             self.download_dir = None
 
-        info = (
-            self.gmrecords.args.info if hasattr(self.gmrecords.args, "info") else None
-        )
         tfile = (
             self.gmrecords.args.textfile
             if hasattr(self.gmrecords.args, "textfile")

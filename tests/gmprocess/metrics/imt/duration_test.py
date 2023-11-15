@@ -7,13 +7,13 @@ from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollectio
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.reduction.duration import Duration
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
+from gmprocess.utils import event_utils
 
 
 def test_duration():
-    data_file = TEST_DATA_DIR / "duration_data.json"
+    data_file = constants.TEST_DATA_DIR / "duration_data.json"
     with open(str(data_file), "rt", encoding="utf-8") as f:
         jdict = json.load(f)
 
@@ -59,7 +59,7 @@ def test_duration():
     for tr in stream:
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.set_provenance("remove_response", response)
-    event = ScalarEvent.from_params(
+    event = event_utils.ScalarEvent.from_params(
         id="",
         lat=24.0,
         lon=120.0,
@@ -81,7 +81,7 @@ def test_duration():
 
 
 def test_duration575():
-    datadir = TEST_DATA_DIR / "cosmos" / "us1000hyfh"
+    datadir = constants.TEST_DATA_DIR / "cosmos" / "us1000hyfh"
     data_file = str(datadir / "us1000hyfh_akbmrp_AKBMR--n.1000hyfh.BNZ.--.acc.V2c")
     stream = read_data(data_file)[0]
 

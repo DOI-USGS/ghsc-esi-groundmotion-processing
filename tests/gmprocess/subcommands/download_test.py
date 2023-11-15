@@ -4,10 +4,10 @@ import shutil
 from pathlib import Path
 
 from gmprocess.utils import constants
-from gmprocess.utils.test_utils import vcr
+from gmprocess.utils import test_utils
 
 
-@vcr.use_cassette()
+@test_utils.vcr.use_cassette()
 def _test_download(script_runner):
     try:
         # Need to create profile first.
@@ -27,7 +27,7 @@ def _test_download(script_runner):
         shutil.rmtree(constants.CONFIG_PATH_TEST)
 
 
-@vcr.use_cassette()
+@test_utils.vcr.use_cassette()
 def _test_download_single_provider(script_runner):
     # This test is to specify a single provider and it's URL
     try:
@@ -63,7 +63,7 @@ def _test_download_single_provider(script_runner):
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
 
 
-@vcr.use_cassette()
+@test_utils.vcr.use_cassette()
 def _test_download_provider_url(script_runner):
     # This test is to specify a single provider and it's URL
     try:
@@ -100,7 +100,7 @@ def _test_download_provider_url(script_runner):
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
 
 
-@vcr.use_cassette()
+@test_utils.vcr.use_cassette()
 def _test_download_provider_url_bounds(script_runner):
     # This test is to specify a single provider and it's URL
     try:

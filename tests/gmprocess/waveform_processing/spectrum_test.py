@@ -2,19 +2,19 @@ import numpy as np
 
 from gmprocess.waveform_processing import spectrum
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.utils.config import get_config
-from gmprocess.utils.event import get_event_object
 from gmprocess.waveform_processing.windows import signal_split, signal_end
 from gmprocess.waveform_processing.snr import compute_snr
 from gmprocess.waveform_processing.corner_frequencies import get_corner_frequencies
-from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
+from gmprocess.utils import event_utils
 
 
 def test_fit_spectra():
     config = get_config()
-    datadir = TEST_DATA_DIR / "demo" / "ci38457511" / "raw"
-    event = get_event_object("ci38457511")
-    sc = StreamCollection.from_directory(str(datadir))
+    event_dir = constants.TEST_DATA_DIR / "demo" / "ci38457511"
+    event = event_utils.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
+    sc = StreamCollection.from_directory(event_dir / "raw")
     for st in sc:
         st = signal_split(st, event)
         end_conf = config["windows"]["signal_end"]

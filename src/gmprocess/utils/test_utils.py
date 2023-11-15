@@ -1,11 +1,10 @@
 """Module for utilities related to unit tests."""
 
 import os.path
-import glob
 import vcr as vcrpy
 
-from gmprocess.utils.base_utils import read_event_json_files
 from gmprocess.utils import constants
+from gmprocess.utils import event_utils
 
 vcr = vcrpy.VCR(
     path_transformer=vcrpy.VCR.ensure_suffix(".yaml"),
@@ -44,22 +43,21 @@ def read_data_dir(file_format, eventid, files=None):
         allfiles = os.listdir(eventdir)
         allfiles.remove("event.json")
         for dfile in allfiles:
-            datafile = os.path.join(eventdir, dfile)
+            datafile = eventdir / dfile
             datafiles.append(datafile)
     elif isinstance(files, str):
-        # regex
-        datafiles = glob.glob(os.path.join(eventdir, files))
+        # files is a regular expression
+        datafiles = eventdir.glob(files)
     else:
-        # this is just a list of filenames
+        # files is a list of filenames
         for tfile in files:
-            fullfile = os.path.join(eventdir, tfile)
-            if os.path.isfile(fullfile):
+            fullfile = eventdir / tfile
+            if fullfile.is_file():
                 datafiles.append(fullfile)
 
-    # read the event.json file
     jsonfile = eventdir / "event.json"
-    if not jsonfile.is_dir():
-        event = None
-    event = read_event_json_files([jsonfile])[0]
+    event = None
+    if jsonfile.is_file():
+        event = event_utils.ScalarEvent.from_json(jsonfile)
 
     return (datafiles, event)

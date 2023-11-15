@@ -3,17 +3,18 @@ import json
 import obspy
 
 from gmprocess.io.read import read_data
-from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.core.stationstream import StationStream
 from gmprocess.waveform_processing.clipping.clipping_check import check_clipping
-from gmprocess.utils.event import get_event_object
-from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils import event_utils
+from gmprocess.utils import constants
+from gmprocess.utils import test_utils
 
 
 def test_check_clipping():
-    data_files, _ = read_data_dir("clipping_samples", "hv70907436", "*.mseed")
+    data_files, event = test_utils.read_data_dir(
+        "clipping_samples", "hv70907436", "*.mseed"
+    )
     data_files.sort()
-    event = get_event_object("hv70907436")
     streams = []
     for f in data_files:
         streams += read_data(f)
@@ -35,14 +36,12 @@ def test_check_clipping():
 
 def test_check_clipping_turkey():
     STATION = "KO.KIZT"
-    data_dir = TEST_DATA_DIR / "clipping_samples" / "us6000jlqa"
+    data_dir = constants.TEST_DATA_DIR / "clipping_samples" / "us6000jlqa"
     inventory = obspy.read_inventory(data_dir / f"{STATION}.xml")
     traces = obspy.read(data_dir / f"{STATION}*.mseed")
     station_stream = StationStream(traces, inventory)
 
-    with open(data_dir / "event.json") as fin:
-        ev_info = json.load(fin)
-    event = get_event_object(ev_info)
+    event = event_utils.ScalarEvent.from_json(data_dir / constants.EVENT_FILE)
 
     check_clipping(station_stream, event)
     passed = [st.passed for st in station_stream]

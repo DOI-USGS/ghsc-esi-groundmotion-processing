@@ -23,7 +23,7 @@ def check_clipping(st, event, threshold=0.2, config=None):
     Args:
         st (gmprocess.core.stationstream.StationStream):
            Trace of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.event_utils.ScalarEvent):
             ScalarEvent object.
         threshold (float):
             Threshold probability.

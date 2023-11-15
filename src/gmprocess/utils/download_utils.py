@@ -19,6 +19,7 @@ from obspy.taup import TauPyModel
 from gmprocess.io.global_fetcher import fetch_data
 from gmprocess.utils.misc import get_rawdir
 
+from gmprocess.utils.constants import EVENT_FILE
 from gmprocess.utils.strec import STREC
 
 TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
@@ -31,13 +32,21 @@ EVENT_TEMPLATE = (
 )
 
 
-def get_event_data(eventid):
+def download_comcat_event(eventid):
+    """Download event data from ComCat as GeoJSON.
+
+    Args:
+        eventid (str):
+            ComCat event id.
+    Returns:
+        Dictionary with event information.
+    """
     event_url = EVENT_TEMPLATE.replace("[EVENT]", eventid)
     response = requests.get(event_url)
     return response.json()
 
 
-def download(event, event_dir, config):
+def download_waveforms(event, event_dir, config, plot_raw=False):
     """Download waveform data.
 
     Args:
@@ -47,7 +56,8 @@ def download(event, event_dir, config):
             Path where raw directory should be created (if downloading).
         config (dict):
             Dictionary with gmprocess configuration information.
-
+        plot_raw (bool):
+            Plot raw waveforms after downloading.
     """
     # Make raw directory
     rawdir = get_rawdir(event_dir)
@@ -73,60 +83,19 @@ def download(event, event_dir, config):
         stream_collection=False,
         strec=strec,
     )
-    # download an event.json file in each event directory,
-    # in case user is simply downloading for now
-    create_event_file(event, event_dir)
     download_rupture_file(event.id, event_dir)
 
     if len(tcollection):
         logging.debug("tcollection.describe_string():")
         logging.debug(tcollection.describe_string())
 
-    # Plot the raw waveforms
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=UserWarning)
-        pngfiles = glob.glob(os.path.join(rawdir, "*.png"))
-        if not len(pngfiles):
-            plot_raw(rawdir, tcollection, event)
+    if plot_raw:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+            plot_raw_waveforms(rawdir, tcollection, event)
 
 
-def create_event_file(event, event_dir):
-    """Write event.json file in event_dir.
-
-    Args:
-        event (ScalarEvent):
-            Input event object.
-        event_dir (str):
-            Directory where event.json should be written.
-    """
-
-    # download event.json for event
-    eventid = event.origins[-1].resource_id.id
-    try:
-        data = get_event_data(eventid)
-    except BaseException:
-        # convert time to comcat time
-        ctime = (event.time - UTCDateTime("1970-01-01T00:00:00.000Z")) * 1000.0
-        data = {
-            "type": "Feature",
-            "properties": {
-                "mag": event.magnitude,
-                "time": ctime,
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [event.longitude, event.latitude, event.depth_km],
-            },
-            "id": eventid,
-        }
-
-    # dump the event.json file to the event directory
-    eventfile = os.path.join(event_dir, "event.json")
-    with open(eventfile, "w", encoding="utf-8") as f:
-        json.dump(data, f)
-
-
-def plot_raw(rawdir, tcollection, event):
+def plot_raw_waveforms(rawdir, tcollection, event):
     """Make PNG plots of a collection of raw waveforms.
 
     Args:
@@ -161,7 +130,7 @@ def plot_raw(rawdir, tcollection, event):
             logging.warning(fmt, str(e), dist, source_depth)
             arrival_time = 0.0
         ptime = arrival_time + (event.time - stream[0].stats.starttime)
-        outfile = os.path.join(rawdir, f"{stream.get_id()}.png")
+        outfile = rawdir / f"{stream.get_id()}.png"
 
         fig, axeslist = plt.subplots(nrows=3, ncols=1, figsize=(12, 6))
         for ax, trace in zip(axeslist, stream):
@@ -169,8 +138,7 @@ def plot_raw(rawdir, tcollection, event):
                 0.0, trace.stats.endtime - trace.stats.starttime, trace.stats.npts
             )
             ax.plot(times, trace.data, color="k")
-            ax.set_xlabel("seconds since start of trace")
-            ax.set_title("")
+            ax.set_xlabel("Seconds since start of trace")
             ax.axvline(ptime, color="r")
             ax.set_xlim(left=0, right=times[-1])
             legstr = "%s.%s.%s.%s" % (
@@ -203,7 +171,7 @@ def download_rupture_file(event_id, event_dir):
             Event directory.
     """
     try:
-        data = get_event_data(event_id)
+        data = download_event_data(event_id)
     except BaseException:
         logging.info(f"{event_id} not found in ComCat.")
         return
