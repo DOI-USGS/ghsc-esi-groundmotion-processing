@@ -16,6 +16,7 @@ CONFIG_FILE_PRODUCTION = "config_production.yml"
 CONFIG_FILE_TEST = "config_test.yml"
 PICKER_FILE = "picker.yml"
 MODULE_FILE = "modules.yml"
+EVENT_FILE = "event.json"
 RUPTURE_FILE = "rupture.json"
 
 STREC_CONFIG_PATH = pathlib.Path.home() / ".strec" / "config.ini"
