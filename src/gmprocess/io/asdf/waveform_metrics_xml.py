@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Module for converting waveform metrics dictionaries to XML."""
 
 from lxml import etree

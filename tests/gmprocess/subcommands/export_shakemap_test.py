@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import os
 import shutil
@@ -41,7 +38,3 @@ def test_export_shakemap(script_runner):
             for outname in out_names:
                 dfile = os.path.join(ddir, event, outname % event)
                 os.remove(dfile)
-
-
-if __name__ == "__main__":
-    test_export_shakemap()

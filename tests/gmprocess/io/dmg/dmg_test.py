@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # stdlib imports
 import os
 import tempfile
@@ -220,12 +218,3 @@ def test_pacific():
     # 05/02/83, 16:42:48.2
     cmptime = UTCDateTime("1983-05-02T23:42:48.2")
     assert trace.stats.starttime == cmptime
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_pacific()
-    test_dmg_non_spec()
-    test_time()
-    test_dmg_v1()
-    test_dmg()

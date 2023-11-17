@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for ImportModule class."""
 
 import shutil
 from pathlib import Path

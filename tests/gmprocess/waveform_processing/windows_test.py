@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 import copy
 from obspy import UTCDateTime
@@ -194,10 +190,3 @@ def test_signal_split2():
             assert value.second == v1.second
         else:
             assert v1 == value
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_signal_split2()
-    test_signal_end()
-    test_windows()

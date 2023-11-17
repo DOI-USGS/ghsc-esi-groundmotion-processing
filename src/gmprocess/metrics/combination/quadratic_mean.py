@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Quadratic_Mean class."""
 
 # Local imports
 import numpy as np

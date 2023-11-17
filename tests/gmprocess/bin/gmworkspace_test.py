@@ -1,10 +1,6 @@
-#!/usr/bin/env pytest
-# -*- coding: utf-8 -*-
-
 # stdlib imports
 import os
 import sys
-import shutil
 import subprocess
 
 # third party imports
@@ -56,6 +52,7 @@ DESCRIBE = (
     "    NET.ST01.10.HNN__TSTART_TEND__EV0_label dims=(3000) type=float64\n"
     "    NET.ST01.10.HNZ__TSTART_TEND__EV0_label dims=(3000) type=float64\n"
 )
+
 
 @pytest.fixture
 def generate_workspace():
@@ -142,10 +139,11 @@ def generate_workspace():
 
     yield tfilename
 
+
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="Does not work in Windows")
 def test_describe(generate_workspace):
     tfilename = generate_workspace
-    gmworkspace="gmworkspace"
+    gmworkspace = "gmworkspace"
     output = subprocess.check_output(
         [gmworkspace, "--filename=" + tfilename, "--describe"]
     )
@@ -159,15 +157,9 @@ def test_describe(generate_workspace):
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="Does not work in Windows")
 def test_storage(generate_workspace):
     tfilename = generate_workspace
-    gmworkspace="gmworkspace"
+    gmworkspace = "gmworkspace"
     output = subprocess.check_output(
         [gmworkspace, "--filename=" + tfilename, "--compute-storage"]
     )
     assert STORAGE == output.decode()
     return
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_describe()
-    test_storage()

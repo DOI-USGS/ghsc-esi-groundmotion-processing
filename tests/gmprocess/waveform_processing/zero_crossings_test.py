@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 import numpy as np
 from obspy import UTCDateTime
 
@@ -46,8 +41,3 @@ def test_zero_crossings():
         0.008888888888888889,
         atol=1e-5,
     )
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_zero_crossings()

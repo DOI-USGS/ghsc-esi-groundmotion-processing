@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """Module for interacting with the workspace HDF file."""
 
 import copy

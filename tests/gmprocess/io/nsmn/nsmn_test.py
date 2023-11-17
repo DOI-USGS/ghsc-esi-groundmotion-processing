@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import os
 import numpy as np
 
 from gmprocess.io.nsmn.core import is_nsmn, read_nsmn
@@ -42,8 +39,3 @@ def test_nsmn():
             stream[0].stats["coordinates"]["longitude"],
         )
         np.testing.assert_almost_equal(cmp_coords, tpl)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_nsmn()

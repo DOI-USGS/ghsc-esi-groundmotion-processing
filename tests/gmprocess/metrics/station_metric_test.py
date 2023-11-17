@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 from gmprocess.metrics.station_metric import StationMetric
 
 
@@ -30,8 +25,3 @@ def test_station_metric():
     assert sta_metric.__repr__() == repr_target
     test_metric_dict = sta_metric.to_dict()
     assert test_metric_dict["repi"] == 10.0
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_station_metric()

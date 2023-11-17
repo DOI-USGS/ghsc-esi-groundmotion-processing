@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Histogram class for clipping detection."""
 
 import numpy as np
 from statsmodels.tsa.holtwinters import ExponentialSmoothing

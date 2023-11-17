@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Base class for converting metrics dictionaries to XML."""
 
 from abc import ABC, abstractmethod

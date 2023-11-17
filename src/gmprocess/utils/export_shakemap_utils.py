@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for utilities related to the ExportShakeMap class."""
 
 from pathlib import Path
 import re

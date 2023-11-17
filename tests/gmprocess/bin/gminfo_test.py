@@ -1,6 +1,3 @@
-#!/usr/bin/env pytest
-# -*- coding: utf-8 -*-
-
 import os
 import shutil
 
@@ -34,8 +31,3 @@ def test_gminfo():
         raise e
     finally:
         shutil.rmtree(out_dir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_gminfo()

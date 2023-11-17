@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import re
 
 import numpy as np
@@ -98,8 +94,3 @@ def test_fas():
         "  FAS(T=0.7940, B=20.0): QUADRATIC_MEAN=0.033\n"
     )
     assert wml.__repr__() == target_repr
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_fas()

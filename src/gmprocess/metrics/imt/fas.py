@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the FAS class."""
 
 # Local imports
 from gmprocess.metrics.gather import gather_pgms

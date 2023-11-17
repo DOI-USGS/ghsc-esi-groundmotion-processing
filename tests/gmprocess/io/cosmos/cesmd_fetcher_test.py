@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import shutil
 import tempfile
 from pathlib import Path
@@ -33,7 +31,3 @@ def test_CESMDFetcher():
         assert len(stream_collection) == 1
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    test_CESMDFetcher()

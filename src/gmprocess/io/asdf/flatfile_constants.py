@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Module for storing some constants that are specific to the workspace."""
 
 from gmprocess.utils import constants

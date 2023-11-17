@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import json
 
 import numpy as np
@@ -82,8 +78,3 @@ def test_arias():
 
     Ia = wm.value("ARITHMETIC_MEAN") * 100
     np.testing.assert_almost_equal(Ia, target_IA, decimal=1)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_arias()

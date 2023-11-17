@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.metrics.station_metric_collection import StationMetricCollection
 from gmprocess.utils import constants
@@ -24,8 +19,3 @@ def test_station_metric_collection():
     event = ws.get_event("ci38457511")
     smc2 = StationMetricCollection.from_streams(streams, event, config)
     assert smc2.__repr__() == "StationMetricCollection: 2 metrics"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_station_metric_collection()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for BHRC reader."""
 
 # stdlib imports
 import os

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import os
 import shutil
@@ -47,8 +44,3 @@ def test_generate_station_maps(script_runner):
                 if any(file.endswith(ext) for ext in pattern):
                     os.remove(os.path.join(root, file))
         shutil.move(workpsace_backup, workpsace_orig)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_generate_station_maps()

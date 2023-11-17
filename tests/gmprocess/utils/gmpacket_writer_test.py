@@ -1,10 +1,7 @@
-#!/usr/bin/env python
-
 # stdlib imports
 import logging
 import pathlib
 import shutil
-import sys
 import tempfile
 
 # third party imports
@@ -109,10 +106,3 @@ def test_gmpacket_writer(datafile=None, save_file=False):
     finally:
         if tempfile is not None:
             shutil.rmtree(tempdir)
-
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        test_gmpacket_writer(sys.argv[1], save_file=bool(sys.argv[2]))
-    else:
-        test_gmpacket_writer()

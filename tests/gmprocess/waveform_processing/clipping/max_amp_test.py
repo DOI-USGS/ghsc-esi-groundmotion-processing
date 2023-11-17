@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
@@ -67,9 +63,3 @@ def test_all_max_calc():
         ),
         rtol=1e-5,
     )
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_max_calc()
-    test_all_max_calc()

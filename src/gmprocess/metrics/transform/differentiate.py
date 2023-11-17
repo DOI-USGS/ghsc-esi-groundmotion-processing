@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Differentiate class."""
 
 # Third party imports
 from gmprocess.metrics.transform.transform import Transform

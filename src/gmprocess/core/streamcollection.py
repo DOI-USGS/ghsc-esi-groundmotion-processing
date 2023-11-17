@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Module for StreamCollection class.
+"""Module for StreamCollection class.
 
 This class functions as a list of StationStream objects, and enforces
 various rules, such as all traces within a stream are from the same station.

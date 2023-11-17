@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for SubcommandModule base class."""
 
 import sys
 from abc import ABC, abstractmethod

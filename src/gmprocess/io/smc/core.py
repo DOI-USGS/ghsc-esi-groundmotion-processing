@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for SMC reader."""
 
 # stdlib imports
 import os

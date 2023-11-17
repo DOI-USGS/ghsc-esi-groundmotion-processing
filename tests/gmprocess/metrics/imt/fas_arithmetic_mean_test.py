@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import re
-import os
 
 import numpy as np
 import pandas as pd
@@ -102,8 +98,3 @@ def test_fas():
         "  FAS(T=0.7940, B=20.0): ARITHMETIC_MEAN=0.031\n"
     )
     assert wml.__repr__() == target_repr
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_fas()

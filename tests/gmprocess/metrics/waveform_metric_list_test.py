@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 from gmprocess.metrics import waveform_metric
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 
@@ -22,8 +17,3 @@ def test_metrics_list():
     wml2 = WaveformMetricList.from_df(test_df)
     assert len(wml2.metric_list) == 2
     assert wml2.__repr__() == repr_target
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_metrics_list()

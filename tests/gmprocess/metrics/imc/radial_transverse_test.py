@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
-
 import numpy as np
 import scipy.constants as sp
 from obspy import read, read_inventory
@@ -118,8 +114,3 @@ def test_radial_transverse():
 
     assert np.isnan(wm.value("HNR"))
     assert np.isnan(wm.value("HNT"))
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_radial_transverse()

@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 from gmprocess.metrics import waveform_metric
 
 
@@ -27,8 +23,3 @@ def test_waveform_metric():
 
     test_duration = waveform_metric.Duration([3.24], ["H2"], "5-95")
     assert test_duration.__repr__() == "Duration(5-95): H2=3.240"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_waveform_metric()

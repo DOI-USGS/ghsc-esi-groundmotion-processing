@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import shutil
 import tempfile
 from pathlib import Path
@@ -38,7 +36,3 @@ def test_KNETFetcher():
         assert len(stream_collection) == 3
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    test_KNETFetcher()

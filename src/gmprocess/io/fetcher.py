@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# third party imports
 from obspy.core.utcdatetime import UTCDateTime
 from openquake.hazardlib.geo.geodetic import geodetic_distance
 import numpy as np

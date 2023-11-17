@@ -1,7 +1,3 @@
-#!/usr/bin/env pytest
-# -*- coding: utf-8 -*-
-
-import os
 import shutil
 
 from esi_utils_io.cmd import get_command_output
@@ -22,8 +18,3 @@ def test_gmconvert():
         raise e
     finally:
         shutil.rmtree(out_dir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_gmconvert()

@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 from gmprocess.metrics import station_metric
 from gmprocess.io.asdf.station_metrics_xml import StationMetricsXML
 
@@ -42,8 +37,3 @@ def test_station_metrics_xml():
 
     sxml2 = StationMetricsXML.from_xml(xml_str)
     assert sxml2.metrics.rjb_mean == 10.0
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_station_metrics_xml()

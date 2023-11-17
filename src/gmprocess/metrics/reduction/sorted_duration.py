@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module fo the SortedDuration class."""
 
 # Third party imports
 import numpy as np

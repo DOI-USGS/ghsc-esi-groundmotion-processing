@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for helper functions related to prompting the user for a response."""
 
 import sys
 from pathlib import Path

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os.path
 import numpy as np
 from gmprocess.io.geonet.core import is_geonet, read_geonet
@@ -103,8 +101,3 @@ def test():
         assert traces[0].max() / comp[1] >= 0.95
         assert traces[1].max() / comp[2] >= 0.95
         assert traces[2].max() / comp[3] >= 0.95
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test()

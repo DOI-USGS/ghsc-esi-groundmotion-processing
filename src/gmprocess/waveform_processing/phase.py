@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for methods realated to phase picking."""
 
 # stdlib imports
 import datetime as dt

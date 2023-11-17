@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import csv
 
 import numpy as np
@@ -125,7 +122,3 @@ def test_high_freq_sa():
     ]
 
     np.testing.assert_allclose(target_sa, test_sa, rtol=0.1)
-
-
-if __name__ == "__main__":
-    test_high_freq_sa()

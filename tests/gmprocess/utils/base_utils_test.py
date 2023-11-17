@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # stdlib imports
 from obspy.core.utcdatetime import UTCDateTime
 
@@ -22,7 +19,3 @@ def test_read_event_json_files():
     assert event.magnitude == mag
     assert event.magnitude_type == mag_type
     assert event.time == time
-
-
-if __name__ == "__main__":
-    test_read_event_json_files()

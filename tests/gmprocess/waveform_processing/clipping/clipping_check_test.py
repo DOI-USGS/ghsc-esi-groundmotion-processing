@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import numpy as np
 
 from gmprocess.io.read import read_data
@@ -31,7 +28,3 @@ def test_check_clipping():
         passed.append(st.passed)
 
     assert np.all(~np.array(passed))
-
-
-if __name__ == "__main__":
-    test_check_clipping()

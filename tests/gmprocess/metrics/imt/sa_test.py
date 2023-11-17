@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# stdlib imports
-import os
-import warnings
-
 # third party imports
 import numpy as np
 
@@ -46,8 +39,3 @@ def test_sa():
     np.testing.assert_allclose(wm.value("H1"), 136.25041187387066)
     np.testing.assert_allclose(wm.value("H2"), 84.69296738413027)
     np.testing.assert_allclose(wm.value("ROTD(50.0)"), 106.03202302692148)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_sa()

@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for functions related to the FFT."""
 
 import numpy as np
 from obspy.signal.util import next_pow_2

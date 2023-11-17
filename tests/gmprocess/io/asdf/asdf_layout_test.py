@@ -1,5 +1,3 @@
-#!/usr/bin/env pytest
-
 # stdlib imports
 import os
 import shutil

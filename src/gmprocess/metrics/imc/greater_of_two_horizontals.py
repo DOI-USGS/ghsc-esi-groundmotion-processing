@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Greater_Of_Two_Horizontals class."""
 
 # Local imports
 from gmprocess.metrics.imc.imc import IMC

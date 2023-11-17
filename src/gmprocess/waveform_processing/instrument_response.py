@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-Methods for handling instrument response.
-"""
+"""Methods for handling instrument response."""
 
 import numpy as np
 import logging

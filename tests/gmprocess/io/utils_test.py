@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 
 from gmprocess.utils.test_utils import read_data_dir
@@ -13,8 +9,3 @@ def test_uneven_samples():
     test1 = read_data(file1[0])
     prov_resample = test1[0][0].get_provenance("resample")
     np.testing.assert_allclose(prov_resample[0]["nominal_sps"], 201.32337744591487)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_uneven_samples()

@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-This module is for waveform procesisng simple sanity checks.
-"""
+"""This module is for waveform procesisng simple sanity checks."""
 
 import numpy as np
 from gmprocess.waveform_processing.integrate import get_vel
@@ -77,8 +72,7 @@ def check_tail(st, duration=5.0, max_vel_ratio=0.3, max_dis_ratio=0.9, config=No
     for tr in dis_trim:
         tr.trim(starttime=new_start_time)
 
-    for i in range(len(st)):
-        tr = st[i]
+    for i, tr in enumerate(st):
         abs_max_vel = np.max(np.abs(vel[i].data))
         abs_max_vel_trim = np.max(np.abs(vel_trim[i].data))
         abs_max_dis = np.max(np.abs(dis[i].data))

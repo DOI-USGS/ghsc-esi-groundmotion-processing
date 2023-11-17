@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import io
 import shutil
 
@@ -42,8 +38,3 @@ def test_compute_waveform_metrics(script_runner):
             dst = str(ddir / event / "workspace.h5")
             src = str(ddir / event / "_workspace.h5")
             shutil.move(src, dst)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_compute_waveform_metrics()

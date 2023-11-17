@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for utility functions related to the report."""
 
-from collections.abc import Iterable
-from itertools import compress, chain
+from itertools import compress
 
 import numpy as np
 import pandas as pd

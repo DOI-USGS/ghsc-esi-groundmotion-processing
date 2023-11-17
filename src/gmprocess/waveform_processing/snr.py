@@ -1,11 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for signal-to-noise-ratio calculations."""
+
 import logging
 
 import numpy as np
 from obspy.signal.util import next_pow_2
 
-from gmprocess.metrics.reduction.duration import Duration
 from gmprocess.waveform_processing.fft import compute_and_smooth_spectrum
 from gmprocess.waveform_processing.spectrum import brune_f0, moment_from_magnitude
 from gmprocess.waveform_processing.processing_step import processing_step

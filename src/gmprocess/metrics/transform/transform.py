@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Transform class."""
 
 # Local imports
 from gmprocess.metrics.exception import PGMException

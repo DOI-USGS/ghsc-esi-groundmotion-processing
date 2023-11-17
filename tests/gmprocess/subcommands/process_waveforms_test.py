@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import os
 import shutil
@@ -50,7 +47,3 @@ def test_process_waveforms(script_runner):
             dst = os.path.join(ddir, event, "workspace.h5")
             src = os.path.join(ddir, event, "_workspace.h5")
             shutil.move(src, dst)
-
-
-if __name__ == "__main__":
-    test_process_waveforms()

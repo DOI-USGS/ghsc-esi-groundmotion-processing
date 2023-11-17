@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Null_Transform class."""
 
 # Local imports
 from gmprocess.metrics.transform.transform import Transform

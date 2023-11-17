@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os.path
 import numpy as np
 from numpy.testing import assert_allclose
@@ -25,8 +23,3 @@ def test():
     single_maxes = np.sort([np.max(tr.data) for tr in psc[0]])
     alldates_maxes = np.sort([np.max(tr.data) for tr in psc_ad[0]])
     assert_allclose(single_maxes, alldates_maxes)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test()

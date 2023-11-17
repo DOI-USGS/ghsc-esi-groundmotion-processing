@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
-
 # third party imports
 import numpy as np
 
@@ -26,8 +22,3 @@ def test_channels():
     np.testing.assert_almost_equal(wm.value("H2"), 81.23467239067368)
     np.testing.assert_almost_equal(wm.value("H1"), 99.24999872535474)
     np.testing.assert_almost_equal(wm.value("Z"), 183.7722361866693)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_channels()

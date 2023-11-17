@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # stdlib imports
-import os
 import json
 
 
@@ -87,8 +83,3 @@ def test_merge_dicts():
     dump_expected = json.dumps(result_expected, sort_keys=True)
     dump_result = json.dumps(test_result, sort_keys=True)
     assert dump_expected == dump_result
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_merge_dicts()

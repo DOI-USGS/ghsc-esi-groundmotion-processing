@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Rotd class."""
 
 # Local imports
 from gmprocess.metrics.rotation.rotation import Rotation

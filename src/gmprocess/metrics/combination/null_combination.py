@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Null_Combination class."""
 
 # Local imports
 from gmprocess.metrics.combination.combination import Combination

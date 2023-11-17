@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os.path
 import numpy as np
 from gmprocess.io.esm.core import is_esm, read_esm
@@ -45,8 +43,3 @@ def test():
     except Exception:
         success = False
     assert not success
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test()

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # third party imports
 import numpy as np
 
@@ -35,7 +32,3 @@ def test_gather():
     assert len(imcs) == len(target_imcs)
     np.testing.assert_array_equal(np.sort(imts), np.sort(target_imts))
     np.testing.assert_array_equal(np.sort(imcs), np.sort(target_imcs))
-
-
-if __name__ == "__main__":
-    test_gather()

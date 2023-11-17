@@ -1,6 +1,3 @@
-#!/usr/bin/env pytest
-import os
-
 from gmprocess.io.asdf import path_utils
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
@@ -28,8 +25,3 @@ def test_path_utils():
     assert trace_name == "NZ.HSES.--.HN1_us1000778i_ptest"
     assert stream_path == "NZ.HSES/NZ.HSES.--.HN_us1000778i_ptest"
     assert stream_name == "NZ.HSES.--.HN_us1000778i_ptest"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_path_utils()

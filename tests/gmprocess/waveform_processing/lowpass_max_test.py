@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 import numpy as np
 from obspy import UTCDateTime
 
@@ -74,8 +69,3 @@ def test_lowpass_max():
         for tr in st:
             freq_dict = tr.get_parameter("corner_frequencies")
             np.testing.assert_allclose(freq_dict["lowpass"], 18.0)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_lowpass_max()

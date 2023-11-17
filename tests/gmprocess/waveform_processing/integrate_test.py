@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.read import read_data
@@ -139,10 +135,3 @@ def test_integrate_taper():
     )
 
     np.testing.assert_allclose(final_vel, target_final_vel, atol=1e-6)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_get_disp()
-    test_get_vel()
-    test_integrate_taper()

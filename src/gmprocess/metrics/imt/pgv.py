@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the PGV class."""
 
 # Local imports
 from gmprocess.metrics.imt.imt import IMT

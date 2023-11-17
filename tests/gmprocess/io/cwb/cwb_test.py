@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # stdlib imports
 import os
 import tempfile
@@ -94,8 +92,3 @@ def test():
     assert str(metadata["format_specific"]["dc_offset_z"]) == "nan"
     assert str(metadata["format_specific"]["dc_offset_h2"]) == "nan"
     assert str(metadata["format_specific"]["dc_offset_h1"]) == "nan"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test()

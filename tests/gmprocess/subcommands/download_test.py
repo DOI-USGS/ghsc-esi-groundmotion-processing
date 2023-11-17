@@ -1,11 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import os
 import shutil
 from pathlib import Path
-import pytest
 
 from gmprocess.utils import constants
 from gmprocess.utils.test_utils import vcr
@@ -151,10 +147,3 @@ def _test_download_provider_url_bounds(script_runner):
         shutil.rmtree(constants.CONFIG_PATH_TEST)
         del os.environ["TEST_SPECIFIC_CONF"]
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
-
-
-if __name__ == "__main__":
-    _test_download()
-    _test_download_single_provider()
-    _test_download_provider_url()
-    _test_download_provider_url_bounds()

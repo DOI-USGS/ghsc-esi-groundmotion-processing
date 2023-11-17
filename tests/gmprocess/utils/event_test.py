@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 import vcr
 from obspy.core.event import read_events
 from obspy.core.event.event import Event
@@ -105,9 +100,3 @@ def test_event():
         assert event.latitude == tdict["lat"]
         assert event.longitude == tdict["lon"]
         assert event.depth_km == tdict["depth"]
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_scalar()
-    test_event()

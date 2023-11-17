@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for download unility functions."""
 
 # stdlib imports
 import glob

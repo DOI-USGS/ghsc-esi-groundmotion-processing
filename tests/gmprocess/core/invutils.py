@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for inventory utility functions."""
 
 from obspy.core.inventory import Inventory, Network, Station, Channel, Site
 from obspy.core.utcdatetime import UTCDateTime

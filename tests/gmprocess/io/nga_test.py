@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 from gmprocess.io.read import read_data
 from gmprocess.io.nga import get_nga_record_sequence_no
@@ -20,8 +16,3 @@ def test_get_nga_record_sequence_no():
 
     # Test when multiple records are found
     assert np.isnan(get_nga_record_sequence_no(st, "Northridge-01", 10000))
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_get_nga_record_sequence_no()

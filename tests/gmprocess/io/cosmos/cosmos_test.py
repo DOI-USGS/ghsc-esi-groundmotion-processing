@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import numpy as np
 from gmprocess.io.cosmos.core import is_cosmos, read_cosmos
@@ -144,11 +142,3 @@ def test_orientation_relative():
     trace = streams[0][0]
     assert trace.stats.channel == "HN2"
     assert streams[0][0].stats.standard.horizontal_orientation == 90.0
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_orientation_relative()
-    test_v0()
-    test_cosmos()
-    test_channel_in_filename()

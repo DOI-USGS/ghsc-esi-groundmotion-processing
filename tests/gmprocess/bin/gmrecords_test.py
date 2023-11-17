@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
-import os
 import shutil
 
 from gmprocess.utils import constants
@@ -25,8 +21,3 @@ def test_gmrecords(script_runner):
         raise ex
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_gmrecords()

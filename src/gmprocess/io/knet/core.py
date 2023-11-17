@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for NIED/KNET reader."""
 
 # stdlib imports
 from datetime import datetime, timedelta

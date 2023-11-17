@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for oscillator class."""
 
 from obspy.core.trace import Trace
 
@@ -115,17 +114,16 @@ def get_spectral(period, stream, damping=0.05, times=None, config=None):
         else:
             rotated_data = stream.get_stream_param("rotated")
 
-        for idx in range(len(rotated_data)):
-            rot_matrix = rotated_data[idx]
+        for rot_matrix in rotated_data:
             rotated_spectrals = []
             # This is the loop over rotation angles
-            for idy in range(0, len(rot_matrix)):
+            for rot_data in rot_matrix:
                 stats = {
-                    "npts": len(rot_matrix[idy]),
+                    "npts": len(rot_data),
                     "delta": dt,
                     "sampling_rate": 1.0 / dt,
                 }
-                new_trace = Trace(data=rot_matrix[idy], header=stats)
+                new_trace = Trace(data=rot_data, header=stats)
                 sa_list = new_and_improved_calculate_spectrals(
                     new_trace, period, damping
                 )
@@ -140,10 +138,9 @@ def get_spectral(period, stream, damping=0.05, times=None, config=None):
     else:
         traces = []
         # For anything but ROTD and GMROTD
-        for idx in range(len(stream)):
-            trace = stream[idx]
+        for trace in stream:
             if use_upsampled:
-                trace_dict = stream[idx].get_cached("upsampled")
+                trace_dict = trace.get_cached("upsampled")
                 stats = {
                     "npts": trace_dict["np"],
                     "delta": dt,

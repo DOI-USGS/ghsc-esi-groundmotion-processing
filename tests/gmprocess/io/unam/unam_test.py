@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import os
 import numpy as np
 
 from gmprocess.io.unam.core import is_unam, read_unam
@@ -63,10 +60,3 @@ def test_read_data():
 
     # this is a smoke test to make sure the appropriate reader is found...
     read_data(datafiles[0])
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_read_data()
-    test_unam()
-    test_read_past_midnight()

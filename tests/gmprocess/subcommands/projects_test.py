@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import shutil
 
@@ -67,7 +64,3 @@ def test_projects(script_runner):
         raise ex
     finally:
         shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    test_projects()

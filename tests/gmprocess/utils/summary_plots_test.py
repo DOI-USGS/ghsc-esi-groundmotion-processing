@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # stdlib imports
 import tempfile
 import shutil
@@ -24,8 +21,3 @@ def test_summary_plots():
         raise e
     finally:
         shutil.rmtree(tdir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_summary_plots()

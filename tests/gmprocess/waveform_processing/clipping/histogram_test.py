@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import numpy as np
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
@@ -43,8 +40,3 @@ def test_all_num_clip_intervals():
         num_clip_intervals,
         np.array([[0, 0, 0], [0, 1, 1], [1, 2, 2], [1, 1, 0], [1, 1, 1], [0, 0, 1]]),
     )
-
-
-if __name__ == "__main__":
-    test_num_clip_intervals()
-    test_all_num_clip_intervals()

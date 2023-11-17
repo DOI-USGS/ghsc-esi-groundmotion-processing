@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Combination base class."""
 
 # Third party imports
 from obspy.core.stream import Stream

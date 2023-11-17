@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the WaveformMetric class."""
 
 from abc import ABC, abstractmethod
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for Renadic reader."""
 
 # stdlib imports
 import os.path

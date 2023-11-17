@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import shutil
 import pathlib
@@ -63,7 +60,3 @@ def test_import(script_runner):
         events = ["us6000e2mt", "nn00725272"]
         for eid in events:
             shutil.rmtree(str(ddir / eid), ignore_errors=True)
-
-
-if __name__ == "__main__":
-    test_import()

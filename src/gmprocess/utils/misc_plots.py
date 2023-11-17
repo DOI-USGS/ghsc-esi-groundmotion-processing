@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""Module for miscenaleous convenience plotting functions not used by summary plots.
-"""
+"""Module for miscenaleous convenience plotting functions not used by summary plots."""
 
 import copy
 import datetime

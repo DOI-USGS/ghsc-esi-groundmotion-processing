@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for miscellaneous utility functions."""
+
 from pathlib import Path
 
 

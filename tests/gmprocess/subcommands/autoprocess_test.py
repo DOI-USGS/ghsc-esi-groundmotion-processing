@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import os
 import shutil
@@ -54,8 +51,3 @@ def test_autoprocess(script_runner):
             for file in files:
                 if any(file.endswith(ext) for ext in pattern):
                     os.remove(os.path.join(root, file))
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_autoprocess()

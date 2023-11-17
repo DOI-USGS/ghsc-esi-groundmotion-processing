@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # stdlib imports
 import os.path
 import tempfile
@@ -71,10 +68,3 @@ def test_plot_oscillators():
         raise e
     finally:
         shutil.rmtree(tdir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_regression()
-    test_plot()
-    test_plot_oscillators()

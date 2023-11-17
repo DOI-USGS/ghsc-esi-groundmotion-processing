@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """Module for implementing the Artificial Neural Net model for clipping, as
 developed by Kleckner et al. This code is based on Xavier Bellagamba's python
 NN implementation of "A neural network for automated quality screening of
