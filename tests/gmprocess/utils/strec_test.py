@@ -18,15 +18,8 @@ def setup_event():
     lon = 97.048
     depth = 31.0
     mag = 7.8
-    mag_type = "Mwc"
 
-    event = ScalarEvent()
-    origin = Origin(
-        resource_id=eid, time=time, latitude=lat, longitude=lon, depth=depth * 1000
-    )
-    magnitude = Magnitude(mag=mag, magnitude_type=mag_type)
-    event.origins = [origin]
-    event.magnitudes = [magnitude]
+    event = ScalarEvent.from_params(eid, time, lat, lon, depth * 1000, mag)
     return event
 
 

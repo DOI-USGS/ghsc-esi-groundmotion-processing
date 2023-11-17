@@ -22,8 +22,6 @@ interactions:
       - '*'
       Access-Control-Allow-Origin:
       - '*'
-      Age:
-      - '56'
       Cache-Control:
       - public, max-age=60
       Connection:
@@ -33,11 +31,11 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Sat, 11 Nov 2023 18:37:08 GMT
+      - Fri, 17 Nov 2023 03:03:12 GMT
       Expires:
-      - Sat, 11 Nov 2023 18:38:08 GMT
+      - Fri, 17 Nov 2023 03:04:12 GMT
       Last-Modified:
-      - Sat, 11 Nov 2023 18:37:08 GMT
+      - Fri, 17 Nov 2023 03:03:12 GMT
       Location:
       - /fdsnws/event/1/query?eventid=usp000hat0&format=geojson
       Server:
@@ -45,13 +43,13 @@ interactions:
       Strict-Transport-Security:
       - max-age=31536000
       Via:
-      - 1.1 12a3cbbfe51b5d36a65ff41580c6f8a8.cloudfront.net (CloudFront)
+      - 1.1 19ddf438fe04054012d54d8d5d4a740a.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - 61luv_vAUZC8CrwoHxFtlLfpqpV59M9QUqyVc2sOoK9dpg3lbIScGw==
+      - rzzQb_ZNvPpVttzacQmvZriTGcqVOKKr1VMpD6kWG0gkCURQipXrew==
       X-Amz-Cf-Pop:
-      - ORD56-P2
+      - YTO50-C3
       X-Cache:
-      - Hit from cloudfront
+      - Miss from cloudfront
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -139,8 +137,6 @@ interactions:
       - '*'
       Access-Control-Max-Age:
       - '86400'
-      Age:
-      - '55'
       Cache-Control:
       - public, max-age=60
       Connection:
@@ -148,11 +144,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Sat, 11 Nov 2023 18:37:09 GMT
+      - Fri, 17 Nov 2023 03:03:13 GMT
       Expires:
-      - Sat, 11 Nov 2023 18:38:08 GMT
+      - Fri, 17 Nov 2023 03:04:13 GMT
       Last-Modified:
-      - Sat, 11 Nov 2023 18:37:08 GMT
+      - Fri, 17 Nov 2023 03:03:13 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -162,13 +158,13 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 d8defd690c445023198cdbef1992d5f4.cloudfront.net (CloudFront)
+      - 1.1 5a013b4ab55713f92a97f8f6e5bb3caa.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - XtaQTLqn_E9ZVh0TQnu_4YGBIRJCbX68CH6GAMqj5YV0w6e8U6Wxvw==
+      - tb2A6kwmxsbsUtJXzXcHSttHik9JpZRKJOs8TNjbS2Z2xDq61bqKPw==
       X-Amz-Cf-Pop:
-      - ORD56-P2
+      - YTO50-C3
       X-Cache:
-      - Hit from cloudfront
+      - Miss from cloudfront
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:

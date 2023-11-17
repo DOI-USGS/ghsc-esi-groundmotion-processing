@@ -102,11 +102,13 @@ Please post any questions or issues that you have regarding the config to the Gi
 ## The "fetchers" section
 
 The `download` subcommand will look for data from providers configured in the `fetchers` section of the config file.
-The subsections correspond to different data retrieval methods, such as the International Federation of Digital Seismograph Networks ([FDSN](https://www.fdsn.org/)). 
+Three of the subsections correspond to different data retrieval methods, such as the International Federation of Digital Seismograph Networks ([FDSN](https://www.fdsn.org/)). 
 The options are:
   1. `FDSNFetcher` for getting data from FDSN services,
   2. `CESMDFetcher` for getting data from the Center for Engineering Strong Motion Data ([CESMD](https://www.strongmotioncenter.org/aboutcesmd.html)), and
   3. `KNETFetcher` for getting data from the [K-NET and KiK-net](https://www.kyoshin.bosai.go.jp/kyoshin/docs/overview_kyoshin_index_en.html) strong-motion seismograph networks in Japan. 
+
+There is also a section that allows search parameters to be computed based on the magnitude and location of the earthquake called `search_parameters`.
 
 Note that each section can be enabled/disabled with the `enabled` key.
 Thus, if you know that you don't need data from FDSN services, this part of the config would look like
@@ -116,6 +118,36 @@ fetchers:
     FDSNFetcher:
         enabled: False
 ```
+
+### search_parameters
+
+In this section you can configure updates to the search radius and duration of the waveform queries that are based on the magnitude and location of the earthquake.
+If this section is enabled, the corresponding static search parameters that are specified in the data fetchers sections will be overwritten by the values computed as configured in this section.
+
+The following is an example of how this section can be configued and includes comments to explain the parameters:
+
+```yaml
+    search_parameters:
+        enabled: True
+        duration:
+            # Duration is computed as c0 + c1 * magnitude, in minutes.
+            c0: 0.0
+            c1: 0.5
+        distance:
+            # The search radius uses a ground motion model, as specified in the 
+            # 'gmm_selection' section. If STREC is enabled, it will select the model
+            # based on the tectonic environment of the epicenter and otherwise use the
+            # StableShallow GMM.
+            # The distance will be the the distance at which the threshold PGA (in g) is
+            # exceeded based on the GMM.
+            pga: 0.01
+            # The maximum distance (in km) that can be returned.
+            max_distance: 800.0
+            # NOTE: the GMM is evaluated with a number of simplifications, including 
+            # Ztor=0 and dip=90 deg such that the 'distance' is both Rrup and Rjb. See 
+            # the dynamic_searc_parameters.py module for further details. 
+```
+
 
 ### FDSNFetcher
 
@@ -317,6 +349,22 @@ metrics:
   duration:
       intervals: [5-75, 5-95]
 
+```
+
+## The "gmm_selection" section
+
+This section is ground motion model selection given the tectonic region. 
+Model abbreviaitons are defined in modules.yml
+
+```yaml
+gmm_selection:
+    ActiveShallow: Bea14
+    ActiveDeep: Ask14
+    VolcanicShallow: Atk10
+    SubductionIntraslab: Pea20slab
+    SubductionInterface: Pea20inter
+    SubductionCrustal: Ask14
+    StableShallow: AB06
 ```
 
 ## The "integration" section 

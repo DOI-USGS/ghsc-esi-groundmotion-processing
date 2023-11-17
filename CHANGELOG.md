@@ -10,6 +10,7 @@
 - Restrict NCEDC provider bounds.
 - Documentation
   - Add STREC configuration to initial setup instructions
+  - Add search_parameters parameters to config section of the manual.
 - Bugfixes
   - Add STREC configuration to .gitlab-ci.yml
   - Add missing DIMENSION_UNITS in constants module.

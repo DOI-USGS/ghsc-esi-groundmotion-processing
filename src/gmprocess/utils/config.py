@@ -21,7 +21,7 @@ CONF_SCHEMA = Schema(
                     "c0": float,
                     "c1": float,
                 },
-                "distance": {"pga": float},
+                "distance": {"pga": float, "max_distance": float},
             },
             "KNETFetcher": {
                 "user": str,

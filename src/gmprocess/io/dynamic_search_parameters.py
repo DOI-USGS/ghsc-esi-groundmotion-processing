@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 
 from openquake.hazardlib.imt import PGA
 
-from gmprocess.utils.models import load_model
+from gmprocess.utils.ground_motion_models import load_model
 
 REGION_PROB_KEYS = {
     "ActiveShallow": "ProbabilityActiveShallow",
@@ -28,9 +28,6 @@ Z2PT5 = 200.0  # meters
 ZTOR = 0.0
 DIP = 90.0
 HYPO_DEPTH = 2.0
-
-# Largest distance to use in grid search
-DIST_MAX = 500
 
 
 class SearchParameters(object):
@@ -110,7 +107,7 @@ class SearchParameters(object):
         ctx["rake"] = RAKE
         width_wc94 = 10 ** (-1.01 + 0.32 * self.magnitude)
         ctx["width"] = width_wc94
-        distance = np.logspace(1, np.log10(DIST_MAX), npts)
+        distance = np.logspace(1, np.log10(dpars["max_distance"]), npts)
         ctx["rrup"] = distance
         ctx["rjb"] = distance
         ctx["rx"] = distance

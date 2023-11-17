@@ -24,7 +24,7 @@ from gmprocess.waveform_processing.phase import (
 )
 from gmprocess.utils.config import get_config
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.utils.models import load_model
+from gmprocess.utils.ground_motion_models import load_model
 from gmprocess.waveform_processing.processing_step import processing_step
 
 M_TO_KM = 1.0 / 1000
