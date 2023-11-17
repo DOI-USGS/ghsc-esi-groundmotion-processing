@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Utility module for handling stream paths for the HDF file
 
 This is used in a few different places, which is why it is useful to break it out

@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for filtering functions."""
 
 from gmprocess.waveform_processing.processing_step import processing_step
 

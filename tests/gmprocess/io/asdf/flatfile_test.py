@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-
-import os
-
 import numpy as np
 
 from gmprocess.utils import constants
@@ -52,8 +48,3 @@ def test_flatfile():
     rot50_table = imc_tables["ROTD50.0"]
     target_sa = np.array([53.144627, 17.922639, 41.612646])
     np.testing.assert_allclose(rot50_table["SA(1.000)"], target_sa)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_flatfile()

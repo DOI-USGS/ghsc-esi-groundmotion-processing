@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-Processing methods.
-"""
+"""Module with the 'driver' function for calling processing methods."""
 
 import logging
 from obspy.taup import TauPyModel
@@ -110,8 +105,7 @@ def process_streams(streams, event, config=None, old_streams=None):
         # Check if we are reprocessing (indicated by presence of old_streams)
         if old_streams is not None:
             old_stream = old_streams[i]
-            for j in range(len(old_stream)):
-                tr_old = old_stream[j]
+            for j, tr_old in enumerate(old_stream):
                 # Check if old_streams have review parameters because it is not
                 # guaranteed
                 if tr_old.has_parameter("review"):

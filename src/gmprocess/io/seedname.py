@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for handling SEE names."""
 
 
 def get_channel_name(

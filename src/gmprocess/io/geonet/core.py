@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for Geonet reader."""
 
 # stdlib imports
 import os

@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-import os
 import math
 import pandas as pd
 
@@ -44,8 +40,3 @@ def test_set_precisions():
     assert row1["EarthquakeDepth"] == "3.14"
     assert row1["EpicentralDistance"] == "3.14"
     assert row1["RuptureDistance"] == "3.14"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_set_precisions()

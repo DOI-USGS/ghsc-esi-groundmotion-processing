@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 from gmprocess.io.seedname import get_channel_name, is_channel_north
 
 
@@ -55,9 +51,3 @@ def test_north():
     assert not is_channel_north(45)
     assert not is_channel_north(314)
     assert not is_channel_north(134)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_channel()
-    test_north()

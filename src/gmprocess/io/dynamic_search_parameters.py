@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Module for computing dynamic search parameters for an earthquake."""
 
 import numpy as np

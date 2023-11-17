@@ -8,6 +8,7 @@
 - Move STREC download to occur in "download" subcommand; results are stored in "strec_results.json" in event directory.
 - Add optional search parameters to be based on magnitude for duration and PGA threshold for distance.
 - Restrict NCEDC provider bounds.
+- Remove unnecessary hasbangs and `__name__ == "__main__"` blocks.
 - Documentation
   - Add STREC configuration to initial setup instructions
   - Add search_parameters parameters to config section of the manual.

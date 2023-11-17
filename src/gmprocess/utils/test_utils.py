@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for utilities related to unit tests."""
 
 import os.path
 import glob

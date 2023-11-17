@@ -1,8 +1,5 @@
-#!/usr/bin/env python
-
 # stdlib imports
 import shutil
-import sys
 import tempfile
 import time
 from io import StringIO
@@ -201,23 +198,3 @@ def test_cosmos_writer(datafile=None):
         raise (e)
     finally:
         shutil.rmtree(tempdir)
-
-
-if __name__ == "__main__":
-    datafile = None
-    if len(sys.argv) > 1:
-        datafile = sys.argv[1]
-    print("Testing text header...")
-    test_text_header()
-
-    print("Testing int header...")
-    test_int_header()
-
-    print("Testing float header...")
-    test_float_header()
-
-    print("Testing data block...")
-    test_data_block()
-
-    print("Testing cosmos writer...")
-    test_cosmos_writer(datafile)

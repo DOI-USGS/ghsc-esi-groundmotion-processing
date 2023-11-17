@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for processing steps related to corner frequencies."""
 
 """
 Methods for handling/picking corner frequencies.

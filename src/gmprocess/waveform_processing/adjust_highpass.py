@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the adjust_highpass_corner processing step."""
 
 import numpy as np
 

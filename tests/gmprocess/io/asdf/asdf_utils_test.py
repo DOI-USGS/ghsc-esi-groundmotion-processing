@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 import tempfile
 import shutil
@@ -129,8 +126,3 @@ def test_storage():
     h5.close()
     shutil.rmtree(tdir, ignore_errors=True)
     return
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_storage()

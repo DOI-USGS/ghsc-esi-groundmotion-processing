@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for COSMOS reader."""
 
 # stdlib imports
 import logging

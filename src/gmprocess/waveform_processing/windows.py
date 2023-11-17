@@ -1,9 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Helper functions for windowing singal and noise in a trace."""
 
-"""
-Helper functions for windowing singal and noise in a trace.
-"""
 import logging
 
 import numpy as np

@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import numpy as np
-from scipy.integrate import cumtrapz
+"""Module for integration functions."""
 
 
 def get_disp(tr, config=None):

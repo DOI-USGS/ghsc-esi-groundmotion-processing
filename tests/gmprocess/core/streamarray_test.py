@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 from gmprocess.io.read_directory import directory_to_streams
 from gmprocess.utils.logging import setup_logger
 from gmprocess.utils.constants import TEST_DATA_DIR
@@ -41,8 +36,3 @@ def test_StreamArray():
 
     # Has 3 streams
     assert len(dmg_sa) == 3
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_StreamArray()

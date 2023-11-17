@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for UNAM reader."""
 
 # stdlib imports
 import os

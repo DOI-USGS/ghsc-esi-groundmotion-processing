@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for GenerateReportModule class."""
 
 import logging
 import shutil
@@ -119,12 +118,16 @@ class GenerateReportModule(base.SubcommandModule):
             if not len(streams):
                 logging.info("No matching streams found. Cannot generate report.")
                 return
-            streams_raw = self.workspace.get_streams(
-                event.id,
-                stations=[station_id],
-                labels=["unprocessed"],
-                config=config,
-            ) if "unprocessed" in self.workspace.get_labels() else None
+            streams_raw = (
+                self.workspace.get_streams(
+                    event.id,
+                    stations=[station_id],
+                    labels=["unprocessed"],
+                    config=config,
+                )
+                if "unprocessed" in self.workspace.get_labels()
+                else None
+            )
 
             for stream, stream_raw in zip(streams, streams_raw):
                 pstreams.append(stream)
@@ -139,7 +142,9 @@ class GenerateReportModule(base.SubcommandModule):
                     )
                     futures.append(future)
                 else:
-                    results.append(_summary_plot(stream, stream_raw, plot_dir, event, config))
+                    results.append(
+                        _summary_plot(stream, stream_raw, plot_dir, event, config)
+                    )
 
         if self.gmrecords.args.num_processes:
             # Collect the results??

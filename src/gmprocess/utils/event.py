@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the ScalarEvent class."""
 
 import logging
 from json.decoder import JSONDecodeError

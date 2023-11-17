@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Null_Rotation class."""
 
 # Local imports
 from gmprocess.metrics.rotation.rotation import Rotation

@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+"""Module for adding rupture to ASDF file."""
 import json
 
 from esi_utils_rupture.point_rupture import PointRupture
@@ -10,11 +9,11 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 origin = LazyLoader("rupt", globals(), "esi_utils_rupture.origin")
 
+
 class Rupture(object):
     """Class for populating the cells and vertices from the rupture in the ASDF file."""
 
     def __init__(self, vertices, cells, description, reference):
-
         self.vertices = vertices
         self.cells = cells
         self.description = description
@@ -37,7 +36,7 @@ class Rupture(object):
             List of lists, inner lists are the x,y,z for each vertex
             in the rupture model.
         cells: 2D list
-            List of lists, inner lists contain the indices corresponding 
+            List of lists, inner lists contain the indices corresponding
             to the vertices that build a given cell in the rupture model.
         description: str
             Description of model.
@@ -46,7 +45,7 @@ class Rupture(object):
         """
 
         def find_point_coordinate(coordinate):
-            """Recursive function that identifies list of x,y,z defining the coordinate 
+            """Recursive function that identifies list of x,y,z defining the coordinate
                for a point rupture.
 
             Parameters
@@ -63,7 +62,7 @@ class Rupture(object):
             ------
             Exception
                 This exception tries to catch the possible case that "coordinate"
-                is never a list of length 3, meaning the coordinate is not in an 
+                is never a list of length 3, meaning the coordinate is not in an
                 expected format.
             """
             if len(coordinate) == 3:
@@ -73,7 +72,9 @@ class Rupture(object):
                     coordinate = coordinate[0]
                     coordinate = find_point_coordinate(coordinate)
                 except:
-                    raise Exception("Could not identify a list of [x, y, z] for point rupture coordinate in rupture.json")
+                    raise Exception(
+                        "Could not identify a list of [x, y, z] for point rupture coordinate in rupture.json"
+                    )
 
         vertices = []
         cells = []
@@ -110,13 +111,13 @@ class Rupture(object):
 
         f = open(rupture_file)
         rupture_json = json.load(f)
-        reference = rupture_json['metadata']['reference']
-        description = reference     # for now
+        reference = rupture_json["metadata"]["reference"]
+        description = reference  # for now
 
         rupture = get_rupture(origin_obj, file=rupture_file)
 
         if isinstance(rupture, PointRupture):
-            coordinate = rupture_json['features'][0]['geometry']['coordinates']
+            coordinate = rupture_json["features"][0]["geometry"]["coordinates"]
             coordinate = find_point_coordinate(coordinate)
 
             vertices.append([coordinate[0], coordinate[1], coordinate[2]])
@@ -137,17 +138,17 @@ class Rupture(object):
 
 # gmprocess currently doesn't support having the finite fault rupture, so we are not implementing just yet
 
-    # @classmethod
-    # def from_finite_fault(cls, event, rupture_file):
+# @classmethod
+# def from_finite_fault(cls, event, rupture_file):
 
-    #     vertices = []
-    #     cells = []
+#     vertices = []
+#     cells = []
 
-    #     return cls(vertices, cells)
+#     return cls(vertices, cells)
 
 # "to" methods to be populated later
 
-    # def to_shakemap(self):
-    #     rupture_file = ""
+# def to_shakemap(self):
+#     rupture_file = ""
 
-    #     return rupture_file
+#     return rupture_file

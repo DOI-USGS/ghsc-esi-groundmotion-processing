@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Greater_Of_Two_Horizontals class."""
 
 from gmprocess.metrics.combination.combination import Combination
 import numpy as np

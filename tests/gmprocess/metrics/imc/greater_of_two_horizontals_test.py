@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
-
 # third party imports
 import numpy as np
 
@@ -26,8 +22,3 @@ def test_greater_of_two_horizontals():
     np.testing.assert_almost_equal(
         wm.value("GREATER_OF_TWO_HORIZONTALS"), 99.24999872535474
     )
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_greater_of_two_horizontals()

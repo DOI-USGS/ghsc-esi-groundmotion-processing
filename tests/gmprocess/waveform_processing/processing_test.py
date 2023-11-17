@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import logging
 
 import numpy as np
@@ -97,9 +93,3 @@ def test_check_instrument():
         st = test.select(station=sta)[0]
         logging.info(f"Testing stream: {st}")
         assert st.passed == expected
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_process_streams()
-    test_free_field()

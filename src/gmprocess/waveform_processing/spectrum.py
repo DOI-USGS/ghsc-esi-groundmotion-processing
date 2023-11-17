@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-This module is for computation of theoretical amplitude spectrum methods.
-"""
+"""Module for computation of theoretical amplitude spectrum methods."""
 
 import numpy as np
 from scipy.optimize import minimize

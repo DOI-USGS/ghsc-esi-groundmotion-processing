@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Radial_Transverse class."""
 
 # Third party imports
 import numpy as np

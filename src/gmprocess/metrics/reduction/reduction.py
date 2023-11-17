@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Reduction base class."""
+
 from gmprocess.utils.config import get_config
 
 

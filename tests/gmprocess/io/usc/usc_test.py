@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # stdlb imports
 import os
 
@@ -118,8 +116,3 @@ def test_usc():
     except Exception:
         success = False
     assert success is False
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_usc()

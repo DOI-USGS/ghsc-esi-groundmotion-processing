@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # third party imports
 import numpy as np
 
@@ -32,7 +29,3 @@ def test_geometric_mean():
     except BaseException:
         failed = True
     assert failed == True
-
-
-if __name__ == "__main__":
-    test_geometric_mean()

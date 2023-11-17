@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 from gmprocess.metrics import waveform_metric
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
 
@@ -23,8 +19,3 @@ def test_waveform_metrics_xml():
     assert wml.metric_list[0].values["H1"] == 0.71
     assert wml.metric_list[1].type == "PGA"
     assert wml.metric_list[1].values["Z"] == 0.23
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_waveform_metrics_xml()

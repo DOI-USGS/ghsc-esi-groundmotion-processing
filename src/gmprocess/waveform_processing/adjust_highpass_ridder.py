@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the ridder_fchp processign step."""
 
 import inspect
 from esi_core.gmprocess.waveform_processing.auto_fchp import get_fchp

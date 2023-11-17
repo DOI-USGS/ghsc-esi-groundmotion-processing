@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for ConfigModule class."""
 
 import logging
 from pathlib import Path

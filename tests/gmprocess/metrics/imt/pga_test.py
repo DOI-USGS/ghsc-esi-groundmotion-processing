@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# stdlib imports
-import warnings
-import os
-
 # third party imports
 import numpy as np
 
@@ -59,8 +52,3 @@ def test_pga():
     np.testing.assert_allclose(wm.value("GMROTD(50.0)"), 86.758642638162982)
     np.testing.assert_allclose(wm.value("GMROTD(100.0)"), 89.791654017670112)
     np.testing.assert_allclose(wm.value("ROTD(50.0)"), 91.401785419354567)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_pga()

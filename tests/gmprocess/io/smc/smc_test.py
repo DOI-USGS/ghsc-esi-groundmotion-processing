@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # stdlib imports
 import os
 from collections import OrderedDict
@@ -73,9 +71,3 @@ def test_bad():
         if "nonsensical" not in msg:
             fmt = 'SMC read errored out for unexpected reason "%s"'
             raise AssertionError(fmt % msg)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_bad()
-    test_smc()

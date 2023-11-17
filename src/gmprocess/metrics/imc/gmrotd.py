@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the GMROTD class."""
 
 from gmprocess.metrics.imc.imc import IMC
 

@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""Module for creating stream summary plots.
-"""
+"""Module for creating stream summary plots."""
 
 import os
 from pathlib import Path

@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
-
-import numpy as np
-
 from gmprocess.io.read import read_data
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.constants import TEST_DATA_DIR
@@ -33,8 +27,3 @@ def test_sorted_duration():
     wm = wmc.waveform_metrics[0].metric_list[0]
 
     assert wm.__repr__() == "SortedDuration: CHANNELS=36.805"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_sorted_duration()

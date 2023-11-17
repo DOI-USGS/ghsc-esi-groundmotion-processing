@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils import constants
@@ -25,8 +20,3 @@ def test_waveform_metric_collection():
     config["metrics"]["output_imts"] = ["SA"]
     wmc2 = WaveformMetricCollection.from_streams(streams, event, config)
     assert wmc2.__repr__() == "WaveformMetricCollection: 2 stations"
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_waveform_metric_collection()

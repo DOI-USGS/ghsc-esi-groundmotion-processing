@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the ping test for clipping detection."""
 
 import numpy as np
 from gmprocess.waveform_processing.clipping.clip_detection import ClipDetection

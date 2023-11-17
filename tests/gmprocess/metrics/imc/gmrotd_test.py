@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 
 # third party imports
@@ -45,9 +42,3 @@ def test_exceptions():
         stream1.append(trace)
     wmc = WaveformMetricCollection.from_streams([stream1], event, config)
     assert np.isnan(wm.value("GMROTD(50.0)"))
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_gmrotd()
-    test_exceptions()

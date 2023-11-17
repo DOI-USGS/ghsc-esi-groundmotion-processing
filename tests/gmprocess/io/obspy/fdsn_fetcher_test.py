@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import pytest
 import os
 from datetime import datetime
@@ -51,8 +49,3 @@ def skip_test_fetcher():
     finally:
         if os.path.exists(rawdir):
             shutil.rmtree(rawdir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    skip_test_fetcher()

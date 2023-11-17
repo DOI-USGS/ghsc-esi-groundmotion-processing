@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for obspy reader."""
 
 # stdlib imports
 import glob

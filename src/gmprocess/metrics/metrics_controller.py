@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the MetricsController class."""
 
 # Std library imports
 from collections import OrderedDict

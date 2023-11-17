@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the SA class."""
 
 # Local imports
 from gmprocess.metrics.imt.imt import IMT

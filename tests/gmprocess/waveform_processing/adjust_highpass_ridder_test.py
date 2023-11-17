@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.read import read_data
@@ -49,8 +45,3 @@ def test_auto_fchp():
     )
 
     np.testing.assert_allclose(output_fchp, target_fchp, atol=1e-7)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_auto_fchp()

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 import pickle
 import pathlib
@@ -121,9 +118,3 @@ def test_filters():
             target_dict[filter_type + "_time"],
             atol=1e-7,
         )
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_trace()
-    test_filters()

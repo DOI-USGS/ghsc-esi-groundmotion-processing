@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os.path
 import numpy as np
 from gmprocess.io.knet.core import is_knet, read_knet
@@ -66,8 +64,3 @@ def test():
     np.testing.assert_almost_equal(ewmax, 5.020, decimal=1)
     np.testing.assert_almost_equal(nsmax, 10.749, decimal=1)
     np.testing.assert_almost_equal(udmax, 9.111, decimal=1)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test()

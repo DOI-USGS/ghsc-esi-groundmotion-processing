@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for command line argument helper functions."""
 
 import importlib.metadata
 

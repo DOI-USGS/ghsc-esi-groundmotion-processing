@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
-
 import numpy as np
 import pandas as pd
 
@@ -363,11 +359,3 @@ def test_end_to_end():
         assert len(df) == 1
 
         np.testing.assert_array_almost_equal(df["Result"], value, decimal=10)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_get_channel_dict()
-    test_controller()
-    test_exceptions()
-    test_end_to_end()

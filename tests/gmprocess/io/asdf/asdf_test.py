@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 import shutil
 import tempfile
@@ -44,8 +41,3 @@ def test_asdf():
         raise (e)
     finally:
         shutil.rmtree(tdir, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_asdf()

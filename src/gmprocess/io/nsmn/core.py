@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for NSMN reader."""
 
 # stdlib imports
 import os

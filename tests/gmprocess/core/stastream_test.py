@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import numpy as np
 from obspy.core.utcdatetime import UTCDateTime
 from obspy.core.trace import Trace
@@ -95,8 +92,3 @@ def test_num_horizontals():
     for tr in st:
         tr.stats.channel = "EN1"
     assert st.num_horizontal == 3
-
-
-if __name__ == "__main__":
-    test_uneven_stream()
-    test_stream()

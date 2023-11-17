@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import os.path
 from gmprocess.io.obspy.core import read_obspy
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.core.streamcollection import StreamCollection
@@ -190,11 +187,3 @@ def test():
     # get all channel names
     channels = sorted([st[0].stats.channel for st in streams])
     assert channels == ["HN2", "HN3", "HNZ"]
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_sac_csn()
-    test_channel_exclusion()
-    test_weird_sensitivity()
-    test()

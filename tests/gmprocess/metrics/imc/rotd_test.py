@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import os
 
 import numpy as np
@@ -144,9 +142,3 @@ def test_exceptions():
     wmc = WaveformMetricCollection.from_streams([stream1], event, config)
     wm = wmc.waveform_metrics[0].metric_list[0]
     assert np.isnan(wm.value("ROTD(50.0)"))
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_rotd()
-    test_exceptions()

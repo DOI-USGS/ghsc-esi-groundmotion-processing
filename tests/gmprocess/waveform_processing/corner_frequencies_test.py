@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 import numpy as np
 
 from gmprocess.core.streamcollection import StreamCollection
@@ -160,9 +155,3 @@ def test_corner_frequencies_magnitude():
             cfdict = stream[0].get_parameter("corner_frequencies")
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_corner_frequencies()
-    test_corner_frequencies_magnitude()

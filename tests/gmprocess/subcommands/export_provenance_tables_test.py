@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import io
 import os
 import shutil
@@ -41,7 +38,3 @@ def test_export_provenance_tables(script_runner):
             for file in files:
                 if pattern in file:
                     os.remove(os.path.join(root, file))
-
-
-if __name__ == "__main__":
-    test_export_provenance_tables()

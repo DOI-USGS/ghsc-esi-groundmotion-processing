@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 import numpy as np
 import pandas as pd
 from gmprocess.core.stationtrace import StationTrace
@@ -202,13 +197,3 @@ def test_get_travel_time_df():
                 ].time
                 abs_time = event.time + travel_time
                 np.testing.assert_almost_equal(abs_time, time, decimal=1)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_all_pickers()
-    test_pphase_picker()
-    test_p_pick()
-    test_travel_time()
-    test_get_travel_time_df()
-    test_baer()

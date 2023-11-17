@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Geometric_Mean class."""
 
 # Local imports
 from gmprocess.metrics.imc.imc import IMC

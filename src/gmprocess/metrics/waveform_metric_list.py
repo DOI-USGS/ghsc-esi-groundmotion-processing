@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""Module for the WaveormMetricList class"""
+"""Module for the WaveormMetricList class."""
 
 
 import re

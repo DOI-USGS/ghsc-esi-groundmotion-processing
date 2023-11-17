@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for Integrate class."""
 
 # Local imports
 from gmprocess.metrics.transform.transform import Transform

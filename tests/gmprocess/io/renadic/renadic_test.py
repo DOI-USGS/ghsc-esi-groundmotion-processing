@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import numpy as np
 
@@ -34,8 +32,3 @@ def test_renadic():
         pga3 = np.abs(stream[2].max())
         tpl = np.array((pga1, pga2, pga3)) / 980
         np.testing.assert_almost_equal(cmp_value, tpl, decimal=3)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_renadic()

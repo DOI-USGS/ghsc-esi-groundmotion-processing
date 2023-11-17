@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Module for storing and organizing station metrics"""
 
 import logging

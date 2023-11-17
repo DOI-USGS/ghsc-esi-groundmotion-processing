@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+"""Module for DMG reader."""
 
 # stdlib imports
 import os

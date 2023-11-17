@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import numpy as np
 
 from gmprocess.metrics.rotation.rotation import Rotation
@@ -145,7 +142,3 @@ def test_rotation():
     except Exception:
         success = False
     assert success is False
-
-
-if __name__ == "__main__":
-    test_rotation()

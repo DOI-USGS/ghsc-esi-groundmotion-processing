@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Max class."""
 
 # Third party imports
 import numpy as np

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -176,10 +173,3 @@ def test_stream_workspace_ucla_review():
     ws = StreamWorkspace.open(reviewed_workspace)
     st = ws.get_streams("se60324281")
     assert len(st) == 8
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_stream_workspace_methods()
-    test_stream_workspace()
-    test_stream_workspace_ucla_review()

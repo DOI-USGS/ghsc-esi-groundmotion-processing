@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for baseline correction functions."""
 
 import numpy as np
 from scipy.optimize import curve_fit

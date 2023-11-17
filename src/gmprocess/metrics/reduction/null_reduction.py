@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the Null_Reduction class."""
 
 # Local imports
 from gmprocess.metrics.reduction.reduction import Reduction

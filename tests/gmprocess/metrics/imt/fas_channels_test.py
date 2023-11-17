@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import re
-import os
 
 import numpy as np
 import pandas as pd
@@ -93,8 +89,3 @@ def test_fas():
     ml = wmc.waveform_metrics[0].metric_list
     np.testing.assert_allclose(ml[0].value("H1"), 0.0017738275935979698)
     np.testing.assert_allclose(ml[0].value("H2"), 0.0007202936519335882)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_fas()

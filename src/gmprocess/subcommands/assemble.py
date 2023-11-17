@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for AssembleModule class."""
 
 import logging
 from concurrent.futures import ProcessPoolExecutor
@@ -77,7 +76,9 @@ class AssembleModule(base.SubcommandModule):
                     f"Assembling event {event.id} ({1+ievent} of {len(self.events)})..."
                 )
                 results.append(
-                    self._assemble_event(event, data_path, overwrite, conf, version, label)
+                    self._assemble_event(
+                        event, data_path, overwrite, conf, version, label
+                    )
                 )
 
         for res in results:

@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for ASDF reader."""
 
 # third party imports
 import h5py

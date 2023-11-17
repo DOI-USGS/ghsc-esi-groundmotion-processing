@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
-
 import numpy as np
 
 from gmprocess.waveform_processing import spectrum
@@ -55,10 +50,3 @@ def test_fff():
     np.testing.assert_allclose(h[0], 0.37134706, atol=1e-5)
     np.testing.assert_allclose(h[30], 7.18762019, atol=1e-5)
     np.testing.assert_allclose(h[-1], 29.844204, atol=1e-5)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_fit_spectra()
-    test_spectrum()
-    test_fff()

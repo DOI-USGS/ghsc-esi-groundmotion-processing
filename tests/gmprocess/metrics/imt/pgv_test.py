@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# stdlib imports
-import os
-import warnings
-
 # third party imports
 import numpy as np
 
@@ -45,8 +38,3 @@ def test_pgv():
     np.testing.assert_almost_equal(wm.value("H2"), pgv_target["HN2"])
     np.testing.assert_almost_equal(wm.value("H1"), pgv_target["HN1"])
     np.testing.assert_almost_equal(wm.value("Z"), pgv_target["HNZ"])
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_pgv()

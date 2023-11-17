@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 
 from obspy import UTCDateTime
@@ -246,10 +242,3 @@ def test_get_status():
     assert net.at["CI", "Number Failed"] == 1
     assert net.at["PG", "Number Passed"] == 0
     assert net.at["PG", "Number Failed"] == 1
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_StreamCollection()
-    test_duplicates()
-    test_get_status()

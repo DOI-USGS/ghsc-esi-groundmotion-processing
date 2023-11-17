@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for zero-crossing QA check."""
 
 import numpy as np
 from gmprocess.waveform_processing.processing_step import processing_step

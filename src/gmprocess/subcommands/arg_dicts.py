@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for shared subcommand arguments."""
 
 ARG_DICTS = {
     "output_format": {

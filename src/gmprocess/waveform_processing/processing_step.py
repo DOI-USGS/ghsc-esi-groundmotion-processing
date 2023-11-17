@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-Helper functions to organize/import processing steps.
-"""
+"""Helper functions to organize/import processing steps."""
 
 import importlib
 import inspect

@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# stdlib imports
-import os
-
 # third party imports
 import numpy as np
 
@@ -43,8 +37,3 @@ def test_nnet():
     test = process_streams(sc, event, conf)
     nnet_dict = test[0].get_stream_param("nnet_qa")
     np.testing.assert_allclose(nnet_dict["score_HQ"], 0.9996686646819085, rtol=1e-3)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_nnet()

@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# stdlib imports
-import os
-
 from gmprocess.io.read import read_data, _get_format, _validate_format
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.utils.config import get_config
@@ -53,8 +47,3 @@ def test_read():
     except BaseException:
         success = False
     assert success == False
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_read()

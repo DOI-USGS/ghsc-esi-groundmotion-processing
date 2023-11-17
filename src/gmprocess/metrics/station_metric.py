@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Module for the StationMetric class."""
 
 from dataclasses import dataclass
 

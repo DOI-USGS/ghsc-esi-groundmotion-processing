@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import copy
 import getpass
 import inspect
@@ -218,8 +215,8 @@ class StationTrace(Trace):
                 header["format_specific"] = format_specific
             except BaseException as err:
                 raise ValueError(
-                    f"Failed to construct required metadata from inventory "
-                    "and input header data with exception: {err}"
+                    "Failed to construct required metadata from inventory "
+                    f"and input header data with exception: {err}."
                 )
         elif inventory is None and header is not None and "standard" not in header:
             # End up here for ObsPy without an inventory (e.g., SAC).
@@ -1157,9 +1154,7 @@ def _stats_from_inventory(data, inventory, seed_id, start_time):
         standard["vertical_orientation"] = np.nan
 
     if len(channel.comments):
-        comments = " ".join(
-            channel.comments[i].value for i in range(len(channel.comments))
-        )
+        comments = " ".join(comment.value for comment in channel.comments)
         standard["comments"] = comments
     else:
         standard["comments"] = ""

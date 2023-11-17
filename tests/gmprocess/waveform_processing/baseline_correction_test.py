@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import os
 import numpy as np
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.read import read_data
@@ -43,8 +39,3 @@ def test_correct_baseline():
     )
 
     np.testing.assert_allclose(final_acc, target_final_acc, atol=1e-6)
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_correct_baseline()

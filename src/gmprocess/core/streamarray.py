@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Class for StationStream arrays.
-"""
+"""Module for StationStream arrays."""
 
 import copy
 import fnmatch
@@ -13,6 +9,8 @@ INDENT = 2
 
 
 class StreamArray(object):
+    """StreamArray class."""
+
     def __init__(
         self,
         streams=None,

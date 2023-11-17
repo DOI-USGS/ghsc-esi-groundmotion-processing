@@ -1,12 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
 import json
 
 import numpy as np
 
 from gmprocess.io.read import read_data
-from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
@@ -92,13 +88,3 @@ def test_duration575():
     dur = Duration(stream, interval=[5, 75])
 
     np.testing.assert_allclose(dur.result["HN1"], 45.325, atol=1e-4, rtol=1e-4)
-
-
-if __name__ == "__main__":
-    test_duration()
-    test_duration575()
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_duration()

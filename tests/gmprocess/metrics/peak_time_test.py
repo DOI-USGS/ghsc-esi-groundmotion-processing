@@ -1,5 +1,3 @@
-import os
-
 # third party imports
 from obspy.core.utcdatetime import UTCDateTime
 
@@ -44,8 +42,3 @@ def test_get_peak_time():
 
     assert stream2[2].stats.pga_time == UTCDateTime("2016-11-13T11:03:08.140001Z")
     assert stream2[2].stats.pgv_time == UTCDateTime("2016-11-13T11:03:09.560001Z")
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_get_peak_time()
