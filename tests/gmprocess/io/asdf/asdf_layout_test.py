@@ -100,8 +100,3 @@ def test_layout():
             assert line.strip() in h5
     h5.close()
     return
-
-
-if __name__ == "__main__":
-    os.environ["CALLED_FROM_PYTEST"] = "True"
-    test_layout()

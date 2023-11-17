@@ -15,6 +15,14 @@ CONF_SCHEMA = Schema(
     {
         "user": {"name": str, "email": str},
         "fetchers": {
+            "search_parameters": {
+                "enabled": bool,
+                "duration": {
+                    "c0": float,
+                    "c1": float,
+                },
+                "distance": {"pga": float, "max_distance": float},
+            },
             "KNETFetcher": {
                 "user": str,
                 "password": str,
@@ -161,6 +169,15 @@ CONF_SCHEMA = Schema(
             "initial": float,
             "demean": bool,
             "taper": {"taper": bool, "type": str, "width": float, "side": str},
+        },
+        "gmm_selection": {
+            "ActiveShallow": str,
+            "ActiveDeep": str,
+            "VolcanicShallow": str,
+            "SubductionIntraslab": str,
+            "SubductionInterface": str,
+            "SubductionCrustal": str,
+            "StableShallow": str,
         },
         "differentiation": {
             "frequency": bool,

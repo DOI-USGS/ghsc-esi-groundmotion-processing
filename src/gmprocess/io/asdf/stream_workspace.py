@@ -20,8 +20,6 @@ from h5py.h5py_warnings import H5pyDeprecationWarning
 from obspy.core.utcdatetime import UTCDateTime
 from ruamel.yaml import YAML
 
-from strec.subtype import SubductionSelector
-
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import (
     NS_SEIS,
@@ -35,6 +33,7 @@ from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils.strec import STREC
 from gmprocess.io.asdf import workspace_constants as wc
 from gmprocess.io.asdf.rupture import Rupture
 from gmprocess.io.asdf.path_utils import (
@@ -144,19 +143,15 @@ class StreamWorkspace(object):
 
     def insert_strec(self, event):
         """Insert STREC results into auxiliary data"""
-        selector = SubductionSelector()
-        tensor_params = None
-        if hasattr(event, "id"):
-            _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
-        strec_params = selector.getSubductionType(
-            event.latitude,
-            event.longitude,
-            event.depth_km,
-            event.magnitude,
-            eventid=event.id,
-            tensor_params=tensor_params,
-        ).to_dict()
-        strec_params_str = dict_to_str(strec_params)
+        workspace_file = self.dataset.filename
+        workspace_path = Path(workspace_file)
+        event_dir = workspace_path.parent.absolute()
+        strec_json = event_dir / "strec_results.json"
+        if strec_json.exists():
+            strec = STREC.from_file(strec_json)
+        else:
+            strec = STREC.from_event(event)
+        strec_params_str = dict_to_str(strec.results)
         dtype = "StrecParameters"
         strec_path = f"STREC/{event.id}"
         self.insert_aux(strec_params_str, dtype, strec_path, True)
@@ -349,17 +344,17 @@ class StreamWorkspace(object):
         """Retrieves cells, vertices, description, and reference for a rupture.
 
         Args:
-            event (Event): 
+            event (Event):
                 Obspy event object.
             label (str):
                 Process label, "default" if no input.
         Returns:
             dict: Keys are cells, vertices, description, and reference.
-            
-            Cells and vertices are numpy arrays. The Vertices dataset is 
-            a 2D array [#vertices, spaceDim] where spaceDim=3. The Cells 
-            dataset is a 2D array [#cells, #corners] where #corners is 
-            the number of vertices in a cell. In general, we will have 
+
+            Cells and vertices are numpy arrays. The Vertices dataset is
+            a 2D array [#vertices, spaceDim] where spaceDim=3. The Cells
+            dataset is a 2D array [#cells, #corners] where #corners is
+            the number of vertices in a cell. In general, we will have
             quadrilaterals (#corners=4) or triangles (#corners=3).
         """
 
@@ -368,11 +363,13 @@ class StreamWorkspace(object):
 
         if "RuptureModels" not in aux_data:
             return None
-        
+
         try:
             rupture_model = aux_data["RuptureModels"][eventid + "_" + label]
         except:
-            raise Exception("There does not exist a rupture model with that eventid and label")
+            raise Exception(
+                "There does not exist a rupture model with that eventid and label"
+            )
 
         cells = rupture_model["Cells"].data
         cells = np.array(cells)
@@ -382,12 +379,12 @@ class StreamWorkspace(object):
 
         description = array_to_str(rupture_model["Description"].data)
         reference = array_to_str(rupture_model["Reference"].data)
-        
+
         rup_dict = {
             "cells": cells,
             "vertices": vertices,
             "description": description,
-            "reference": reference
+            "reference": reference,
         }
 
         return rup_dict
@@ -489,9 +486,7 @@ class StreamWorkspace(object):
 
             if len(proc_params):
                 dtype = "StreamProcessingParameters"
-                self.insert_aux(
-                    dict_to_str(proc_params), dtype, stream_path, overwrite
-                )
+                self.insert_aux(dict_to_str(proc_params), dtype, stream_path, overwrite)
 
             # add processing parameters from traces
             for trace in stream:
@@ -1034,6 +1029,7 @@ def dict_to_str(indict):
         if isinstance(value, bytes):
             return value.decode()
         raise ValueError(f"Could not serialize {value} of type {type(value)}.")
+
     return json.dumps(indict, default=_serializer)
 
 
