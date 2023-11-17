@@ -74,9 +74,9 @@ def check_clipping(st, event, threshold=0.2, config=None):
     ]
     prob_clip = clip_nnet.evaluate(inputs)[0][0]
 
-    if prob_clip >= threshold:
-        for tr in st:
+    for tr in st:
+        tr.set_parameter("clipping_probability", {"probability": prob_clip})
+        if prob_clip >= threshold:
             tr.fail("Failed clipping check.")
-            tr.set_parameter("clipping_probability", {"probability": prob_clip})
 
     return st
