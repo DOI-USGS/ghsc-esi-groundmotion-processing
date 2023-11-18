@@ -4,6 +4,8 @@ import numpy as np
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from gmprocess.waveform_processing.clipping.clip_detection import ClipDetection
 
+MAX_NPEAKS = 100
+
 
 class Histogram(ClipDetection):
     """
@@ -23,9 +25,8 @@ class Histogram(ClipDetection):
             Minimum width of a bump to be indicative of clipping.
         search_width_bins (int, default=700):
             Bin grouping size.
-        num_clip_intervals(int/list):
-            The number of clipped intervals in the first clipped trace
-            or list of number of points for each trace (if test_all=True).
+        num_clip_intervals(list):
+            List of number of clipped intervals for each trace.
 
     Methods:
         See parent class.
@@ -54,10 +55,10 @@ class Histogram(ClipDetection):
         self.num_bins = num_bins
         self.min_width = min_width
         self.search_width_bins = search_width_bins
-        if self.test_all:
-            self.num_clip_intervals = []
-        else:
-            self.num_clip_intervals = None
+        self.num_clip_intervals = []
+        self.amp_hist = None
+        self.smoothed_amp_hist = None
+        self.centers = None
         self._get_results()
 
     def _signal_scale(self, signal, alpha):
@@ -92,8 +93,6 @@ class Histogram(ClipDetection):
             peaks (list):
                 List of determined peaks in the data
         """
-        MAX_NPEAKS = 100
-
         peaks = []
         for idx in range(1, len(signal) - 1):
             cur_x = signal[idx]
@@ -126,7 +125,7 @@ class Histogram(ClipDetection):
         num_intervals = len(clip_intervals)
         if num_intervals == 0:
             return []
-        # Sorting the intervals places candidates for merging in adjacent\
+        # Sorting the intervals places candidates for merging in adjacent
         # slots in the array.
         sorted_intervals = list(self._sort_intervals_by_start(clip_intervals))
         merged_intervals = []
@@ -178,14 +177,16 @@ class Histogram(ClipDetection):
             signal (StationTrace.data):
                 Data signal suspected to feature clipping
             peaks (list):
-                List of critical data points in order from largest amplitude to smallest.
+                List of critical data points in order from largest amplitude to
+                smallest.
             thresh (float):
                 Threshold for difference between a point and the average of
                 points around it.
 
         Returns:
              clip_interval (tuple):
-                Tuple corresponding to first location (largest peak amplitude) where signal is clipped.
+                Tuple corresponding to first location (largest peak amplitude) where
+                signal is clipped.
         """
         clip_interval = None
         for _, cur_peak_loc in peaks:
@@ -242,25 +243,7 @@ class Histogram(ClipDetection):
                 break
         return clip_interval
 
-    def _clean_trace(self, tr):
-        """
-        Pre-processing steps.
-
-        Args:
-            tr (StationTrace):
-                A single trace in the record.
-
-        Returns:
-            clean_tr (StationTrace):
-                Cleaned trace.
-        """
-        t_1 = tr.stats.starttime
-        t_2 = t_1 + 180
-        clean_tr = tr.copy()
-        clean_tr.trim(t_1, t_2)
-        return clean_tr
-
-    def _detect(self, tr):
+    def _detect(self, clip_tr):
         """
         Test for clipping using the histogram-based method. This is a slight
         variation on the method described by:
@@ -270,7 +253,7 @@ class Histogram(ClipDetection):
             Society Convention 141. Audio Engineering Society.
 
         Args:
-            tr (StationTrace):
+            clip_tr (StationTrace):
                 A single trace in the record.
 
         Returns:
@@ -278,26 +261,27 @@ class Histogram(ClipDetection):
                 Is the trace clipped?
         """
         init_method = "estimated"
-        amp_hist, edges = np.histogram(tr.data, bins=self.num_bins)
+        self.amp_hist, edges = np.histogram(clip_tr.data, bins=self.num_bins)
+        self.centers = (edges[:-1] + edges[1:]) / 2
         temp_forward_1 = ExponentialSmoothing(
-            amp_hist.astype(float), initialization_method=init_method
+            self.amp_hist.astype(float), initialization_method=init_method
         )
         forward_1 = temp_forward_1.fit(smoothing_level=0.2).fittedvalues
         temp_amp_hist = ExponentialSmoothing(
             forward_1[::-1].astype(float), initialization_method=init_method
         )
-        amp_hist = temp_amp_hist.fit(smoothing_level=0.2).fittedvalues[::-1]
+        self.amp_hist = temp_amp_hist.fit(smoothing_level=0.2).fittedvalues[::-1]
         temp_forward_2 = ExponentialSmoothing(
-            amp_hist.astype(float), initialization_method=init_method
+            self.amp_hist.astype(float), initialization_method=init_method
         )
         forward_2 = temp_forward_2.fit(smoothing_level=0.025).fittedvalues
         temp_smoothed_amp_hist = ExponentialSmoothing(
             forward_2[::-1].astype(float), initialization_method=init_method
         )
-        smoothed_amp_hist = temp_smoothed_amp_hist.fit(
+        self.smoothed_amp_hist = temp_smoothed_amp_hist.fit(
             smoothing_level=0.025
         ).fittedvalues[::-1]
-        novelty = amp_hist - smoothed_amp_hist
+        novelty = self.amp_hist - self.smoothed_amp_hist
         negative_clip_lower_idx = -1
         negative_clip_upper_idx = -1
         in_bump = False
@@ -369,32 +353,22 @@ class Histogram(ClipDetection):
 
         clip_intervals = [None, None]
         if has_negative_clip:
-            invert_x = self._signal_scale(tr.data, -1)
+            invert_x = self._signal_scale(clip_tr.data, -1)
             valleys = self._find_peaks(invert_x, abs(negative_thresh), True)
             clip_intervals[0] = self._get_clip_interval(
-                tr.data, valleys, negative_width
+                clip_tr.data, valleys, negative_width
             )
         if has_positive_clip:
-            peaks = self._find_peaks(tr.data, positive_thresh, True)
-            clip_intervals[1] = self._get_clip_interval(tr.data, peaks, positive_width)
+            peaks = self._find_peaks(clip_tr.data, positive_thresh, True)
+            clip_intervals[1] = self._get_clip_interval(
+                clip_tr.data, peaks, positive_width
+            )
         # Aggregate the positive and negative clipping intervals.
         num_clip_intervals = 0
         for interval in clip_intervals:
-            if not interval is None:
+            if interval is not None:
                 num_clip_intervals += 1
-        if self.test_all:
-            self.num_clip_intervals.append(num_clip_intervals)
-        else:
-            self.num_clip_intervals = num_clip_intervals
-        if num_clip_intervals > 0:
+        self.num_clip_intervals.append(num_clip_intervals)
+        if np.any(num_clip_intervals > 0):
             return True
         return False
-
-    def _get_results(self):
-        """
-        Iterates through and runs _detect() on each trace in the stream to
-        determine if the record is clipped or not.
-
-        See parent class.
-        """
-        return ClipDetection._get_results(self)

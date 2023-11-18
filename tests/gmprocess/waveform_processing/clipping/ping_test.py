@@ -19,7 +19,7 @@ def test_num_outliers():
         ping_method = Ping(st)
         num_outliers.append(ping_method.num_outliers)
 
-    np.testing.assert_equal(num_outliers, np.array([239, 26, 0, 6, 133, 145]))
+    np.testing.assert_equal(num_outliers, [[239], [26], [0, 0, 0], [6], [133], [145]])
 
 
 def test_all_num_outliers():
@@ -38,14 +38,12 @@ def test_all_num_outliers():
 
     np.testing.assert_equal(
         num_outliers,
-        np.array(
-            [
-                [239, 0, 22],
-                [26, 199, 30],
-                [0, 0, 0],
-                [6, 8, 2],
-                [133, 341, 22],
-                [145, 264, 29],
-            ]
-        ),
+        [
+            [239, 0, 22],
+            [26, 199, 30],
+            [0, 0, 0],
+            [6, 8, 2],
+            [133, 341, 22],
+            [145, 264, 29],
+        ],
     )

@@ -4,7 +4,7 @@ import numpy as np
 from gmprocess.waveform_processing.clipping.clip_detection import ClipDetection
 
 
-class Std_Dev(ClipDetection):
+class StdDev(ClipDetection):
     """
     Class for the standard deviation clipping detection algorithm.
 
@@ -43,7 +43,7 @@ class Std_Dev(ClipDetection):
         test_all=False,
     ):
         """
-        Constructs all neccessary attributes for the Std_Dev class.
+        Constructs all neccessary attributes for the StdDev class.
 
         Args:
             st (StationStream):
@@ -83,10 +83,7 @@ class Std_Dev(ClipDetection):
             clean_tr (StationTrace):
                 Cleaned trace.
         """
-        t_1 = tr.stats.starttime
-        t_2 = t_1 + 180
         clean_tr = tr.copy()
-        clean_tr.trim(t_1, t_2)
         clean_tr.detrend(type="constant")
         clean_tr.normalize()
         return clean_tr
@@ -124,12 +121,3 @@ class Std_Dev(ClipDetection):
         if num_outliers > self.point_thresh:
             return True
         return False
-
-    def _get_results(self):
-        """
-        Iterates through and runs _detect() on each trace in the stream to
-        determine if the record is clipped or not.
-
-        See parent class.
-        """
-        return ClipDetection._get_results(self)

@@ -19,7 +19,7 @@ def test_num_outliers():
         jerk_method = Jerk(st)
         num_outliers.append(jerk_method.num_outliers)
 
-    np.testing.assert_equal(num_outliers, np.array([1145, 1227, 872, 860, 926, 1205]))
+    np.testing.assert_equal(num_outliers, np.array([765, 414, 733, 556, 926, 793]))
 
 
 def test_all_num_outliers():
@@ -40,12 +40,12 @@ def test_all_num_outliers():
         num_outliers,
         np.array(
             [
-                [1145, 1137, 1158],
-                [1227, 878, 1290],
-                [872, 923, 1158],
-                [860, 1111, 1381],
-                [926, 1025, 954],
-                [1205, 1356, 1600],
+                [765, 468, 689],
+                [414, 677, 852],
+                [733, 535, 1119],
+                [556, 678, 712],
+                [926, 996, 817],
+                [793, 1017, 1567],
             ]
         ),
     )

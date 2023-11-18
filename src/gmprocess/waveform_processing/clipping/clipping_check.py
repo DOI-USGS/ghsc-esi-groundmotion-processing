@@ -5,7 +5,7 @@ import numpy as np
 from obspy.geodetics.base import gps2dist_azimuth
 
 from gmprocess.waveform_processing.clipping.clipping_ann import clipNet
-from gmprocess.waveform_processing.clipping.max_amp import Max_Amp
+from gmprocess.waveform_processing.clipping.max_amp import MaxAmp
 from gmprocess.waveform_processing.clipping.histogram import Histogram
 from gmprocess.waveform_processing.clipping.ping import Ping
 from gmprocess.waveform_processing.processing_step import processing_step
@@ -62,7 +62,7 @@ def check_clipping(st, event, threshold=0.2, config=None):
 
     clip_nnet = clipNet()
 
-    max_amp_method = Max_Amp(st, max_amp_thresh=6e6)
+    max_amp_method = MaxAmp(st, max_amp_thresh=6e6)
     hist_method = Histogram(st)
     ping_method = Ping(st)
     inputs = [

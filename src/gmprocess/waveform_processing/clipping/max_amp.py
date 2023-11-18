@@ -1,10 +1,10 @@
-"""Module for the Max_Amp test for clipping detection."""
+"""Module for the MaxAmp test for clipping detection."""
 
 import numpy as np
 from gmprocess.waveform_processing.clipping.clip_detection import ClipDetection
 
 
-class Max_Amp(ClipDetection):
+class MaxAmp(ClipDetection):
     """
     Class for the maximum amplitude clipping detection algorithm.
 
@@ -27,7 +27,7 @@ class Max_Amp(ClipDetection):
 
     def __init__(self, st, max_amp_thresh=6e6, test_all=False):
         """
-        Constructs all neccessary attributes for the Max_Amp method.
+        Constructs all neccessary attributes for the MaxAmp method.
 
         Args:
             st (StationStream):
@@ -47,8 +47,7 @@ class Max_Amp(ClipDetection):
 
     def _clean_trace(self, tr):
         """
-        Helper function to clean a trace (no normalizing in this
-        algorithm).
+        Helper function to clean the trace
 
         Args:
             tr (StationTrace):
@@ -58,28 +57,25 @@ class Max_Amp(ClipDetection):
             clean_tr (StationTrace):
                 Cleaned trace.
         """
-        t_1 = tr.stats.starttime
-        t_2 = t_1 + 180
         clean_tr = tr.copy()
-        clean_tr.trim(t_1, t_2)
         clean_tr.detrend(type="constant")
         return clean_tr
 
-    def _detect(self, tr):
+    def _detect(self, clip_tr):
         """
         If any point exceeds the threshold, fail the trace. Threshold is
         given as max_amp_thresh, the absolute maximum amplitude of
         the trace.
 
         Args:
-            tr (StationTrace):
+            clip_tr (StationTrace):
                 A single trace in the record.
 
         Returns:
             bool:
                 Is the trace clipped?
         """
-        tr_abs = np.abs(tr.copy())
+        tr_abs = np.abs(clip_tr.copy())
         abs_max_amp = tr_abs.max()
         if self.test_all:
             self.max_amp.append(abs_max_amp)
@@ -88,12 +84,3 @@ class Max_Amp(ClipDetection):
         if abs_max_amp > self.max_amp_thresh:
             return True
         return False
-
-    def _get_results(self):
-        """
-        Iterates through and runs _detect() on each trace in the stream to
-        determine if the record is clipped or not.
-
-        See parent class.
-        """
-        return ClipDetection._get_results(self)

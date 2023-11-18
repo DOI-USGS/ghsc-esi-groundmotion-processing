@@ -44,60 +44,30 @@ class Ping(ClipDetection):
         """
         ClipDetection.__init__(self, st.copy(), test_all)
         self.percent_thresh = percent_thresh
-        if self.test_all:
-            self.num_outliers = []
-        else:
-            self.num_outliers = None
+        self.num_outliers = []
+        self.abs_diff = None
+        self.threshold = None
         self._get_results()
 
-    def _clean_trace(self, tr):
-        """
-        Pre-processing steps.
-
-        Args:
-            tr (StationTrace):
-                A single trace in the record.
-
-        Returns:
-            clean_tr (StationTrace):
-                Cleaned trace.
-        """
-        t_1 = tr.stats.starttime
-        t_2 = t_1 + 180
-        clean_tr = tr.copy()
-        clean_tr.trim(t_1, t_2)
-        return clean_tr
-
-    def _detect(self, tr):
+    def _detect(self, clip_tr):
         """
         If any two points differ by more than a threshold, fail the trace.
         Threshold given as percent_thresh * datarange.
 
         Args:
-            tr (StationTrace):
+            clip_tr (StationTrace):
                 A single trace in the record.
 
         Returns:
             bool:
                 Is the trace clipped?
         """
-        data_range = np.abs(np.max(tr.data)) - np.min(tr.data)
-        tr_diff = np.abs(np.diff(tr))
-        points_outlying = [val > self.percent_thresh * data_range for val in tr_diff]
-        num_outliers = np.count_nonzero(points_outlying)
-        if self.test_all:
-            self.num_outliers.append(num_outliers)
-        else:
-            self.num_outliers = num_outliers
-        if num_outliers > 0:
+        data_range = np.abs(np.max(clip_tr.data)) - np.min(clip_tr.data)
+        self.abs_diff = np.abs(np.diff(clip_tr))
+        self.threshold = self.percent_thresh * data_range
+        points_outlying = np.where(self.abs_diff > self.threshold)[0]
+        num_outliers = len(points_outlying)
+        self.num_outliers.append(num_outliers)
+        if np.any(num_outliers > 0):
             return True
         return False
-
-    def _get_results(self):
-        """
-        Iterates through and runs _detect() on each trace in the stream to
-        determine if the record is clipped or not.
-
-        See parent class.
-        """
-        return ClipDetection._get_results(self)
