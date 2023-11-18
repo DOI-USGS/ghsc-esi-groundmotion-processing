@@ -75,10 +75,13 @@ Common reasons to rebase include:
 
 ## Releases
 
-1. Create a release candidate branch with a name related to the release version like `v1.2.1-rc0`.
-2. Add new section to `code.json` for this release; update "metadataLastUpdated" date and the urls that include the version.
+1. Create a release candidate branch with a name related to the release version like `v1.2.1.rc0`.
+2. Update `code.json`, this is now automated with the `esi-releases` pacakge. For example, use the following command to increase the minor version number (options are "major", "minor", and "patch"):
+   ```
+   releases minor
+   ```
 3. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
-4. Commit changes to the `v1.2.1-rc0` branch.
+4. Commit changes to the `v1.2.1.rc0` branch.
 5. Create an annotated tag and push the release candidate upstream
    ```
    git tag -a v1.2.1 -m "Version 1.2.1"
