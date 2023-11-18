@@ -1,5 +1,7 @@
 ## main
 
+## 1.3.0 / 2023-11-18
+
 - Add unprocessed waveform to summary plots.
 - Add config option to enable/disable STREC.
 - Add method to retrieve rupture model geometry info from workspace.

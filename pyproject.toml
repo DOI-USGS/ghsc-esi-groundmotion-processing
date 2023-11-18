@@ -50,6 +50,7 @@ dependencies = [
 dev = [
     "build>=0.7.0",
     "black>=21",
+    "esi-releases>=0.1",
     "flake8>=3.9",
     "ipython>=7.26",
     "pylint>=2.17",
