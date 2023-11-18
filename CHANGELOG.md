@@ -13,6 +13,7 @@
   - Add STREC configuration to initial setup instructions
   - Add search_parameters parameters to config section of the manual.
 - Bugfixes
+  - Fix false negatives in clipping algorithm that arise due to long pre-event noise; this is fixed by trimming only the low amplitude tail of the record rather than a static window duration.
   - Add STREC configuration to .gitlab-ci.yml
   - Add missing DIMENSION_UNITS in constants module.
   - Fix bug in event depth.

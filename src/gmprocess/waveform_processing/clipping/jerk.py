@@ -28,7 +28,7 @@ class Jerk(ClipDetection):
 
     def __init__(self, st, point_thresh=400, test_all=False):
         """
-        Constructs all neccessary attributes for the Max_Amp class.
+        Constructs all neccessary attributes for the MaxAmp class.
 
         Args:
             st (StationStream):
@@ -47,25 +47,7 @@ class Jerk(ClipDetection):
             self.num_outliers = None
         self._get_results()
 
-    def _clean_trace(self, tr):
-        """
-        Pre-processing steps.
-
-        Args:
-            tr (StationTrace):
-                A single trace in the record.
-
-        Returns:
-            clean_tr (StationTrace):
-                Cleaned trace.
-        """
-        t_1 = tr.stats.starttime
-        t_2 = t_1 + 180
-        clean_tr = tr.copy()
-        clean_tr.trim(t_1, t_2)
-        return clean_tr
-
-    def _detect(self, tr):
+    def _detect(self, clip_tr):
         """
         Check for jerk outliers. Based on method described by:
 
@@ -75,14 +57,14 @@ class Jerk(ClipDetection):
             Laboratory Networks, Seismol. Res. Lett. 83, 575–584.
 
         Args:
-            tr (StationTrace):
+            clip_tr (StationTrace):
                 A single trace in the record.
 
         Returns:
             bool:
                 Is the trace clipped?
         """
-        temp_tr = tr.copy()
+        temp_tr = clip_tr.copy()
         # The algorithm was developed with time domain differentiation and so we want
         # to force this to be consistent regardless of config options.
         temp_tr.differentiate(frequency=False)
@@ -98,12 +80,3 @@ class Jerk(ClipDetection):
         if num_outliers > self.point_thresh:
             return True
         return False
-
-    def _get_results(self):
-        """
-        Iterates through and runs _detect() on each trace in the stream to
-        determine if the record is clipped or not.
-
-        See parent class.
-        """
-        return ClipDetection._get_results(self)

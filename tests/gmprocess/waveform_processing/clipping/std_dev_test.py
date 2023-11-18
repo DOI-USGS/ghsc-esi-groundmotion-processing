@@ -2,7 +2,7 @@ import numpy as np
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.waveform_processing.clipping.std_dev import Std_Dev
+from gmprocess.waveform_processing.clipping.std_dev import StdDev
 
 
 def test_num_outliers():
@@ -16,7 +16,7 @@ def test_num_outliers():
 
     num_outliers = []
     for st in sc:
-        std_dev_method = Std_Dev(st)
+        std_dev_method = StdDev(st)
         num_outliers.append(std_dev_method.num_outliers)
 
     np.testing.assert_equal(num_outliers, np.array([0, 1086, 131, 1018, 60, 4862]))
@@ -33,7 +33,7 @@ def test_all_num_outliers():
 
     num_outliers = []
     for st in sc:
-        std_dev_method = Std_Dev(st, test_all=True)
+        std_dev_method = StdDev(st, test_all=True)
         num_outliers.append(std_dev_method.num_outliers)
 
     np.testing.assert_equal(
@@ -44,7 +44,7 @@ def test_all_num_outliers():
                 [0, 1086, 23],
                 [131, 252, 4482],
                 [1018, 76, 0],
-                [60, 1314, 1511],
+                [60, 1313, 1511],
                 [0, 0, 4862],
             ]
         ),

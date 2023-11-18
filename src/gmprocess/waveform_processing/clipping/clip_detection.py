@@ -2,6 +2,8 @@
 neurual network model (clipping_ann.py). The NN model gets called by clipping_check.py
 module."""
 
+import numpy as np
+
 
 class ClipDetection:
     """
@@ -41,7 +43,8 @@ class ClipDetection:
 
     def _clean_trace(self, tr):
         """
-        Pre-processing steps.
+        Helper function to clean the trace. This is a no-op unless overwritten by child
+        class.
 
         Args:
             tr (StationTrace):
@@ -53,19 +56,44 @@ class ClipDetection:
         """
         return tr
 
-    def _detect(self, clip_tr):
+    def _trim_trace(self, tr):
         """
-        Clipping detection algorithm for the individual child class
+        Trim the trace to chop off the tail.
 
         Args:
             tr (StationTrace):
                 A single trace in the record.
 
         Returns:
+            clean_tr (StationTrace):
+                Cleaned trace.
+        """
+        data_abs = np.abs(tr.data)
+        data_abs_max = np.max(data_abs)
+        idx_remove = np.where(data_abs < (0.05 * data_abs_max))[0]
+        idiff = np.diff(idx_remove)
+        last_index = len(tr.data)
+        for idx, idx_diff in zip(np.flip(idx_remove), np.flip(idiff)):
+            if idx_diff > 1:
+                last_index = idx
+                break
+        clean_tr = tr.copy()
+        clean_tr.data = clean_tr.data[:last_index]
+        return clean_tr
+
+    def _detect(self, clip_tr):
+        """
+        Clipping detection algorithm for the individual child class
+
+        Args:
+            clip_tr (StationTrace):
+                A single trace in the record.
+
+        Returns:
             bool:
                 Did the trace pass the test?
         """
-        pass
+        return False
 
     def _get_results(self):
         """
@@ -79,6 +107,7 @@ class ClipDetection:
             None
         """
         for tr in self.st:
+            tr = self._trim_trace(tr)
             tr = self._clean_trace(tr)
             temp_is_clipped = self._detect(tr)
             if temp_is_clipped:

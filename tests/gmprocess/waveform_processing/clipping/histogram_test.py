@@ -19,7 +19,9 @@ def test_num_clip_intervals():
         hist_method = Histogram(st)
         num_clip_intervals.append(hist_method.num_clip_intervals)
 
-    np.testing.assert_equal(num_clip_intervals, np.array([0, 1, 1, 1, 1, 1]))
+    np.testing.assert_equal(
+        num_clip_intervals, [[0, 0, 0], [0, 1], [1], [1], [1], [0, 0, 1]]
+    )
 
 
 def test_all_num_clip_intervals():
@@ -38,5 +40,5 @@ def test_all_num_clip_intervals():
 
     np.testing.assert_equal(
         num_clip_intervals,
-        np.array([[0, 0, 0], [0, 1, 1], [1, 2, 2], [1, 1, 0], [1, 1, 1], [0, 0, 1]]),
+        [[0, 0, 0], [0, 1, 1], [1, 2, 2], [1, 1, 0], [1, 1, 1], [0, 0, 1]],
     )
