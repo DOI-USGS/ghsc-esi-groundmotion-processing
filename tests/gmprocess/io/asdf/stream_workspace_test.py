@@ -1,38 +1,12 @@
-import shutil
-import tempfile
 from pathlib import Path
 
 import numpy as np
 import pytest
-from gmprocess.core.streamcollection import StreamCollection
+
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils import constants
-from gmprocess.utils.config import get_config, update_config
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.config import update_config
 from gmprocess.waveform_processing.processing import process_streams
-
-CONFIG = get_config()
-
-TEST_STREC_CONFIG = """[DATA]
-folder = [TEST_STREC_DIR]
-slabfolder = [TEST_STREC_DIR]/slabs
-dbfile = [TEST_STREC_DIR]/moment_tensors.db
-longest_axis = 6161.22354153315
-
-[CONSTANTS]
-minradial_disthist = 0.01
-maxradial_disthist = 1.0
-minradial_distcomp = 0.5
-maxradial_distcomp = 1.0
-step_distcomp = 0.1
-depth_rangecomp = 10
-minno_comp = 3
-default_szdip = 17
-dstrike_interf = 30
-ddip_interf = 30
-dlambda = 60
-ddepth_interf = 20
-ddepth_intra = 10"""
 
 STREC_CONFIG_PATH = Path.home() / ".strec" / "config.ini"
 
@@ -48,34 +22,16 @@ def assert_cmp_with_nans(d1, d2):
             np.testing.assert_allclose(v1, v2, atol=1e-2)
 
 
-def configure_strec():
-    config_data = None
-    if STREC_CONFIG_PATH.exists():
-        with open(STREC_CONFIG_PATH, "rt") as f:
-            config_data = f.read()
-    else:
-        STREC_CONFIG_PATH.parent.mkdir()
-    # where is the strec test data folder
-    test_strec_dir = (Path(".") / "tests" / "data" / "strec").resolve()
-    strec_config_str = TEST_STREC_CONFIG.replace(
-        "[TEST_STREC_DIR]", str(test_strec_dir)
-    )
-    with open(STREC_CONFIG_PATH, "wt") as f:
-        print(f"***Writing new config to {STREC_CONFIG_PATH}")
-        f.write(strec_config_str)
-    return config_data
-
-
-def test_stream_workspace_methods():
-    tdir = Path(tempfile.mkdtemp())
+def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_path):
+    """Test for StreamWorkspace class."""
     try:
         eventid = "usb000syza"
-        _, event = read_data_dir("knet", eventid, "*")
+        _, event = load_data_usb000syza
 
-        ws = StreamWorkspace.create(tdir / "workspace.h5")
+        ws = StreamWorkspace.create(tmp_path / "workspace.h5")
 
         # make sure that strec is configured
-        existing_config_data = configure_strec()
+        existing_config_data = configure_strec
         try:
             ws.add_config()
             ws.add_event(event)
@@ -119,35 +75,29 @@ def test_stream_workspace_methods():
             assert_cmp_with_nans(strec_params, cmp_params)
         finally:
             if existing_config_data is not None:
-                with open(STREC_CONFIG_PATH, "wt") as f:
+                with open(constants.STREC_CONFIG_PATH, "wt", encoding="utf-8") as f:
                     f.write(existing_config_data)
         ws.close()
 
         with pytest.raises(OSError):
-            StreamWorkspace.open(tdir / "nonexistance_file.h5")
+            StreamWorkspace.open(tmp_path / "nonexistance_file.h5")
 
     except BaseException as e:
         raise e
-    finally:
-        shutil.rmtree(tdir, ignore_errors=True)
 
 
-def test_stream_workspace():
-    CONFIG["metrics"]["output_imcs"] = ["channels"]
-    eventid = "usb000syza"
-    datafiles, event = read_data_dir("knet", eventid, "*")
-    datadir = Path(datafiles[0]).parent
-    raw_streams = StreamCollection.from_directory(datadir)
-    config = update_config(datadir / "config_min_freq_0p2.yml", CONFIG)
+def test_stream_workspace(load_data_usb000syza, tmp_path, config):
+    config["metrics"]["output_imcs"] = ["channels"]
+    raw_streams, event = load_data_usb000syza
+    config = update_config(constants.TEST_DATA_DIR / "config_min_freq_0p2.yml", config)
     newconfig = config.copy()
     newconfig["processing"].append(
         {"nnet_qa": {"acceptance_threshold": 0.5, "model_name": "CantWell"}}
     )
     processed_streams = process_streams(raw_streams.copy(), event, config=newconfig)
 
-    tdir = Path(tempfile.mkdtemp())
     try:
-        tfile = tdir / "test.hdf"
+        tfile = tmp_path / "test.hdf"
         workspace = StreamWorkspace(tfile)
         workspace.add_config(config=config)
         workspace.add_event(event)
@@ -164,8 +114,6 @@ def test_stream_workspace():
         workspace.close()
     except Exception as e:
         raise (e)
-    finally:
-        shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_stream_workspace_ucla_review():

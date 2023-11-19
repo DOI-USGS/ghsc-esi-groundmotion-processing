@@ -5,11 +5,11 @@ import glob
 import vcr as vcrpy
 
 from gmprocess.utils.base_utils import read_event_json_files
-from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils import constants
 
 vcr = vcrpy.VCR(
     path_transformer=vcrpy.VCR.ensure_suffix(".yaml"),
-    cassette_library_dir=str(TEST_DATA_DIR / "vcr_cassettes"),
+    cassette_library_dir=str(constants.TEST_DATA_DIR / "vcr_cassettes"),
     record_mode="once",
     match_on=["uri"],
 )
@@ -36,7 +36,7 @@ def read_data_dir(file_format, eventid, files=None):
             - List of data files.
             - Event dictionary.
     """
-    eventdir = TEST_DATA_DIR / file_format / eventid
+    eventdir = constants.TEST_DATA_DIR / file_format / eventid
     if not eventdir.is_dir():
         return (None, None)
     datafiles = []

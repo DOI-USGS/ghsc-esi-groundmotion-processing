@@ -1,4 +1,3 @@
-import os
 import numpy as np
 
 from gmprocess.io.renadic.core import is_renadic, read_renadic
@@ -23,9 +22,7 @@ def test_renadic():
         "0": (0.020, -0.019, -0.010),
     }
 
-    for stream in raw_streams:
-        if stream[0].stats.station not in peaks:
-            continue
+    for i, stream in enumerate(raw_streams):
         cmp_value = np.abs(np.array(peaks[stream[0].stats.station]))
         pga1 = np.abs(stream[0].max())
         pga2 = np.abs(stream[1].max())
