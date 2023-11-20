@@ -44,15 +44,17 @@ class STREC(object):
         print("**** tensor_params")
         print(tensor_params)
         print("****")
-        strec_dict = selector.getSubductionType(
+        strec_df = selector.getSubductionType(
             event.latitude,
             event.longitude,
             event.depth_km,
             event.magnitude,
             eventid=event.id,
             tensor_params=tensor_params,
-        ).to_dict()
-        print(f"**** strec_dict['KaganAngle']: {strec_dict['KaganAngle']}")
+        )
+        print(f"strec_df['KaganAngle']: {strec_df['KaganAngle']}")
+        strec_dict = strec_df.to_dict()
+        print(f"strec_dict['KaganAngle']: {strec_df['KaganAngle']}")
         return cls(strec_dict)
 
     def to_file(self, filename):
