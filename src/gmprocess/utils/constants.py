@@ -18,6 +18,8 @@ PICKER_FILE = "picker.yml"
 MODULE_FILE = "modules.yml"
 RUPTURE_FILE = "rupture.json"
 
+STREC_CONFIG_PATH = pathlib.Path.home() / ".strec" / "config.ini"
+
 GAL_TO_PCTG = 1.0 / sp.g
 M_PER_KM = 1000
 
