@@ -144,14 +144,10 @@ class StreamWorkspace(object):
         workspace_path = Path(workspace_file)
         event_dir = workspace_path.parent.absolute()
         strec_json = event_dir / "strec_results.json"
-        print("**TESTING**")
-        print(strec_json)
-        print(strec_json.exists())
         if strec_json.exists():
             strec = STREC.from_file(strec_json)
         else:
             strec = STREC.from_event(event)
-        print(f'KaganAngle 1: {strec.results["KaganAngle"]}')
         strec_params_str = dict_to_str(strec.results)
         dtype = "StrecParameters"
         strec_path = f"STREC/{event.id}"

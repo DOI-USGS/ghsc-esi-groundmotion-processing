@@ -41,20 +41,15 @@ class STREC(object):
         tensor_params = None
         if hasattr(event, "id"):
             _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
-        print("**** tensor_params")
-        print(tensor_params)
-        print("****")
-        strec_df = selector.getSubductionType(
+        strec_dict = selector.getSubductionType(
             event.latitude,
             event.longitude,
             event.depth_km,
             event.magnitude,
             eventid=event.id,
             tensor_params=tensor_params,
-        )
-        print(f"strec_df['KaganAngle']: {strec_df['KaganAngle']}")
-        strec_dict = strec_df.to_dict()
-        print(f"strec_dict['KaganAngle']: {strec_df['KaganAngle']}")
+        ).to_dict()
+        breakpoint()
         return cls(strec_dict)
 
     def to_file(self, filename):
