@@ -49,7 +49,6 @@ class STREC(object):
             eventid=event.id,
             tensor_params=tensor_params,
         ).to_dict()
-        breakpoint()
         return cls(strec_dict)
 
     def to_file(self, filename):
