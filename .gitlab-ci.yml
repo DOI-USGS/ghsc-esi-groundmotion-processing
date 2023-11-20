@@ -46,7 +46,7 @@ run tests and coverage:
   script:
     - pip install -e .[test]
     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
-    - pytest -x --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
+    - pytest -x -s --cov=src/gmprocess --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
     - coverage xml
   stage: test
 
