@@ -52,6 +52,7 @@ class STREC(object):
             eventid=event.id,
             tensor_params=tensor_params,
         ).to_dict()
+        print(f"**** strec_dict['KaganAngle']: {strec_dict['KaganAngle']}")
         return cls(strec_dict)
 
     def to_file(self, filename):

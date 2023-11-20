@@ -39,7 +39,6 @@ def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_pat
             ws.add_event(event)
             outevent = ws.get_event(eventid)
             strec_params = ws.get_strec(outevent)
-            print(f'KaganAngle 2: {strec_params["KaganAngle"]}')
             cmp_params = {
                 "CompositeVariability": np.nan,
                 "DistanceToActive": 416.1843055109172,
