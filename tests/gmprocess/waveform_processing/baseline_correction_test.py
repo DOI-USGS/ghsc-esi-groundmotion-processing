@@ -6,17 +6,8 @@ from gmprocess.waveform_processing.baseline_correction import correct_baseline
 from gmprocess.utils.config import get_config
 
 
-def test_correct_baseline(geonet_waveforms):
-    # data_files, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    # data_files.sort()
-    # streams = []
-    # for f in data_files:
-    #     streams += read_data(f)
-
-    streams = geonet_waveforms
-    
-    # Select only the V1A files from geonet test data
-    streams = streams[::2]
+def test_correct_baseline(geonet_uncorrected_waveforms):
+    streams, _ = geonet_uncorrected_waveforms
 
     sc = StreamCollection(streams)
     final_acc = []

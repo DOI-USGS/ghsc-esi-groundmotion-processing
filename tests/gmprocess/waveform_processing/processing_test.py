@@ -15,7 +15,7 @@ CONFIG = get_config()
 setup_logger()
 
 
-def test_process_streams(geonet_uncorected_waveforms):
+def test_process_streams(geonet_uncorrected_waveforms):
     # Loma Prieta test station (nc216859)
     # ???
 
@@ -79,7 +79,7 @@ def test_process_streams(geonet_uncorected_waveforms):
 
     config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
 
-    streams, event = geonet_uncorected_waveforms
+    streams, event = geonet_uncorrected_waveforms
 
     sc = StreamCollection(streams)
 
