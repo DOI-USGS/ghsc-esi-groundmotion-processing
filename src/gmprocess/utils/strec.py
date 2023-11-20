@@ -41,6 +41,9 @@ class STREC(object):
         tensor_params = None
         if hasattr(event, "id"):
             _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
+        print("**** tensor_params")
+        print(tensor_params)
+        print("****")
         strec_dict = selector.getSubductionType(
             event.latitude,
             event.longitude,
