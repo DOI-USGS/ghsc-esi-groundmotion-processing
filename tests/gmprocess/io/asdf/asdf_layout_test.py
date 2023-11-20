@@ -1,49 +1,37 @@
 # stdlib imports
 import os
-import shutil
-import tempfile
 
 # third party imports
 import h5py
-
-from stream_workspace_test import STREC_CONFIG_PATH, configure_strec
+import pytest
 
 from gmprocess.io.asdf.core import write_asdf
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
-
-from gmprocess.io.read import read_data
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
 from gmprocess.io.asdf.station_metrics_xml import StationMetricsXML
-from gmprocess.utils.config import get_config, update_config
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.config import update_config
+from gmprocess.utils import constants
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.metrics.station_metric_collection import StationMetricCollection
 from gmprocess.waveform_processing.processing import process_streams
 
 
-CONFIG = get_config()
-
-
-def generate_workspace():
+@pytest.fixture
+def generate_workspace(config, load_data_us1000778i, tmp_path, configure_strec):
     """Generate simple HDF5 with ASDF layout for testing."""
     EVENTID = "us1000778i"
     LABEL = "ptest"
-    datafiles, event = read_data_dir("geonet", EVENTID, "*.V1A")
+    streams, event = load_data_us1000778i
 
-    tdir = tempfile.mkdtemp()
-    tfilename = os.path.join(tdir, "workspace.h5")
+    tfilename = tmp_path / "workspace.h5"
 
-    raw_data = []
-    for dfile in datafiles:
-        raw_data += read_data(dfile)
-
-    existing_config_data = configure_strec()
+    existing_config_data = configure_strec
     try:
-        write_asdf(tfilename, raw_data, event, label="unprocessed")
-        del raw_data
+        write_asdf(tfilename, streams, event, label="unprocessed")
 
-        config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
+        config = update_config(
+            str(constants.TEST_DATA_DIR / "config_min_freq_0p2.yml"), config
+        )
 
         workspace = StreamWorkspace.open(tfilename)
         raw_streams = workspace.get_streams(
@@ -67,30 +55,19 @@ def generate_workspace():
         workspace.close()
     finally:
         if existing_config_data is not None:
-            with open(STREC_CONFIG_PATH, "wt") as f:
+            with open(constants.STREC_CONFIG_PATH, "wt", encoding="utf-8") as f:
                 f.write(existing_config_data)
 
     return tfilename
 
 
-def setup_module(module):
-    setup_module.tfilename = generate_workspace()
-    return
-
-
-def teardown_module(module):
-    tdir = os.path.split(setup_module.tfilename)[0]
-    shutil.rmtree(tdir, ignore_errors=True)
-    return
-
-
-def test_layout():
+def test_layout(generate_workspace):
     LAYOUT_FILENAME = "asdf_layout.txt"
 
-    tfilename = setup_module.tfilename
+    tfilename = generate_workspace
     h5 = h5py.File(tfilename, "r")
 
-    testroot = str(TEST_DATA_DIR / "asdf")
+    testroot = str(constants.TEST_DATA_DIR / "asdf")
     layout_abspath = os.path.join(testroot, LAYOUT_FILENAME)
     with open(layout_abspath, "r", encoding="utf-8") as fin:
         lines = fin.readlines()

@@ -1,4 +1,3 @@
-from tempfile import mkdtemp
 from datetime import datetime
 
 from gmprocess.io.cosmos.cesmd_search import get_metadata, get_stations_dataframe

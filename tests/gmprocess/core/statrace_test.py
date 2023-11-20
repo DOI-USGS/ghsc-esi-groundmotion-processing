@@ -36,7 +36,7 @@ def test_trace():
     assert invtrace.get_parameter("metadata") == {"name": "Fred"}
 
     prov = invtrace.get_prov_series()
-    assert prov[0] == "demean"
+    assert prov.iloc[0] == "demean"
 
 
 def test_filters():

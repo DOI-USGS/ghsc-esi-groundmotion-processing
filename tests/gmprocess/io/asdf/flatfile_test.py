@@ -1,14 +1,10 @@
 import numpy as np
 
-from gmprocess.utils import constants
-from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.io.asdf.flatfile import Flatfile
 
 
-def test_flatfile():
-    ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
-    ws_file = ddir / "workspace.h5"
-    ws = StreamWorkspace(ws_file)
+def test_flatfile(load_ci38457511_demo_export):
+    ws = load_ci38457511_demo_export
     ff = Flatfile(ws)
     spect_table, _ = ff.get_fit_spectra_table()
     target_f0 = np.array(

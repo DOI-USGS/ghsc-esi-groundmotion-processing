@@ -1,31 +1,15 @@
-import os
-import shutil
-import tempfile
-
 from gmprocess.io.asdf.core import is_asdf, read_asdf, write_asdf
-from gmprocess.io.read import read_data
-from gmprocess.utils.test_utils import read_data_dir
-
-from stream_workspace_test import STREC_CONFIG_PATH, configure_strec
+from gmprocess.utils import constants
 
 
-def test_asdf():
-    eventid = "us1000778i"
-    datafiles, event = read_data_dir("geonet", eventid, "*.V1A")
-    tdir = tempfile.mkdtemp()
+def test_asdf(load_data_us1000778i, configure_strec, tmp_path):
+    raw_streams, event = load_data_us1000778i
+    existing_config_data = configure_strec
     try:
-        tfile = os.path.join(tdir, "test.hdf")
-        raw_streams = []
-        for dfile in datafiles:
-            raw_streams += read_data(dfile)
-
+        tfile = tmp_path / "test.hdf"
         try:
-            existing_config_data = configure_strec()
             write_asdf(tfile, raw_streams, event)
-
             assert is_asdf(tfile)
-            assert not is_asdf(datafiles[0])
-
             outstreams = read_asdf(tfile)
             assert len(outstreams) == len(raw_streams)
 
@@ -34,10 +18,8 @@ def test_asdf():
             assert len(outstreams2) == len(raw_streams)
         finally:
             if existing_config_data is not None:
-                with open(STREC_CONFIG_PATH, "wt") as f:
+                with open(constants.STREC_CONFIG_PATH, "wt", encoding="utf-8") as f:
                     f.write(existing_config_data)
 
     except Exception as e:
         raise (e)
-    finally:
-        shutil.rmtree(tdir, ignore_errors=True)
