@@ -7,6 +7,7 @@ from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils import constants
 from gmprocess.utils.config import update_config
 from gmprocess.waveform_processing.processing import process_streams
+from gmprocess.utils.test_utils import vcr
 
 STREC_CONFIG_PATH = Path.home() / ".strec" / "config.ini"
 
@@ -22,6 +23,7 @@ def assert_cmp_with_nans(d1, d2):
             np.testing.assert_allclose(v1, v2, atol=1e-2)
 
 
+@vcr.use_cassette()
 def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_path):
     """Test for StreamWorkspace class."""
     try:
