@@ -31,11 +31,11 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Mon, 20 Nov 2023 01:17:10 GMT
+      - Mon, 20 Nov 2023 16:27:01 GMT
       Expires:
-      - Mon, 20 Nov 2023 01:18:10 GMT
+      - Mon, 20 Nov 2023 16:28:01 GMT
       Last-Modified:
-      - Mon, 20 Nov 2023 01:17:10 GMT
+      - Mon, 20 Nov 2023 16:27:01 GMT
       Location:
       - /fdsnws/event/1/query?eventid=usb000syza&format=geojson
       Server:
@@ -43,9 +43,9 @@ interactions:
       Strict-Transport-Security:
       - max-age=31536000
       Via:
-      - 1.1 0408bbc7259d4538045e939f634114ec.cloudfront.net (CloudFront)
+      - 1.1 12a3cbbfe51b5d36a65ff41580c6f8a8.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - K-xgbcivjkTL7Vb0o6AZmgYCg047TM2DxcL06pVJ_8srLek-NWOrcA==
+      - 2eXb4CrFfvwS3s6_n0tNJHiO5eyBLH2wSRsC0i6y720ICV1KZR9uNg==
       X-Amz-Cf-Pop:
       - ORD56-P2
       X-Cache:
@@ -107,11 +107,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 20 Nov 2023 01:17:10 GMT
+      - Mon, 20 Nov 2023 16:27:02 GMT
       Expires:
-      - Mon, 20 Nov 2023 01:18:10 GMT
+      - Mon, 20 Nov 2023 16:28:02 GMT
       Last-Modified:
-      - Mon, 20 Nov 2023 01:17:10 GMT
+      - Mon, 20 Nov 2023 16:27:02 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -121,9 +121,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 9eb9ec227cd049f5369998fdfbf08c7c.cloudfront.net (CloudFront)
+      - 1.1 80d44f43db721c4fa16ae1b35851da00.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - s9rZQyks8MXQs_XWIvMS5vJFIb0mm2y9fkxT2LKTU58fVSbRFjkeGg==
+      - 9lLul8CPgXhwHlYI4mg4JAarkO7acKmjsTn4Pkg_Kez495jrtzjnBg==
       X-Amz-Cf-Pop:
       - ORD56-P2
       X-Cache:

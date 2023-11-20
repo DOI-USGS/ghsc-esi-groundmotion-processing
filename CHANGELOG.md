@@ -1,5 +1,8 @@
 ## main
 
+- Adjust io tests to make use of pytest fixtures and get a bit of speedup.
+- Remove config_test.yml since it isn't getting used anymore.
+
 ## 1.3.0 / 2023-11-18
 
 - Add unprocessed waveform to summary plots.
