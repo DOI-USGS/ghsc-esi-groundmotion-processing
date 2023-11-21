@@ -3,6 +3,7 @@ import pytest
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.utils.config import get_config
+from gmprocess.core.stationstream import StationStream
 from gmprocess.core.streamcollection import StreamCollection
 
 from gmprocess.waveform_processing.windows import (
@@ -79,12 +80,27 @@ def geonet_corrected_waveforms():
 
 @pytest.fixture(scope="module")
 def fdsn_nc51194936():
+    # Returns data and event objects from 3 stations: CVS, GASB, and SBT
     data_files, event = read_data_dir("fdsn", "nc51194936", "*.mseed")
     data_files.sort()
     streams = []
     for f in data_files:
         streams += read_data(f)
 
+    yield streams, event
+
+
+@pytest.fixture(scope="module")
+def fdsn_ci38457511_CLC():
+    # Returns data and event object from a single station as a StationStream
+    data_files, event = read_data_dir("fdsn", "ci38457511", "*.mseed")
+    data_files.sort()
+    streams = []
+    for f in data_files:
+        # Add trace objects to streams objects
+        streams += read_data(f)[0]
+
+    streams = StationStream(streams)
     yield streams, event
 
 

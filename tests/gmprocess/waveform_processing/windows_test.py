@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 import copy
 from obspy import UTCDateTime
@@ -13,16 +14,11 @@ from gmprocess.waveform_processing import windows
 
 PICKER_CONFIG = get_config()["pickers"]
 
-data_path = TEST_DATA_DIR / "process"
 
+def test_windows_cut(fdsn_ci38457511_CLC):
+    streams, event = fdsn_ci38457511_CLC
 
-def test_windows():
-    datafiles, event = read_data_dir("fdsn", "ci38457511", "*.mseed")
-    trace_list = []
-    for datafile in datafiles:
-        trace_list.append(read_data(datafile)[0][0])
-    st = StationStream(copy.deepcopy(trace_list))
-    st = windows.signal_split(st, event=event)
+    st = windows.signal_split(streams, event=event)
     st = windows.signal_end(
         st,
         event_time=UTCDateTime(event.time),
@@ -38,122 +34,85 @@ def test_windows():
     windows.cut(st_fail, sec_before_split=-10000)
     assert st_fail.passed is False
 
-    st2 = StationStream(copy.deepcopy(trace_list))
-    windows.window_checks(st2)
+
+def test_windows_no_split_time(fdsn_ci38457511_CLC):
+    streams, event = fdsn_ci38457511_CLC
+
+    windows.window_checks(streams)
     assert (
-        st2[0].get_parameter("failure")["reason"]
+        streams[0].get_parameter("failure")["reason"]
         == "Cannot check window because no split time available."
     )
 
-    st3 = StationStream(copy.deepcopy(trace_list))
-    st3 = windows.signal_split(st3, event=event)
-    st3 = windows.signal_end(
-        st3,
+
+def test_windows_noise_duration(fdsn_ci38457511_CLC):
+    streams, event = fdsn_ci38457511_CLC
+
+    streams = windows.signal_split(streams, event=event)
+    streams = windows.signal_end(
+        streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
         event_lat=event.latitude,
         event_mag=event.magnitude,
         method="magnitude",
     )
-    windows.window_checks(st3, min_noise_duration=100)
+    windows.window_checks(streams, min_noise_duration=100)
     assert (
-        st3[0].get_parameter("failure")["reason"]
+        streams[0].get_parameter("failure")["reason"]
         == "Failed noise window duration check."
     )
 
-    st4 = StationStream(copy.deepcopy(trace_list))
-    st4 = windows.signal_split(st4, event=event)
-    st4 = windows.signal_end(
-        st4,
+
+def test_windows_signal_duration(fdsn_ci38457511_CLC):
+    streams, event = fdsn_ci38457511_CLC
+
+    streams = windows.signal_split(streams, event=event)
+    streams = windows.signal_end(
+        streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
         event_lat=event.latitude,
         event_mag=event.magnitude,
         method="magnitude",
     )
-    windows.window_checks(st4, min_signal_duration=1000)
+    windows.window_checks(streams, min_signal_duration=1000)
     assert (
-        st4[0].get_parameter("failure")["reason"]
+        streams[0].get_parameter("failure")["reason"]
         == "Failed signal window duration check."
     )
 
 
-def test_signal_end():
-    datafiles, event = read_data_dir("fdsn", "ci38457511", "*.mseed")
-    streams = []
-    for datafile in datafiles:
-        streams.append(read_data(datafile)[0][0])
-    old_durations = []
-    for tr in streams:
-        old_durations.append((tr.stats.npts - 1) * tr.stats.delta)
-    new_streams = windows.signal_split(streams, event=event)
+@pytest.mark.parametrize(
+    "method, target",
+    [
+        ("none", [390.0, 390.0, 390.0]),
+        ("magnitude", [212.9617, 212.9617, 212.9617]),
+        ("velocity", [149.9617, 149.9617, 149.9617]),
+        ("model", [89.008733, 89.008733, 89.008733]),
+    ],
+)
+def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
+    streams, event = fdsn_ci38457511_CLC
 
-    # Method = none
-    new_streams = windows.signal_end(
-        new_streams,
-        event_time=UTCDateTime(event.time),
-        event_lon=event.longitude,
-        event_lat=event.latitude,
-        event_mag=event.magnitude,
-        method="none",
-    )
-    new_durations = []
-    for tr in new_streams:
-        new_durations.append(
-            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
-        )
-    np.testing.assert_allclose(new_durations, old_durations)
-
-    # Method = magnitude
-    new_streams = windows.signal_end(
-        new_streams,
-        event_time=UTCDateTime(event.time),
-        event_lon=event.longitude,
-        event_lat=event.latitude,
-        event_mag=event.magnitude,
-        method="magnitude",
-    )
-    new_durations = []
-    for tr in new_streams:
-        new_durations.append(
-            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
-        )
-    target = np.array([212.9617, 212.9617, 212.9617])
-    np.testing.assert_allclose(new_durations, target)
-
-    # Method = velocity
-    new_streams = windows.signal_end(
-        new_streams,
-        event_time=UTCDateTime(event.time),
-        event_lon=event.longitude,
-        event_lat=event.latitude,
-        event_mag=event.magnitude,
-        method="velocity",
-    )
-    new_durations = []
-    for tr in new_streams:
-        new_durations.append(
-            tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
-        )
-    target = np.array([149.9617, 149.9617, 149.9617])
-    np.testing.assert_allclose(new_durations, target)
+    streams = windows.signal_split(streams, event=event)
 
     # Method = model
-    new_streams = windows.signal_end(
-        new_streams,
+    streams = windows.signal_end(
+        streams,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
         event_lat=event.latitude,
         event_mag=event.magnitude,
-        method="model",
+        method=method,
     )
-    new_durations = []
-    for tr in new_streams:
-        new_durations.append(
+    durations = []
+    for tr in streams:
+        durations.append(
             tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )
-    target = np.array([89.008733, 89.008733, 89.008733])
-    np.testing.assert_allclose(new_durations, target)
+    # target = np.array([89.008733, 89.008733, 89.008733])
+    np.testing.assert_allclose(durations, target)
 
 
 def test_signal_split2():
