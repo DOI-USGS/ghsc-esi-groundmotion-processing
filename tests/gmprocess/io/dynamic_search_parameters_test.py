@@ -13,12 +13,12 @@ def test_dynamic_search_parameters():
     strec = STREC.from_file(TEST_DATA_DIR / "strec_results_nc73774300.json")
     magnitude = 4.0
     search_pars = SearchParameters(magnitude, config, strec)
-    np.testing.assert_allclose(search_pars.distance, 15.85656901)
+    np.testing.assert_allclose(search_pars.distance, 73.92671265)
     np.testing.assert_allclose(search_pars.duration, 2.0)
 
     magnitude = 6.0
     search_pars = SearchParameters(magnitude, config, strec)
-    np.testing.assert_allclose(search_pars.distance, 155.43615444)
+    np.testing.assert_allclose(search_pars.distance, 355.10886927)
     np.testing.assert_allclose(search_pars.duration, 3.0)
 
     # SRC
@@ -26,12 +26,12 @@ def test_dynamic_search_parameters():
 
     magnitude = 4.0
     search_pars = SearchParameters(magnitude, config, strec)
-    np.testing.assert_allclose(search_pars.distance, 29.69809652)
+    np.testing.assert_allclose(search_pars.distance, 190.16162929)
     np.testing.assert_allclose(search_pars.duration, 2.0)
 
     magnitude = 6.0
     search_pars = SearchParameters(magnitude, config, strec)
-    np.testing.assert_allclose(search_pars.distance, 258.71288089)
+    np.testing.assert_allclose(search_pars.distance, 800.0)
     np.testing.assert_allclose(search_pars.duration, 3.0)
 
     # No STREC, should match SRC
@@ -39,10 +39,10 @@ def test_dynamic_search_parameters():
 
     magnitude = 4.0
     search_pars = SearchParameters(magnitude, config, strec=None)
-    np.testing.assert_allclose(search_pars.distance, 29.69809652)
+    np.testing.assert_allclose(search_pars.distance, 190.16162929)
     np.testing.assert_allclose(search_pars.duration, 2.0)
 
     magnitude = 6.0
     search_pars = SearchParameters(magnitude, config, strec)
-    np.testing.assert_allclose(search_pars.distance, 258.71288089)
+    np.testing.assert_allclose(search_pars.distance, 800.0)
     np.testing.assert_allclose(search_pars.duration, 3.0)

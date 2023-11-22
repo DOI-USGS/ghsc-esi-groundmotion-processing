@@ -14,7 +14,7 @@ fetchers:
             # StableShallow GMM.
             # The distance will be the the distance at which the threshold PGA (in g) is
             # exceeded based on the GMM.
-            pga: 0.01
+            pga: 0.001
             # The maximum distance (in km) that can be returned.
             max_distance: 800.0
             # NOTE: the GMM is evaluated with a number of simplifications, including 
