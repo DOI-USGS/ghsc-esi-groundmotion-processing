@@ -4,6 +4,7 @@
 - Re-organize waveform_processing/instrument_response.py module.
 - Add trace.warning method.
 - Add trace warning when computed and reported sensitivities differ (captured from obspy).
+- Lower default PGA threshold in search_parameters to 0.001 g.
 
 ## 1.3.0 / 2023-11-18
 
