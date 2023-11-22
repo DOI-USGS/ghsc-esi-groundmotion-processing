@@ -1,6 +1,9 @@
 ## main
 
 - Adjust io tests to make use of pytest fixtures and get a bit of speedup.
+- Re-organize waveform_processing/instrument_response.py module.
+- Add trace.warning method.
+- Add trace warning when computed and reported sensitivities differ (captured from obspy).
 
 ## 1.3.0 / 2023-11-18
 
@@ -121,8 +124,7 @@
 - Allow use of projects subcommand from Python scripts.
 - Fixes SAC format units conversion issue. 
 - Add lp_max option for lowpass_max_frequency method.
-- Add the `autoprocess` subcommand, which requires moving some subcommand arguments
-  to gmprocess; this includes `eventid`, `textfile`, `label`, `num-processes`, and `overwrite`.
+- Add the `autoprocess` subcommand, which requires moving some subcommand arguments to gmprocess; this includes `eventid`, `textfile`, `label`, `num-processes`, and `overwrite`.
 - Note that moving the `label` argument to gmrecords from the subcommands means that the short flag `-l` conflicts with `log` so the short flag for log has been removed.
 - Include "passed" or "failed" for each station in export_failure_tables in addition to failure reason.
 - Moved location of the changelog (this file) from doc_source/contents/developer/changelog.md to CHANGELOG.md.
@@ -149,17 +151,14 @@
 - Factor out pkg_resources
 - Remove support for Vs30 (because it adds too many dependencies)
 - Fix code version method and add DATA_DIR to constants
-- Changed setup to use pyproject.toml and setup.cfg; still need setup.py but only for
-  cython stuff.
+- Changed setup to use pyproject.toml and setup.cfg; still need setup.py but only for cython stuff.
 - Factor out use of libcomcat.
 - Added "magnitude" and "none" options for the method argument to signal_end function.
 - Make processing steps auto detected via decorators.
 - Reorganize processing step modules.
 - Resolve a lot of future warnings.
-- In config, replace "do_check" with "enabled" for a more consistent naming convention
-  across config sections.
-- Reorganiztaion of config structure to allow for parameters to be unspecified and thus
-  use the default values from the associated methods. 
+- In config, replace "do_check" with "enabled" for a more consistent naming convention across config sections.
+- Reorganiztaion of config structure to allow for parameters to be unspecified and thus use the default values from the associated methods. 
 - More gracefully handle cases where workspace file does not exist but is expected.
 - Add label arg to gmconvert.
 - Make colocated selection optional.
@@ -173,8 +172,7 @@
 - Reorganize FDSN config options to better match the respective obspy functions.
 - Add support for frequency domain filtering.
 - Add support for frequency domain integration.
-- Turn off logging to stream if using log file and allow user specified filename for 
-  logging.
+- Turn off logging to stream if using log file and allow user specified filename for logging.
 - Apply min freq criteria to high pass filter. 
 - Fix confusion between 'unit_types' and 'units'.
 - Adding in code to handle Taiwan data script.
@@ -183,8 +181,7 @@
 - Reduced redundancy in the first three steps of MetricsController.execute_steps.
 - Allow for magnitude-distance-based channel prefrence order.
 - Added config to ASDF and read it from there rather than file system if it exists.
-- Replaced pyyaml with ruamel.yaml because the latter is actively maintained and 
-  allows persistent comments.
+- Replaced pyyaml with ruamel.yaml because the latter is actively maintained and allows persistent comments.
 - Store noise time series in output ASDF file.
 
 ## 1.1.10 / 2021-09-21
@@ -212,8 +209,7 @@
 - Fix behavior when no project has been configured
 - Added a linear mixed effects tutorial to the docs
 - Removed unnecessary processing steps that we occurring in the download subcommand
-- Added a method for finding USGS event id from other projects and included a table 
-  for cross referencing event IDs.
+- Added a method for finding USGS event id from other projects and included a table for cross referencing event IDs.
 - Changed location of temp directory used for reading in data.
 
 ## 1.1.7 / 2020-12-20
