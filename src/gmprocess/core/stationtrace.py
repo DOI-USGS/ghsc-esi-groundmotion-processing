@@ -1,3 +1,4 @@
+"""Module for the StationTrace class that inherits from obspy's Trace class."""
 import copy
 import getpass
 import inspect
@@ -199,11 +200,9 @@ class StationTrace(Trace):
             # End up here if the format was read in with ObsPy and an
             # inventory was able to be constructed (e.g., miniseed+StationXML)
             try:
-                seed_id = "%s.%s.%s.%s" % (
-                    header["network"],
-                    header["station"],
-                    header["location"],
-                    header["channel"],
+                seed_id = (
+                    f"{header['network']}.{header['station']}.{header['location']}."
+                    f"{header['channel']}"
                 )
                 start_time = header["starttime"]
                 (response, standard, coords, format_specific) = _stats_from_inventory(
@@ -256,6 +255,7 @@ class StationTrace(Trace):
         if prov_response is not None:
             self.set_provenance("remove_response", prov_response)
         self.parameters = {}
+        self.parameters["warnings"] = []
         self.cached = {}
         self.validate()
 
@@ -305,7 +305,27 @@ class StationTrace(Trace):
         calling_module = istack[1][3]
         self.set_parameter("failure", {"module": calling_module, "reason": reason})
         trace_id = f"{self.id}"
-        logging.info("%s - %s - %s", calling_module, trace_id, reason)
+        logging.info(f"Failure: {calling_module} - {trace_id} - {reason}")
+
+    def warning(self, reason):
+        """Add a warning regarding the processing of this trace..
+
+        This method will set the parameter "warnings", which is a list of dictionaries
+        in which each dictionary gives the reason for the warning and the name of the
+        calling function.
+
+        Args:
+            reason (str):
+                Reason given for warning.
+
+        """
+        previous_warngins = self.get_parameter("warnings")
+        istack = inspect.stack()
+        calling_module = istack[1][3]
+        previous_warngins.append({"module": calling_module, "reason": reason})
+        self.set_parameter("warnings", previous_warngins)
+        trace_id = f"{self.id}"
+        logging.info(f"Waring: {calling_module} - {trace_id} - {reason}")
 
     @property
     def passed(self):
@@ -1180,30 +1200,29 @@ def _stats_from_inventory(data, inventory, seed_id, start_time):
     standard["instrument_sensitivity"] = np.nan
     standard["volts_to_counts"] = np.nan
     response = None
-    if channel.response is not None:
-        response = channel.response
-        if hasattr(response, "instrument_sensitivity"):
-            units = response.instrument_sensitivity.input_units
-            if "/" in units:
-                num, _ = units.split("/")
-                if num.lower() not in LENGTH_CONVERSIONS:
-                    raise KeyError(
-                        f"Sensitivity input units of {units} are not supported."
-                    )
-                conversion = LENGTH_CONVERSIONS[num.lower()]
-                sensitivity = response.instrument_sensitivity.value * conversion
-                response.instrument_sensitivity.value = sensitivity
-                standard["instrument_sensitivity"] = sensitivity
-                # find the volts to counts stage and store that
-                if hasattr(response, "response_stages"):
-                    for stage in response.response_stages:
-                        if stage.input_units == "V" and stage.output_units == "COUNTS":
-                            standard["volts_to_counts"] = stage.stage_gain
-                            break
-            else:
-                standard[
-                    "instrument_sensitivity"
-                ] = response.instrument_sensitivity.value
+    if channel.response is None:
+        return (response, standard, coords, format_specific)
+    response = channel.response
+    if not hasattr(response, "instrument_sensitivity"):
+        return (response, standard, coords, format_specific)
+
+    units = response.instrument_sensitivity.input_units
+    if "/" in units:
+        num, _ = units.split("/")
+        if num.lower() not in LENGTH_CONVERSIONS:
+            raise KeyError(f"Sensitivity input units of {units} are not supported.")
+        conversion = LENGTH_CONVERSIONS[num.lower()]
+        sensitivity = response.instrument_sensitivity.value * conversion
+        response.instrument_sensitivity.value = sensitivity
+        standard["instrument_sensitivity"] = sensitivity
+        # find the volts to counts stage and store that
+        if hasattr(response, "response_stages"):
+            for stage in response.response_stages:
+                if stage.input_units == "V" and stage.output_units == "COUNTS":
+                    standard["volts_to_counts"] = stage.stage_gain
+                    break
+    else:
+        standard["instrument_sensitivity"] = response.instrument_sensitivity.value
 
     return (response, standard, coords, format_specific)
 

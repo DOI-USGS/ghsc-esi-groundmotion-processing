@@ -22,6 +22,7 @@ STREC_CONFIG_PATH = pathlib.Path.home() / ".strec" / "config.ini"
 
 GAL_TO_PCTG = 1.0 / sp.g
 M_PER_KM = 1000
+M_TO_CM = 100.0
 
 WORKSPACE_NAME = "workspace.h5"
 WORKSPACE_NAME_OLD = "workspace.hdf"

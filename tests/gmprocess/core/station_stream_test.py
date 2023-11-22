@@ -3,10 +3,18 @@ from obspy.core.utcdatetime import UTCDateTime
 from obspy.core.trace import Trace
 
 from gmprocess.core.stationstream import StationStream
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.utils.constants import TEST_DATA_DIR
 
 from invutils import get_inventory
+
+
+def test_warning(load_data_uw61251926):
+    st = load_data_uw61251926[0]
+    warnings1 = st[0].get_parameter("warnings")
+    assert warnings1 == []
+    st[0].warning({"warning 1"})
+    st[0].warning({"warning 2"})
+    warnings2 = st[0].get_parameter("warnings")
+    assert len(warnings2) == 2
 
 
 def test_stream():
@@ -74,14 +82,11 @@ def test_uneven_stream():
         }
         trace = Trace(data=datat, header=header)
         traces.append(trace)
-    invstream = StationStream(traces=traces, inventory=inventory)
-    x = 1
+    StationStream(traces=traces, inventory=inventory)
 
 
-def test_num_horizontals():
-    sc = StreamCollection.from_directory(
-        str(TEST_DATA_DIR / "fdsn" / "uw61251926" / "strong_motion")
-    )
+def test_num_horizontals(load_data_uw61251926):
+    sc = load_data_uw61251926
     st = sc.select(station="SP2")[0]
     assert st.num_horizontal == 2
 

@@ -1,12 +1,17 @@
 """Methods for handling instrument response."""
 
-import numpy as np
+import sys
 import logging
+
+import numpy as np
+
 from gmprocess.core.stationtrace import PROCESS_LEVELS
 from gmprocess.waveform_processing.processing_step import processing_step
+from gmprocess.utils.stderr import OutputGrabber
+from gmprocess.utils import constants
 
 ABBREV_UNITS = {"ACC": "cm/s^2", "VEL": "cm/s", "DISP": "cm"}
-M_TO_CM = 100.0
+OUTPUT = "ACC"
 
 
 @processing_step
@@ -54,155 +59,158 @@ def remove_response(
     Returns:
         StationStream: With instrument response correction applied.
     """
-    output = "ACC"
+    resp = RemoveResponse(st, pre_filt, f1, f2, f3, f4, water_level, inv, config)
+    return resp.stream
 
-    if inv is None:
-        inv = st.get_inventory()
 
-    # Check if the response information is already attached in the trace stats
-    for tr in st:
-        # Check if this trace has already been converted to physical units
-        if "remove_response" in tr.get_provenance_keys():
-            logging.debug(
-                "Trace has already had instrument response removed. "
-                "Nothing to be done."
-            )
-            continue
+class RemoveResponse(object):
+    """Class for removing instrument response."""
 
-        f_n = 0.5 / tr.stats.delta
-        if f3 is None:
-            f3 = 0.9 * f_n
-        if f4 is None:
-            f4 = f_n
-        if pre_filt:
-            pre_filt_selected = (f1, f2, f3, f4)
+    def __init__(
+        self,
+        st,
+        pre_filt=True,
+        f1=0.001,
+        f2=0.005,
+        f3=None,
+        f4=None,
+        water_level=60,
+        inv=None,
+        config=None,
+    ):
+        self.stream = st
+        self.pre_filt = pre_filt
+        self.f1 = f1
+        self.f2 = f2
+        self.f3 = f3
+        self.f4 = f4
+        self.water_level = water_level
+        self.inv = inv
+        if self.inv is None:
+            self.inv = self.stream.get_inventory()
+        self.config = config
+        for self.trace in self.stream:
+            if "remove_response" in self.trace.get_provenance_keys():
+                continue
+            self._set_pre_filt()
+            self._set_poles_and_zeros()
+            self._remove_response_selector()
+
+    def _set_pre_filt(self):
+        self.f_n = 0.5 / self.trace.stats.delta
+        if self.f3 is None:
+            self.f3 = 0.9 * self.f_n
+        if self.f4 is None:
+            self.f4 = self.f_n
+        if self.pre_filt:
+            self.pre_filt = (self.f1, self.f2, self.f3, self.f4)
         else:
-            pre_filt_selected = None
-        try:
-            resp = inv.get_response(tr.id, tr.stats.starttime)
-            paz = resp.get_paz()
-            # Check if we have an instrument measuring velocity or accleration
-            if tr.stats.channel[1] == "H":
-                # Attempting to remove instrument response can cause a variety
-                # errors due to bad response metadata
-                try:
-                    # Note: rater than set output to 'ACC' we are are setting
-                    # it to 'VEl" and then differentiating.
-                    tr.remove_response(
-                        inventory=inv,
-                        output="VEL",
-                        water_level=water_level,
-                        pre_filt=pre_filt_selected,
-                        zero_mean=True,
-                        taper=False,
-                    )
-                    tr.set_provenance(
-                        "remove_response",
-                        {
-                            "method": "remove_response",
-                            "input_units": "counts",
-                            "output_units": ABBREV_UNITS["VEL"],
-                            "water_level": water_level,
-                            "pre_filt_freqs": str(pre_filt_selected),
-                        },
-                    )
-                    diff_conf = config["differentiation"]
-                    tr.differentiate(frequency=diff_conf["frequency"])
-                    tr.data *= M_TO_CM  # Convert from m to cm
-                    tr.stats.standard.units = ABBREV_UNITS[output]
-                    tr.stats.standard.units_type = output.lower()
-                    tr.stats.standard.process_level = PROCESS_LEVELS["V1"]
-                except BaseException as e:
-                    reason = (
-                        "Encountered an error when attempting to remove "
-                        "instrument response: %s" % str(e)
-                    )
-                    tr.fail(reason)
-                    continue
+            self.pre_filt = None
 
-                # Response removal can also result in NaN values due to bad
-                # metadata, so check that data contains no NaN or inf values
-                if not np.isfinite(tr.data).all():
-                    reason = (
-                        "Non-finite values encountered after removing "
-                        "instrument response."
-                    )
-                    tr.fail(reason)
-                    continue
+    def _set_poles_and_zeros(self):
+        self.resp = self.inv.get_response(self.trace.id, self.trace.stats.starttime)
+        self.paz = self.resp.get_paz()
+        self.has_paz = not (len(self.paz.poles) == 0 and len(self.paz.zeros) == 0)
 
-            elif tr.stats.channel[1] == "N":
-                try:
-                    # If no poles and zeros are present in the xml file,
-                    # use the sensitivity method.
-                    if len(paz.poles) == 0 and len(paz.zeros) == 0:
-                        tr.remove_sensitivity(inventory=inv)
-                        tr.data *= M_TO_CM  # Convert from m to cm
-                        tr.set_provenance(
-                            "remove_response",
-                            {
-                                "method": "remove_sensitivity",
-                                "input_units": "counts",
-                                "output_units": ABBREV_UNITS[output],
-                            },
-                        )
-                        tr.stats.standard.units = ABBREV_UNITS[output]
-                        tr.stats.standard.units_type = output.lower()
-                        tr.stats.standard.process_level = PROCESS_LEVELS["V1"]
-                    else:
-                        tr.remove_response(
-                            inventory=inv,
-                            output=output,
-                            water_level=water_level,
-                            pre_filt=pre_filt_selected,
-                            zero_mean=True,
-                            taper=False,
-                        )
-                        tr.data *= M_TO_CM  # Convert from m to cm
-                        tr.set_provenance(
-                            "remove_response",
-                            {
-                                "method": "remove_response",
-                                "input_units": "counts",
-                                "output_units": ABBREV_UNITS[output],
-                                "water_level": water_level,
-                                "pre_filt_freqs": str(pre_filt_selected),
-                            },
-                        )
-                        tr.stats.standard.units = ABBREV_UNITS[output]
-                        tr.stats.standard.units_type = output.lower()
-                        tr.stats.standard.process_level = PROCESS_LEVELS["V1"]
-                except BaseException as e:
-                    reason = (
-                        "Encountered an error when attempting to remove "
-                        "instrument sensitivity: %s" % str(e)
-                    )
-                    tr.fail(reason)
-                    continue
-            else:
-                reason = (
-                    "This instrument type is not supported. "
-                    "The instrument code must be either H "
-                    "(high gain seismometer) or N (accelerometer)."
-                )
-                tr.fail(reason)
-        except BaseException as e:
-            logging.info(
-                "Encountered an error when obtaining the poles and "
-                "zeros information: %s. Now using remove_sensitivity "
-                "instead of remove_response." % str(e)
+    def _remove_response_selector(self):
+        self.instrument_code = self.trace.stats.channel[1]
+        if self.instrument_code not in "NH":
+            reason = (
+                "This instrument type is not supported. The instrument code must be "
+                "either H (high gain seismometer) or N (accelerometer)."
             )
-            tr.remove_sensitivity(inventory=inv)
-            tr.data *= M_TO_CM  # Convert from m to cm
-            tr.set_provenance(
+            self.trace.fail(reason)
+            return
+
+        if (self.instrument_code == "H") and (not self.has_paz):
+            reason = (
+                "Instrument is a seismometer and does not have poles and zeros for "
+                "response."
+            )
+            self.trace.fail(reason)
+            return
+
+        if self.has_paz:
+            try:
+                self._remove_response()
+            except BaseException as exc:
+                logging.info(
+                    "Encountered an error when in remove_response: %s. Now using "
+                    "remove_sensitivity instead.",
+                    str(exc),
+                )
+                self._remove_sensitivity()
+        else:
+            self._remove_sensitivity()
+
+    def _remove_response(self):
+        try:
+            # Note: rater than set OUTPUT to 'ACC' for seismometers, we are are setting
+            # it to 'VEL" and then differentiating.
+            if self.instrument_code == "H":
+                output_units = "VEL"
+            else:
+                output_units = "ACC"
+            out = OutputGrabber(sys.stderr)
+            out.start()
+            self.trace.remove_response(
+                inventory=self.inv,
+                output=output_units,
+                water_level=self.water_level,
+                pre_filt=self.pre_filt,
+                zero_mean=True,
+                taper=False,
+            )
+            out.stop()
+            match_str = "computed and reported sensitivities differ"
+            if match_str in out.capturedtext:
+                self.trace.warning("Computed and reported sensitivities differ.")
+
+            self.trace.set_provenance(
                 "remove_response",
                 {
-                    "method": "remove_sensitivity",
+                    "method": "remove_response",
                     "input_units": "counts",
-                    "output_units": ABBREV_UNITS[output],
+                    "output_units": ABBREV_UNITS[output_units],
+                    "water_level": self.water_level,
+                    "pre_filt_freqs": str(self.pre_filt),
                 },
             )
-            tr.stats.standard.units = ABBREV_UNITS[output]
-            tr.stats.standard.units_type = output.lower()
-            tr.stats.standard.process_level = PROCESS_LEVELS["V1"]
 
-    return st
+            # Differentiate if this is a seismometer
+            if self.instrument_code == "H":
+                diff_conf = self.config["differentiation"]
+                self.trace.differentiate(frequency=diff_conf["frequency"])
+
+            self.trace.data *= constants.M_TO_CM  # Convert from m to cm
+            self.trace.stats.standard.units = ABBREV_UNITS[OUTPUT]
+            self.trace.stats.standard.units_type = OUTPUT.lower()
+            self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
+        except BaseException as e:
+            reason = (
+                "Encountered an error when attempting to remove instrument response: "
+                f"{str(e)}"
+            )
+            self.trace.fail(reason)
+            return
+
+        # Response removal can also result in NaN values due to bad metadata, so check
+        # that data contains no NaN or inf values
+        if not np.isfinite(self.trace.data).all():
+            reason = "Non-finite values encountered after removing instrument response."
+            self.trace.fail(reason)
+
+    def _remove_sensitivity(self):
+        self.trace.remove_sensitivity(inventory=self.inv)
+        self.trace.data *= constants.M_TO_CM  # Convert from m to cm
+        self.trace.set_provenance(
+            "remove_response",
+            {
+                "method": "remove_sensitivity",
+                "input_units": "counts",
+                "output_units": ABBREV_UNITS[OUTPUT],
+            },
+        )
+        self.trace.stats.standard.units = ABBREV_UNITS[OUTPUT]
+        self.trace.stats.standard.units_type = OUTPUT.lower()
+        self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]

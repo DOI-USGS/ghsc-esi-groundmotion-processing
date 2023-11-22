@@ -295,6 +295,15 @@ class StationStream(Stream):
             [tr for tr in self if tr.passed and tr.stats.channel[2].upper() != "Z"]
         )
 
+    @property
+    def warnings(self):
+        """List of unique warnings in the stream's contituent traces."""
+        warnings = []
+        for trace in self:
+            for warning in trace.parameters["warnings"]:
+                warnings.append(warning["reason"])
+        return list(set(warnings))
+
     def __str__(self, extended=False, indent=0):
         """String summary of the StationStream.
 
