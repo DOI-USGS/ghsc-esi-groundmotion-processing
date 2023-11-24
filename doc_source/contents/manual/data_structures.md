@@ -41,11 +41,11 @@ which provides the following additional features:
      `gmprocess.io.fdsn`.
   ```
 
-- Methods (e.g., `getProvenance`, `setProvenance`) for tracking  processing
+- Methods (e.g., `get_provenance`, `set_provenance`) for tracking  processing
   steps that have been performed. These are aligned with the 
   [SEIS-PROV ](http://seismicdata.github.io/SEIS-PROV/_generated_details.html#activities)
   standard for processing provenance.
-- Methods (e.g., `getParameter` and `setParameter`) for tracking of
+- Methods (e.g., `get_parameter` and `set_parameter`) for tracking of
   arbitrary metadata in the form of a dictionary as trace property 
   (`self.parameters`).
 
