@@ -65,6 +65,13 @@ class ExportMetricTablesModule(base.SubcommandModule):
                     self.eventid,
                 )
                 continue
+            if "WaveFormMetrics" not in self.workspace.dataset.auxiliary_data:
+                logging.warning(
+                    "Waveform metrics not found in workspace for event %s."
+                    "Continuing to next event.",
+                    self.eventid,
+                )
+                continue
 
             flatfile = flat_mod.Flatfile(self.workspace)
             event_table, imc_tables, readmes = flatfile.get_tables()
