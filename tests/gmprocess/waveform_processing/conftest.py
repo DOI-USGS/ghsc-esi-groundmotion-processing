@@ -120,6 +120,17 @@ def kiknet_usp000hzq8():
     yield streams, event
 
 
+@pytest.fixture(scope="module")
+def kiknet_us2000cnnl():
+    data_files, event = read_data_dir("kiknet", "usp000hzq8")
+    data_files.sort()
+    streams = []
+    for f in data_files:
+        streams += read_data(f)
+
+    yield streams, event
+
+
 """
     Test-specific setup fixtures
 """

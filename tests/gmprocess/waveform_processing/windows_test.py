@@ -36,7 +36,7 @@ def test_windows_cut(fdsn_ci38457511_CLC):
 
 
 def test_windows_no_split_time(fdsn_ci38457511_CLC):
-    streams, event = fdsn_ci38457511_CLC
+    streams, _ = fdsn_ci38457511_CLC
 
     windows.window_checks(streams)
     assert (
@@ -97,7 +97,7 @@ def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
 
     streams = windows.signal_split(streams, event=event)
 
-    # Method = model
+    # Methods = None, magnitude, velocity, and model
     streams = windows.signal_end(
         streams,
         event_time=UTCDateTime(event.time),
@@ -111,7 +111,6 @@ def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
         durations.append(
             tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )
-    # target = np.array([89.008733, 89.008733, 89.008733])
     np.testing.assert_allclose(durations, target)
 
 
