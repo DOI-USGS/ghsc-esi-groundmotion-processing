@@ -1,5 +1,7 @@
 import pytest
 
+import copy
+
 from gmprocess.io.read import read_data
 from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.utils.config import get_config
@@ -90,7 +92,8 @@ def fdsn_nc51194936():
     yield streams, event
 
 
-@pytest.fixture(scope="module")
+# Scope to `function` level to prevent mutation of streams when parametrizing tests
+@pytest.fixture(scope="function")
 def fdsn_ci38457511_CLC():
     # Returns data and event object from a single station as a StationStream
     data_files, event = read_data_dir("fdsn", "ci38457511", "*.mseed")
