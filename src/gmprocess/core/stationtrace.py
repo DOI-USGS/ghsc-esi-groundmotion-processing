@@ -325,7 +325,7 @@ class StationTrace(Trace):
         previous_warngins.append({"module": calling_module, "reason": reason})
         self.set_parameter("warnings", previous_warngins)
         trace_id = f"{self.id}"
-        logging.info(f"Waring: {calling_module} - {trace_id} - {reason}")
+        logging.info(f"Warning: {calling_module} - {trace_id} - {reason}")
 
     @property
     def passed(self):
