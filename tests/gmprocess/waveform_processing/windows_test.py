@@ -45,44 +45,6 @@ def test_windows_no_split_time(fdsn_ci38457511_CLC):
     )
 
 
-# def test_windows_noise_duration(fdsn_ci38457511_CLC):
-#     streams, event = fdsn_ci38457511_CLC
-
-#     streams = windows.signal_split(streams, event=event)
-#     streams = windows.signal_end(
-#         streams,
-#         event_time=UTCDateTime(event.time),
-#         event_lon=event.longitude,
-#         event_lat=event.latitude,
-#         event_mag=event.magnitude,
-#         method="magnitude",
-#     )
-#     windows.window_checks(streams, min_noise_duration=100)
-#     assert (
-#         streams[0].get_parameter("failure")["reason"]
-#         == "Failed noise window duration check."
-#     )
-
-
-# def test_windows_signal_duration(fdsn_ci38457511_CLC):
-#     streams, event = fdsn_ci38457511_CLC
-
-#     streams = windows.signal_split(streams, event=event)
-#     streams = windows.signal_end(
-#         streams,
-#         event_time=UTCDateTime(event.time),
-#         event_lon=event.longitude,
-#         event_lat=event.latitude,
-#         event_mag=event.magnitude,
-#         method="magnitude",
-#     )
-#     windows.window_checks(streams, min_signal_duration=1000)
-#     assert (
-#         streams[0].get_parameter("failure")["reason"]
-#         == "Failed signal window duration check."
-#     )
-
-
 @pytest.mark.parametrize(
     "method, target",
     [
