@@ -12,7 +12,7 @@ from gmprocess.utils.config import get_config, update_dict
 setup_logger()
 
 
-def test_nnet():
+def test_nnet(geonet_WTMC_uncorrected):
     conf = get_config()
 
     update = {
@@ -26,14 +26,12 @@ def test_nnet():
     }
     update_dict(conf, update)
 
-    data_files, event = read_data_dir(
-        "geonet", "us1000778i", "20161113_110300_HSES_20.V1A"
-    )
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+    streams, event = geonet_WTMC_uncorrected
 
     sc = StreamCollection(streams)
     test = process_streams(sc, event, conf)
     nnet_dict = test[0].get_stream_param("nnet_qa")
     np.testing.assert_allclose(nnet_dict["score_HQ"], 0.9996686646819085, rtol=1e-3)
+
+    # For station WTMC (uncorrected)
+    # np.testing.assert_allclose(nnet_dict["score_HQ"], 0.9992308897749704, rtol=1e-5)

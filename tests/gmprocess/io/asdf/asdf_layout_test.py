@@ -58,7 +58,7 @@ def generate_workspace(config, load_data_us1000778i, tmp_path, configure_strec):
             with open(constants.STREC_CONFIG_PATH, "wt", encoding="utf-8") as f:
                 f.write(existing_config_data)
 
-    return tfilename
+    yield tfilename
 
 
 def test_layout(generate_workspace):

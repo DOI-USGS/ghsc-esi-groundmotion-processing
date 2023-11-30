@@ -7,7 +7,7 @@ from gmprocess.io.read import read_data
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.logging import setup_logger
 from gmprocess.utils.test_utils import read_data_dir
-from gmprocess.utils.config import update_config, get_config
+from gmprocess.utils.config import get_config, update_dict, update_config
 from gmprocess.utils.constants import TEST_DATA_DIR
 
 CONFIG = get_config()
@@ -15,19 +15,75 @@ CONFIG = get_config()
 setup_logger()
 
 
-def test_process_streams():
+def test_process_streams(geonet_uncorrected_waveforms):
     # Loma Prieta test station (nc216859)
+    # ???
 
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+    # Update default rather than loading static config
+    config = get_config()
+
+    proc_config = config["processing"]
+
+    update = {
+        "processing": [
+            {"detrend": {"detrending_method": "linear"}},
+            {"detrend": {"detrending_method": "demean"}},
+            {
+                "remove_response": {
+                    "pre_filt": "True",
+                    "f1": 0.001,
+                    "f2": 0.005,
+                    "f3": None,
+                    "f4": None,
+                    "water_level": 60.0,
+                }
+            },
+            {"detrend": {"detrending_method": "linear"}},
+            {"detrend": {"detrending_method": "demean"}},
+            {"compute_snr": {"bandwidth": 20.0}},
+            {
+                "snr_check": {
+                    "threshold": 3.0,
+                    "min_freq": 0.2,
+                    "max_freq": 5.0,
+                    "f0_options": {"stress_drop": 10, "shear_vel": 3.7, "ceiling": 2.0},
+                }
+            },
+            {
+                "get_corner_frequencies": {
+                    "method": "constant",
+                    "constant": {"highpass": 0.08, "lowpass": 20.0},
+                    "magnitude": {
+                        "minmag": [-999.0, 3.5, 5.5],
+                        "highpass": [0.5, 0.3, 0.1],
+                        "lowpass": [25.0, 35.0, 40.0],
+                    },
+                    "snr": {"same_horz": "True"},
+                }
+            },
+            {"cut": {"sec_before_split": 2.0}},
+            {"taper": {"type": "hann", "width": 0.05, "side": "both"}},
+        ],
+        # "sa": [
+        #     {"periods": {"use_array": True, "defined_periods": 0.3}},
+        # ],
+    }
+    update_dict(config, update)
+
+    # update = {
+    #     "snr_check": {'threshold': 3.0, 'min_freq': 0.2, 'max_freq': 5.0, 'f0_options': {'stress_drop': 10, 'shear_vel': 3.7, 'ceiling': 2.0}},
+    # }
+    # Index 11 is the `snr_check` field
+    # update_dict(config['processing'][11], update)
+    # update_dict(config, update)
+
+    config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
+
+    streams, event = geonet_uncorrected_waveforms
 
     sc = StreamCollection(streams)
 
     sc.describe()
-
-    config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
 
     test = process_streams(sc, event, config=config)
 
@@ -50,12 +106,12 @@ def test_process_streams():
         trace_maxes, np.array([157.81244924, 240.37952095, 263.6015194]), rtol=1e-5
     )
 
+    # x: array([158.99, 239.48, 258.44])
+    # y: array([157.812449, 240.379521, 263.601519])
 
-def test_free_field():
-    data_files, event = read_data_dir("kiknet", "usp000hzq8")
-    raw_streams = []
-    for dfile in data_files:
-        raw_streams += read_data(dfile)
+
+def test_free_field(kiknet_usp000hzq8):
+    raw_streams, event = kiknet_usp000hzq8
 
     sc = StreamCollection(raw_streams)
 
@@ -77,16 +133,22 @@ def test_free_field():
             assert reason == "Failed free field sensor check."
 
 
-def test_check_instrument():
-    data_files, event = read_data_dir("fdsn", "nc51194936", "*.mseed")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def test_check_instrument(fdsn_nc51194936):
+    config = get_config()
+
+    # Update default rather than loading static config
+    update = {
+        "processing": [
+            {"check_instrument": {"n_max": 3, "n_min": 1, "require_two_horiz": True}},
+        ]
+    }
+    update_dict(config, update)
+
+    streams, event = fdsn_nc51194936
 
     sc = StreamCollection(streams)
     sc.describe()
 
-    config = update_config(str(TEST_DATA_DIR / "config_test_check_instr.yml"), CONFIG)
     test = process_streams(sc, event, config=config)
 
     for sta, expected in [("CVS", True), ("GASB", True), ("SBT", False)]:

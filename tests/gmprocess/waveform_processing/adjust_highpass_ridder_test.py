@@ -6,11 +6,9 @@ from gmprocess.waveform_processing.adjust_highpass_ridder import ridder_fchp
 from gmprocess.utils.config import get_config
 
 
-def test_auto_fchp():
-    data_files, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V1A")
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def test_auto_fchp(geonet_WTMC_uncorrected):
+    # Use just the stream for the WTMC station V1A file
+    streams, _ = geonet_WTMC_uncorrected
 
     # Shorten window for testing
     for tr in streams[0]:
