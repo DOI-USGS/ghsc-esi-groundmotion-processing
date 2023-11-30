@@ -1,0 +1,157 @@
+\documentclass[tikz, border=5pt]{standalone}
+\usepackage[none]{hyphenat}
+\usepackage{helvet}
+\usepackage{pifont}
+\renewcommand{\familydefault}{phv}
+
+
+\begin{document}
+\pagestyle{empty}
+
+\input{palettes/palette_general}
+\input{palettes/palette_usgs}
+
+
+\tikzstyle{diagram} = [node distance=8em]
+
+
+\tikzstyle{default} = [
+  rectangle,
+  minimum height=2.0em,
+  text centered,
+  anchor=center,
+]
+
+\tikzstyle{outlined} = [
+  line width=2pt,
+  text centered,
+  draw,
+]
+
+\tikzstyle{dashed-outline} = [
+  rectangle,
+  line width=2pt,
+  draw,
+  dashed
+]
+
+\tikzstyle{task} = [
+  default,
+  fill=usgs_blue,
+  text=white,
+  text centered,
+  font={\Large\itshape},
+  text width=7em,
+  minimum height=3.0em,
+  rounded corners=5mm,
+]
+
+
+\tikzstyle{workspace} = [
+  outlined,
+  fill=yellow!20,
+  text width=53em,
+  minimum height=28em,
+]
+
+\tikzstyle{data-centers} = [
+  outlined,
+  text width=20em,
+  minimum height=6em,
+  font={\large\itshape},
+]
+
+\tikzstyle{data} = [
+  outlined,
+  fill=yellow!20,
+  text width=12.0em,
+  minimum height=5.5em
+]
+
+
+\tikzstyle{ws-data} = [
+  default,
+  fill=usgs_green,
+  text=white,
+  text width=8.0em,
+  minimum height=4.5em
+]
+
+\tikzstyle{ws-metrics} = [
+  default,
+  fill=usgs_dkred,
+  text=white,
+  text width=8.0em,
+  minimum height=4.5em
+]
+
+
+\tikzstyle{line} = [-, line width=2.5pt, usgs_blue]
+\tikzstyle{arrow} = [line,-{Latex[round,length=6mm, width=4mm]}]
+
+
+\begin{tikzpicture}[diagram, font=\Large]
+
+  \usetikzlibrary{positioning, arrows, arrows.meta, shapes, calc, shadows.blur}
+
+  \tikzstyle{diagram} = [node distance=8em]
+
+  \node (workspace) [workspace,] at (-5, 0) {};
+  \node (workspace-title) [default, anchor=north] at ($(workspace.north)+(0em,-1em)$) {\LARGE Workspace};
+
+  \node (event-data) [ws-data, anchor=west] at ($(workspace.west)+(3em,4em)$)  {Event Data};
+  \node (station-data) [ws-data, anchor=west] at ($(event-data.east)+(4em,0em)$) {Station Data};
+  \node (raw-waveforms) [ws-data, anchor=west] at ($(station-data.east)+(4em,0em)$) {Raw Waveforms};
+  \node (processed-waveforms) [ws-data, anchor=west] at ($(raw-waveforms.east)+(4em,0em)$) {Procesed Waveforms};
+
+  \node (station-metrics) [ws-metrics, ] at ($(event-data.south)+(+6.5em,-10em)$) {Station Metrics};
+  \node (waveform-metrics) [ws-metrics, ] at ($(station-metrics.east)+(+21em,0em)$) {Waveform Metrics};
+
+  \node (process) [task, ] at ($(raw-waveforms.north)+(+6.5em,3em)$) {process};
+  \node (assemble) [task, ] at ($(workspace.north west)+(10em,0em)$) {assemble};
+  \node (export) [task, ] at ($(workspace.north east)+(-10em,0em)$) {export};
+  \node (compute-wm) [task, ] at ($(workspace.north)+(+16em,-16.5em)$) {compute};
+  \node (compute-sm) [task, ] at ($(compute-wm.west)+(-25.5em,0em)$) {compute};
+
+  \node (input-data) [data, anchor=south] at ($(assemble.north)+(+0em,2em)$) {Input Data};
+  \node (output-data) [data, anchor=south] at ($(export.north)+(00em,2em)$) {Output Data};
+
+  \node (download) [task, anchor=south] at ($(input-data.north)+(+0em,2em)$) {download};
+
+  \node (data-centers-box) [data-centers, anchor=south] at ($(download.north)+(+0em,2em)$) {};
+  \node (data-centers-title) [default, anchor=north] at ($(data-centers-box.north)+(0em,-1em)$) {\LARGE Data Centers};
+  \node (data-centers-text) [default, anchor=north,font={\large\itshape}] at ($(data-centers-title.north)+(0em,-2.5em)$) {FDSN, CESMD, NIED, \ldots};
+
+  \path [dashed-outline]
+  ($(input-data.north west)+(-5.5em,+1.5em)$) rectangle ($(workspace.south east)+(+2em,-2em)$);
+  \node (workspace-title) [default, anchor=south] at ($(workspace.north)+(0em,+7.5em)$) {\LARGE Filesystem};
+
+  % download
+  \draw[line] (data-centers-box.south) -- (download.north);
+  \draw[arrow] (download.south) -- (input-data.north);
+  \draw[line] (input-data.south) -- (assemble.north);
+
+  % export
+  \draw (export.north) edge[arrow] (output-data.south);
+
+  % assemble to event, statin, raw
+  \draw (assemble.south) edge[bend left, arrow] (event-data.north);
+  \draw (assemble.south) edge[arrow] (station-data.north west);
+  \draw (assemble.south) edge[bend right=10, arrow] (raw-waveforms.north west);
+
+  % process
+  \draw (raw-waveforms.north) edge[line, bend left] (process.west);
+  \draw (process.east) edge[arrow, bend left] (processed-waveforms.north);
+
+  %processed waveforms to waveform metrics
+  \draw ($(processed-waveforms.south)+(-1em,0em)$) edge[line] ($(compute-wm.north)+(+1em,0em)$);
+  \draw ($(compute-wm.south)+(-1em,0em)$) edge[arrow] (waveform-metrics.north);
+
+  % compute station metrics
+  \draw ($(event-data.south)+(+1em,0em)$) edge[arrow] ($(compute-sm.north)+(-1em,0em)$);
+  \draw ($(station-data.south)+(-1em,0em)$) edge[arrow] ($(compute-sm.north)+(+1em,0em)$);
+  \draw (compute-sm.south) edge[arrow] (station-metrics.north);
+
+\end{tikzpicture}
+
+\end{document}
