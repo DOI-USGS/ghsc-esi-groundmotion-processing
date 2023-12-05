@@ -6,7 +6,7 @@ from gmprocess.metrics.gather import gather_pgms
 
 
 def test_gather():
-    target_imts = ["pga", "pgv", "sa", "fas", "arias", "duration", "sorted_duration"]
+    target_imts = ["pga", "pgv", "sa", "fas", "arias", "cav", "duration", "sorted_duration"]
     target_imcs = [
         "CHANNELS",
         "GMROTD",

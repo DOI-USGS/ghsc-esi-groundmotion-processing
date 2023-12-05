@@ -35,7 +35,7 @@ UNITS = {
     "pgv": "cm/s",
     "sa": "%g",
     "ariasintensity": "m/s",
-    "cavintensity": "g-s",
+    "cav": "g-s",
     "fas": "cm/s",
     "duration": "s",
     "sortedduration": "s",
@@ -155,5 +155,5 @@ COMPONENTS = {
     "QUADRATIC_MEAN": ["FAS"],
     "GEOMETRIC_MEAN": ["FAS"],
     "ARITHMETIC_MEAN": ["FAS"],
-    "CHANNELS": ["SA", "PGA", "PGV", "DURATION", "SORTED_DURATION", "ARIAS"],
+    "CHANNELS": ["SA", "PGA", "PGV", "DURATION", "SORTED_DURATION", "ARIAS","CAV"],
 }

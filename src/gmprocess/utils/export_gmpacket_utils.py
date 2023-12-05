@@ -38,6 +38,7 @@ METRIC_INFO = {
         "s",
     ),
     "ARIASINTENSITY": ("Earthquake arias intensity", "m/s"),
+    "CAV": ("Earthquake cumulative absolute velocity", "g-s"),
 }
 
 VERSION = "0.1dev"

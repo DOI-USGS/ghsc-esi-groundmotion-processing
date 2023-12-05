@@ -80,6 +80,7 @@ FLATFILE_IMT_COLUMNS = {
     ),
     "SORTEDDURATION": (f"Sorted significant duration ({constants.UNITS['duration']})"),
     "ARIASINTENSITY": f"Arias intensity ({constants.UNITS['ariasintensity']})",
+    "CAV": f"Cumulative Absolute Velocity ({constants.UNITS['cav']})",
 }
 
 # List of columns in the fit_spectra_parameters file, along README descriptions
