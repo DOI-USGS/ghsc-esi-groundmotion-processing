@@ -14,7 +14,7 @@ class CAV(IMT):
     # 2) information can now be retrieved without
     #    instantiating first
     imts, imcs = gather_pgms()
-    _invalid_imcs = ["gmrotd", "rotd"]
+    _invalid_imcs = ["gmrotd"]
 
     def __init__(self, imt, imc, period=None):
         """

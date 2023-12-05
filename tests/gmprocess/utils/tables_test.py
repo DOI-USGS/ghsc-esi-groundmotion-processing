@@ -22,6 +22,7 @@ def test_set_precisions():
         "SA(1.0)",
         "FAS(0.25)",
         "ARIAS",
+        "CAV",
         "DURATION",
     ]
     df = pd.DataFrame.from_dict(

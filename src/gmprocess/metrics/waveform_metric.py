@@ -344,3 +344,33 @@ class AriasIntensity(WaveformMetric):
     @property
     def identifier(self):
         return "AriasIntensity"
+
+class CAV(WaveformMetric):
+    """WaveformMetric subclass for Cumulative Absolute Velocity."""
+
+    def __init__(self, values, components, component_to_channel=None):
+        """Construct a CAV metric object.
+
+        Args:
+            values (list):
+                List of Cumulative Absolute Velocity values.
+            components (list):
+                List of the components that map to the Cumulative Absolute Velocity values.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "pgm"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {}
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        return "CAV"

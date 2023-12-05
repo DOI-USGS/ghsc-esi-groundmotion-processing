@@ -46,7 +46,6 @@ def test_gmpacket_writer(datafile=None, save_file=False):
 
         jsonfile = files[0]
         packet = GroundMotionPacket.load_from_json(jsonfile)
-
         cmp_dict = {
             "id": "ci38457511",
             "time": "2019-07-06T03:19:53.040000",

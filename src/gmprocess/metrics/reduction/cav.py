@@ -72,6 +72,8 @@ class CAV(Reduction):
             tr = trace.copy()
             # convert from cm/s/s to m/s/s
             tr.data *= 0.01
+            # convert from m/s/s to g-s
+            tr.data *= GAL_TO_PCTG
             # absolute value 
             tr.data = abs(tr.data)
 
@@ -89,4 +91,5 @@ class CAV(Reduction):
             )
             cav_intensities[channel] = np.abs(np.max(cav_intensity))
         self.cav_stream = cav_stream
+
         return cav_intensities
