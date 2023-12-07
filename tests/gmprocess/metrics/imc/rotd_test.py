@@ -101,11 +101,10 @@ def test_rotd():
     # Dummy event
     event = event_utils.ScalarEvent.from_params(
         id="",
-        lat=44.0,
-        lon=-123.0,
-        depth=0,
+        latitude=44.0,
+        longitude=-123.0,
+        depth_km=0,
         magnitude=0.0,
-        mag_type="",
         time="2000-01-01 00:00:00",
     )
 

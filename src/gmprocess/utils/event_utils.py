@@ -104,9 +104,13 @@ class ScalarEvent(Event):
         )
 
         event.origins = [origin]
-        magnitude = Magnitude(
-            resource_id=id, mag=magnitude, magnitude_type=magnitude_type
+
+        mtype = (
+            magnitude_type
+            if magnitude_type != "unknown" and magnitude_type != ""
+            else None
         )
+        magnitude = Magnitude(resource_id=id, mag=magnitude, magnitude_type=mtype)
         event.magnitudes = [magnitude]
         event.resource_id = id
         return event
@@ -125,74 +129,37 @@ class ScalarEvent(Event):
         return ScalarEvent.from_obspy(event)
 
     @classmethod
-    def from_geojson(cls, filename):
-        """Create a ScalarEvent (subclass of Event) from event geojson file."""
-        with open(filename, "rt", encoding="utf-8") as fin:
-            data = json.load(fin)
-
-        origin_time = datetime.datetime.fromtimestamp(
-            data["properties"]["time"] / 1000.0, pytz.utc
-        )
-        mag = data["properties"]["mag"]
-        if "magType" in data["properties"]:
-            mag_type = data["properties"]["magType"]
-        else:
-            mag_type = "unknown"
-        lat = data["geometry"]["coordinates"][1]
-        lon = data["geometry"]["coordinates"][0]
-        depth_km = data["geometry"]["coordinates"][2]
-        return ScalarEvent.from_params(
-            id=data["id"],
-            time=origin_time,
-            latitude=lat,
-            longitude=lon,
-            depth_km=depth_km,
-            magnitude=mag,
-            magnitude_type=mag_type,
-        )
-
-    @classmethod
     def from_json(cls, filename):
         def geojson_to_event(data):
-            origin_time = obspy.UTCDateTime(data["properties"]["time"] / 1000.0)
-            mag = data["properties"]["mag"]
-            if "magType" in data["properties"]:
-                mag_type = data["properties"]["magType"]
-            else:
-                mag_type = "unknown"
-            lat = data["geometry"]["coordinates"][1]
-            lon = data["geometry"]["coordinates"][0]
-            depth_km = data["geometry"]["coordinates"][2]
-            return ScalarEvent.from_params(
-                id=data["id"],
-                time=origin_time,
-                latitude=lat,
-                longitude=lon,
-                depth_km=depth_km,
-                magnitude=mag,
-                magnitude_type=mag_type,
-            )
+            return {
+                "id": data["id"],
+                "time": obspy.UTCDateTime(data["properties"]["time"] / 1000.0),
+                "latitude": data["geometry"]["coordinates"][1],
+                "longitude": data["geometry"]["coordinates"][0],
+                "depth_km": data["geometry"]["coordinates"][2],
+                "magnitude": data["properties"]["mag"],
+                "magnitude_type": data["properties"].get("magType", None),
+            }
 
         def json_to_event(data):
-            event_values = {
+            return {
                 "id": data["id"],
                 "time": data["time"],
-                "latitude": data["lat"],
-                "longitude": data["lon"],
-                "depth_km": data["depth"],
+                "latitude": data["latitude"],
+                "longitude": data["longitude"],
+                "depth_km": data["depth_km"],
                 "magnitude": data["magnitude"],
-                "magnitude_type": data.get("mag_type", "unknown"),
+                "magnitude_type": data.get("magnitude_type", None),
             }
-            return ScalarEvent.from_params(**event_values)
 
         """Create a ScalarEvent (subclass of Event) from event geojson file."""
         with open(filename, "rt", encoding="utf-8") as fin:
             data = json.load(fin)
         if "properties" in data:
-            event = geojson_to_event(data)
+            event_values = geojson_to_event(data)
         else:
-            event = json_to_event(data)
-        return event
+            event_values = json_to_event(data)
+        return ScalarEvent.from_params(**event_values)
 
     def __repr__(self):
         if not hasattr(self, "origins") or not hasattr(self, "magnitudes"):
@@ -263,11 +230,11 @@ class ScalarEvent(Event):
         data = {
             "id": self.id,
             "time": str(self.time),
-            "lat": self.latitude,
-            "lon": self.longitude,
-            "depth": self.depth_km,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "depth_km": self.depth_km,
             "magnitude": self.magnitude,
-            "mag_type": self.magnitude_type,
+            "magnitude_type": self.magnitude_type,
         }
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f)

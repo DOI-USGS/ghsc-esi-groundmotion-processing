@@ -17,11 +17,10 @@ datadir = constants.TEST_DATA_DIR / "fdsnfetch"
 def test_radial_transverse():
     event = event_utils.ScalarEvent.from_params(
         id="test",
-        lat=47.149,
-        lon=-122.7266667,
-        depth=0,
+        latitude=47.149,
+        longitude=-122.7266667,
+        depth_km=0,
         magnitude=5.0,
-        mag_type="",
         time=UTCDateTime.strptime("2016-11-13 11:02:56", "%Y-%m-%d %H:%M:%S"),
     )
     st = read(str(datadir / "resp_cor" / "UW.ALCT.--.*.MSEED"))

@@ -25,11 +25,11 @@ def test_get_peak_time():
     stream2 = read_geonet(datafile)[0]
     event = event_utils.ScalarEvent.from_params(
         id="us1000778i",
-        lat=-42.6925,
-        lon=173.021944,
-        depth=0,
+        latitude=-42.6925,
+        longitude=173.021944,
+        depth_km=0,
         magnitude=5.0,
-        mag_type="",
+        magnitude_type="",
         time="2016-11-13 11:02:56",
     )
     config = get_config()

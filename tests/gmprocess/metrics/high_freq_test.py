@@ -84,7 +84,12 @@ def read_at2(dfile, horient=0.0):
 def test_high_freq_sa():
     # Dummy event
     event = event_utils.ScalarEvent.from_params(
-        id="", time="20001-01 00:00:00", lat=0, lon=0, depth=0, magnitude=0
+        id="",
+        time="20001-01 00:00:00",
+        latitude=0,
+        longitude=0,
+        depth_km=0,
+        magnitude=0,
     )
     datadir = constants.TEST_DATA_DIR / "high_freq_sa"
     fnames = [

@@ -1,1 +1,8 @@
-{"id": "us2000cnnl", "time": "2018-01-24T10:51:19.090000", "lat": 41.1034, "lon": 142.4323, "depth": 31, "magnitude": 6.3}
+{
+    "id": "us2000cnnl",
+    "time": "2018-01-24T10:51:19.090000",
+    "latitude": 41.1034,
+    "longitude": 142.4323,
+    "depth_km": 31,
+    "magnitude": 6.3
+}

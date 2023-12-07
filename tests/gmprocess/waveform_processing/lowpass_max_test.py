@@ -55,15 +55,15 @@ def test_lowpass_max():
         }
     }
     update_dict(conf, update)
-    edict = {
+    event_values = {
         "id": "ci38038071",
         "time": UTCDateTime("2018-08-30 02:35:36"),
-        "lat": 34.136,
-        "lon": -117.775,
-        "depth": 5.5,
+        "latitude": 34.136,
+        "longitude": -117.775,
+        "depth_km": 5.5,
         "magnitude": 4.4,
     }
-    event = event_utils.from_params(**edict)
+    event = event_utils.ScalarEvent.from_params(**event_values)
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:

@@ -26,9 +26,9 @@ def test_zero_crossings():
     edict = {
         "id": "ak20419010",
         "time": UTCDateTime("2018-11-30T17:29:29"),
-        "lat": 61.346,
-        "lon": -149.955,
-        "depth": 46.7,
+        "latitude": 61.346,
+        "longitude": -149.955,
+        "depth_km": 46.7,
         "magnitude": 7.1,
     }
     event = event_utils.ScalarEvent.from_params(**edict)

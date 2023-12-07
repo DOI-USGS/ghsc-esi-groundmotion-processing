@@ -1,1 +1,11 @@
-{"id": "us6000jlqa", "afad_id": 543593, "waveforms_id": 15512, "time": "2023-02-06T10:24:47", "lat": 38.089, "lon": 37.239, "depth": 7.0, "magnitude": 7.6, "magnitude_type": "MW"}
+{
+    "id": "us6000jlqa",
+    "afad_id": 543593,
+    "waveforms_id": 15512,
+    "time": "2023-02-06T10:24:47",
+    "latitude": 38.089,
+    "longitude": 37.239,
+    "depth_km": 7.0,
+    "magnitude": 7.6,
+    "magnitude_type": "MW"
+}

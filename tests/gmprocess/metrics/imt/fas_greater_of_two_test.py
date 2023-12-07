@@ -73,11 +73,10 @@ def test_fas():
     config = get_config()
     event = event_utils.ScalarEvent.from_params(
         id="",
-        lat=33.0,
-        lon=-120.0,
-        depth=0,
+        latitude=33.0,
+        longitude=-120.0,
+        depth_km=0,
         magnitude=0.0,
-        mag_type="",
         time="2000-01-01 00:00:00",
     )
 
