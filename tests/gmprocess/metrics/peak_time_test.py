@@ -6,7 +6,7 @@ from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.reduction.max import Max
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.config import get_config
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils import test_utils
 
 
@@ -23,7 +23,7 @@ def test_get_peak_time():
     assert len(max_cls) == 1
 
     stream2 = read_geonet(datafile)[0]
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="us1000778i",
         latitude=-42.6925,
         longitude=173.021944,

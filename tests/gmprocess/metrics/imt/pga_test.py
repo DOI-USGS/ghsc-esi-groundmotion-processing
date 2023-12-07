@@ -6,7 +6,7 @@ from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.config import get_config
 from gmprocess.utils import test_utils
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 
 def test_pga():
@@ -15,7 +15,7 @@ def test_pga():
     )
     datafile_v2 = datafiles[0]
     stream_v2 = read_geonet(datafile_v2)[0]
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
         latitude=0,
         longitude=0,

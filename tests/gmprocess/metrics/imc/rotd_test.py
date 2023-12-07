@@ -9,7 +9,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.config import get_config
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 
 def test_rotd():
@@ -99,7 +99,7 @@ def test_rotd():
     target_sa0350 = 10.091461811808575
     target_sa3050 = 1.1232860465386469
     # Dummy event
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
         latitude=44.0,
         longitude=-123.0,

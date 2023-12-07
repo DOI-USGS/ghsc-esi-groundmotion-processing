@@ -8,7 +8,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.config import get_config
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 
 def test_fas():
@@ -76,7 +76,7 @@ def test_fas():
     per = np.unique([float(i[0].split(")")[0].split("(")[1]) for i in ind_vals])
     per = per[[20, 85, 160]]
     config = get_config()
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
         latitude=37.0,
         longitude=-122.0,

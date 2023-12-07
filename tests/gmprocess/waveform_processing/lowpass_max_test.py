@@ -4,7 +4,7 @@ from obspy import UTCDateTime
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils import constants
 
 
@@ -63,7 +63,7 @@ def test_lowpass_max():
         "depth_km": 5.5,
         "magnitude": 4.4,
     }
-    event = event_utils.ScalarEvent.from_params(**event_values)
+    event = scalar_event.ScalarEvent.from_params(**event_values)
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:

@@ -5,7 +5,7 @@ import numpy as np
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils import test_utils
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils.config import get_config
 
 
@@ -21,7 +21,7 @@ def test_sa():
         vtrace.integrate()
         sa_target[vtrace.stats["channel"]] = np.abs(vtrace.max())
 
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
         latitude=0,
         longitude=0,

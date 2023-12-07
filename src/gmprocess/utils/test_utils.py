@@ -4,7 +4,7 @@ import os.path
 import vcr as vcrpy
 
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 vcr = vcrpy.VCR(
     path_transformer=vcrpy.VCR.ensure_suffix(".yaml"),
@@ -58,6 +58,6 @@ def read_data_dir(file_format, eventid, files=None):
     jsonfile = eventdir / "event.json"
     event = None
     if jsonfile.is_file():
-        event = event_utils.ScalarEvent.from_json(jsonfile)
+        event = scalar_event.ScalarEvent.from_json(jsonfile)
 
     return (datafiles, event)

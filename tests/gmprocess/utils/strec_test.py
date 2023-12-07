@@ -6,7 +6,7 @@ from obspy.core.event.magnitude import Magnitude
 from obspy.core.event.origin import Origin
 
 from gmprocess.utils.strec import STREC
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils import test_utils
 
 
@@ -19,7 +19,7 @@ def setup_event():
     depth = 31.0
     mag = 7.8
 
-    event = event_utils.ScalarEvent.from_params(eid, time, lat, lon, depth, mag)
+    event = scalar_event.ScalarEvent.from_params(eid, time, lat, lon, depth, mag)
     return event
 
 

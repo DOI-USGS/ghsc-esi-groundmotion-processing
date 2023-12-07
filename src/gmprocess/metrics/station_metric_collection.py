@@ -53,7 +53,7 @@ class StationMetricCollection(MetricCollection):
         Args:
             streams (list):
                 List of StationStream objects.
-            event (gmprocess.utils.event_utils.ScalarEvent):
+            event (gmprocess.utils.scalar_event.ScalarEvent):
                 A ScalarEvent object.
             config (dict):
                 Dictionary of config options.
@@ -106,7 +106,7 @@ class StationMetricCollection(MetricCollection):
         Args:
             streams (list):
                 List of StationStream objects.
-            event (gmprocess.utils.event_utils.ScalarEvent):
+            event (gmprocess.utils.scalar_event.ScalarEvent):
                 A ScalarEvent object.
             config (dict):
                 Dictionary of config options.

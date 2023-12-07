@@ -11,8 +11,8 @@ def test_summary_plots():
     ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
     ws = StreamWorkspace.open(ddir / "workspace.h5")
     event = ws.get_event("ci38457511")
-    st = ws.get_streams(eventid="ci38457511", labels=["default"])[0]
-    st_raw = ws.get_streams(eventid="ci38457511", labels=["unprocessed"])[0]
+    st = ws.get_streams("ci38457511", labels=["default"])[0]
+    st_raw = ws.get_streams("ci38457511", labels=["unprocessed"])[0]
     tdir = tempfile.mkdtemp()
     try:
         sp = SummaryPlot(st, st_raw, tdir, event)

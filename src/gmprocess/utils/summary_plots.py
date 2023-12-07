@@ -39,7 +39,7 @@ class SummaryPlot:
                 Stream of data.
             directory (str):
                 Directory for saving plots.
-            event (gmprocess.utils.event_utils.ScalarEvent):
+            event (gmprocess.utils.scalar_event.ScalarEvent):
                 Flattened subclass of Obspy's Event.
             config (dict):
                 Configuration dictionary (or None). See get_config().

@@ -8,7 +8,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils.config import get_config
 
 
@@ -83,7 +83,7 @@ def read_at2(dfile, horient=0.0):
 
 def test_high_freq_sa():
     # Dummy event
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
         time="20001-01 00:00:00",
         latitude=0,

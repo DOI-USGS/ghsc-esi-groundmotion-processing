@@ -7,13 +7,13 @@ from gmprocess.waveform_processing.snr import compute_snr
 from gmprocess.waveform_processing.corner_frequencies import get_corner_frequencies
 from gmprocess.utils.config import get_config
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 
 def test_fit_spectra():
     config = get_config()
     event_dir = constants.TEST_DATA_DIR / "demo" / "ci38457511"
-    event = event_utils.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
+    event = scalar_event.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
     sc = StreamCollection.from_directory(event_dir / "raw")
     for st in sc:
         st = signal_split(st, event)

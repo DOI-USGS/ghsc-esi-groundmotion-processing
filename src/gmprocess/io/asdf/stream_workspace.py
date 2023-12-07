@@ -39,7 +39,6 @@ from gmprocess.io.asdf.path_utils import (
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.strec import STREC
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
 
 TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -160,11 +159,11 @@ class StreamWorkspace(object):
 
     def get_strec(self, event):
         """Get STREC results from auxiliary data"""
-        eventid = event.id.replace("smi:local/", "")
+        event_id = event.id.replace("smi:local/", "")
         aux_data = self.dataset.auxiliary_data
         if "StrecParameters" not in aux_data:
             return None
-        jsonstr = array_to_str(aux_data["StrecParameters"]["STREC"][eventid].data[:])
+        jsonstr = array_to_str(aux_data["StrecParameters"]["STREC"][event_id].data[:])
         jdict = json.loads(jsonstr)
         return jdict
 
@@ -302,7 +301,7 @@ class StreamWorkspace(object):
                 "default" if no input.
         """
 
-        eventid = self._get_id(event)
+        event_id = self._get_id(event)
         workspace_file = self.dataset.filename
         workspace_path = Path(workspace_file)
         event_dir = workspace_path.parent.absolute()
@@ -319,7 +318,7 @@ class StreamWorkspace(object):
             description = rupture_result.description
             reference = rupture_result.reference
 
-            rupture_path = eventid + "_" + label
+            rupture_path = event_id + "_" + label
 
             self.dataset.add_auxiliary_data(
                 cells,
@@ -360,17 +359,22 @@ class StreamWorkspace(object):
             quadrilaterals (#corners=4) or triangles (#corners=3).
         """
 
-        eventid = self._get_id(event)
+        event_id = self._get_id(event)
         aux_data = self.dataset.auxiliary_data
 
         if "RuptureModels" not in aux_data:
             return None
 
         try:
-            rupture_model = aux_data["RuptureModels"][eventid + "_" + label]
+            rupture_model = aux_data["RuptureModels"][event_id + "_" + label]
         except:
+<<<<<<< HEAD
             raise ValueError(
                 "There does not exist a rupture model with that eventid and label"
+=======
+            raise Exception(
+                "There does not exist a rupture model with that event_id and label"
+>>>>>>> 12982a11 (REFACTOR: Move utils.event_utils to core.scalar_event.)
             )
 
         cells = rupture_model["Cells"].data
@@ -414,8 +418,8 @@ class StreamWorkspace(object):
 
         # To allow for multiple processed versions of the same Stream
         # let's keep a dictionary of stations and sequence number.
-        eventid = self._get_id(event)
-        if not self.has_event(eventid):
+        event_id = self._get_id(event)
+        if not self.has_event(event_id):
             self.add_event(event)
 
         if hasattr(self, "config"):
@@ -443,7 +447,7 @@ class StreamWorkspace(object):
                 tfmt = "%Y%m%d%H%M%S"
                 tnow = UTCDateTime.now().strftime(tfmt)
                 label = f"processed{tnow}"
-            tag = f"{eventid}_{label}"
+            tag = f"{event_id}_{label}"
             if is_raw:
                 level = "raw"
             else:
@@ -531,7 +535,7 @@ class StreamWorkspace(object):
         """Return list of event IDs for events in ASDF file.
 
         Returns:
-            list: List of eventid strings.
+            list: List of event_id strings.
         """
         idlist = []
         for event in self.dataset.events:
@@ -552,11 +556,11 @@ class StreamWorkspace(object):
         labels = list(set(all_labels))
         return labels
 
-    def get_streams(self, eventid, stations=None, labels=None, config=None):
+    def get_streams(self, event_id, stations=None, labels=None, config=None):
         """Get Stream from ASDF file given event id and input tags.
 
         Args:
-            eventid (str):
+            event_id (str):
                 Event ID corresponding to an Event in the workspace.
             stations (list):
                 List of stations (<nework code>.<station code>) to search for.
@@ -601,7 +605,7 @@ class StreamWorkspace(object):
 
         net_codes = [st.split(".")[0] for st in stations]
         sta_codes = [st.split(".")[1] for st in stations]
-        tag = [f"{eventid}_{label}" for label in labels]
+        tag = [f"{event_id}_{label}" for label in labels]
 
         for waveform in self.dataset.ifilter(
             self.dataset.q.network == net_codes,
@@ -879,26 +883,26 @@ class StreamWorkspace(object):
 
         return inventory
 
-    def has_event(self, eventid):
-        """Verify that the workspace file contains an event matching eventid.
+    def has_event(self, event_id):
+        """Verify that the workspace file contains an event matching event_id.
 
         Args:
-            eventid (str):
+            event_id (str):
                 ID of event to search for in ASDF file.
 
         Returns:
             bool: True if event matching ID is found, False if not.
         """
         for event in self.dataset.events:
-            if event.resource_id.id.find(eventid) > -1:
+            if event.resource_id.id.find(event_id) > -1:
                 return True
         return False
 
-    def get_event(self, eventid):
+    def get_event(self, event_id):
         """Get a ScalarEvent object from the ASDF file.
 
         Args:
-            eventid (str):
+            event_id (str):
                 ID of event to search for in ASDF file.
 
         Returns:
@@ -907,13 +911,13 @@ class StreamWorkspace(object):
         """
         eventobj = None
         for event in self.dataset.events:
-            if event.resource_id.id.find(eventid) > -1:
+            if event.resource_id.id.find(event_id) > -1:
                 eventobj = event
                 break
         eventobj2 = scalar_event.ScalarEvent.from_obspy(eventobj) if eventobj else None
         return eventobj2
 
-    def get_provenance(self, eventid, stations=None, labels=None):
+    def get_provenance(self, event_id, stations=None, labels=None):
         """Return DataFrame with processing history matching input criteria.
 
                 Output will look like this:
@@ -930,7 +934,7 @@ class StreamWorkspace(object):
         ...
 
                 Args:
-                    eventid (str):
+                    event_id (str):
                         Event ID corresponding to an Event in the workspace.
                     stations (list):
                         List of stations to search for.

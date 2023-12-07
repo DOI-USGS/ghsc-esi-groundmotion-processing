@@ -14,7 +14,7 @@ from obspy import read, read_inventory
 import configobj
 
 # local imports
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils import download_utils
 
 

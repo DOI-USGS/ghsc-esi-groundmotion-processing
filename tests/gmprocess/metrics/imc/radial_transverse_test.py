@@ -9,13 +9,13 @@ from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.config import get_config
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 datadir = constants.TEST_DATA_DIR / "fdsnfetch"
 
 
 def test_radial_transverse():
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="test",
         latitude=47.149,
         longitude=-122.7266667,

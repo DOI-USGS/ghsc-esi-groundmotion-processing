@@ -5,7 +5,7 @@ import obspy
 from gmprocess.io.read import read_data
 from gmprocess.core.stationstream import StationStream
 from gmprocess.waveform_processing.clipping.clipping_check import check_clipping
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 from gmprocess.utils import constants
 from gmprocess.utils import test_utils
 
@@ -41,7 +41,7 @@ def test_check_clipping_turkey():
     traces = obspy.read(data_dir / f"{STATION}*.mseed")
     station_stream = StationStream(traces, inventory)
 
-    event = event_utils.ScalarEvent.from_json(data_dir / constants.EVENT_FILE)
+    event = scalar_event.ScalarEvent.from_json(data_dir / constants.EVENT_FILE)
 
     check_clipping(station_stream, event)
     passed = [st.passed for st in station_stream]

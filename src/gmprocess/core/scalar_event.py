@@ -3,9 +3,7 @@
 import logging
 import json
 import io
-import datetime
 
-import pytz
 import h5py
 
 import obspy
@@ -38,7 +36,11 @@ class ScalarEvent(Event):
 
         # copy the arrays
         for origin in event.origins:
-            eventobj.origins.append(origin.copy())
+            origin_copy = origin.copy()
+            origin_copy.resource_id = origin_copy.resource_id.id.replace(
+                "smi:local/", ""
+            )
+            eventobj.origins.append(origin_copy)
         for magnitude in event.magnitudes:
             eventobj.magnitudes.append(magnitude.copy())
         for station_magnitude in event.station_magnitudes:
@@ -123,9 +125,6 @@ class ScalarEvent(Event):
         if len(catalog) != 1:
             raise IOError(f"Expected a single event in QuakeML dataset in {filename}.")
         event = catalog[0]
-        event.origins[0].resource_id = event.origins[0].resource_id.id.replace(
-            "smi:local/", ""
-        )
         return ScalarEvent.from_obspy(event)
 
     @classmethod
@@ -273,26 +272,6 @@ def get_event_ids(ids=None, filename=None, data_dir=None):
         )
 
     return sorted(event_ids)
-
-
-def events_from_workspaces(data_dir, event_ids):
-    """Get event information from workspace files given a list of event ids.
-
-    Args:
-        data_dir (str):
-            Name of data directory.
-        event_ids (list):
-            List of event ids.
-    """
-    events = []
-    for event_id in event_ids:
-        event_dir = data_dir / event_id
-        workspace_filename = event_dir / constants.WORKSPACE_NAME
-        if workspace_filename.is_file():
-            event = ScalarEvent.from_workspace(workspace_filename)
-            events.append(event)
-
-    return events
 
 
 def parse_events_file(filename):

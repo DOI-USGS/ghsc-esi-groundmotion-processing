@@ -5,7 +5,7 @@ from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 
 def test_zero_crossings():
@@ -31,7 +31,7 @@ def test_zero_crossings():
         "depth_km": 46.7,
         "magnitude": 7.1,
     }
-    event = event_utils.ScalarEvent.from_params(**edict)
+    event = scalar_event.ScalarEvent.from_params(**edict)
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:

@@ -9,7 +9,7 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.config import get_config
 from gmprocess.utils import constants
-from gmprocess.utils import event_utils
+from gmprocess.core import scalar_event
 
 
 def test_arias():
@@ -60,7 +60,7 @@ def test_arias():
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.set_provenance("remove_response", response)
 
-    event = event_utils.ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
         latitude=24.0,
         longitude=120.0,
