@@ -47,7 +47,7 @@ def read_data_dir(file_format, eventid, files=None):
             datafiles.append(datafile)
     elif isinstance(files, str):
         # files is a regular expression
-        datafiles = eventdir.glob(files)
+        datafiles = list(eventdir.glob(files))
     else:
         # files is a list of filenames
         for tfile in files:
