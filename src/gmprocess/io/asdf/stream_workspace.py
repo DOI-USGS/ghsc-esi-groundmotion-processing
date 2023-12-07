@@ -37,9 +37,9 @@ from gmprocess.io.asdf.path_utils import (
     get_trace_path,
 )
 from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils.strec import STREC
 from gmprocess.utils import constants
 from gmprocess.utils import event_utils
-from gmprocess.utils import strec
 
 TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -150,10 +150,10 @@ class StreamWorkspace(object):
         event_dir = workspace_path.parent.absolute()
         strec_json = event_dir / "strec_results.json"
         if strec_json.exists():
-            strec_info = strec.STREC.from_file(strec_json)
+            strec = STREC.from_file(strec_json)
         else:
-            strec_info = strec.STREC.from_event(event)
-        strec_params_str = dict_to_str(strec_info.results)
+            strec = STREC.from_event(event)
+        strec_params_str = dict_to_str(strec.results)
         dtype = "StrecParameters"
         strec_path = f"STREC/{event.id}"
         self.insert_aux(strec_params_str, dtype, strec_path, True)
