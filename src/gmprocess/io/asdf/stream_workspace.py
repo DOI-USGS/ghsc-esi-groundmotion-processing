@@ -25,7 +25,7 @@ from gmprocess.core import provenance
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.rupture_utils import get_rupture_file
-from gmprocess.core import scalar_event
+from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.utils.strec import STREC
 
 from gmprocess.io.asdf import workspace_constants as wc
@@ -37,6 +37,7 @@ from gmprocess.io.asdf.path_utils import (
     get_trace_path,
 )
 from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils import rupture_utils
 from gmprocess.utils.strec import STREC
 from gmprocess.utils import constants
 
@@ -305,13 +306,11 @@ class StreamWorkspace(object):
         workspace_file = self.dataset.filename
         workspace_path = Path(workspace_file)
         event_dir = workspace_path.parent.absolute()
-        event_dir = str(event_dir)
 
-        rupture_file = get_rupture_file(event_dir)
+        rupture_filename = rupture_utils.get_rupture_filename(event_dir)
 
-        if rupture_file is not None:
-            rupture_file = str(rupture_file)
-            rupture_result = Rupture.from_shakemap(rupture_file, event)
+        if rupture_filename is not None:
+            rupture_result = Rupture.from_shakemap(str(rupture_filename), event)
 
             cells = np.array(rupture_result.cells)
             vertices = np.array(rupture_result.vertices)
@@ -368,13 +367,8 @@ class StreamWorkspace(object):
         try:
             rupture_model = aux_data["RuptureModels"][event_id + "_" + label]
         except:
-<<<<<<< HEAD
             raise ValueError(
-                "There does not exist a rupture model with that eventid and label"
-=======
-            raise Exception(
-                "There does not exist a rupture model with that event_id and label"
->>>>>>> 12982a11 (REFACTOR: Move utils.event_utils to core.scalar_event.)
+                f"Could not find a rupture model with event id '{event_id}' and label '{label}'."
             )
 
         cells = rupture_model["Cells"].data
@@ -909,13 +903,13 @@ class StreamWorkspace(object):
             ScalarEvent:
                 Flattened version of Obspy Event object.
         """
-        eventobj = None
+        obspy_event = None
         for event in self.dataset.events:
             if event.resource_id.id.find(event_id) > -1:
-                eventobj = event
+                obspy_event = event
                 break
-        eventobj2 = scalar_event.ScalarEvent.from_obspy(eventobj) if eventobj else None
-        return eventobj2
+        scalar_event = ScalarEvent.from_obspy(obspy_event) if obspy_event else None
+        return scalar_event
 
     def get_provenance(self, event_id, stations=None, labels=None):
         """Return DataFrame with processing history matching input criteria.
