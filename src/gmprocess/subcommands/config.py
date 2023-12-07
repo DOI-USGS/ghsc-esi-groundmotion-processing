@@ -6,7 +6,8 @@ from pathlib import Path
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
 confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
 ryaml = LazyLoader("yaml", globals(), "ruamel.yaml")
@@ -73,43 +74,35 @@ class ConfigModule(base.SubcommandModule):
         logging.info(f"Running subcommand '{self.command_name}'")
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        logging.info(f"Number of events: {len(self.events)}")
+        logging.info(f"Number of events: {len(event_ids)}")
 
-        for event in self.events:
-            event_dir = self.gmrecords.data_path / event.id
+        for event_id in event_ids:
+            event_dir = gmrecords.data_path / event_id
             if event_dir.exists():
-                workname = event_dir / const.WORKSPACE_NAME
-
-                if not workname.is_file():
-                    logging.info(
-                        f"No workspace file found for event {event.id}. "
-                        "Continuing to next event."
-                    )
+                self.open_workspace(event_id)
+                if not self.workspace:
                     continue
-
-                # Open workspace file
-                workspace = ws.StreamWorkspace.open(workname)
 
                 # Save the workspace configs to file?
                 if self.gmrecords.args.save is not None:
                     group_name = "config/config"
                     config_exists = (
-                        group_name in workspace.dataset._auxiliary_data_group
+                        group_name in self.workspace.dataset._auxiliary_data_group
                     )
                     if config_exists:
-                        logging.info(f"Saving config for {event.id}.")
+                        logging.info(f"Saving config for {event_id}.")
                         fname = Path(self.gmrecords.args.save)
                         yaml = ryaml.YAML()
                         yaml.indent(mapping=4)
                         yaml.preserve_quotes = True
                         with open(fname, "a", encoding="utf-8") as yf:
                             yf.write(f"# Path: {workname}\n")
-                            yaml.dump(workspace.config, yf)
+                            yaml.dump(self.workspace.config, yf)
                         self.append_file("Config", fname)
                     else:
-                        logging.info(f"No config in workspace for event {event.id}.")
+                        logging.info(f"No config in workspace for event {event_id}.")
                 if self.gmrecords.args.update is not None:
                     if self.gmrecords.args.update == "default":
                         # Grab the config from the project on the file system
@@ -119,7 +112,9 @@ class ConfigModule(base.SubcommandModule):
                             Path(self.gmrecords.args.update)
                         )
                     # Write project config to workspace
-                    logging.info(f"Adding config {event.id} workspace file.")
-                    workspace.add_config(config=proj_config, force=True)
+                    logging.info(f"Adding config {event_id} workspace file.")
+                    self.workspace.add_config(config=proj_config, force=True)
+
+                self.close_workspace()
 
         self._summarize_files_created()

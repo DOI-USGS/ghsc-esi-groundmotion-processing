@@ -4,12 +4,10 @@ import logging
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
-arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
 gmp_utils = LazyLoader("sm_utils", globals(), "gmprocess.utils.export_gmpacket_utils")
-confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class ExportGMPacketModule(base.SubcommandModule):
@@ -31,20 +29,19 @@ class ExportGMPacketModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
-            self.eventid = event.id
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
-                f"Creating ground-motion-packet files for event {self.eventid} "
-                f"({1+ievent} of {len(self.events)})..."
+                f"Creating ground-motion-packet files for event {event_id} "
+                f"({1+ievent} of {len(event_ids)})..."
             )
 
-            event_dir = gmrecords.data_path / event.id
-            workname = event_dir / const.WORKSPACE_NAME
+            event_dir = gmrecords.data_path / event_id
+            workname = event_dir / constants.WORKSPACE_NAME
             if not workname.is_file():
                 logging.info(
-                    f"No workspace file found for event {event.id}. Please run "
+                    f"No workspace file found for event {event_id}. Please run "
                     "subcommand 'assemble' to generate workspace file."
                 )
                 logging.info("Continuing to next event.")

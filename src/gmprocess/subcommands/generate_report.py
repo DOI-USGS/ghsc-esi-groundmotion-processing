@@ -8,11 +8,11 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
 report = LazyLoader("report", globals(), "gmprocess.io.report")
 splot = LazyLoader("plot", globals(), "gmprocess.utils.summary_plots")
 mplot = LazyLoader("plot", globals(), "gmprocess.utils.misc_plots")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class GenerateReportModule(base.SubcommandModule):
@@ -39,20 +39,23 @@ class GenerateReportModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
-            event_dir = self.gmrecords.data_path / event.id
-            pstreams = self.generate_diagnostic_plots(event)
+        for ievent, event_id in enumerate(event_ids):
+            event_dir = self.gmrecords.data_path / event_id
+            event = scalar_event.ScalarEvent.from_workspace(
+                event_dir / constants.WORKSPACE_NAME
+            )
+            config = self._get_config()
+            pstreams = self.generate_diagnostic_plots(event, config)
             if pstreams is None:
                 return
 
             logging.info(
-                f"Generating summary report for event {event.id} "
-                f"({1+ievent} of {len(self.events)})..."
+                f"Generating summary report for event {event_id} "
+                f"({1+ievent} of {len(event_ids)})..."
             )
 
-            config = self._get_config()
             build_conf = config["build_report"]
             if build_conf["enabled"]:
                 report_format = build_conf["format"]
@@ -73,19 +76,11 @@ class GenerateReportModule(base.SubcommandModule):
 
         self._summarize_files_created()
 
-    def generate_diagnostic_plots(self, event):
-        event_dir = self.gmrecords.data_path / event.id
-        workname = event_dir / const.WORKSPACE_NAME
-        if not workname.is_file():
-            logging.info(
-                f"No workspace file found for event {event.id}. Please run "
-                "subcommand 'assemble' to generate workspace file."
-            )
-            logging.info("Continuing to next event.")
-            return False
+    def generate_diagnostic_plots(self, event, config):
+        self.open_workspace(event.id)
+        if not self.workspace:
+            return
 
-        self.workspace = ws.StreamWorkspace.open(workname)
-        config = self._get_config()
         ds = self.workspace.dataset
         station_list = ds.waveforms.list()
         if len(station_list) == 0:
@@ -100,8 +95,8 @@ class GenerateReportModule(base.SubcommandModule):
             )
 
         logging.info(f"Creating diagnostic plots for event {event.id}...")
+        event_dir = self.gmrecords.data_path / event.id
         plot_dir = event_dir / "plots"
-
         if plot_dir.exists():
             shutil.rmtree(plot_dir, ignore_errors=True)
         plot_dir.mkdir()
@@ -155,7 +150,7 @@ class GenerateReportModule(base.SubcommandModule):
         mplot.plot_moveout(pstreams, event.latitude, event.longitude, file=moveoutfile)
         self.append_file("Moveout plot", moveoutfile)
 
-        self.workspace.close()
+        self.close_workspace()
 
         return pstreams
 

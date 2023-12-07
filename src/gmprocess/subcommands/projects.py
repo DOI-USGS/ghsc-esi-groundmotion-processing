@@ -6,7 +6,6 @@ import pathlib
 import platform
 import shutil
 import sys
-from pathlib import Path
 
 from esi_utils_io.cmd import get_command_output
 from gmprocess.subcommands.lazy_loader import LazyLoader
@@ -233,7 +232,7 @@ class ProjectsModule(base.SubcommandModule):
         if not self.config:
             self.config = configobj.ConfigObj(encoding="utf-8")
             self.config.filename = self.config_filepath
-        use_cwd = self.config_filepath.parent.parent == Path.cwd()
+        use_cwd = self.config_filepath.parent.parent == pathlib.Path.cwd()
         create(self.config, use_cwd)
 
     def rename_project(self, source, target):
@@ -281,8 +280,8 @@ class Project(object):
 
     def __repr__(self):
         fmt = "Project: %s %s\n\tConf Path: %s\n\tData Path: %s"
-        cpath = (Path(self.filename).parent / self.conf_path).resolve()
-        dpath = (Path(self.filename).parent / self.data_path).resolve()
+        cpath = (pathlib.Path(self.filename).parent / self.conf_path).resolve()
+        dpath = (pathlib.Path(self.filename).parent / self.data_path).resolve()
         tpl = (self.name, self.current_marker, cpath, dpath)
         return fmt % tpl
 
@@ -407,11 +406,11 @@ def create(config, use_cwd=False):
         return
 
     if use_cwd:
-        cwd = Path.cwd()
+        cwd = pathlib.Path.cwd()
         default_conf_path = cwd / "conf"
         default_data_path = cwd / "data"
     else:
-        project_path = Path("~").expanduser() / "gmprocess_projects" / project
+        project_path = pathlib.Path("~").expanduser() / "gmprocess_projects" / project
         default_conf_path = project_path / "conf"
         default_data_path = project_path / "data"
     conf_path = prompt.get_directory("conf", default_conf_path).resolve()
@@ -426,7 +425,7 @@ def create(config, use_cwd=False):
     # Apparently, relpath doesn't work for Windows, at least with the Azure
     # CI builds
     if platform.system() != "Windows" and use_cwd:
-        rel_path_loc = Path(config.filename).parents[1]
+        rel_path_loc = pathlib.Path(config.filename).parents[1]
         conf_relpath = str(".." / conf_path.relative_to(rel_path_loc))
         data_relpath = str(".." / data_path.relative_to(rel_path_loc))
     else:
@@ -441,7 +440,7 @@ def create(config, use_cwd=False):
     }
     config["project"] = project
 
-    Path(config.filename).parent.mkdir(exist_ok=True)
+    pathlib.Path(config.filename).parent.mkdir(exist_ok=True)
     config.write()
     proj = Project.from_config(config, project)
     print(f"\nCreated {proj}")

@@ -7,9 +7,8 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
-confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 path_utils = LazyLoader("path_utils", globals(), "gmprocess.io.asdf.path_utils")
 wf_collection = LazyLoader(
     "wf_collection", globals(), "gmprocess.metrics.waveform_metric_collection"
@@ -36,37 +35,29 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
                 "Computing waveform metrics for event %s (%s of %s)...",
-                event.id,
+                event_id,
                 1 + ievent,
-                len(self.events),
+                len(event_ids),
             )
-            self._compute_event_waveform_metrics(event)
+            self._compute_event_waveform_metrics(event_id)
 
         self._summarize_files_created()
 
-    def _compute_event_waveform_metrics(self, event):
-        self.eventid = event.id
-        event_dir = self.gmrecords.data_path / self.eventid
-        workname = event_dir / const.WORKSPACE_NAME
-        if not workname.is_file():
-            logging.info(
-                "No workspace file found for event %s. Please run "
-                "subcommand 'assemble' to generate workspace file.",
-                self.eventid,
-            )
-            logging.info("Continuing to next event.")
-            return event.id
+    def _compute_event_waveform_metrics(self, event_id):
+        self.open_workspace(event_id)
+        if not self.workspace:
+            return
 
-        self.workspace = ws.StreamWorkspace.open(workname)
         ds = self.workspace.dataset
         station_list = ds.waveforms.list()
         self._get_labels()
         config = self._get_config()
+        event = self.workspace.get_event(event_id)
 
         # Start with an empty metric_collection and we will append to it.
         metric_collection = wf_collection.WaveformMetricCollection()
@@ -80,7 +71,7 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
         for station_id in station_list:
             # Cannot parallelize IO to ASDF file
             streams = self.workspace.get_streams(
-                event.id,
+                event_id,
                 stations=[station_id],
                 labels=[self.gmrecords.args.label],
                 config=config,
@@ -90,7 +81,7 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
                     "No matching streams found. Aborting computation of station "
                     "metrics for %s for %s.",
                     station_id,
-                    event.id,
+                    event_id,
                 )
                 continue
 
@@ -143,4 +134,3 @@ class ComputeWaveformMetricsModule(base.SubcommandModule):
             )
 
         self.workspace.close()
-        return event.id

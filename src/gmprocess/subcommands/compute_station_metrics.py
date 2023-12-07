@@ -5,21 +5,17 @@ import pathlib
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
-np = LazyLoader("np", globals(), "numpy")
-ob = LazyLoader("ob", globals(), "obspy.geodetics.base")
-oqgeo = LazyLoader("oqgeo", globals(), "openquake.hazardlib.geo.geodetic")
-origin = LazyLoader("rupt", globals(), "esi_utils_rupture.origin")
+origin = LazyLoader("origin", globals(), "esi_utils_rupture.origin")
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-utils = LazyLoader("utils", globals(), "gmprocess.utils")
-rupt_utils = LazyLoader("rupt_utils", globals(), "gmprocess.utils.rupture_utils")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
+rupture_utils = LazyLoader("rupture_utils", globals(), "gmprocess.utils.rupture_utils")
 sta_collection = LazyLoader(
     "sta_collection", globals(), "gmprocess.metrics.station_metric_collection"
 )
 sta_xml = LazyLoader("sta_xml", globals(), "gmprocess.io.asdf.station_metrics_xml")
-confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
 
 M_PER_KM = 1000
 
@@ -43,46 +39,38 @@ class ComputeStationMetricsModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
                 "Computing station metrics for event %s (%s of %s)...",
-                event.id,
+                event_id,
                 1 + ievent,
-                len(self.events),
+                len(event_ids),
             )
-            self._event_station_metrics(event)
+            self._event_station_metrics(event_id)
 
         self._summarize_files_created()
 
-    def _event_station_metrics(self, event):
-        self.eventid = event.id
-        event_dir = self.gmrecords.data_path / self.eventid
-        workname = event_dir / utils.constants.WORKSPACE_NAME
-        if not workname.is_file():
-            logging.info(
-                "No workspace file found for event %s. Please run "
-                "subcommand 'assemble' to generate workspace file.",
-                self.eventid,
-            )
-            logging.info("Continuing to next event.")
-            return event.id
+    def _event_station_metrics(self, event_id):
+        self.open_workspace(event_id)
+        if not self.workspace:
+            return
 
-        self.workspace = ws.StreamWorkspace.open(workname)
         ds = self.workspace.dataset
         self._get_labels()
         config = self._get_config()
+        event = self.workspace.get_event(event_id)
 
         station_list = ds.waveforms.list()
         if not len(station_list):
-            self.workspace.close()
-            return event.id
+            self.close_workspace()
 
-        rupture_file = rupt_utils.get_rupture_file(event_dir)
+        event_dir = self.gmrecords.data_path / event.id
+        rupture_filename = rupture_utils.get_rupture_filename(event_dir)
         origin_obj = origin.Origin(
             {
-                "id": self.eventid,
+                "id": event.id,
                 "netid": "",
                 "network": "",
                 "lat": event.latitude,
@@ -93,10 +81,9 @@ class ComputeStationMetricsModule(base.SubcommandModule):
                 "time": event.time,
             }
         )
-        self.origin = origin_obj
 
-        if isinstance(rupture_file, pathlib.Path):
-            rupture_file = str(rupture_file)
+        if isinstance(rupture_filename, pathlib.Path):
+            rupture_filename = str(rupture_filename)
 
         for station_id in station_list:
             streams = self.workspace.get_streams(
@@ -119,7 +106,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
                     continue
 
                 smc = sta_collection.StationMetricCollection.from_streams(
-                    [stream], event, config, rupture_file=rupture_file
+                    [stream], event, config, rupture_file=rupture_filename
                 )
                 # we know there is only one element in the station_metrics list because
                 # we only gave it one stream.
@@ -136,5 +123,4 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             self.gmrecords.args.label,
         )
 
-        self.workspace.close()
-        return event.id
+        self.close_workspace()

@@ -6,8 +6,8 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class ExportProvenanceTablesModule(base.SubcommandModule):
@@ -31,39 +31,31 @@ class ExportProvenanceTablesModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
-            self.eventid = event.id
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
-                f"Creating provenance tables for event {self.eventid} "
-                f"({1+ievent} of {len(self.events)})..."
+                f"Creating provenance tables for event {event_id} "
+                f"({1+ievent} of {len(event_ids)})..."
             )
-            event_dir = gmrecords.data_path / self.eventid
+            event_dir = gmrecords.data_path / event_id
 
-            workname = event_dir / const.WORKSPACE_NAME
-            if not workname.is_file():
-                logging.info(
-                    f"No workspace file found for event {self.eventid}. Please run "
-                    "subcommand 'assemble' to generate workspace file."
-                )
-                logging.info("Continuing to next event.")
+            self.open_workspace(event_id)
+            if not self.workspace:
                 continue
-
-            self.workspace = ws.StreamWorkspace.open(workname)
-            self._get_pstreams()
+            self._get_pstreams(event_id)
 
             if not (hasattr(self, "pstreams") and len(self.pstreams) > 0):
                 logging.info(
                     "No processed waveforms available. No provenance tables created."
                 )
-                self.workspace.close()
+                self.close_workspace()
                 continue
 
             provdata = self.workspace.get_provenance(
-                self.eventid, labels=self.gmrecords.args.label
+                event_id, labels=self.gmrecords.args.label
             )
-            self.workspace.close()
+            self.close_workspace()
 
             basename = f"{gmrecords.project_name}_{gmrecords.args.label}_provenance"
             if gmrecords.args.output_format == "csv":

@@ -7,12 +7,11 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 processing = LazyLoader(
     "processing", globals(), "gmprocess.waveform_processing.processing"
 )
-confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
 
 
 class ProcessWaveformsModule(base.SubcommandModule):
@@ -44,27 +43,28 @@ class ProcessWaveformsModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
         # get the process tag from the user or use "default" for tag
         self.process_tag = gmrecords.args.label or "default"
         logging.info(f"Processing tag: {self.process_tag}")
 
-        for ievent, event in enumerate(self.events):
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
-                f"Processing waveforms for event {event.id} "
-                f"({1+ievent} of {len(self.events)})..."
+                f"Processing waveforms for event {event_id} "
+                f"({1+ievent} of {len(event_ids)})..."
             )
-            self._process_event(event)
+            self._process_event(event_id)
 
         self._summarize_files_created()
 
-    def _process_event(self, event):
-        self.open_workspace(event.id)
+    def _process_event(self, event_id):
+        self.open_workspace(event_id)
         if self.workspace is None:
             return
         ds = self.workspace.dataset
         station_list = ds.waveforms.list()
+        event = self.workspace.get_event(event_id)
 
         processed_streams = []
         if self.gmrecords.args.num_processes:
@@ -79,13 +79,13 @@ class ProcessWaveformsModule(base.SubcommandModule):
         else:
             process_type = "Processing"
             plabel = "unprocessed"
-        logging.info(f"{process_type} '{plabel}' streams for event {event.id}...")
+        logging.info(f"{process_type} '{plabel}' streams for event {event_id}...")
 
         for station_id in station_list:
             # Cannot parallelize IO to ASDF file
             config = self._get_config()
             raw_streams = self.workspace.get_streams(
-                event.id,
+                event_id,
                 stations=[station_id],
                 labels=["unprocessed"],
                 config=config,
@@ -96,7 +96,7 @@ class ProcessWaveformsModule(base.SubcommandModule):
                 # using "old_streams" for the previously processed streams which
                 # contain the manually reviewed information
                 old_streams = self.workspace.get_streams(
-                    event.id,
+                    event_id,
                     stations=[station_id],
                     labels=[self.process_tag],
                     config=config,
@@ -143,4 +143,4 @@ class ProcessWaveformsModule(base.SubcommandModule):
             )
 
         self.close_workspace()
-        return event.id
+        return event_id

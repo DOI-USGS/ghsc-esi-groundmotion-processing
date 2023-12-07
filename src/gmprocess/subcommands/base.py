@@ -7,10 +7,9 @@ from pathlib import Path
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
-base_utils = LazyLoader("base_utils", globals(), "gmprocess.utils.base_utils")
 confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
 ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
 
 
 class SubcommandModule(ABC):
@@ -32,13 +31,13 @@ class SubcommandModule(ABC):
         """Dictionary instance variable to track files created by module."""
         self.files_created = {}
 
-    def open_workspace(self, eventid):
+    def open_workspace(self, event_id):
         """Open workspace, add as attribute."""
-        event_dir = Path(self.gmrecords.data_path) / eventid
-        workname = event_dir / const.WORKSPACE_NAME
+        event_dir = Path(self.gmrecords.data_path) / event_id
+        workname = event_dir / constants.WORKSPACE_NAME
         if not workname.is_file():
-            logging.info(
-                f"No workspace file found for event {eventid}. Please run subcommand "
+            logging.warning(
+                f"No workspace file found for event {event_id}. Please run subcommand "
                 "'assemble' to generate workspace file."
             )
             logging.info("Continuing to next event.")
@@ -113,7 +112,7 @@ class SubcommandModule(ABC):
         else:
             logging.info("No new files created.")
 
-    def _get_pstreams(self):
+    def _get_pstreams(self, event_id):
         """Convenience method for recycled code."""
         self._get_labels()
         if self.gmrecords.args.label is None:
@@ -122,10 +121,10 @@ class SubcommandModule(ABC):
         config = self._get_config()
 
         self.pstreams = self.workspace.get_streams(
-            self.eventid, labels=[self.gmrecords.args.label], config=config
+            event_id, labels=[self.gmrecords.args.label], config=config
         )
 
-    def _get_events(self):
+    def _OBSOLETE_get_events(self):
         # NOTE: as currently written, `get_events` will do the following,
         #  **stopping** at the first condition that is met:
         #     1) Use event ids if event id is not None
@@ -164,13 +163,13 @@ class SubcommandModule(ABC):
                 eid.strip() for eid in self.gmrecords.args.eventid.split(",")
             ]
 
-        self.events = base_utils.get_events(
-            eventids=self.gmrecords.args.eventid,
-            textfile=tfile,
-            eventinfo=info,
-            directory=self.download_dir,
-            outdir=self.gmrecords.data_path,
-        )
+        # self.events = base_utils.get_events(
+        #    eventids=self.gmrecords.args.eventid,
+        #    textfile=tfile,
+        #    eventinfo=info,
+        #    directory=self.download_dir,
+        #    outdir=self.gmrecords.data_path,
+        # )
 
     def _get_labels(self):
         labels = self.workspace.get_labels()

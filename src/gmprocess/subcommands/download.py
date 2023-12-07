@@ -11,7 +11,7 @@ base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 download_utils = LazyLoader(
     "download_utils", globals(), "gmprocess.utils.download_utils"
 )
-event_utils = LazyLoader("event_utils", globals(), "gmprocess.utils.event_utils")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class DownloadModule(base.SubcommandModule):
@@ -32,7 +32,8 @@ class DownloadModule(base.SubcommandModule):
         logging.info(f"Running subcommand '{self.command_name}'...")
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+
+        self._get_event_ids()
 
         logging.info(f"Number of events to download: {len(self.events)}.")
         nevents = len(self.events)
@@ -42,6 +43,10 @@ class DownloadModule(base.SubcommandModule):
             )
             event_dir = gmrecords.data_path / event.id
             event_dir.mkdir(exist_ok=True)
+
+            # :TODO: Need to account for cases in which event ids are specified OR
+            # event information is specified
+            download_utils.download_comcat_event()
 
             download_utils.download_waveforms(
                 event=event, event_dir=event_dir, config=copy.deepcopy(gmrecords.conf)
@@ -66,8 +71,10 @@ class DownloadModule(base.SubcommandModule):
                 raise IOError(
                     f"Could not find events file `{events_filename}` to read events information."
                 )
-            events_info = event_utils.parse_events_file(events_filename)
-            if len(events_info) and isinstance(events_info[0], event_utils.ScalarEvent):
+            events_info = scalar_event.parse_events_file(events_filename)
+            if len(events_info) and isinstance(
+                events_info[0], scalar_event.ScalarEvent
+            ):
                 # Events file contains events information.
                 events = events_info
             else:
