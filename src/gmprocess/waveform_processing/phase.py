@@ -697,7 +697,7 @@ def _get_statelevel(y, n):
 def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     """
     Creates a travel time dataframe, which contains the phase arrrival times
-    for each station the StreamCollection, for each event in the catalog.
+    for each station in the StreamCollection, for each event in the catalog.
     This uses an interpolation method to save time, and the fineness of the
     interpolation grid can be adjusted using the ddepth and ddist parameters.
     Using the recommended values of ddepth=5 and ddist=0.1 are generally
