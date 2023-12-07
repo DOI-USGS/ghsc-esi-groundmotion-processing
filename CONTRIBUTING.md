@@ -87,9 +87,18 @@ Common reasons to rebase include:
    git tag -a v1.2.1 -m "Version 1.2.1"
    git push upstream v1.2.1
    ```
+   - This git push command is what triggers the "release" pipeline that includes the test, build, and deploy stages.
+   - *Note that we cannot have a hyphen in the tag name.* 
+   - Also, if we end the tag name with "dev" then it will be build and uploaded to pypi as a pre-release version, which means that it will never be pip installed unless the user specifies the exact version of the pre-release.
+   - Maintainence note: the PYPI tokens are maintained in gitlab for the ESI group, under Settings then CI/CD, then Variables. These tokens are associated with the "pager_cicd" pypi service account.  
+   - Soon, pypi will require 2 factor authentication and could break this process.
 6. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
 7. Copy/paste the relevant part of the changelog into the "describe this release" section.
 8. Merge the release candidate back into main. 
+   ```
+   git push origin v1.2.1.rc0
+   ```
+   Then create a merge request in to upstream main.
 
 
 ## Build Documentation
