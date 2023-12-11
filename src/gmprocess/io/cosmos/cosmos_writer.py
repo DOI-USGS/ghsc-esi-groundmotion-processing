@@ -11,7 +11,7 @@ from enum import Enum
 import numpy as np
 import pandas as pd
 import scipy.constants as sp
-from gmprocess.core.stationtrace import TIMEFMT, UNITS
+from gmprocess.core.stationtrace import UNITS
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -23,6 +23,7 @@ COSMOS_FORMAT = 1.2
 UTC_TIME_FMT = "%m/%d/%Y, %H:%M:%S.%f"
 AGENCY_RESERVED = "Converted from ASDF"
 LOCAL_TIME_FMT = "%B %d, %Y %H:%M"
+TIMEFMT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 class Volume(Enum):
@@ -379,11 +380,17 @@ class TextHeader(object):
         self.set_header_value("data_maximum_time", maxtime)
 
         # line 12
-        lowpass_info = trace.get_provenance("lowpass_filter")
-        highpass_info = trace.get_provenance("highpass_filter")
-        self.set_header_value("low_band_hz", highpass_info[0]["corner_frequency"])
-        self.set_header_value("low_band_sec", 1 / highpass_info[0]["corner_frequency"])
-        self.set_header_value("high_band_hz", lowpass_info[0]["corner_frequency"])
+        lowpass_prov = trace.get_provenance("lowpass_filter")
+        highpass_prov = trace.get_provenance("highpass_filter")
+        self.set_header_value(
+            "low_band_hz", highpass_prov[0]["prov_attributes"]["corner_frequency"]
+        )
+        self.set_header_value(
+            "low_band_sec", 1 / highpass_prov[0]["prov_attributes"]["corner_frequency"]
+        )
+        self.set_header_value(
+            "high_band_hz", lowpass_prov[0]["prov_attributes"]["corner_frequency"]
+        )
 
         # line 13
         miss_str = "Values used when parameter or data value is unknown/unspecified:"
@@ -481,8 +488,10 @@ class IntHeader(object):
 
         # Filtering/processing parameters
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.get_provenance("lowpass_filter")[0]
-            highpass_info = trace.get_provenance("highpass_filter")[0]
+            lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
+            highpass_info = trace.get_provenance("highpass_filter")[0][
+                "prov_attributes"
+            ]
             self.header[5][9] = NONCAUSAL_BUTTERWORTH_FILTER
             if highpass_info["number_of_passes"] == 1:
                 self.header[5][9] = CAUSAL_BUTTERWORTH_FILTER
@@ -560,8 +569,10 @@ class FloatHeader(object):
             sensor_sensitivity = (1 / volts_to_counts) * instrument_sensitivity * sp.g
             self.header[6][5] = sensor_sensitivity  # volts/g
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.get_provenance("lowpass_filter")[0]
-            highpass_info = trace.get_provenance("highpass_filter")[0]
+            lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
+            highpass_info = trace.get_provenance("highpass_filter")[0][
+                "prov_attributes"
+            ]
             self.header[8][5] = highpass_info["corner_frequency"]
             self.header[9][2] = lowpass_info["corner_frequency"]
 

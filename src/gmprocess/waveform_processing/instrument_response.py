@@ -90,7 +90,7 @@ class RemoveResponse(object):
             self.inv = self.stream.get_inventory()
         self.config = config
         for self.trace in self.stream:
-            if "remove_response" in self.trace.get_provenance_keys():
+            if "remove_response" in self.trace.provenance.ids:
                 continue
             self._set_pre_filt()
             self._set_poles_and_zeros()

@@ -11,7 +11,7 @@ from datetime import datetime
 import numpy as np
 import scipy.constants as sp
 from gmprocess.core.stationstream import StationStream
-from gmprocess.core.stationtrace import PROCESS_LEVELS, TIMEFMT, StationTrace
+from gmprocess.core.stationtrace import PROCESS_LEVELS, StationTrace
 
 # local imports
 from gmprocess.io.cosmos.data_structures import (
@@ -24,6 +24,7 @@ from gmprocess.io.utils import is_binary
 from gmprocess.utils.constants import UNIT_CONVERSIONS
 from obspy.core.trace import Stats
 
+TIMEFMT = "%Y-%m-%dT%H:%M:%SZ"
 MICRO_TO_VOLT = 1e6  # convert microvolts to volts
 MSEC_TO_SEC = 1 / 1000.0
 TEXT_HDR_ROWS = 14

@@ -15,7 +15,7 @@ import pytz
 from gmprocess.utils.constants import UNIT_CONVERSIONS, DATA_DIR
 from gmprocess.io.usc.core import is_usc
 from gmprocess.io.seedname import get_channel_name, get_units_type
-from gmprocess.core.stationtrace import StationTrace, TIMEFMT, PROCESS_LEVELS
+from gmprocess.core.stationtrace import StationTrace, PROCESS_LEVELS
 from gmprocess.core.stationstream import StationStream
 from gmprocess.io.utils import is_evenly_spaced, resample_uneven_trace
 from gmprocess.io.utils import is_binary
@@ -63,6 +63,7 @@ CODES, SOURCES1, SOURCES2 = np.genfromtxt(
 CODES = CODES.astype(str)
 
 UNITS = ["acc", "vel", "disp"]
+TIMEFMT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 def _get_date(line):

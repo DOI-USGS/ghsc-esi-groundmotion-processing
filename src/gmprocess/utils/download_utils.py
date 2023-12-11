@@ -11,13 +11,13 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
+from obspy.core.utcdatetime import UTCDateTime
+from obspy.geodetics.base import locations2degrees
+from obspy.taup import TauPyModel
 
 # local imports
 from gmprocess.io.global_fetcher import fetch_data
 from gmprocess.utils.misc import get_rawdir
-from obspy.core.utcdatetime import UTCDateTime
-from obspy.geodetics.base import locations2degrees
-from obspy.taup import TauPyModel
 
 from gmprocess.utils.strec import STREC
 
