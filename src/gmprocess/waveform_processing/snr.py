@@ -254,7 +254,7 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         )
         smooth_signal_normspectrum = smooth_signal_spectrum / np.sqrt(dur_shaking)
         snr = smooth_signal_normspectrum / smooth_event_noise_normspectrum
-        snr_dict = tr.set_cached(
+        tr.set_cached(
             "snr",
             {
                 "snr": snr,

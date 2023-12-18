@@ -74,11 +74,11 @@ class CAV(Reduction):
             tr.data *= 0.01
             # convert from m/s/s to g-s
             tr.data *= GAL_TO_PCTG
-            # absolute value 
+            # absolute value
             tr.data = abs(tr.data)
 
-            # Calculate Cumulative Absolute Velocity 
-            tr.integrate(self.config)
+            # Calculate Cumulative Absolute Velocity
+            tr.integrate(**self.config["integration"])
             cav_intensity = tr.data
 
             # Create a copy of stats so we don't modify original data
@@ -86,9 +86,7 @@ class CAV(Reduction):
             channel = stats.channel
             stats.standard.units_type = "vel"
             stats.npts = len(cav_intensity)
-            cav_stream.append(
-                StationTrace(cav_intensity, header=stats, config=config)
-            )
+            cav_stream.append(StationTrace(cav_intensity, header=stats, config=config))
             cav_intensities[channel] = np.abs(np.max(cav_intensity))
         self.cav_stream = cav_stream
 

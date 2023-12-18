@@ -187,7 +187,7 @@ def new_and_improved_calculate_spectrals(trace, period, damping):
         # Make a copy because resampling happens in place
         trace = trace.copy()
         # Resample the trace
-        trace.resample(new_sample_rate, window=None)
+        trace.resample(new_sample_rate)
 
     sa_list = calculate_spectrals(
         trace.data, new_np, new_dt, new_sample_rate, period, damping

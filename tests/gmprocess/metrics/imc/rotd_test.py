@@ -117,11 +117,11 @@ def test_rotd():
 
     wml_values = [w.value("ROTD(50.0)") for w in wml]
     target_vlues = [
-        4.1221200279448444,
-        6.2243050413999645,
+        4.122120027944845,
+        6.206314003505559,
         10.091461811808575,
         10.716249471749395,
-        1.1232860465386469,
+        1.1232860465386652,
     ]
 
     np.testing.assert_allclose(wml_values, target_vlues)

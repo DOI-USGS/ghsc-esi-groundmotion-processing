@@ -93,7 +93,6 @@ def test_controller():
         input_imts, input_imcs, stream_v2, event=event, config=config
     )
     pgms = m1.pgms
-    #breakpoint()
     # testing for pga, pgv, sa
     target_imcs = [
         "ROTD(50.0)",
@@ -151,11 +150,9 @@ def test_controller():
             "Z",
         ],
     )
-    #breakpoint()
-    #import pdb; pdb.set_trace()
     _validate_steps(m1.step_sets, "acc")
 
-    # testing for cav 
+    # testing for cav
     imcs = pgms.loc[pgms["IMT"] == "CAV"]["IMC"].tolist()
     assert len(imcs) == 9
     np.testing.assert_array_equal(
@@ -239,6 +236,7 @@ def test_controller():
     )
     _validate_steps(m.step_sets, "vel")
 
+
 def _validate_steps(step_sets, data_type):
     datafile_abspath = TEST_DATA_DIR / "metrics_controller" / "workflows.csv"
     df = pd.read_csv(datafile_abspath)
@@ -250,9 +248,6 @@ def _validate_steps(step_sets, data_type):
         imt = steps["imt"]
         imc = steps["imc"]
         row = wf_df[(wf_df.IMT == imt) & (wf_df.IMC == imc) & (wf_df.Data == data_type)]
-        #breakpoint()
-        #if step_set == "cav_arithmetic_mean": 
-        #    breakpoint()
         assert steps["Transform1"] == row["Transform1"].iloc[0]
         assert steps["Transform2"] == row["Transform2"].iloc[0]
         assert steps["Transform3"] == row["Transform3"].iloc[0]

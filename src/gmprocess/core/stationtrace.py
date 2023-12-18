@@ -395,7 +395,14 @@ class StationTrace(Trace):
         return self
 
     def integrate(
-        self, frequency=False, initial=0.0, demean=False, taper=False, config=None
+        self,
+        frequency=True,
+        initial=0.0,
+        demean=False,
+        taper=False,
+        taper_width=0.05,
+        taper_type="hann",
+        taper_side="both",
     ):
         """Integrate a StationTrace with respect to either frequency or time.
 
@@ -408,21 +415,17 @@ class StationTrace(Trace):
             demean (bool):
                 Remove mean from array before integrating.
             taper (bool):
-                Taper the ends of entire trace.
-            config (dict):
-                Configuration dictionary (or None). See get_config().
+                Apply a taper.
+            taper_width (float):
+                Taper width.
+            taper_type (float):
+                Taper type.
+            taper_side (float):
+                Taper side.
 
         Returns:
             StationTrace: Input StationTrace is integrated and returned.
         """
-        if config:
-            frequency = config["integration"]["frequency"]
-            initial = config["integration"]["initial"]
-            demean = config["integration"]["demean"]
-            taper = config["integration"]["taper"]["taper"]
-            taper_width = config["integration"]["taper"]["width"]
-            taper_type = config["integration"]["taper"]["type"]
-            taper_side = config["integration"]["taper"]["side"]
 
         if demean:
             self.data -= np.mean(self.data)

@@ -17,7 +17,7 @@ def get_disp(tr, config=None):
     """
     acc = tr.copy()
     try:
-        disp = acc.integrate(config=config).integrate(config=config)
+        disp = acc.integrate(**config["integration"]).integrate(**config["integration"])
     except Exception as e:
         raise e
     return disp
@@ -39,7 +39,7 @@ def get_vel(tr, config=None):
     """
     acc = tr.copy()
     try:
-        vel = acc.integrate(config=config)
+        vel = acc.integrate(**config["integration"])
     except Exception as e:
         raise e
     return vel

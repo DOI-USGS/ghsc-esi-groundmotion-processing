@@ -310,7 +310,7 @@ def get_components(wml, stream, config):
             idx = np.where([trace.data >= peak_acc])[1][0]
             peak_pga_time = (start + (delta * idx)).strftime(EVENT_TIMEFMT)
             vel_trace = trace.copy()
-            vel_trace.integrate(config)
+            vel_trace.integrate(**config["integration"])
             peak_vel = vel_trace.data.max()
             start = vel_trace.stats.starttime
             delta = vel_trace.stats.delta

@@ -94,25 +94,25 @@ def test_integrate_taper(geonet_uncorrected_waveforms):
     sc, _ = geonet_uncorrected_waveforms
 
     config = get_config()
-    config["integration"]["taper"]["taper"] = True
+    config["integration"]["taper"] = True
 
     final_vel = []
     for st in sc:
         for tr in st:
-            tmp_tr = tr.integrate(config=config)
+            tmp_tr = tr.integrate(**config["integration"])
             final_vel.append(tmp_tr.data[-1])
 
     target_final_vel = np.array(
         [
-            3.896186e00,
-            -4.901823e00,
-            -5.722080e-01,
-            1.621672e-01,
-            -1.654317e-01,
-            -8.242356e-04,
-            -1.482590e-02,
-            1.504334e-01,
-            1.021050e-01,
+            5.952099e-05,
+            -7.481835e-05,
+            -8.635273e-06,
+            2.430373e-06,
+            -2.758605e-06,
+            -2.371486e-08,
+            -3.067016e-07,
+            2.616267e-06,
+            1.683576e-06,
         ]
     )
 

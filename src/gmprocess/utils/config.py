@@ -138,27 +138,17 @@ CONF_SCHEMA = Schema(
             "output_imcs": list,
             "output_imts": list,
             "sa": {
-                "damping": float,
-                "periods": {
-                    "start": float,
-                    "stop": float,
-                    "num": int,
-                    "spacing": str,
-                    "use_array": bool,
-                    "defined_periods": list,
-                },
+                "damping": list,
+                "periods": list,
             },
             "fas": {
                 "smoothing": str,
                 "bandwidth": float,
                 "allow_nans": bool,
-                "periods": {
+                "frequencies": {
                     "start": float,
                     "stop": float,
                     "num": int,
-                    "spacing": str,
-                    "use_array": bool,
-                    "defined_periods": list,
                 },
             },
             "duration": {"intervals": list},
@@ -167,7 +157,10 @@ CONF_SCHEMA = Schema(
             "frequency": bool,
             "initial": float,
             "demean": bool,
-            "taper": {"taper": bool, "type": str, "width": float, "side": str},
+            "taper": bool,
+            "taper_width": float,
+            "taper_type": str,
+            "taper_side": str,
         },
         "gmm_selection": {
             "ActiveShallow": str,
@@ -365,33 +358,18 @@ def get_config_imts_imcs(conf):
     imts = []
     for imt in config_imts:
         if imt == "sa":
-            if metrics["sa"]["periods"]["use_array"]:
-                start = metrics["sa"]["periods"]["start"]
-                stop = metrics["sa"]["periods"]["stop"]
-                num = metrics["sa"]["periods"]["num"]
-                if metrics["sa"]["periods"]["spacing"] == "logspace":
-                    periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-                else:
-                    periods = np.linspace(start, stop, num=num)
-                for period in periods:
-                    imts += ["sa" + str(period)]
-            else:
-                for period in metrics["sa"]["periods"]["defined_periods"]:
-                    imts += ["sa" + str(period)]
+            for period in metrics["sa"]["periods"]:
+                imts += ["sa" + str(period)]
         elif imt == "fas":
-            if metrics["fas"]["periods"]["use_array"]:
-                start = metrics["fas"]["periods"]["start"]
-                stop = metrics["fas"]["periods"]["stop"]
-                num = metrics["fas"]["periods"]["num"]
-                if metrics["fas"]["periods"]["spacing"] == "logspace":
-                    periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-                else:
-                    periods = np.linspace(start, stop, num=num)
-                for period in periods:
-                    imts += ["fas" + str(period)]
+            start = metrics["fas"]["periods"]["start"]
+            stop = metrics["fas"]["periods"]["stop"]
+            num = metrics["fas"]["periods"]["num"]
+            if metrics["fas"]["periods"]["spacing"] == "logspace":
+                periods = np.logspace(np.log10(start), np.log10(stop), num=num)
             else:
-                for period in metrics["fas"]["periods"]["defined_periods"]:
-                    imts += ["fas" + str(period)]
+                periods = np.linspace(start, stop, num=num)
+            for period in periods:
+                imts += ["fas" + str(period)]
         elif imt == "duration":
             for interval in metrics["duration"]["intervals"]:
                 imts += ["duration" + interval]

@@ -75,7 +75,7 @@ class Arias(Reduction):
             tr.data *= tr.data
 
             # Calculate Arias Intensity
-            tr.integrate(self.config)
+            tr.integrate(**self.config["integration"])
             arias_intensity = tr.data * np.pi * GAL_TO_PCTG / 2
 
             # Create a copy of stats so we don't modify original data
