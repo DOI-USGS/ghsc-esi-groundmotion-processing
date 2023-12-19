@@ -1,7 +1,7 @@
 import os
 import shutil
 import tempfile
-from pathlib import Path
+import pathlib
 
 from esi_utils_io.cmd import get_command_output
 from gmprocess.utils.constants import TEST_DATA_DIR
@@ -12,14 +12,14 @@ PROJ_STR = """project = pytest
 conf_path = [confdir]
 data_path = [datadir]
 """
-PROJ_PATH = Path(".") / ".gmprocess"
+PROJ_PATH = pathlib.Path(".") / ".gmprocess"
 
 
 def test_cwb_gather():
     eqid = "us6000hyun"
-    seedfile = str(TEST_DATA_DIR / "cwb_gather" / "cwb_chkh_data_test.mseed")
-    tarball = str(TEST_DATA_DIR / "cwb_gather" / "cwb_chkh_inst_test.tgz")
-    tmp_dir = Path(tempfile.mkdtemp())
+    seedfile = TEST_DATA_DIR / "cwb_gather" / "cwb_chkh_data_test.mseed"
+    tarball = TEST_DATA_DIR / "cwb_gather" / "cwb_chkh_inst_test.tgz"
+    tmp_dir = pathlib.Path(tempfile.mkdtemp())
     try:
         conf_dir = tmp_dir / "conf"
         data_dir = tmp_dir / "data"
@@ -31,9 +31,9 @@ def test_cwb_gather():
         proj_str = proj_str.replace("[datadir]", str(data_dir))
         with proj_conf.open("w", encoding="utf-8") as f:
             f.write(proj_str)
-        with open(proj_conf, "r") as f:
+        with open(proj_conf, "r", encoding="utf-8") as f:
             print(f.read())
-        cmd = f"cwb_gather {eqid} {seedfile} {tarball}"
+        cmd = f"cwb_gather --event={eqid} {str(seedfile)} {str(tarball)}"
         rc, so, se = get_command_output(cmd)
         assert rc
     finally:

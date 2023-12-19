@@ -15,6 +15,7 @@ import configobj
 
 # local imports
 from gmprocess.core import scalar_event
+from gmprocess.utils import constants
 from gmprocess.utils import download_utils
 
 
@@ -95,7 +96,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "event",
+        "--event",
+        dest="event_id",
         help="ComCat Event ID",
     )
     parser.add_argument(
@@ -122,7 +124,7 @@ def main():
     current_project = projects_conf["projects"][project]
     data_parts = pathlib.PurePath(current_project["data_path"]).parts
     data_path = CONF_PATH.joinpath(*data_parts).resolve()
-    event_path = data_path / args.event
+    event_path = data_path / args.event_id
     raw_path = event_path / "raw"
     if not event_path.exists():
         event_path.mkdir()
@@ -191,14 +193,15 @@ def main():
         filename = raw_path / fname
         response.write(str(filename), format="stationxml")
     print(f"{len(responses)} station responses written to {raw_path}.")
-    scalar_event = get_event_object(args.event)
-    create_event_file(scalar_event, str(event_path))
-    event_file = event_path / "event.json"
+
+    event_info = download_utils.download_comcat_event(args.event_id)
+    scalar_event.write_geojson(event_info, event_path)
+    event_file = event_path / constants.EVENT_FILE
     msg = f"Created event file at {event_file}."
     if not event_file.is_file():
         msg = f"Error: Failed to create {event_file}."
     print(msg)
-    download_utils.download_rupture_file(args.event, str(event_path))
+    download_utils.download_rupture_file(args.event_id, str(event_path))
     rupture_file = event_path / "rupture.json"
     msg = f"Created rupture file at {rupture_file}."
     if not rupture_file.is_file():
