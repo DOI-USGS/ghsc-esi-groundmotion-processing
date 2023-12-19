@@ -8,6 +8,7 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 assemble_utils = LazyLoader(
     "assemble_utils", globals(), "gmprocess.utils.assemble_utils"
 )
@@ -32,11 +33,15 @@ class AssembleModule(base.SubcommandModule):
         self.gmrecords = gmrecords
         self._check_arguments()
 
-        self._get_events()
-
-        logging.info(f"Number of events to assemble: {len(self.events)}")
-
         data_path = self.gmrecords.data_path
+        user_ids = self.gmrecords.args.event_id
+        events_filename = self.gmrecords.args.textfile
+        file_ids, events = scalar_event.get_events_from_file(events_filename)
+        event_ids = scalar_event.get_event_ids(
+            ids=user_ids, file_ids=file_ids, data_dir=data_path
+        )
+        logging.info(f"Number of events to assemble: {len(event_ids)}")
+
         overwrite = self.gmrecords.args.overwrite
         label = self.gmrecords.args.label
 
@@ -54,12 +59,14 @@ class AssembleModule(base.SubcommandModule):
             executor = ProcessPoolExecutor(
                 max_workers=self.gmrecords.args.num_processes
             )
-            for ievent, event in enumerate(self.events):
+            for ievent, event_id in enumerate(event_ids):
                 logging.info(
-                    f"Assembling event {event.id} ({1+ievent} of {len(self.events)})..."
+                    f"Assembling event {event.id} ({1+ievent} of {len(event_ids)})..."
                 )
+                event = events[ievent] if events else None
                 future = executor.submit(
                     self._assemble_event,
+                    event_id,
                     event,
                     data_path,
                     overwrite,
@@ -71,13 +78,14 @@ class AssembleModule(base.SubcommandModule):
             results = [future.result() for future in futures]
             executor.shutdown()
         else:
-            for ievent, event in enumerate(self.events):
+            for ievent, event_id in enumerate(event_ids):
                 logging.info(
-                    f"Assembling event {event.id} ({1+ievent} of {len(self.events)})..."
+                    f"Assembling event {event_id} ({1+ievent} of {len(event_ids)})..."
                 )
+                event = events[ievent] if events else None
                 results.append(
                     self._assemble_event(
-                        event, data_path, overwrite, conf, version, label
+                        event_id, event, data_path, overwrite, conf, version, label
                     )
                 )
 
@@ -90,8 +98,8 @@ class AssembleModule(base.SubcommandModule):
     # Note: I think that we need to make this a static method in order to be able to
     # call it with ProcessPoolExecutor.
     @staticmethod
-    def _assemble_event(event, data_path, overwrite, conf, version, label):
-        event_dir = data_path / event.id
+    def _assemble_event(event_id, event, data_path, overwrite, conf, version, label):
+        event_dir = data_path / event_id
         event_dir.mkdir(exist_ok=True)
         workname = event_dir / constants.WORKSPACE_NAME
         workspace_exists = workname.is_file()
@@ -99,36 +107,20 @@ class AssembleModule(base.SubcommandModule):
             logging.info(f"ASDF exists: {str(workname)}")
             if not overwrite:
                 logging.info("The --overwrite argument not selected.")
-                logging.info(f"No action taken for {event.id}.")
+                logging.info(f"No action taken for {event_id}.")
                 return None
             else:
                 logging.info(f"Removing existing ASDF file: {str(workname)}")
                 workname.unlink()
 
         workspace = assemble_utils.assemble(
+            event_id=event_id,
             event=event,
             config=conf,
             directory=data_path,
             gmprocess_version=version,
             label=label,
         )
-        workspace.close()
+        if workspace:
+            workspace.close()
         return workname
-
-def events_from_json_files(data_dir, event_ids):
-    events = []
-    for event_id in event_ids:
-        event_dir = data_dir / event_id
-        json_filename = event_dir / EVENT_FILE
-        if json_filename.is_file():
-            event = ScalarEvent.from_json(json_filename)
-            events.append(event)
-        else:
-            raise ValueError(
-                f"Could not find event JSON file for event {event_id}.")
-
-    # "events" elements are None if an error occurred, e.g., bad event id is specified.
-    events = [e for e in events if e is not None]
-
-    return events
-

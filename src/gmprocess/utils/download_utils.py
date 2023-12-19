@@ -162,25 +162,25 @@ def plot_raw_waveforms(rawdir, tcollection, event):
 
 
 def download_rupture_file(event_id, event_dir):
-    """Download rupture file from Comcat.
+    """Download rupture file from ComCat.
 
     Args:
         event_id (str):
             Event id.
-        event_dir (str):
+        event_dir (pathlib.Path):
             Event directory.
     """
     try:
-        data = download_event_data(event_id)
+        data = download_comcat_event(event_id)
     except BaseException:
         logging.info(f"{event_id} not found in ComCat.")
         return
     try:
         shakemap_prod = data["properties"]["products"]["shakemap"][0]
         rupture_url = shakemap_prod["contents"]["download/rupture.json"]["url"]
-        jsonfile = os.path.join(event_dir, "rupture.json")
-        with open(jsonfile, "wt") as f:
-            response = requests.get(rupture_url)
-            json.dump(response.json(), f)
+        jsonfile = event_dir / "rupture.json"
+        response = requests.get(rupture_url)
+        with open(jsonfile, "wt", encoding="utf-8") as fout:
+            json.dump(response.json(), fout)
     except BaseException:
         logging.info(f"{event_id} does not have a rupture.json file.")

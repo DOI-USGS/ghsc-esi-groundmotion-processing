@@ -1,6 +1,7 @@
 """Module for utilities related to unit tests."""
 
-import os.path
+import os
+import h5py
 import vcr as vcrpy
 
 from gmprocess.utils import constants
@@ -61,3 +62,23 @@ def read_data_dir(file_format, eventid, files=None):
         event = scalar_event.ScalarEvent.from_json(jsonfile)
 
     return (datafiles, event)
+
+
+def check_workspace(filename, hierarchy):
+    """Check workspace hierarchy to make sure it contains all expected items.
+
+    Args:
+        filename (pathlib.Path):
+            Filename of ASDF workspace.
+        hierarchy (tuple):
+            Tuple of names of items in workspace (matches h5dump -n).
+    """
+
+    def tracker(name):
+        tracker.items.append(name)
+
+    assert filename.is_file()
+    with h5py.File(filename) as h5:
+        tracker.items = []
+        h5.visit(tracker)
+        assert tuple(tracker.items) == hierarchy

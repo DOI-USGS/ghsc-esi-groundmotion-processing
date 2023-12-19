@@ -96,13 +96,19 @@ def test_scalar_to_json():
 
 
 def test_get_event_ids():
+    filename = constants.TEST_DATA_DIR / "fdsn" / "event_ids.txt"
+    file_ids, _ = scalar_event.get_events_from_file(filename)
+
+    # Single id
+    event_ids = scalar_event.get_event_ids(ids=EVENT_IDS[0])
+    assert EVENT_IDS[0] == event_ids[0]
+
     # From list
     event_ids = scalar_event.get_event_ids(ids=EVENT_IDS)
     assert EVENT_IDS == event_ids
 
     # from file
-    filename = constants.TEST_DATA_DIR / "fdsn" / "event_ids.txt"
-    event_ids = scalar_event.get_event_ids(filename=filename)
+    event_ids = scalar_event.get_event_ids(file_ids=file_ids)
     assert EVENT_IDS == event_ids
 
     # from directories
@@ -111,22 +117,21 @@ def test_get_event_ids():
     assert EVENT_IDS == event_ids
 
     # list, not file
-    filename = constants.TEST_DATA_DIR / "fdsn" / "event_ids.txt"
-    event_ids = scalar_event.get_event_ids(ids=EVENT_IDS[0:5], filename=filename)
+    event_ids = scalar_event.get_event_ids(ids=EVENT_IDS[0:5], file_ids=file_ids)
     assert EVENT_IDS[0:5] == event_ids
 
     # file, not directories
-    filename = constants.TEST_DATA_DIR / "event_ids.txt"
     data_dir = constants.TEST_DATA_DIR / "fdsn"
-    event_ids = scalar_event.get_event_ids(filename=filename, data_dir=data_dir)
+    event_ids = scalar_event.get_event_ids(file_ids=file_ids[0:2], data_dir=data_dir)
     assert EVENT_IDS[0:2] == event_ids
 
 
-def test_parse_events_file():
+def test_get_events_from_file():
     # File with event ids
     filename = constants.TEST_DATA_DIR / "fdsn" / "event_ids.txt"
-    event_ids = scalar_event.parse_events_file(filename=filename)
+    event_ids, events = scalar_event.get_events_from_file(filename=filename)
     assert EVENT_IDS == event_ids
+    assert [None] * len(EVENT_IDS) == events
 
     # File with event information
     EVENTS_DETAIL = [
@@ -138,18 +143,19 @@ def test_parse_events_file():
         ),
     ]
     filename = constants.TEST_DATA_DIR / "fdsn" / "events_info.txt"
-    events = scalar_event.parse_events_file(filename=filename)
+    event_ids, events = scalar_event.get_events_from_file(filename=filename)
+    assert EVENT_IDS[0 : len(EVENTS_DETAIL)] == event_ids
     assert EVENTS_DETAIL == events
 
 
-def test_write_event_geojson():
+def test_write_geojson():
     FILENAME = constants.TEST_DATA_DIR / "usp000hat0.geojson"
     with open(FILENAME, encoding="utf-8") as fin:
         data = json.load(fin)
 
     scratch_dir = constants.TEST_DATA_DIR / "scratch"
     scratch_dir.mkdir(exist_ok=True)
-    scalar_event.write_event_geojson(data, scratch_dir)
+    scalar_event.write_geojson(data, scratch_dir)
     event_new = scalar_event.ScalarEvent.from_json(scratch_dir / "event.json")
     event = scalar_event.ScalarEvent.from_params(**EVENT_INFO)
     assert event_new == event

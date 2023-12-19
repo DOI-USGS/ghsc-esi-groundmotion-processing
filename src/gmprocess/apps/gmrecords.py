@@ -286,6 +286,7 @@ class GMrecordsApp(object):
             "-e",
             "--eventid",
             type=str,
+            dest="event_id",
             default=None,
             help=(
                 "ComCat event ID. If None (default) all events in project data "

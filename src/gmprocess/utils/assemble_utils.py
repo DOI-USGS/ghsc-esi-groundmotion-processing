@@ -9,7 +9,8 @@ from pathlib import Path
 # local imports
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.core.streamarray import StreamArray
-from gmprocess.utils.constants import WORKSPACE_NAME
+from gmprocess.core import scalar_event
+from gmprocess.utils import constants
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.io.read_directory import directory_to_streams
 from gmprocess.utils.misc import get_rawdir
@@ -20,11 +21,13 @@ TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
 FLOAT_PATTERN = r"[-+]?[0-9]*\.?[0-9]+"
 
 
-def assemble(event, config, directory, gmprocess_version, label):
-    """Download data or load data from local directory, turn into Streams.
+def assemble(event_id, event, config, directory, gmprocess_version, label):
+    """Load data from local directory, turn into Streams.
 
     Args:
-        event (ScalarEvent):
+        event_id (str):
+            Event id.
+        event (ScalarEvent or None):
             Object containing basic event hypocenter, origin time, magnitude.
         config (dict):
             Dictionary with gmprocess configuration information.
@@ -40,15 +43,19 @@ def assemble(event, config, directory, gmprocess_version, label):
             Process label, applied to the workspace.add_rupture function
 
     Returns:
-        tuple:
-            - StreamWorkspace: Contains the event and raw streams.
-            - str: Name of workspace HDF file.
-            - StreamCollection: Raw data StationStreams.
-            - str: Path to the rupture file.
+        StreamWorkspace: Contains the event and raw streams.
     """
+    event_dir = directory / event_id
+
+    if not event:
+        filename = event_dir / constants.EVENT_FILE
+        if filename.is_file():
+            event = scalar_event.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
+        else:
+            logging.warning(f"Could not find {filename} to get event information.")
+            return
 
     # Get raw directory
-    event_dir = directory / event.id
     raw_dir = get_rawdir(event_dir)
     logging.debug(f"raw_dir: {raw_dir}")
     streams, unprocessed_files, unprocessed_file_errors = directory_to_streams(
@@ -75,7 +82,7 @@ def assemble(event, config, directory, gmprocess_version, label):
     logging.info(stream_array.describe_string())
 
     # Create the workspace file and put the unprocessed waveforms in it
-    workname = event_dir / WORKSPACE_NAME
+    workname = event_dir / constants.WORKSPACE_NAME
     if workname.is_file():
         workname.unlink()
 

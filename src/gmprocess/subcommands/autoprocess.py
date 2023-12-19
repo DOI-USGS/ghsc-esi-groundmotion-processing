@@ -5,6 +5,7 @@ import logging
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 download = LazyLoader("download", globals(), "gmprocess.subcommands.download")
 assemble = LazyLoader("assemble", globals(), "gmprocess.subcommands.assemble")
 process_waveforms = LazyLoader(
@@ -95,15 +96,26 @@ class AutoShakemapModule(base.SubcommandModule):
         logging.info(f"Running subcommand '{self.command_name}'")
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
-        nevents = len(self.events)
 
-        for ievent, event in enumerate(self.events):
-            logging.info(
-                f"(auto)processing event {event.id} ({1+ievent} of {nevents})..."
+        data_path = self.gmrecords.data_path
+        user_ids = self.gmrecords.args.event_id
+        events_filename = self.gmrecords.args.textfile
+        file_ids, events = scalar_event.get_events_from_file(events_filename)
+        event_ids = scalar_event.get_event_ids(
+            ids=user_ids, file_ids=file_ids, data_dir=data_path
+        )
+        if events:
+            logging.critical(
+                "autoprocess subcommand only works with events given as ComCat ids."
             )
-            # stomp on gmrecords.args.eventid
-            gmrecords.args.eventid = [event.id]
+
+        for ievent, event_id in enumerate(event_ids):
+            logging.info(
+                f"(auto)processing event {event_id} ({1+ievent} of {len(event_ids)})..."
+            )
+
+            # stomp on gmrecords.args.event_id
+            gmrecords.args.event_id = [event_id]
 
             # Chain together relevant subcommand modules:
             if not gmrecords.args.no_download:

@@ -41,7 +41,7 @@ class ImportModule(base.SubcommandModule):
         import_path = Path(self.gmrecords.args.path)
 
         event_ids = [
-            event_id.strip() for event_id in self.gmrecords.args.eventid.split(",")
+            event_id.strip() for event_id in self.gmrecords.args.event_id.split(",")
         ]
         if event_ids is None:
             raise ValueError("Please provide a valid event id.")

@@ -239,77 +239,98 @@ class ScalarEvent(Event):
             json.dump(data, f)
 
 
-def get_event_ids(ids=None, filename=None, data_dir=None):
+def get_events_from_file(filename=None):
+    """Get the list of event ids to perform processing and events if provided in filename.
+
+    Args:
+        filename (str):
+            Name of CSV file with event ids (single column) or event information (one event per row).
+
+    Returns:
+        Tuple with list of event ids and events (if provided).
+    """
+
+    def _parse_events_file(filename):
+        """Parse event files that either contain event ids (1 per line) or event information (6 columns).
+
+        Args:
+            filename (Path):
+                Name of events file.
+        Returns:
+            List of event ids or ScalarEvent.
+        """
+        with open(filename, encoding="utf-8") as fin:
+            lines = fin.readlines()
+        if len(lines[0].split(",")) == 1:
+            event_info = [line.strip() for line in lines]
+        else:
+            event_info = []
+            for line in lines:
+                fields = line.split(",")
+                if len(fields) != 7:
+                    raise IOError(
+                        f"Expected 6 columns in events file '{filename}'. Error parsing line '{line}'."
+                    )
+                event_values = {
+                    "id": fields[0].strip(),
+                    "time": fields[1].strip(),
+                    "latitude": float(fields[2]),
+                    "longitude": float(fields[3]),
+                    "depth_km": float(fields[4]),
+                    "magnitude": float(fields[5]),
+                    "magnitude_type": fields[6].strip(),
+                }
+                event_info.append(ScalarEvent.from_params(**event_values))
+        return event_info
+
+    event_ids = None
+    events = None
+    if filename:
+        events = _parse_events_file(filename)
+        if len(events) and isinstance(events[0], ScalarEvent):
+            event_ids = [event.id for event in events]
+        else:
+            event_ids = events
+            events = [None] * len(event_ids)
+    return (event_ids, events)
+
+
+def get_event_ids(ids=None, file_ids=None, data_dir=None):
     """Get the list of event ids to perform processing.
 
     Order of precedence:
         1. List of event ids as given by `ids`.
-        2. Event ids in a CSV file as given by `filename`.
+        2. Event ids from a user provided file.
         3. Data directory containing event ids as subdirectories.
 
     Args:
         ids (list):
-            List of event ids
-        filename (str):
-            Name of CSV file with event ids (single column) or event information (one event per row).
+            List of event ids specified by a user.
+        file_ids (list):
+            List of event ids from a user provided file.
         data_dir (str):
             Name of directory containing event ids as subdirectories.
 
     Returns:
-        Sorted list of event ids.
+        List of event ids to use in processing.
     """
-    event_ids = []
-    if ids:
-        event_ids = ids
-    elif filename:
-        with open(filename) as fin:
-            event_ids = [line.strip().split(",")[0] for line in fin.readlines()]
+    event_ids = ids or file_ids
+    if event_ids:
+        if isinstance(event_ids, str):
+            event_ids = [event_ids]
     elif data_dir:
         event_ids = [ev_id.name for ev_id in data_dir.iterdir() if ev_id.is_dir()]
+        event_ids = sorted(event_ids)
     else:
         raise ValueError(
             "Could not get a list of event ids. No event ids, file name, or data directory specified."
         )
 
-    return sorted(event_ids)
+    return event_ids
 
 
-def parse_events_file(filename):
-    """Parse event files that either contain event ids (1 per line) or event information (6 columns).
-
-    Args:
-        filename (Path):
-            Name of events file.
-    Returns:
-        List of ScalarEvent.
-    """
-    with open(filename) as fin:
-        lines = fin.readlines()
-    if len(lines[0].split(",")) == 1:
-        event_info = [line.strip() for line in lines]
-    else:
-        event_info = []
-        for line in lines:
-            fields = line.split(",")
-            if len(fields) != 7:
-                raise IOError(
-                    f"Expected 6 columns in events file '{filename}'. Error parsing line '{line}'."
-                )
-            event_values = {
-                "id": fields[0].strip(),
-                "time": fields[1].strip(),
-                "latitude": float(fields[2]),
-                "longitude": float(fields[3]),
-                "depth_km": float(fields[4]),
-                "magnitude": float(fields[5]),
-                "magnitude_type": fields[6].strip(),
-            }
-            event_info.append(ScalarEvent.from_params(**event_values))
-    return event_info
-
-
-def write_event_geojson(data, event_dir):
-    """Write event data to a GeoJSON file in given event directory.
+def write_geojson(data, event_dir):
+    """Write event information to a GeoJSON file in given event directory.
 
     Args:
         data (dict):
@@ -318,5 +339,5 @@ def write_event_geojson(data, event_dir):
             Event directory.
     """
     filename = event_dir / constants.EVENT_FILE
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(data, f)
+    with open(filename, "w", encoding="utf-8") as fout:
+        json.dump(data, fout)
