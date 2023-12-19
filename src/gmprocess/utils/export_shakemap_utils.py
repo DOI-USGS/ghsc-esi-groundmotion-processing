@@ -16,8 +16,6 @@ from gmprocess.metrics.station_metric_collection import StationMetricCollection
 
 # Will need to update this when we support additional damping values.
 DEFAULT_DAMPING = 5.0
-NS_PREFIX = "seis_prov"
-NS_SEIS = (NS_PREFIX, "http://seisprov.org/seis_prov/0.1/#")
 
 
 def create_json(

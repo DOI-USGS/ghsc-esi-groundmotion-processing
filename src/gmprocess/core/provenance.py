@@ -12,6 +12,7 @@ From SEIS-PROV docs regarding IDs:
 Note that it is important to recognize the difference between the above ID and the
 "prov:id" provenance property, which corresponds to the keys in Provenance.ACTIVITIES.
 """
+from abc import ABC, abstractmethod
 import logging
 from datetime import datetime
 import getpass
@@ -26,7 +27,7 @@ import prov.model
 from gmprocess.utils.config import get_config
 
 
-class Provenance(object):
+class Provenance(ABC):
     """Parent class for Provenance classes."""
 
     NS_PREFIX = "seis_prov"
@@ -42,6 +43,42 @@ class Provenance(object):
     def _new_provenance_document(self):
         self.provenance_document = prov.model.ProvDocument()
         self.provenance_document.add_namespace(*self.NS_SEIS)
+
+    def _from_provenance_document(self, provdoc):
+        json_prov = json.loads(provdoc.serialize())
+        for prov_type, prov_entry in json_prov.items():
+            if prov_type != "activity":
+                continue
+            for _, prov_properties in prov_entry.items():
+                # key in this loop is the full SEIS-PROV ID like sp001_wf_f84fb9a,
+                # not to be confused with the "prov:id" property, which is what we
+                # use (and is more human-readable).
+                prov_attributes = {}
+                for property_name, property_value in prov_properties.items():
+                    if property_name == "prov:label":
+                        continue
+                    elif property_name == "prov:type":
+                        prov_id = self._prov_id_from_property_value(property_value)
+                    else:
+                        attribute_name = property_name.split(":")[1]
+                        if isinstance(property_value, dict):
+                            property_value = property_value["$"]
+                        elif isinstance(property_value, datetime):
+                            property_value = UTCDateTime(property_value)
+                        prov_attributes[attribute_name] = property_value
+                if prov_attributes:
+                    self.append(
+                        {"prov_id": prov_id, "prov_attributes": prov_attributes}
+                    )
+
+    @abstractmethod
+    def append(self, prov_dict):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def _prov_id_from_property_value(property_value):
+        pass
 
 
 class LabelProvenance(Provenance):
@@ -87,39 +124,19 @@ class LabelProvenance(Provenance):
         Args:
             provdoc (prov.model.ProvDocument):
                 Provenance document.
-            stats:
-                A Trace stats object.
+            label (str):
+                Processing label.
         """
-        json_prov = json.loads(provdoc.serialize())
-        provenance = cls(label)
-        for prov_type, prov_entry in json_prov.items():
-            if prov_type != "agent":
-                continue
-            for _, prov_properties in prov_entry.items():
-                # key in this loop is the full SEIS-PROV ID like sp001_wf_f84fb9a,
-                # not to be confused with the "prov:id" property, which is what we
-                # use (and is more human-readable).
-                prov_attributes = {}
-                for property_name, property_value in prov_properties.items():
-                    if property_name == "prov:label":
-                        continue
-                    elif property_name == "prov:type":
-                        if isinstance(property_value, dict):
-                            prov_id = property_value["$"].split(":")[1]
-                        else:
-                            prov_id = property_value.split(":")[1]
-                    else:
-                        attribute_name = property_name.split(":")[1]
-                        if isinstance(property_value, dict):
-                            property_value = property_value["$"]
-                        elif isinstance(property_value, datetime):
-                            property_value = UTCDateTime(property_value)
-                        prov_attributes[attribute_name] = property_value
-                if prov_attributes:
-                    provenance.append(
-                        {"prov_id": prov_id, "prov_attributes": prov_attributes}
-                    )
-        return provenance
+        prov_obj = cls(label)
+        prov_obj._from_provenance_document(provdoc)
+        return prov_obj
+
+    @staticmethod
+    def _prov_id_from_property_value(property_value):
+        if isinstance(property_value, dict):
+            return property_value["$"].split(":")[1]
+        else:
+            return property_value.split(":")[1]
 
     def to_provenance_document(self):
         """Return the contents as a provenance document."""
@@ -315,35 +332,15 @@ class TraceProvenance(Provenance):
             provdoc (prov.model.ProvDocument):
                 Provenance document.
             stats:
-                A Trace stats object.
+                StationTrace stats object.
         """
-        json_prov = json.loads(provdoc.serialize())
-        provenance = cls(stats)
-        for prov_type, prov_entry in json_prov.items():
-            if prov_type != "activity":
-                continue
-            for _, prov_properties in prov_entry.items():
-                # key in this loop is the full SEIS-PROV ID like sp001_wf_f84fb9a,
-                # not to be confused with the "prov:id" property, which is what we
-                # use (and is more human-readable).
-                prov_attributes = {}
-                for property_name, property_value in prov_properties.items():
-                    if property_name == "prov:label":
-                        continue
-                    elif property_name == "prov:type":
-                        prov_id = property_value.split(":")[1]
-                    else:
-                        attribute_name = property_name.split(":")[1]
-                        if isinstance(property_value, dict):
-                            property_value = property_value["$"]
-                        elif isinstance(property_value, datetime):
-                            property_value = UTCDateTime(property_value)
-                        prov_attributes[attribute_name] = property_value
-                if prov_attributes:
-                    provenance.append(
-                        {"prov_id": prov_id, "prov_attributes": prov_attributes}
-                    )
-        return provenance
+        prov_obj = cls(stats)
+        prov_obj._from_provenance_document(provdoc)
+        return prov_obj
+
+    @staticmethod
+    def _prov_id_from_property_value(property_value):
+        return property_value.split(":")[1]
 
     def _set_activity(self, activity, attributes, sequence):
         """Get the seis-prov entity for an input processing "activity".
