@@ -5,6 +5,7 @@
 - Add trace.warning method.
 - Add trace warning when computed and reported sensitivities differ (captured from obspy).
 - Lower default PGA threshold in search_parameters to 0.001 g.
+- Created a module/class for handling provenance (core.provenance.Provenance), and added provenance entries for person/software and removed these entries from the Trace provenance.
 
 ## 1.3.0 / 2023-11-18
 

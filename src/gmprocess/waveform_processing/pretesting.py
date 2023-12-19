@@ -185,7 +185,7 @@ def check_max_amplitude(st, min=5, max=2e6, config=None):
         # Only perform amplitude/clipping check if data has not been converted
         # to physical units
         if tr.passed:
-            if "remove_response" not in tr.get_provenance_keys():
+            if "remove_response" not in tr.provenance.ids:
                 if abs(tr.max()) < float(min) or abs(tr.max()) > float(max):
                     tr.fail("Failed max amplitude check.")
 

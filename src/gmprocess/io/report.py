@@ -301,7 +301,7 @@ def get_prov_latex(st):
     channelidx = np.argsort(channels).tolist()
 
     trace1 = st[channelidx.index(0)]
-    prov1 = trace1.get_prov_dataframe().to_dict()
+    prov1 = trace1.provenance.get_prov_dataframe().to_dict()
     prov_ind = [v for v in prov1["Index"].values()]
 
     final_dict = {
@@ -312,7 +312,7 @@ def get_prov_latex(st):
 
     for i in channelidx[1:]:
         trace2 = st[i]
-        prov2 = trace2.get_prov_dataframe().to_dict()
+        prov2 = trace2.provenance.get_prov_dataframe().to_dict()
         final_dict[f"{trace2.stats.channel} Value"] = [
             v for v in prov2["Process Value"].values()
         ]

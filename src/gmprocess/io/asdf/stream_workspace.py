@@ -2,33 +2,28 @@
 
 import copy
 import json
+import importlib.metadata
 import io
 import logging
 import re
 import warnings
 from pathlib import Path
-from gmprocess.utils.rupture_utils import get_rupture_file
 
 import numpy as np
 import pandas as pd
-import prov.model
 import pyasdf
 from h5py.h5py_warnings import H5pyDeprecationWarning
 from obspy.core.utcdatetime import UTCDateTime
 from ruamel.yaml import YAML
 
 from gmprocess.core.stationstream import StationStream
-from gmprocess.core.stationtrace import (
-    NS_SEIS,
-    TIMEFMT_MS,
-    StationTrace,
-    _get_person_agent,
-    _get_software_agent,
-)
+from gmprocess.core.stationtrace import StationTrace
 from gmprocess.core.streamarray import StreamArray
 from gmprocess.core.streamcollection import StreamCollection
+from gmprocess.core import provenance
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils.rupture_utils import get_rupture_file
 from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.strec import STREC
 from gmprocess.io.asdf import workspace_constants as wc
@@ -39,6 +34,10 @@ from gmprocess.io.asdf.path_utils import (
     get_trace_name,
     get_trace_path,
 )
+
+TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
+
+VERSION = importlib.metadata.version("gmprocess")
 
 
 class StreamWorkspace(object):
@@ -364,7 +363,7 @@ class StreamWorkspace(object):
         try:
             rupture_model = aux_data["RuptureModels"][eventid + "_" + label]
         except:
-            raise Exception(
+            raise ValueError(
                 "There does not exist a rupture model with that eventid and label"
             )
 
@@ -397,8 +396,7 @@ class StreamWorkspace(object):
             streams (list):
                 List of StationStream objects.
             label (str):
-                Label to attach to stream sequence. Cannot contain an
-                underscore.
+                Label to attach to stream sequence. Cannot contain an underscore.
             gmprocess_version (str):
                 gmprocess version.
             overwrite (bool):
@@ -414,23 +412,26 @@ class StreamWorkspace(object):
         if not self.has_event(eventid):
             self.add_event(event)
 
-        # Creating a new provenance document and filling in the software
-        # information for every trace can be slow, so here we create a
-        # base provenance document that will be copied and used as a template
-        base_prov = prov.model.ProvDocument()
-        base_prov.add_namespace(*NS_SEIS)
         if hasattr(self, "config"):
             config = self.config
         else:
             config = get_config()
-        base_prov = _get_person_agent(base_prov, config)
-        base_prov = _get_software_agent(base_prov, gmprocess_version)
+
+        # Level-level provenance entry.
+        label_prov = provenance.LabelProvenance(
+            label,
+            gmprocess_version=VERSION,
+            config=config,
+        )
+        self.dataset.add_provenance_document(
+            label_prov.to_provenance_document(), name=label
+        )
 
         logging.debug(streams)
         for stream in streams:
             logging.info("Adding waveforms for station %s", stream.get_id())
             # is this a raw file? Check the trace for provenance info.
-            is_raw = not stream[0].get_provenance_keys()
+            is_raw = not stream[0].provenance.ids
 
             if label is None:
                 tfmt = "%Y%m%d%H%M%S"
@@ -459,9 +460,7 @@ class StreamWorkspace(object):
 
             # add processing provenance info from traces
             if level == "processed":
-                provdocs = stream.get_provenance_documents(
-                    base_prov=base_prov, gmprocess_version=gmprocess_version
-                )
+                provdocs = stream.get_provenance_documents()
                 for provdoc, trace in zip(provdocs, stream):
                     trace_name = get_trace_name(trace, tag)
                     self.dataset.add_provenance_document(provdoc, name=trace_name)
@@ -634,7 +633,11 @@ class StreamWorkspace(object):
                     net_sta = f"{trace.stats.network}.{trace.stats.station}"
                     if trace_name in self.dataset.provenance.list():
                         provdoc = self.dataset.provenance[trace_name]
-                        trace.set_provenance_document(provdoc)
+                        tmp_doc = provenance.TraceProvenance.from_provenance_document(
+                            provdoc, trace.stats
+                        )
+                        for prov_dict in tmp_doc:
+                            trace.provenance.append(prov_dict)
 
                     # get the trace processing parameters
                     if "TraceProcessingParameters" in auxdata:
@@ -955,7 +958,7 @@ class StreamWorkspace(object):
 
             provdoc = self.dataset.provenance[provname]
             serial = json.loads(provdoc.serialize())
-            for activity, attrs in serial["activity"].items():
+            for _, attrs in serial["activity"].items():
                 pstep = None
                 for key, value in attrs.items():
                     if key == "prov:label":

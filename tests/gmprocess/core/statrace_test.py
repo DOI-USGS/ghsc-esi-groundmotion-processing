@@ -30,12 +30,14 @@ def test_trace():
     invtrace.set_parameter("corner_frequencies", [1, 2, 3])
     invtrace.set_parameter("metadata", {"name": "Fred"})
 
-    assert invtrace.get_provenance("detrend")[0] == {"detrending_method": "demean"}
+    assert invtrace.get_provenance("detrend")[0]["prov_attributes"] == {
+        "detrending_method": "demean"
+    }
     assert invtrace.get_parameter("failed")
     assert invtrace.get_parameter("corner_frequencies") == [1, 2, 3]
     assert invtrace.get_parameter("metadata") == {"name": "Fred"}
 
-    prov = invtrace.get_prov_series()
+    prov = invtrace.provenance.get_prov_series()
     assert prov.iloc[0] == "demean"
 
 

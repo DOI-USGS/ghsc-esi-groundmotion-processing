@@ -364,22 +364,15 @@ class StationStream(Stream):
             raise KeyError(f"Parameter {param_id} not found in StationStream")
         return self.parameters[param_id]
 
-    def get_provenance_documents(self, base_prov=None, gmprocess_version="unknown"):
+    def get_provenance_documents(self):
         """Generate provenance Document.
-
-        Args:
-            base_prov:
-                Base provenance document.
 
         Returns:
             Provenance document.
         """
         provdocs = []
         for trace in self.traces:
-            provdoc = trace.get_provenance_document(
-                base_prov=base_prov, gmprocess_version=gmprocess_version
-            )
-            provdocs.append(provdoc)
+            provdocs.append(trace.provenance.to_provenance_document())
         return provdocs
 
     def get_inventory(self):

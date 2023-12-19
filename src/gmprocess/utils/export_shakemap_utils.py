@@ -8,9 +8,7 @@ from datetime import datetime
 from collections import OrderedDict
 
 import numpy as np
-import prov.model
 
-from gmprocess.core.stationtrace import NS_SEIS, _get_person_agent, _get_software_agent
 from gmprocess.io.cosmos.core import BUILDING_TYPES
 from gmprocess.utils.constants import EVENT_TIMEFMT, COMPONENTS, UNITS
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
@@ -64,14 +62,6 @@ def create_json(
         logging.info("No strong motion data found that passes tests. Exiting.")
         return (None, None, 0)
 
-    # Creating a new provenance document and filling in the software
-    # information for every trace can be slow, so here we create a
-    # base provenance document that will be copied and used as a template
-    base_prov = prov.model.ProvDocument()
-    base_prov.add_namespace(*NS_SEIS)
-    base_prov = _get_person_agent(base_prov, config)
-    base_prov = _get_software_agent(base_prov, gmprocess_version)
-
     nfeatures = 0
     for wml, wm_meta, sm in zip(
         waveform_collection.waveform_metrics,
@@ -123,7 +113,7 @@ def create_json(
             channel = trace.stats.channel
 
             # get trace provenance
-            provthing = trace.get_provenance_document(base_prov=base_prov)
+            provthing = trace.provenance.to_provenance_document()
             provjson = provthing.serialize(format="json")
             provenance_dict = json.loads(provjson)
             provenance[channel] = provenance_dict

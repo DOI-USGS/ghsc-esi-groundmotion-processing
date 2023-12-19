@@ -25,6 +25,7 @@ from gmpacket.provenance import Provenance
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.metrics.gather import gather_pgms
+from gmprocess.core import provenance
 
 METRIC_INFO = {
     "PGA": ("Peak ground acceleration", "%g"),
@@ -71,11 +72,10 @@ class GroundMotionPacketWriter(object):
         )
         return gmp_housing
 
-    def get_provenance(self, trace):
-        provdoc = trace.get_provenance_document()
-        provdict = json.loads(provdoc.serialize())
-        provdict.pop("entity")
-        provdict.pop("activity")
+    def get_provenance(self, label_provenance):
+        provdict = json.loads(label_provenance.provenance_document.serialize())
+        # need to add "seis_prov:role", which gmpacket needs but isn't part of the
+        # SEIS-PROV attributes.
         for label, agent in provdict["agent"].items():
             if agent["prov:type"]["$"] == "prov:Person":
                 if "seis_prov:role" not in agent:
@@ -184,7 +184,22 @@ class GroundMotionPacketWriter(object):
                     for trace in stream:
                         ntraces += 1
                         if gmp_provenance is None:
-                            gmp_provenance = self.get_provenance(trace)
+                            if self._label in self._workspace.dataset.provenance:
+                                prov_doc = self._workspace.dataset.provenance[
+                                    self._label
+                                ]
+                            else:
+                                # for older workspace files, we didn't have a prov
+                                # entry for the label.
+                                plist = self._workspace.dataset.provenance.list()
+                                skey = [a for a in plist if a.endswith(self._label)][0]
+                                prov_doc = self._workspace.dataset.provenance[skey]
+                            label_provenance = (
+                                provenance.LabelProvenance.from_provenance_document(
+                                    prov_doc, label=self._label
+                                )
+                            )
+                            gmp_provenance = self.get_provenance(label_provenance)
                         net = trace.stats.network
                         sta = trace.stats.station
                         loc = trace.stats.location

@@ -1,28 +1,21 @@
 """Module for the StationTrace class that inherits from obspy's Trace class."""
-import copy
-import getpass
 import inspect
 
 # stdlib imports
 import json
 import logging
 import re
-from datetime import datetime
 
 # third party imports
 import numpy as np
-import pandas as pd
-import prov
-import prov.model
 from obspy.core.trace import Trace
-from obspy.core.utcdatetime import UTCDateTime
 from scipy.integrate import cumtrapz
 
 # local imports
 from gmprocess.utils.config import get_config
 from gmprocess.io.cosmos.data_structures import BUILDING_TYPES
 from gmprocess.io.seedname import get_units_type
-
+from gmprocess.core.provenance import TraceProvenance
 
 UNITS = {"acc": "cm/s^2", "vel": "cm/s"}
 REVERSE_UNITS = {
@@ -104,43 +97,6 @@ INT_TYPES = [
 
 FLOAT_TYPES = [np.dtype("float32"), np.dtype("float64")]
 
-TIMEFMT = "%Y-%m-%dT%H:%M:%SZ"
-TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
-
-NS_PREFIX = "seis_prov"
-NS_SEIS = (NS_PREFIX, "http://seisprov.org/seis_prov/0.1/#")
-
-MAX_ID_LEN = 12
-
-PROV_TIME_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
-
-ACTIVITIES = {
-    "waveform_simulation": {"code": "ws", "label": "Waveform Simulation"},
-    "taper": {"code": "tp", "label": "Taper"},
-    "stack_cross_correlations": {"code": "sc", "label": "Stack Cross Correlations"},
-    "simulate_response": {"code": "sr", "label": "Simulate Response"},
-    "rotate": {"code": "rt", "label": "Rotate"},
-    "resample": {"code": "rs", "label": "Resample"},
-    "remove_response": {"code": "rr", "label": "Remove Response"},
-    "pad": {"code": "pd", "label": "Pad"},
-    "normalize": {"code": "nm", "label": "Normalize"},
-    "multiply": {"code": "nm", "label": "Multiply"},
-    "merge": {"code": "mg", "label": "Merge"},
-    "lowpass_filter": {"code": "lp", "label": "Lowpass Filter"},
-    "interpolate": {"code": "ip", "label": "Interpolate"},
-    "integrate": {"code": "ig", "label": "Integrate"},
-    "highpass_filter": {"code": "hp", "label": "Highpass Filter"},
-    "divide": {"code": "dv", "label": "Divide"},
-    "differentiate": {"code": "df", "label": "Differentiate"},
-    "detrend": {"code": "dt", "label": "Detrend"},
-    "decimate": {"code": "dc", "label": "Decimate"},
-    "cut": {"code": "ct", "label": "Cut"},
-    "cross_correlate": {"code": "co", "label": "Cross Correlate"},
-    "calculate_adjoint_source": {"code": "ca", "label": "Calculate Adjoint Source"},
-    "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
-    "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
-}
-
 
 class StationTrace(Trace):
     """Subclass of Obspy Trace object which holds more metadata.
@@ -215,7 +171,8 @@ class StationTrace(Trace):
             except BaseException as err:
                 raise ValueError(
                     "Failed to construct required metadata from inventory "
-                    f"and input header data with exception: {err}."
+                    "and input header data with exception: %s.",
+                    err,
                 )
         elif inventory is None and header is not None and "standard" not in header:
             # End up here for ObsPy without an inventory (e.g., SAC).
@@ -251,7 +208,7 @@ class StationTrace(Trace):
                 header["channel"] = header["channel"][0:-1] + "Z"
 
         super(StationTrace, self).__init__(data=data, header=header)
-        self.provenance = []
+        self.provenance = TraceProvenance(self.stats)
         if prov_response is not None:
             self.set_provenance("remove_response", prov_response)
         self.parameters = {}
@@ -363,7 +320,7 @@ class StationTrace(Trace):
             else:
                 self.stats.standard["structure_cosmos_code"] = 999
 
-        if "remove_response" not in self.get_provenance_keys():
+        if "remove_response" not in self.provenance.ids:
             self.stats.standard.units = "raw counts"
             self.stats.standard.units_type = get_units_type(self.stats.channel)
 
@@ -470,7 +427,7 @@ class StationTrace(Trace):
         if demean:
             self.data -= np.mean(self.data)
             self.set_provenance(
-                "demean",
+                "detrend",
                 {
                     "input_units": self.stats.standard.units,
                     "output_units": self.stats.standard.units,
@@ -657,7 +614,7 @@ class StationTrace(Trace):
         elif type == "bandpass":
             if not frequency_domain:
                 self.set_provenance(
-                    "bandpass",
+                    "bandpass_filter",
                     {
                         "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
                         "filter_type": "Butterworth ObsPy",
@@ -688,7 +645,7 @@ class StationTrace(Trace):
                 self.__apply_filter(filter)
 
                 self.set_provenance(
-                    "bandpass",
+                    "bandpass_filter",
                     {
                         "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
                         "filter_type": "Butterworth gmrocess",
@@ -701,7 +658,7 @@ class StationTrace(Trace):
         elif type == "bandstop":
             if not frequency_domain:
                 self.set_provenance(
-                    "bandstop",
+                    "bandstop_filter",
                     {
                         "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
                         "filter_type": "Butterworth ObsPy",
@@ -734,7 +691,7 @@ class StationTrace(Trace):
                 self.__apply_filter(filter)
 
                 self.set_provenance(
-                    "bandstop",
+                    "bandstop_filter",
                     {
                         "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
                         "filter_type": "Butterworth gmprocess",
@@ -749,19 +706,6 @@ class StationTrace(Trace):
 
         return self
 
-    def get_provenance_keys(self):
-        """Get a list of all available provenance keys.
-
-        Returns:
-            list: List of available provenance keys.
-        """
-        if not self.provenance:
-            return []
-        pkeys = []
-        for provdict in self.provenance:
-            pkeys.append(provdict["prov_id"])
-        return pkeys
-
     def get_provenance(self, prov_id):
         """Get seis-prov compatible attributes whose id matches prov_id.
 
@@ -769,18 +713,12 @@ class StationTrace(Trace):
 
         Args:
             prov_id (str):
-                Provenance ID (see URL above).
+                Provenance property "prov:id", e.g., "detrend".
 
         Returns:
-            list: Sequence of prov_attribute dictionaries (see URL above).
+            list: Sequence of prov_attribute dictionaries.
         """
-        matching_prov = []
-        if not self.provenance:
-            return matching_prov
-        for provdict in self.provenance:
-            if provdict["prov_id"] == prov_id:
-                matching_prov.append(provdict["prov_attributes"])
-        return matching_prov
+        return self.provenance.select(prov_id)
 
     def set_provenance(self, prov_id, prov_attributes):
         """Update a trace's provenance information.
@@ -803,90 +741,6 @@ class StationTrace(Trace):
                 ]
             except BaseException:
                 self.stats.standard.units_type = "unknown"
-        self.validate()
-
-    def get_all_provenance(self):
-        """Get internal list of processing history.
-
-        Returns:
-            list:
-                Sequence of dictionaries containing fields:
-                - prov_id Activity prov:id (see URL above).
-                - prov_attributes Activity attributes for the given key.
-        """
-        return self.provenance
-
-    def get_provenance_document(self, base_prov=None, gmprocess_version="unknown"):
-        """Generate a provenance document.
-
-        Args:
-            gmprocess_version (str):
-                gmprocess version string.
-            base_prov:
-                Base provenance document.
-        Returns:
-            Provenance document.
-        """
-        if base_prov is None:
-            pr = prov.model.ProvDocument()
-            pr.add_namespace(*NS_SEIS)
-            pr = _get_person_agent(pr)
-            pr = _get_software_agent(pr, gmprocess_version)
-            pr = _get_waveform_entity(self, pr)
-        else:
-            pr = _get_waveform_entity(self, copy.deepcopy(base_prov))
-        sequence = 1
-        for provdict in self.get_all_provenance():
-            provid = provdict["prov_id"]
-            prov_attributes = provdict["prov_attributes"]
-            if provid not in ACTIVITIES:
-                fmt = "Unknown or invalid processing parameter %s"
-                logging.debug(fmt, provid)
-                continue
-            pr = _get_activity(pr, provid, prov_attributes, sequence)
-            sequence += 1
-        return pr
-
-    def set_provenance_document(self, provdoc):
-        software = {}
-        person = {}
-        for record in provdoc.get_records():
-            ident = record.identifier.localpart
-            parts = ident.split("_")
-            sptype = parts[1]
-            # hashid = '_'.join(parts[2:])
-            # sp, sptype, hashid = ident.split('_')
-            if sptype == "sa":
-                for attr_key, attr_val in record.attributes:
-                    key = attr_key.localpart
-                    if isinstance(attr_val, prov.identifier.Identifier):
-                        attr_val = attr_val.uri
-                    software[key] = attr_val
-            elif sptype == "pp":
-                for attr_key, attr_val in record.attributes:
-                    key = attr_key.localpart
-                    if isinstance(attr_val, prov.identifier.Identifier):
-                        attr_val = attr_val.uri
-                    person[key] = attr_val
-            elif sptype == "wf":  # waveform tag
-                continue
-            else:  # these are processing steps
-                params = {}
-                sptype = ""
-                for attr_key, attr_val in record.attributes:
-                    key = attr_key.localpart
-                    if key == "label":
-                        continue
-                    elif key == "type":
-                        _, sptype = attr_val.split(":")
-                        continue
-                    if isinstance(attr_val, datetime):
-                        attr_val = UTCDateTime(attr_val)
-                    params[key] = attr_val
-                self.set_provenance(sptype, params)
-
-            self.set_parameter("software", software)
-            self.set_parameter("user", person)
 
     def has_parameter(self, param_id):
         """Check to see if Trace contains a given parameter.
@@ -982,68 +836,6 @@ class StationTrace(Trace):
             else:
                 raise KeyError(f"Parameter {param_id} not found in StationTrace")
         return self.parameters[param_id]
-
-    def get_prov_dataframe(self):
-        columns = ["Process Step", "Process Attribute", "Process Value"]
-        df = pd.DataFrame(columns=columns)
-        values = []
-        attributes = []
-        steps = []
-        indices = []
-        index = 0
-        for activity in self.get_all_provenance():
-            provid = activity["prov_id"]
-            provstep = ACTIVITIES[provid]["label"]
-            prov_attrs = activity["prov_attributes"]
-            steps += [provstep] * len(prov_attrs)
-            indices += [index] * len(prov_attrs)
-            for key, value in prov_attrs.items():
-                attributes.append(key)
-                if isinstance(value, UTCDateTime):
-                    value = value.datetime.strftime("%Y-%m-%d %H:%M:%S")
-                values.append(str(value))
-            index += 1
-
-        mdict = {
-            "Index": indices,
-            "Process Step": steps,
-            "Process Attribute": attributes,
-            "Process Value": values,
-        }
-        df = pd.DataFrame(mdict)
-        return df
-
-    def get_prov_series(self):
-        """Return a pandas Series containing the processing history for the
-        trace.
-
-        BO.NGNH31.HN2   Remove Response   input_units   counts
-        -                                 output_units  cm/s^2
-        -               Taper             side          both
-        -                                 window_type   Hann
-        -                                 taper_width   0.05
-
-        Returns:
-            Series:
-                Pandas Series (see above).
-        """
-        tpl = (self.stats.network, self.stats.station, self.stats.channel)
-        recstr = "%s.%s.%s" % tpl
-        values = []
-        attributes = []
-        steps = []
-        for activity in self.get_all_provenance():
-            provid = activity["prov_id"]
-            provstep = ACTIVITIES[provid]["label"]
-            prov_attrs = activity["prov_attributes"]
-            steps += [provstep] * len(prov_attrs)
-            for key, value in prov_attrs.items():
-                attributes.append(key)
-                values.append(str(value))
-        records = [recstr] * len(attributes)
-        index = [records, steps, attributes]
-        row = pd.Series(values, index=index)
-        return row
 
     def __str__(self, id_length=None, indent=0):
         """
@@ -1273,160 +1065,3 @@ def _stats_from_header(header, config):
         raise Exception("Format unsupported without StationXML file.")
 
     return (response, standard, coords, format_specific)
-
-
-def _get_software_agent(pr, gmprocess_version):
-    """Get the seis-prov entity for the gmprocess software.
-
-    Args:
-        pr (prov.model.ProvDocument):
-            Existing ProvDocument.
-        gmprocess_version (str):
-            gmprocess version.
-
-    Returns:
-        prov.model.ProvDocument:
-            Provenance document updated with gmprocess software name/version.
-    """
-    software = "gmprocess"
-    hashstr = "0000001"
-    agent_id = f"seis_prov:sp001_sa_{hashstr}"
-    giturl = "https://code.usgs.gov/ghsc/esi/groundmotion-processing"
-    pr.agent(
-        agent_id,
-        other_attributes=(
-            (
-                ("prov:label", software),
-                (
-                    "prov:type",
-                    prov.identifier.QualifiedName(prov.constants.PROV, "SoftwareAgent"),
-                ),
-                ("seis_prov:software_name", software),
-                ("seis_prov:software_version", gmprocess_version),
-                (
-                    "seis_prov:website",
-                    prov.model.Literal(giturl, prov.constants.XSD_ANYURI),
-                ),
-            )
-        ),
-    )
-    return pr
-
-
-def _get_person_agent(pr, config=None):
-    """Get the seis-prov entity for the user software.
-
-    Args:
-        pr (prov.model.ProvDocument):
-            Existing ProvDocument.
-        config (dict):
-            Configuration options.
-
-    Returns:
-        prov.model.ProvDocument:
-            Provenance document updated with gmprocess software name/version.
-    """
-    username = getpass.getuser()
-    if config is None:
-        config = get_config()
-    fullname = ""
-    email = ""
-    if "user" in config:
-        if "name" in config["user"]:
-            fullname = config["user"]["name"]
-        if "email" in config["user"]:
-            email = config["user"]["email"]
-    hashstr = "0000001"
-    person_id = f"seis_prov:sp001_pp_{hashstr}"
-    pr.agent(
-        person_id,
-        other_attributes=(
-            (
-                ("prov:label", username),
-                (
-                    "prov:type",
-                    prov.identifier.QualifiedName(prov.constants.PROV, "Person"),
-                ),
-                ("seis_prov:name", fullname),
-                ("seis_prov:email", email),
-            )
-        ),
-    )
-    return pr
-
-
-def _get_waveform_entity(trace, pr):
-    """Get the seis-prov entity for an input Trace.
-
-    Args:
-        trace (Trace):
-            Input Obspy Trace object.
-        pr (Prov):
-            prov.model.ProvDocument
-
-    Returns:
-        prov.model.ProvDocument:
-            Provenance document updated with waveform entity information.
-    """
-    tpl = (
-        trace.stats.network.lower(),
-        trace.stats.station.lower(),
-        trace.stats.channel.lower(),
-    )
-    waveform_hash = "%s_%s_%s" % tpl
-    waveform_id = f"seis_prov:sp001_wf_{waveform_hash}"
-    pr.entity(
-        waveform_id,
-        other_attributes=(
-            (
-                ("prov:label", "Waveform Trace"),
-                ("prov:type", "seis_prov:waveform_trace"),
-            )
-        ),
-    )
-    return pr
-
-
-def _get_activity(pr, activity, attributes, sequence):
-    """Get the seis-prov entity for an input processing "activity".
-
-    See
-    http://seismicdata.github.io/SEIS-PROV/_generated_details.html#activities
-
-    for details on the types of activities that are possible to capture.
-
-
-    Args:
-        pr (prov.model.ProvDocument):
-            Existing ProvDocument.
-        activity (str):
-            The prov:id for the input activity.
-        attributes (dict):
-            The attributes associated with the activity.
-        sequence (int):
-            Integer used to identify the order in which the activities were
-            performed.
-    Returns:
-        prov.model.ProvDocument:
-            Provenance document updated with input activity.
-    """
-    activity_dict = ACTIVITIES[activity]
-    hashid = "%07i" % sequence
-    code = activity_dict["code"]
-    label = activity_dict["label"]
-    activity_id = "sp%03i_%s_%s" % (sequence, code, hashid)
-    pr_attributes = [("prov:label", label), ("prov:type", f"seis_prov:{activity}")]
-    for key, value in attributes.items():
-        if isinstance(value, float):
-            value = prov.model.Literal(value, prov.constants.XSD_DOUBLE)
-        elif isinstance(value, int):
-            value = prov.model.Literal(value, prov.constants.XSD_INT)
-        elif isinstance(value, UTCDateTime):
-            value = prov.model.Literal(
-                value.strftime(TIMEFMT), prov.constants.XSD_DATETIME
-            )
-
-        att_tuple = (f"seis_prov:{key}", value)
-        pr_attributes.append(att_tuple)
-    pr.activity(f"seis_prov:{activity_id}", other_attributes=pr_attributes)
-    return pr
