@@ -78,5 +78,7 @@ def write_asdf(filename, streams, event, label=None):
     """
     workspace = StreamWorkspace(filename)
     workspace.add_config()
+    if not event.id in workspace.get_event_ids():
+        workspace.add_event(event)
     workspace.add_streams(event, streams, label=label, gmprocess_version=VERSION)
     workspace.close()

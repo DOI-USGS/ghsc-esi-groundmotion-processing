@@ -19,7 +19,7 @@ from obspy.taup import TauPyModel
 from gmprocess.io.global_fetcher import fetch_data
 from gmprocess.utils.misc import get_rawdir
 
-from gmprocess.utils.constants import EVENT_FILE
+from gmprocess.utils import constants
 from gmprocess.utils.strec import STREC
 
 TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
@@ -32,22 +32,23 @@ EVENT_TEMPLATE = (
 )
 
 
-def download_comcat_event(eventid):
+def download_comcat_event(event_id):
     """Download event data from ComCat as GeoJSON.
 
     Args:
-        eventid (str):
+        event_id (str):
             ComCat event id.
     Returns:
         Dictionary with event information.
     """
-    event_url = EVENT_TEMPLATE.replace("[EVENT]", eventid)
+    event_url = EVENT_TEMPLATE.replace("[EVENT]", event_id)
     response = requests.get(event_url)
     return response.json()
 
 
-def download_waveforms(event, event_dir, config, plot_raw=False):
-    """Download waveform data.
+def download_event_data(event, event_dir, config, plot_raw=False):
+    """Download event data, including rupture geometry, STREC results (if enabled),
+    and waveforms.
 
     Args:
         event (ScalarEvent):
@@ -62,15 +63,11 @@ def download_waveforms(event, event_dir, config, plot_raw=False):
     # Make raw directory
     rawdir = get_rawdir(event_dir)
 
-    # Run STREC if enabled and results are not already downloaded
+    download_rupture_file(event.id, event_dir)
+
     strec = None
     if config["strec"]["enabled"]:
-        strec_file = event_dir / "strec_results.json"
-        if strec_file.exists():
-            strec = STREC.from_file(strec_file)
-        else:
-            strec = STREC.from_event(event)
-            strec.to_file(strec_file)
+        strec = get_strec_results(event, event_dir)
 
     tcollection, _ = fetch_data(
         event.time.datetime,
@@ -83,7 +80,6 @@ def download_waveforms(event, event_dir, config, plot_raw=False):
         stream_collection=False,
         strec=strec,
     )
-    download_rupture_file(event.id, event_dir)
 
     if len(tcollection):
         logging.debug("tcollection.describe_string():")
@@ -178,9 +174,19 @@ def download_rupture_file(event_id, event_dir):
     try:
         shakemap_prod = data["properties"]["products"]["shakemap"][0]
         rupture_url = shakemap_prod["contents"]["download/rupture.json"]["url"]
-        jsonfile = event_dir / "rupture.json"
+        rupture_filename = event_dir / constants.RUPTURE_FILE
         response = requests.get(rupture_url)
-        with open(jsonfile, "wt", encoding="utf-8") as fout:
+        with open(rupture_filename, "wt", encoding="utf-8") as fout:
             json.dump(response.json(), fout)
     except BaseException:
         logging.info(f"{event_id} does not have a rupture.json file.")
+
+
+def get_strec_results(event, event_dir):
+    strec_file = event_dir / constants.STREC_FILE
+    if strec_file.exists():
+        strec = STREC.from_file(strec_file)
+    else:
+        strec = STREC.from_event(event)
+        strec.to_file(strec_file)
+    return strec

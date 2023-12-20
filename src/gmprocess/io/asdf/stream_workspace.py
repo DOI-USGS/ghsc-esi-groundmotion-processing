@@ -22,10 +22,10 @@ from gmprocess.core.streamarray import StreamArray
 from gmprocess.core.streamcollection import StreamCollection
 
 from gmprocess.core import provenance
+from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
 from gmprocess.utils.rupture_utils import get_rupture_file
-from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.utils.strec import STREC
 
 from gmprocess.io.asdf import workspace_constants as wc
@@ -37,8 +37,6 @@ from gmprocess.io.asdf.path_utils import (
     get_trace_path,
 )
 from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils import rupture_utils
-from gmprocess.utils.strec import STREC
 from gmprocess.utils import constants
 
 TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -138,29 +136,112 @@ class StreamWorkspace(object):
 
         Args:
             event (Event): Obspy event object.
+            strec (dict): STREC results.
         """
-        if self.config["strec"]["enabled"]:
-            self.insert_strec(event)
         self.dataset.add_quakeml(event)
 
-    def insert_strec(self, event):
-        """Insert STREC results into auxiliary data"""
-        workspace_file = self.dataset.filename
-        workspace_path = Path(workspace_file)
-        event_dir = workspace_path.parent.absolute()
-        strec_json = event_dir / "strec_results.json"
-        if strec_json.exists():
-            strec = STREC.from_file(strec_json)
+    def add_rupture(self, rupture, event_id, label):
+        """Inserts information from the rupture model into the workspace.
+
+        Args:
+            event (Event):
+                Obspy event object.
+            label (str):
+                Process label, user can input this from gmrecords assemble subcommand,
+                "default" if no input.
+        """
+        cells = np.array(rupture.cells)
+        vertices = np.array(rupture.vertices)
+        description = rupture.description
+        reference = rupture.reference
+
+        rupture_path = event_id + "_" + label
+
+        self.dataset.add_auxiliary_data(
+            cells,
+            data_type="RuptureModels",
+            path=rupture_path + "/Cells",
+            parameters={},
+        )
+        self.dataset.add_auxiliary_data(
+            vertices,
+            data_type="RuptureModels",
+            path=rupture_path + "/Vertices",
+            parameters={},
+        )
+        self.insert_aux(
+            description,
+            data_name="RuptureModels",
+            path=rupture_path + "/Description",
+        )
+        self.insert_aux(
+            reference, data_name="RuptureModels", path=rupture_path + "/Reference"
+        )
+
+    def get_rupture(self, event_id, label="default"):
+        """Retrieves cells, vertices, description, and reference for a rupture.
+
+        Args:
+            event (Event):
+                Obspy event object.
+            label (str):
+                Process label, "default" if no input.
+        Returns:
+            dict: Keys are cells, vertices, description, and reference.
+
+            Cells and vertices are numpy arrays. The Vertices dataset is
+            a 2D array [#vertices, spaceDim] where spaceDim=3. The Cells
+            dataset is a 2D array [#cells, #corners] where #corners is
+            the number of vertices in a cell. In general, we will have
+            quadrilaterals (#corners=4) or triangles (#corners=3).
+        """
+        aux_data = self.dataset.auxiliary_data
+
+        if "RuptureModels" not in aux_data:
+            return None
+
+        dset_name = f"{event_id}_{label}"
+        if dset_name in aux_data["RuptureModels"]:
+            rupture_model = aux_data["RuptureModels"][dset_name]
         else:
-            strec = STREC.from_event(event)
+            raise ValueError(
+                f"Could not find a rupture model with event id '{event_id}' and label '{label}."
+            )
+
+        cells = rupture_model["Cells"].data
+        cells = np.array(cells)
+
+        vertices = rupture_model["Vertices"].data
+        vertices = np.array(vertices)
+
+        description = array_to_str(rupture_model["Description"].data)
+        reference = array_to_str(rupture_model["Reference"].data)
+
+        rup_dict = {
+            "cells": cells,
+            "vertices": vertices,
+            "description": description,
+            "reference": reference,
+        }
+
+        return rup_dict
+
+    def add_strec(self, strec, event_id):
+        """Add STREC results to auxiliary data.
+
+        Args:
+            strec (dict):
+                STREC results.
+            event_id (str):
+                Event id.
+        """
         strec_params_str = dict_to_str(strec.results)
         dtype = "StrecParameters"
-        strec_path = f"STREC/{event.id}"
+        strec_path = f"STREC/{event_id}"
         self.insert_aux(strec_params_str, dtype, strec_path, True)
 
-    def get_strec(self, event):
+    def get_strec(self, event_id):
         """Get STREC results from auxiliary data"""
-        event_id = event.id.replace("smi:local/", "")
         aux_data = self.dataset.auxiliary_data
         if "StrecParameters" not in aux_data:
             return None
@@ -291,106 +372,13 @@ class StreamWorkspace(object):
             raise ValueError(f"{net_sta} not in StreamSupplementalStats")
         return stats_dict
 
-    def add_rupture(self, event, label):
-        """Inserts information from the rupture model into the workspace.
-
-        Args:
-            event (Event):
-                Obspy event object.
-            label (str):
-                Process label, user can input this from gmrecords assemble subcommand,
-                "default" if no input.
-        """
-
-        event_id = self._get_id(event)
-        workspace_file = self.dataset.filename
-        workspace_path = Path(workspace_file)
-        event_dir = workspace_path.parent.absolute()
-
-        rupture_filename = rupture_utils.get_rupture_filename(event_dir)
-
-        if rupture_filename is not None:
-            rupture_result = Rupture.from_shakemap(str(rupture_filename), event)
-
-            cells = np.array(rupture_result.cells)
-            vertices = np.array(rupture_result.vertices)
-            description = rupture_result.description
-            reference = rupture_result.reference
-
-            rupture_path = event_id + "_" + label
-
-            self.dataset.add_auxiliary_data(
-                cells,
-                data_type="RuptureModels",
-                path=rupture_path + "/Cells",
-                parameters={},
-            )
-            self.dataset.add_auxiliary_data(
-                vertices,
-                data_type="RuptureModels",
-                path=rupture_path + "/Vertices",
-                parameters={},
-            )
-            self.insert_aux(
-                description,
-                data_name="RuptureModels",
-                path=rupture_path + "/Description",
-            )
-            self.insert_aux(
-                reference, data_name="RuptureModels", path=rupture_path + "/Reference"
-            )
-
-    def get_rupture(self, event, label="default"):
-        """Retrieves cells, vertices, description, and reference for a rupture.
-
-        Args:
-            event (Event):
-                Obspy event object.
-            label (str):
-                Process label, "default" if no input.
-        Returns:
-            dict: Keys are cells, vertices, description, and reference.
-
-            Cells and vertices are numpy arrays. The Vertices dataset is
-            a 2D array [#vertices, spaceDim] where spaceDim=3. The Cells
-            dataset is a 2D array [#cells, #corners] where #corners is
-            the number of vertices in a cell. In general, we will have
-            quadrilaterals (#corners=4) or triangles (#corners=3).
-        """
-
-        event_id = self._get_id(event)
-        aux_data = self.dataset.auxiliary_data
-
-        if "RuptureModels" not in aux_data:
-            return None
-
-        try:
-            rupture_model = aux_data["RuptureModels"][event_id + "_" + label]
-        except:
-            raise ValueError(
-                f"Could not find a rupture model with event id '{event_id}' and label '{label}'."
-            )
-
-        cells = rupture_model["Cells"].data
-        cells = np.array(cells)
-
-        vertices = rupture_model["Vertices"].data
-        vertices = np.array(vertices)
-
-        description = array_to_str(rupture_model["Description"].data)
-        reference = array_to_str(rupture_model["Reference"].data)
-
-        rup_dict = {
-            "cells": cells,
-            "vertices": vertices,
-            "description": description,
-            "reference": reference,
-        }
-
-        return rup_dict
-
     def add_streams(
-        self, event, streams, label=None, gmprocess_version="unknown", overwrite=False
+        self,
+        event,
+        streams,
+        label=None,
+        gmprocess_version="unknown",
+        overwrite=False,
     ):
         """Add a sequence of StationStream objects to an ASDF file.
 
@@ -413,8 +401,6 @@ class StreamWorkspace(object):
         # To allow for multiple processed versions of the same Stream
         # let's keep a dictionary of stations and sequence number.
         event_id = self._get_id(event)
-        if not self.has_event(event_id):
-            self.add_event(event)
 
         if hasattr(self, "config"):
             config = self.config

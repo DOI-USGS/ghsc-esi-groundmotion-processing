@@ -18,6 +18,7 @@ PICKER_FILE = "picker.yml"
 MODULE_FILE = "modules.yml"
 EVENT_FILE = "event.json"
 RUPTURE_FILE = "rupture.json"
+STREC_FILE = "strec_results.json"
 
 STREC_CONFIG_PATH = pathlib.Path.home() / ".strec" / "config.ini"
 
