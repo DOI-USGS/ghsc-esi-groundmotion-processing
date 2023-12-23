@@ -298,6 +298,8 @@ def test_autoprocess(script_runner):
         "Provenance/CI.TOW2.--.HN2_ci38457511_unprocessed",
         "Provenance/CI.TOW2.--.HNZ_ci38457511_default",
         "Provenance/CI.TOW2.--.HNZ_ci38457511_unprocessed",
+        "Provenance/default",
+        "Provenance/unprocessed",
         "QuakeML",
         "Waveforms",
         "Waveforms/CI.CCC",

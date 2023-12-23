@@ -51,6 +51,7 @@ def test_assemble(script_runner):
         "Provenance/CI.TOW2.--.HN1_ci38457511_unprocessed",
         "Provenance/CI.TOW2.--.HN2_ci38457511_unprocessed",
         "Provenance/CI.TOW2.--.HNZ_ci38457511_unprocessed",
+        "Provenance/unprocessed",
         "QuakeML",
         "Waveforms",
         "Waveforms/CI.CCC",
