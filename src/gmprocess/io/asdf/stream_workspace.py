@@ -25,7 +25,6 @@ from gmprocess.core import provenance
 from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils.rupture_utils import get_rupture_file
 from gmprocess.utils.strec import STREC
 
 from gmprocess.io.asdf import workspace_constants as wc
