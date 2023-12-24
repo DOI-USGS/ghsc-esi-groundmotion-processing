@@ -109,8 +109,12 @@ class RemoveResponse(object):
 
     def _set_poles_and_zeros(self):
         self.resp = self.inv.get_response(self.trace.id, self.trace.stats.starttime)
-        self.paz = self.resp.get_paz()
-        self.has_paz = not (len(self.paz.poles) == 0 and len(self.paz.zeros) == 0)
+        try:
+            self.paz = self.resp.get_paz()
+            self.has_paz = not (len(self.paz.poles) == 0 and len(self.paz.zeros) == 0)
+        except Exception:
+            self.paz = None
+            self.has_paz = False
 
     def _remove_response_selector(self):
         self.instrument_code = self.trace.stats.channel[1]
