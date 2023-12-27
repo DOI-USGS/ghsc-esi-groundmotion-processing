@@ -12,19 +12,19 @@ from gmprocess.utils import test_utils
 
 
 EVENT_INFO = {
-    "id": "usp000hat0",
-    "time": UTCDateTime("2010-04-06 22:15:01.580"),
-    "latitude": 2.383,
-    "longitude": 97.048,
-    "depth_km": 31.0,
-    "magnitude": 7.8,
-    "magnitude_type": "mwc",
+    "id": "us20005iis",
+    "time": UTCDateTime("2016-04-15 16:25:06.220"),
+    "latitude": 32.7906,
+    "longitude": 130.7543,
+    "depth_km": 10.0,
+    "magnitude": 7.0,
+    "magnitude_type": "mww",
 }
 
 
 @test_utils.vcr.use_cassette()
 def test_download_comcat_event():
-    data = download_utils.download_comcat_event("usp000hat0")
+    data = download_utils.download_comcat_event(EVENT_INFO["id"])
     assert data["id"] == EVENT_INFO["id"]
     assert data["geometry"]["coordinates"][0] == EVENT_INFO["longitude"]
     assert data["geometry"]["coordinates"][1] == EVENT_INFO["latitude"]
@@ -63,5 +63,5 @@ def test_get_strec_results():
     with open(file_path, encoding="utf-8") as fin:
         data = json.load(fin)
         assert data["TectonicRegion"] == "Subduction"
-        assert data["SlabModelRegion"] == "Sumatra-Java"
+        assert data["SlabModelRegion"] == "Ryukyu"
     file_path.unlink()
