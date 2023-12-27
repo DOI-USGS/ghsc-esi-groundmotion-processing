@@ -31,11 +31,11 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Tue, 19 Dec 2023 21:05:49 GMT
+      - Wed, 27 Dec 2023 15:16:37 GMT
       Expires:
-      - Tue, 19 Dec 2023 21:06:49 GMT
+      - Wed, 27 Dec 2023 15:17:37 GMT
       Last-Modified:
-      - Tue, 19 Dec 2023 21:05:49 GMT
+      - Wed, 27 Dec 2023 15:16:37 GMT
       Location:
       - /fdsnws/event/1/query?eventid=ci38457511&format=geojson
       Server:
@@ -43,11 +43,11 @@ interactions:
       Strict-Transport-Security:
       - max-age=31536000
       Via:
-      - 1.1 34d97fb847e68036ab083403a7d4e828.cloudfront.net (CloudFront)
+      - 1.1 9673937e9ca969be20fcbedc2798b824.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - YOD8eKYFlhfIzJN7zBEoQkBSNuhVNnSZIR-QQNxrnyvQXLysQI5SEw==
+      - mHDjTykQGk-vHz1hRGGwqQpfc84MNdxn3RxAIPz4MYnI6nRAnULyog==
       X-Amz-Cf-Pop:
-      - MSP50-C2
+      - ORD56-P2
       X-Cache:
       - Miss from cloudfront
       X-Content-Type-Options:
@@ -212,11 +212,11 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Tue, 19 Dec 2023 21:05:51 GMT
+      - Wed, 27 Dec 2023 15:16:39 GMT
       Expires:
-      - Tue, 19 Dec 2023 21:06:51 GMT
+      - Wed, 27 Dec 2023 15:17:39 GMT
       Last-Modified:
-      - Tue, 19 Dec 2023 21:05:51 GMT
+      - Wed, 27 Dec 2023 15:16:39 GMT
       Server:
       - nginx
       Strict-Transport-Security:
@@ -226,11 +226,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 34d97fb847e68036ab083403a7d4e828.cloudfront.net (CloudFront)
+      - 1.1 df50de0db91dfb2bbd3a11e8d0539c5c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - kJUVEI4-4qe97hq4WCaR8Yjf7z_xvIRrzMJu5Fxq2LNERJyd2SmMCA==
+      - jMCQGVnargSzi0t6NPRhB74fV3-ViLvNb8RWPzP3-HSCXVWVWI5W1w==
       X-Amz-Cf-Pop:
-      - MSP50-C2
+      - ORD56-P2
       X-Cache:
       - Miss from cloudfront
       X-Content-Type-Options:
@@ -325,8 +325,6 @@ interactions:
       - '*'
       Access-Control-Max-Age:
       - '86400'
-      Age:
-      - '64'
       Cache-Control:
       - max-age=315360000
       Connection:
@@ -336,11 +334,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 19 Dec 2023 21:04:48 GMT
+      - Wed, 27 Dec 2023 15:16:39 GMT
       ETag:
       - '"b694e0792bce1df4ab467e056dee4f22"'
       Expires:
-      - Fri, 16 Dec 2033 21:04:48 GMT
+      - Sat, 24 Dec 2033 15:16:39 GMT
       Last-Modified:
       - Thu, 17 Dec 2020 04:23:58 GMT
       Server:
@@ -350,13 +348,13 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 b67b0b7f2789ec2423f170870a1369ba.cloudfront.net (CloudFront)
+      - 1.1 b2b31f2fa31ca6a5c4d91e1d115c1e9c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - KsZA0-5vOD-7oWuSESMOSw3fanLpfKi-0iIoSyAYaIRFn46wUPNoig==
+      - DTb2l17lQyWvtjDA2HewpHghVJvOMLu84_FKpxLjAXUXHSgNhn7cNw==
       X-Amz-Cf-Pop:
-      - MSP50-C2
+      - ORD56-P2
       X-Cache:
-      - Hit from cloudfront
+      - Miss from cloudfront
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
