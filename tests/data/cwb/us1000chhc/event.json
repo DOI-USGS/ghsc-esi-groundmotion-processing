@@ -1,1 +1,8 @@
-{"id": "us1000chhc", "time": "2018-02-06T15:50:43.320000", "lat": 24.1338, "lon": 121.6586, "depth": 17, "magnitude": 6.4}
+{
+    "id": "us1000chhc",
+    "time": "2018-02-06T15:50:43.320000",
+    "latitude": 24.1338,
+    "longitude": 121.6586,
+    "depth_km": 17,
+    "magnitude": 6.4
+}

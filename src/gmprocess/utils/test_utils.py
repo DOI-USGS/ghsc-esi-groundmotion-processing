@@ -1,11 +1,11 @@
 """Module for utilities related to unit tests."""
 
-import os.path
-import glob
+import os
+import h5py
 import vcr as vcrpy
 
-from gmprocess.utils.base_utils import read_event_json_files
 from gmprocess.utils import constants
+from gmprocess.core import scalar_event
 
 vcr = vcrpy.VCR(
     path_transformer=vcrpy.VCR.ensure_suffix(".yaml"),
@@ -44,22 +44,41 @@ def read_data_dir(file_format, eventid, files=None):
         allfiles = os.listdir(eventdir)
         allfiles.remove("event.json")
         for dfile in allfiles:
-            datafile = os.path.join(eventdir, dfile)
+            datafile = eventdir / dfile
             datafiles.append(datafile)
     elif isinstance(files, str):
-        # regex
-        datafiles = glob.glob(os.path.join(eventdir, files))
+        # files is a regular expression
+        datafiles = list(eventdir.glob(files))
     else:
-        # this is just a list of filenames
+        # files is a list of filenames
         for tfile in files:
-            fullfile = os.path.join(eventdir, tfile)
-            if os.path.isfile(fullfile):
+            fullfile = eventdir / tfile
+            if fullfile.is_file():
                 datafiles.append(fullfile)
 
-    # read the event.json file
     jsonfile = eventdir / "event.json"
-    if not jsonfile.is_dir():
-        event = None
-    event = read_event_json_files([jsonfile])[0]
+    event = None
+    if jsonfile.is_file():
+        event = scalar_event.ScalarEvent.from_json(jsonfile)
 
     return (datafiles, event)
+
+
+def check_workspace(filename, hierarchy):
+    """Check workspace hierarchy to make sure it contains all expected items.
+
+    Args:
+        filename (pathlib.Path):
+            Filename of ASDF workspace.
+        hierarchy (tuple):
+            Tuple of names of items in workspace (matches h5dump -n).
+    """
+
+    def tracker(name):
+        tracker.items.append(name)
+
+    assert filename.is_file()
+    with h5py.File(filename) as h5:
+        tracker.items = []
+        h5.visit(tracker)
+        assert tuple(tracker.items) == hierarchy

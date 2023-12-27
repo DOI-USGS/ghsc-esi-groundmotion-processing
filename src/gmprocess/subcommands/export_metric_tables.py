@@ -6,10 +6,9 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
 tables = LazyLoader("tables", globals(), "gmprocess.utils.tables")
-confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 flat_mod = LazyLoader("flatmod", globals(), "gmprocess.io.asdf.flatfile")
 
 
@@ -34,27 +33,19 @@ class ExportMetricTablesModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
                 "Creating tables for event %s (%s of %s)...",
-                event.id,
+                event_id,
                 1 + ievent,
-                len(self.events),
+                len(event_ids),
             )
-            self.eventid = event.id
-            event_dir = gmrecords.data_path / self.eventid
-            workname = event_dir / const.WORKSPACE_NAME
-            if not workname.is_file():
-                logging.warning(
-                    "No workspace file found for event %s. Please run subcommand "
-                    "'assemble' to generate workspace file. Continuing to next event.",
-                    self.eventid,
-                )
-                continue
 
-            self.workspace = ws.StreamWorkspace.open(workname)
+            self.open_workspace(event_id)
+            if not self.workspace:
+                continue
             self._get_labels()
             config = self._get_config()
 
@@ -81,9 +72,7 @@ class ExportMetricTablesModule(base.SubcommandModule):
             # For now, I'm going to take it from the SA period list, but this could be
             # changed to something else, or even be set via the config file.
             snr_table, snr_readme = flatfile.get_snr_table()
-            self.workspace.close()
-
-            outdir = gmrecords.data_path
+            self.close_workspace()
 
             # Set the precisions for the imc tables, event table, and
             # fit_spectra table before writing
@@ -133,7 +122,7 @@ class ExportMetricTablesModule(base.SubcommandModule):
             for filename, df in dict(zip(filenames, files)).items():
                 if df is None or df.size == 0:
                     continue
-                filepath = outdir / (filename + f".{output_format}")
+                filepath = gmrecords.data_path / (filename + f".{output_format}")
                 if filepath.exists():
                     if "README" in filename:
                         continue
@@ -153,8 +142,8 @@ class ExportMetricTablesModule(base.SubcommandModule):
                     df.to_csv(
                         filepath,
                         index=False,
-                        float_format=const.DEFAULT_FLOAT_FORMAT,
-                        na_rep=const.DEFAULT_NA_REP,
+                        float_format=constants.DEFAULT_FLOAT_FORMAT,
+                        na_rep=constants.DEFAULT_NA_REP,
                         mode=mode,
                         header=header,
                     )
@@ -164,8 +153,8 @@ class ExportMetricTablesModule(base.SubcommandModule):
                     df.to_excel(
                         filepath,
                         index=False,
-                        float_format=const.DEFAULT_FLOAT_FORMAT,
-                        na_rep=const.DEFAULT_NA_REP,
+                        float_format=constants.DEFAULT_FLOAT_FORMAT,
+                        na_rep=constants.DEFAULT_NA_REP,
                         mode=mode,
                         header=header,
                     )

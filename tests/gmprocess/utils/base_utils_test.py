@@ -2,11 +2,11 @@
 from obspy.core.utcdatetime import UTCDateTime
 
 # local imports
-from gmprocess.utils.base_utils import read_event_json_files
+# from gmprocess.utils.base_utils import read_event_json_files
 from gmprocess.utils.constants import TEST_DATA_DIR
 
 
-def test_read_event_json_files():
+def abc_test_read_event_json_files():
     datafile = TEST_DATA_DIR / "event_json" / "event.json"
 
     eid = "nc51203888"

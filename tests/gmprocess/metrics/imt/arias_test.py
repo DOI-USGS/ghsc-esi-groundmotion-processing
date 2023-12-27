@@ -7,13 +7,13 @@ from gmprocess.utils.test_utils import read_data_dir
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
+from gmprocess.core import scalar_event
 
 
 def test_arias():
-    data_file = TEST_DATA_DIR / "arias_data.json"
+    data_file = constants.TEST_DATA_DIR / "arias_data.json"
     with open(str(data_file), "rt", encoding="utf-8") as f:
         jdict = json.load(f)
 
@@ -60,13 +60,12 @@ def test_arias():
         response = {"input_units": "counts", "output_units": "cm/s^2"}
         tr.set_provenance("remove_response", response)
 
-    event = ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
-        lat=24.0,
-        lon=120.0,
-        depth=0,
+        latitude=24.0,
+        longitude=120.0,
+        depth_km=0,
         magnitude=0.0,
-        mag_type="",
         time="2000-01-01 00:00:00",
     )
 

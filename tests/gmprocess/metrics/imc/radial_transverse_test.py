@@ -7,21 +7,20 @@ from obspy.core.utcdatetime import UTCDateTime
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
+from gmprocess.core import scalar_event
 
-datadir = TEST_DATA_DIR / "fdsnfetch"
+datadir = constants.TEST_DATA_DIR / "fdsnfetch"
 
 
 def test_radial_transverse():
-    event = ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="test",
-        lat=47.149,
-        lon=-122.7266667,
-        depth=0,
+        latitude=47.149,
+        longitude=-122.7266667,
+        depth_km=0,
         magnitude=5.0,
-        mag_type="",
         time=UTCDateTime.strptime("2016-11-13 11:02:56", "%Y-%m-%d %H:%M:%S"),
     )
     st = read(str(datadir / "resp_cor" / "UW.ALCT.--.*.MSEED"))

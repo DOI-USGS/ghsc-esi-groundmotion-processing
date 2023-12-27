@@ -6,6 +6,7 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 download = LazyLoader("download", globals(), "gmprocess.subcommands.download")
 import_data = LazyLoader("import_data", globals(), "gmprocess.subcommands.import_data")
 assemble = LazyLoader("assemble", globals(), "gmprocess.subcommands.assemble")
@@ -56,7 +57,7 @@ class AutoShakemapModule(base.SubcommandModule):
         },
         {
             "long_flag": "--skip-download",
-            "help": "Skip data downlaod step.",
+            "help": "Skip data download step.",
             "default": False,
             "action": "store_true",
         },
@@ -77,26 +78,44 @@ class AutoShakemapModule(base.SubcommandModule):
         logging.info(f"Running subcommand '{self.command_name}'")
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
 
         # Hard code overwrite to True since this is all meant to run end-to-end
         # without interruption.
         gmrecords.args.overwrite = True
 
-        # Chain together relevant subcommand modules:
-        if (not gmrecords.args.skip_download) and (gmrecords.args.path is None):
-            download.DownloadModule().main(gmrecords)
+        data_path = self.gmrecords.data_path
+        user_ids = self.gmrecords.args.event_id
+        events_filename = self.gmrecords.args.textfile
+        file_ids, events = scalar_event.get_events_from_file(events_filename)
+        event_ids = scalar_event.get_event_ids(
+            ids=user_ids, file_ids=file_ids, data_dir=data_path
+        )
+        if events:
+            logging.critical(
+                "autoshakemap subcommand only works with events given as ComCat ids."
+            )
 
-        if gmrecords.args.path is not None:
-            import_data.ImportModule().main(gmrecords)
+        for ievent, event_id in enumerate(event_ids):
+            logging.info(
+                f"(auto)processing event {event_id} ({1+ievent} of {len(event_ids)})..."
+            )
+            # stomp on gmrecords.args.event_id
+            gmrecords.args.event_id = [event_id]
 
-        assemble.AssembleModule().main(gmrecords)
-        process_waveforms.ProcessWaveformsModule().main(gmrecords)
-        compute_station_metrics.ComputeStationMetricsModule().main(gmrecords)
-        compute_waveform_metrics.ComputeWaveformMetricsModule().main(gmrecords)
-        export_shakemap.ExportShakeMapModule().main(gmrecords)
+            # Chain together relevant subcommand modules:
+            if (not gmrecords.args.skip_download) and (gmrecords.args.path is None):
+                download.DownloadModule().main(gmrecords)
 
-        if gmrecords.args.diagnostics:
-            export_metric_tables.ExportMetricTablesModule().main(gmrecords)
-            generate_regression_plot.GenerateRegressionPlotModule().main(gmrecords)
-            generate_report.GenerateReportModule().main(gmrecords)
+            if gmrecords.args.path is not None:
+                import_data.ImportModule().main(gmrecords)
+
+            assemble.AssembleModule().main(gmrecords)
+            process_waveforms.ProcessWaveformsModule().main(gmrecords)
+            compute_station_metrics.ComputeStationMetricsModule().main(gmrecords)
+            compute_waveform_metrics.ComputeWaveformMetricsModule().main(gmrecords)
+            export_shakemap.ExportShakeMapModule().main(gmrecords)
+
+            if gmrecords.args.diagnostics:
+                export_metric_tables.ExportMetricTablesModule().main(gmrecords)
+                generate_regression_plot.GenerateRegressionPlotModule().main(gmrecords)
+                generate_report.GenerateReportModule().main(gmrecords)

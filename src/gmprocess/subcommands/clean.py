@@ -6,6 +6,7 @@ import shutil
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class CleanModule(base.SubcommandModule):
@@ -69,7 +70,6 @@ class CleanModule(base.SubcommandModule):
         """
         logging.info(f"Running subcommand '{self.command_name}'")
         self.gmrecords = gmrecords
-        self._get_events()
         self._check_arguments()
 
         # ---------------------------------------------------------------------
@@ -86,9 +86,10 @@ class CleanModule(base.SubcommandModule):
 
         # ---------------------------------------------------------------------
         # Inside the event directories
-        logging.info(f"Number of events: {len(self.events)}")
-        for event in self.events:
-            event_dir = gmrecords.data_path / event.id
+        event_ids = scalar_event.get_event_ids(data_dir=data_path)
+        logging.info(f"Number of events: {len(event_ids)}")
+        for event_id in event_ids:
+            event_dir = gmrecords.data_path / event_id
             # Exported tables
             if gmrecords.args.all or gmrecords.args.export:
                 patterns = [

@@ -17,7 +17,7 @@ from obspy.taup import TauPyModel
 
 # local imports
 from gmprocess.utils.config import get_config
-from gmprocess.utils.event import ScalarEvent
+from gmprocess.core import scalar_event
 
 NAN_TIME = UTCDateTime("1970-01-01T00:00:00")
 
@@ -353,7 +353,7 @@ def pick_travel(stream, event, model=None, picker_config=None):
     Args:
         stream (gmprocess.core.stationstream.StationStream):
             StationStream containing 1 or more channels of waveforms.
-        event (ScalarEvent):
+        event (scalar_event.ScalarEvent):
             Event origin/magnitude information.
         model (TauPyModel):
             TauPyModel object for computing travel times.
@@ -697,7 +697,7 @@ def _get_statelevel(y, n):
 def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     """
     Creates a travel time dataframe, which contains the phase arrrival times
-    for each station the StreamCollection, for each event in the catalog.
+    for each station in the StreamCollection, for each event in the catalog.
     This uses an interpolation method to save time, and the fineness of the
     interpolation grid can be adjusted using the ddepth and ddist parameters.
     Using the recommended values of ddepth=5 and ddist=0.1 are generally
@@ -728,7 +728,7 @@ def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     df_catalog["depth"].clip(lower=0, inplace=True)
     catalog = []
     for idx, row in df_catalog.iterrows():
-        event = ScalarEvent.from_params(
+        event = scalar_event.ScalarEvent.from_params(
             row["id"],
             row["time"],
             row["latitude"],

@@ -71,12 +71,14 @@ def write_asdf(filename, streams, event, label=None):
             Path to the HDF file that should contain stream data.
         streams (list):
             List of StationStream objects that should be written into the file.
-        event (Obspy Event or dict):
-            Obspy event object or dict (see get_event_dict())
+        event (scalar_event.ScalarEvent):
+            ScalarEvent object
         label (str):
             Label to append to all streams being added to ASDF file.
     """
     workspace = StreamWorkspace(filename)
     workspace.add_config()
+    if not event.id in workspace.get_event_ids():
+        workspace.add_event(event)
     workspace.add_streams(event, streams, label=label, gmprocess_version=VERSION)
     workspace.close()

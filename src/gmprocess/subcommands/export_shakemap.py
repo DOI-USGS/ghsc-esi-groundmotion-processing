@@ -6,10 +6,9 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 
 arg_dicts = LazyLoader("arg_dicts", globals(), "gmprocess.subcommands.arg_dicts")
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
 sm_utils = LazyLoader("sm_utils", globals(), "gmprocess.utils.export_shakemap_utils")
-confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class ExportShakeMapModule(base.SubcommandModule):
@@ -43,28 +42,21 @@ class ExportShakeMapModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
-            self.eventid = event.id
+        for ievent, event_id in enumerate(event_ids):
             logging.info(
-                f"Creating shakemap files for event {self.eventid} "
-                f"({1+ievent} of {len(self.events)})..."
+                f"Creating shakemap files for event {event_id} "
+                f"({1+ievent} of {len(event_ids)})..."
             )
 
-            event_dir = gmrecords.data_path / event.id
-            workname = event_dir / const.WORKSPACE_NAME
-            if not workname.is_file():
-                logging.info(
-                    f"No workspace file found for event {event.id}. Please run "
-                    "subcommand 'assemble' to generate workspace file."
-                )
-                logging.info("Continuing to next event.")
+            self.open_workspace(event_id)
+            if not self.workspace:
                 continue
-
-            self.workspace = ws.StreamWorkspace.open(workname)
             self._get_labels()
             config = self._get_config()
+            event_dir = gmrecords.data_path / event_id
+            event = self.workspace.get_event(event_id)
 
             expanded_imts = self.gmrecords.args.expand_imts
             jsonfile, stationfile, _ = sm_utils.create_json(
@@ -76,7 +68,7 @@ class ExportShakeMapModule(base.SubcommandModule):
                 expanded_imts=expanded_imts,
             )
 
-            self.workspace.close()
+            self.close_workspace()
             if jsonfile is not None:
                 self.append_file("shakemap", jsonfile)
             if stationfile is not None:

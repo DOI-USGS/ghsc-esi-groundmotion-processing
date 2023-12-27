@@ -5,9 +5,9 @@ import logging
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
-ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
-const = LazyLoader("const", globals(), "gmprocess.utils.constants")
+constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
 report_utils = LazyLoader("report_utils", globals(), "gmprocess.utils.report_utils")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class GenerateHTMLMapModule(base.SubcommandModule):
@@ -31,20 +31,14 @@ class GenerateHTMLMapModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        self._get_events()
+        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
 
-        for ievent, event in enumerate(self.events):
-            event_dir = self.gmrecords.data_path / event.id
-            workname = event_dir / const.WORKSPACE_NAME
-            if not workname.is_file():
-                logging.error(
-                    f"No workspace file found for event {event.id}. Please run "
-                    "subcommand 'assemble' to generate workspace file."
-                    "Continuing to next event."
-                )
+        for ievent, event_id in enumerate(event_ids):
+            event_dir = self.gmrecords.data_path / event_id
+
+            self.open_workspace(event_id)
+            if not self.workspace:
                 continue
-
-            self.workspace = ws.StreamWorkspace.open(workname)
             ds = self.workspace.dataset
             station_list = ds.waveforms.list()
             if len(station_list) == 0:
@@ -54,26 +48,29 @@ class GenerateHTMLMapModule(base.SubcommandModule):
             self._get_labels()
             config = self.workspace.config
             logging.info(
-                f"Generating station maps for event {event.id} "
-                f"({1+ievent} of {len(self.events)})..."
+                f"Generating station maps for event {event_id} "
+                f"({1+ievent} of {len(event_ids)})..."
             )
 
             pstreams = []
             for station_id in station_list:
                 streams = self.workspace.get_streams(
-                    event.id,
+                    event_id,
                     stations=[station_id],
                     labels=[self.gmrecords.args.label],
                     config=config,
                 )
                 if not len(streams):
                     logging.error(
-                        f"No matching streams found for {station_id} for {event.id}."
+                        f"No matching streams found for {station_id} for {event_id}."
                     )
                     continue
 
                 for stream in streams:
                     pstreams.append(stream)
+
+            event = self.workspace.get_event(event_id)
+            self.close_workspace()
 
             mapfile = report_utils.draw_stations_map(pstreams, event, event_dir)
             self.append_file("Station map", mapfile)

@@ -9,8 +9,6 @@ from gmprocess.utils.config import update_config
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.test_utils import vcr
 
-STREC_CONFIG_PATH = Path.home() / ".strec" / "config.ini"
-
 
 def assert_cmp_with_nans(d1, d2):
     for key, v1 in d1.items():
@@ -27,8 +25,8 @@ def assert_cmp_with_nans(d1, d2):
 def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_path):
     """Test for StreamWorkspace class."""
     try:
-        eventid = "usb000syza"
-        _, event = load_data_usb000syza
+        event_id = "usb000syza"
+        _, event, strec = load_data_usb000syza
 
         ws = StreamWorkspace.create(tmp_path / "workspace.h5")
 
@@ -37,8 +35,9 @@ def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_pat
         try:
             ws.add_config()
             ws.add_event(event)
-            outevent = ws.get_event(eventid)
-            strec_params = ws.get_strec(outevent)
+            ws.add_strec(strec, event_id)
+            outevent = ws.get_event(event_id)
+            strec_params = ws.get_strec(event_id)
             cmp_params = {
                 "CompositeVariability": np.nan,
                 "DistanceToActive": 416.1843055109172,
@@ -90,7 +89,7 @@ def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_pat
 
 def test_stream_workspace(load_data_usb000syza, tmp_path, config):
     config["metrics"]["output_imcs"] = ["channels"]
-    raw_streams, event = load_data_usb000syza
+    raw_streams, event, strec = load_data_usb000syza
     config = update_config(constants.TEST_DATA_DIR / "config_min_freq_0p2.yml", config)
     newconfig = config.copy()
     newconfig["processing"].append(

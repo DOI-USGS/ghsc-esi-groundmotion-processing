@@ -51,14 +51,21 @@ The `download` subcommand will fetch data for a given set of earthquakes from a 
 The data includes the earthquake rupture information (for example, magnitude, location, origin time) and the raw waveforms.
 
 The easiest way to get data for events is by specifying USGS ComCat event IDs.
-These event IDs can be found by searching for events on the [Search Earthquake Catalog](https://earthquake.usgs.gov/earthquakes/search/) page at the USGS.
-With `gmrecords`, you can specify a single event ID or a list of event IDs in a text file.
-Also, you can run customized searches of the earthquake catalog in Python with [libcomcat](https://github.com/usgs/libcomcat) or [ObsPy](https://github.com/obspy/obspy/wiki/).
+These event IDs can be found by searching for events on the USGS [Search Earthquake Catalog](https://earthquake.usgs.gov/earthquakes/search/) page.
+With `gmrecords` you can specify a single event ID or a list of event IDs in a text file.
+Also, you can run customized searches of the earthquake catalog in Python using [libcomcat](https://github.com/usgs/libcomcat), [ObsPy](https://github.com/obspy/obspy/wiki/), or webservices directly in your code.
+
+A subdirectory for each event will be created in the data directory of the project with the name of the directory set to the event ID.
+Within each subdirectory, the event information will be placed in `event.json` and the raw waveforms in a `raw` subdirectory.
+If STREC is enabled to associated events with tectonic regimes, the information will be placed in `strec.json`.
 
 :::{command-output} gmrecords download -h
 :::
 
 ### `assemble`
+
+The assemble command reads the files in each event subdirectory and creates a corresponding ASDF file `workspace.h5` with the event information and raw waveforms.
+All subsequent commands only access the ASDF file.
 
 :::{command-output} gmrecords assemble -h
 :::
@@ -72,20 +79,35 @@ Also, you can run customized searches of the earthquake catalog in Python with [
 
 ### `process_waveforms`
 
+Perform processing steps on the raw waveforms, such as baseline correction, bandpass filtering, and trimming.
+
 :::{command-output} gmrecords process_waveforms -h
 :::
 
 ### `compute_station_metrics`
+
+Compute station metrics, such as rupture distance, and back azimuth to rupture.
 
 :::{command-output} gmrecords compute_station_metrics -h
 :::
 
 ### `compute_waveform_metrics`
 
+Compute waveform metrics, such as PGA, PGV, pseudospectral acceleration, and Fourier amplitude spectra.
+
 :::{command-output} gmrecords compute_waveform_metrics -h
 :::
 
 ### `auto_shakemap`
+
+An alias for downloading and assembling data, processing waveforms, computing station metrics, computing waveform metrics, and exporting files for ShakeMap.
+
+:::{command-output} gmrecords auto_shakemap -h
+:::
+
+### `auto_process`
+
+An alias for downloading and assembling data, processing waveforms, computing station metrics, computing waveform metrics, and generating a report and station map.
 
 :::{command-output} gmrecords auto_shakemap -h
 :::
@@ -110,6 +132,11 @@ Also, you can run customized searches of the earthquake catalog in Python with [
 ### `export_shakemap`
 
 :::{command-output} gmrecords export_shakemap -h
+:::
+
+### `export_gmpacket`
+
+:::{command-output} gmrecords export_gmpacket -h
 :::
 
 ## Diagnostic subcommands

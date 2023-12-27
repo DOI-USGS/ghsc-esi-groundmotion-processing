@@ -39,7 +39,7 @@ def get_corner_frequencies(
     Args:
         st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.scalar_event.ScalarEvent):
             ScalarEvent object.
         method (str):
             Which method to use; currently allowed "snr" or "constant".
@@ -190,7 +190,7 @@ def from_magnitude(
     Args:
         st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.scalar_event.ScalarEvent):
             ScalarEvent object.
         highpass (float):
             Highpass corner frequency (Hz).

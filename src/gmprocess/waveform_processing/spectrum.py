@@ -30,7 +30,7 @@ def fit_spectra(
     Args:
         st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.scalar_event.ScalarEvent):
              ScalarEvent object.
         kappa (float):
             Site diminution factor (sec). Typical value for active cruststal

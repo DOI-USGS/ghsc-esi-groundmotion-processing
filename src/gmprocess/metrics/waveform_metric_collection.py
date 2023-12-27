@@ -53,7 +53,7 @@ class WaveformMetricCollection(MetricCollection):
         Args:
             streams (list):
                 List of StationStream objects.
-            event (gmprocess.utils.event.ScalarEvent):
+            event (gmprocess.utils.scalar_event.ScalarEvent):
                 A ScalarEvent object.
             config (dict):
                 Dictionary of config options.
@@ -130,7 +130,7 @@ class WaveformMetricCollection(MetricCollection):
         Args:
             streams (list):
                 List of StationStream objects.
-            event (gmprocess.utils.event.ScalarEvent):
+            event (gmprocess.utils.scalar_event.ScalarEvent):
                 A ScalarEvent object.
             config (dict):
                 Dictionary of config options.

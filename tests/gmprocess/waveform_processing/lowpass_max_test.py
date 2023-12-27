@@ -2,14 +2,14 @@ import numpy as np
 from obspy import UTCDateTime
 
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils.event import get_event_object
 from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.config import get_config, update_dict
+from gmprocess.core import scalar_event
+from gmprocess.utils import constants
 
 
 def test_lowpass_max():
-    datadir = str(TEST_DATA_DIR / "lowpass_max")
+    datadir = constants.TEST_DATA_DIR / "lowpass_max"
     sc = StreamCollection.from_directory(datadir)
     sc.describe()
 
@@ -55,15 +55,15 @@ def test_lowpass_max():
         }
     }
     update_dict(conf, update)
-    edict = {
+    event_values = {
         "id": "ci38038071",
         "time": UTCDateTime("2018-08-30 02:35:36"),
-        "lat": 34.136,
-        "lon": -117.775,
-        "depth": 5.5,
+        "latitude": 34.136,
+        "longitude": -117.775,
+        "depth_km": 5.5,
         "magnitude": 4.4,
     }
-    event = get_event_object(edict)
+    event = scalar_event.ScalarEvent.from_params(**event_values)
     test = process_streams(sc, event, conf)
     for st in test:
         for tr in st:

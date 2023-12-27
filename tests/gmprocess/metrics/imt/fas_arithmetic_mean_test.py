@@ -6,9 +6,9 @@ import pandas as pd
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.utils.constants import TEST_DATA_DIR
 from gmprocess.utils.config import get_config
-from gmprocess.utils.event import ScalarEvent
+from gmprocess.utils import constants
+from gmprocess.core import scalar_event
 
 
 def test_fas():
@@ -23,9 +23,9 @@ def test_fas():
     traces for the FFT.
     """
 
-    fas_file = TEST_DATA_DIR / "fas_arithmetic_mean.pkl"
-    p1 = str(TEST_DATA_DIR / "peer" / "RSN763_LOMAP_GIL067.AT2")
-    p2 = str(TEST_DATA_DIR / "peer" / "RSN763_LOMAP_GIL337.AT2")
+    fas_file = constants.TEST_DATA_DIR / "fas_arithmetic_mean.pkl"
+    p1 = str(constants.TEST_DATA_DIR / "peer" / "RSN763_LOMAP_GIL067.AT2")
+    p2 = str(constants.TEST_DATA_DIR / "peer" / "RSN763_LOMAP_GIL337.AT2")
 
     stream = StationStream([])
     for idx, fpath in enumerate([p1, p2]):
@@ -76,13 +76,12 @@ def test_fas():
     per = np.unique([float(i[0].split(")")[0].split("(")[1]) for i in ind_vals])
     per = per[[20, 85, 160]]
     config = get_config()
-    event = ScalarEvent.from_params(
+    event = scalar_event.ScalarEvent.from_params(
         id="",
-        lat=37.0,
-        lon=-122.0,
-        depth=0,
+        latitude=37.0,
+        longitude=-122.0,
+        depth_km=0,
         magnitude=0.0,
-        mag_type="",
         time="2000-01-01 00:00:00",
     )
 

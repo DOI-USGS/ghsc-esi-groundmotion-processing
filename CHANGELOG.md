@@ -6,6 +6,8 @@
 - Add trace warning when computed and reported sensitivities differ (captured from obspy).
 - Lower default PGA threshold in search_parameters to 0.001 g.
 - Created a module/class for handling provenance (core.provenance.Provenance), and added provenance entries for person/software and removed these entries from the Trace provenance.
+- Reorganize downloading event information (event, rupture geometry, STREC results) and loading it into the workspace. All information is downloaded in the `download` subcommand, and loaded into the workspace with the `assemble` subcommand. Subsequent commands all load the event information from the workspace.
+- Use full words for keys in `event.json` files (magnitude, magnitude_type, longitude, latitude, depth_km).
 
 ## 1.3.0 / 2023-11-18
 

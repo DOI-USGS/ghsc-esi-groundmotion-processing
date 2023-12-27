@@ -279,16 +279,17 @@ class GMrecordsApp(object):
             "--log",
             type=str,
             default=None,
-            help="Path to log file; if provided, loging is directed to this file.",
+            help="Path to log file; if provided, logging is directed to this file.",
         )
 
         parser.add_argument(
             "-e",
             "--eventid",
             type=str,
+            dest="event_id",
             default=None,
             help=(
-                "Comcat event ID. If None (default) all events in project data "
+                "ComCat event ID. If None (default) all events in project data "
                 "directory will be used. To specify multiple eventids, use a comma "
                 "separated list like "
                 '`gmrecords -e "nc73799091, nc73774300" autoprocess`'
@@ -304,7 +305,7 @@ class GMrecordsApp(object):
                 "A CSV file without column headers. The columns can be either: "
                 "(1) a single column with ComCat event IDs, or "
                 "(2) six columns in which those columns are: "
-                "id (string, no spaces), time (any ISO standard for date/time), "
+                "event_id (string, no spaces), time (any ISO standard for date/time), "
                 "latitutde (float, decimal degrees), longitude (float, decimal "
                 "degrees), depth (float, km), magnitude (float)."
             ),

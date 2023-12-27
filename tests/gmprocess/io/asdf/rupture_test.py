@@ -48,18 +48,13 @@ def test_rupture_point():
     assert len(myRupture.cells) == 1
 
 
-def get_rupture_prep(eventid):
+def get_rupture_prep(event_id):
     file_loc = Path(__file__)
     test_data_loc = (
-        file_loc.parent.parent.parent.parent / "data" / "asdf" / "rupture" / eventid
+        file_loc.parent.parent.parent.parent / "data" / "asdf" / "rupture" / event_id
     )
     ws = StreamWorkspace(test_data_loc / "workspace.h5")
-
-    event_ids = ws.get_event_ids()
-    eventid = event_ids[0]
-    event_obj = ws.get_event(eventid)
-
-    rupture = ws.get_rupture(event_obj)
+    rupture = ws.get_rupture(event_id)
 
     cells = rupture["cells"]
     cells_size = np.size(cells)

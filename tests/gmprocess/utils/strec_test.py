@@ -5,9 +5,9 @@ from obspy.core.utcdatetime import UTCDateTime
 from obspy.core.event.magnitude import Magnitude
 from obspy.core.event.origin import Origin
 
-from gmprocess.utils.event import ScalarEvent
 from gmprocess.utils.strec import STREC
-from gmprocess.utils.test_utils import vcr
+from gmprocess.core import scalar_event
+from gmprocess.utils import test_utils
 
 
 @pytest.fixture
@@ -19,11 +19,11 @@ def setup_event():
     depth = 31.0
     mag = 7.8
 
-    event = ScalarEvent.from_params(eid, time, lat, lon, depth * 1000, mag)
+    event = scalar_event.ScalarEvent.from_params(eid, time, lat, lon, depth, mag)
     return event
 
 
-@vcr.use_cassette()
+@test_utils.vcr.use_cassette()
 def test_strec(setup_event, tmp_path):
     strec = STREC.from_event(setup_event)
     assert strec.results["TectonicRegion"] == "Subduction"
@@ -31,7 +31,6 @@ def test_strec(setup_event, tmp_path):
     np.testing.assert_allclose(strec.results["DistanceToActive"], 145.2935045889962)
 
     json_file = tmp_path / "strec_test.json"
-    print(json_file)
     strec.to_file(json_file)
     strec2 = STREC.from_file(json_file)
     np.testing.assert_allclose(strec2.results["DistanceToActive"], 145.2935045889962)

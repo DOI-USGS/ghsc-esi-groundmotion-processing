@@ -109,8 +109,8 @@ class Rupture(object):
                 }
             )
 
-        f = open(rupture_file)
-        rupture_json = json.load(f)
+        with open(rupture_file, encoding="utf-8") as fin:
+            rupture_json = json.load(fin)
         reference = rupture_json["metadata"]["reference"]
         description = reference  # for now
 

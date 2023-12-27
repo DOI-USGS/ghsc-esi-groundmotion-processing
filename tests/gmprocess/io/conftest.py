@@ -7,7 +7,8 @@ import pytest
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.utils import constants
-from gmprocess.utils.event import get_event_object
+from gmprocess.core import scalar_event
+from gmprocess.utils.strec import STREC
 from gmprocess.utils.config import get_config
 
 TEST_STREC_CONFIG = """[DATA]
@@ -65,10 +66,9 @@ def load_data_usb000syza():
     """
     event_dir = constants.TEST_DATA_DIR / "knet" / "usb000syza"
     sc = StreamCollection.from_directory(event_dir)
-    with open(event_dir / "event.json", encoding="utf-8") as fin:
-        ev_info = json.load(fin)
-    event = get_event_object(ev_info)
-    return sc, event
+    event = scalar_event.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
+    strec = STREC.from_file(event_dir / constants.STREC_FILE)
+    return sc, event, strec
 
 
 @pytest.fixture(scope="package")
@@ -80,9 +80,7 @@ def load_data_us1000778i():
     """
     event_dir = constants.TEST_DATA_DIR / "geonet" / "us1000778i"
     sc = StreamCollection.from_directory(event_dir)
-    with open(event_dir / "event.json", encoding="utf-8") as fin:
-        ev_info = json.load(fin)
-    event = get_event_object(ev_info)
+    event = scalar_event.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
     return sc, event
 
 

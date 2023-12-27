@@ -10,7 +10,7 @@ import numpy as np
 from obspy.core.utcdatetime import UTCDateTime
 
 from gmprocess.waveform_processing import spectrum
-from gmprocess.utils.constants import UNIT_CONVERSIONS
+from gmprocess.utils import constants
 from gmprocess.utils.config import get_config
 
 MIN_MAG = 4.0
@@ -39,7 +39,7 @@ class SummaryPlot:
                 Stream of data.
             directory (str):
                 Directory for saving plots.
-            event (gmprocess.utils.event.ScalarEvent):
+            event (gmprocess.utils.scalar_event.ScalarEvent):
                 Flattened subclass of Obspy's Event.
             config (dict):
                 Configuration dictionary (or None). See get_config().
@@ -205,7 +205,7 @@ class SummaryPlot:
         self.ax.tick_params(axis="both", which="major", labelsize=5)
 
     def plot_acceleration(self):
-        pga = np.max(np.abs(self.tr.data)) / UNIT_CONVERSIONS["g"]
+        pga = np.max(np.abs(self.tr.data)) / constants.UNIT_CONVERSIONS["g"]
         dtimes = self.tr.times(type="relative")
         self.ax.plot(dtimes, self.tr.data, "k", linewidth=0.5)
         self.ax.tick_params(axis="both", which="major", labelsize=5)
