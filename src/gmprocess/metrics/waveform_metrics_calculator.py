@@ -45,10 +45,6 @@ is None and the "calculate" method is a no-op.
   The "outputs" attibute is a shared dictionary across all steps that caches the
   and are re-used
 
-    >>> id(metric_dict["test1"].outputs)
-    4378238208
-    >>> id(metric_dict["test1"].parent.outputs)
-    4378238208
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -59,6 +55,7 @@ import itertools
 
 import numpy as np
 from obspy.signal.util import next_pow_2
+from obspy import Trace
 
 from esi_core.gmprocess.waveform_processing.smoothing import konno_ohmachi
 
@@ -89,8 +86,7 @@ class WaveformMetricCalculator:
 
         self.input_data = InputDataComponent(
             TraceContainer(
-                trace1=stream.select(channel="HN1")[0],
-                trace2=stream.select(channel="HN2")[0],
+                [stream.select(channel="HN1")[0], stream.select(channel="HN2")[0]]
             )
         )
 
@@ -124,14 +120,11 @@ class WaveformMetricCalculator:
                 raise ValueError("parameter_list element must be a dictionary.")
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
 class TraceContainer:
     """Class for holding StationTrace data."""
 
-    # trace1: StationTrace
-    # trace2: StationTrace
-    traces: np.ndarray  # contain trace.data, (npts, ntraces)
-    stats: dict
+    traces: list[StationTrace]
 
 
 @dataclass(repr=False)
@@ -145,18 +138,18 @@ class ReferenceValue:
         return f"ReferenceValue: {self.value:.4g}"
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
 class ScalarContainer:
     """Class for holding scalar metric data."""
 
-    trace1: ReferenceValue
-    trace2: ReferenceValue
+    traces: list[ReferenceValue]
 
     def __repr__(self):
-        return f"ScalarContainer(trace1: {self.trace1}, trace2: {self.trace2})"
+        list_str = ", ".join([ref for ref in self.traces])
+        return f"ScalarContainer({list_str})"
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
 class CombinedScalarContainer:
     """Class for holding combined scalar metric data."""
 
@@ -166,16 +159,15 @@ class CombinedScalarContainer:
         return f"CombinedScalarContainer(trace: {self.trace})"
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
 class FourierSpectraContainer:
     """Class for holding Fourier Spectra metric data."""
 
     frequency: np.ndarray
-    fourier_spectra1: np.ndarray
-    fourier_spectra2: np.ndarray
+    fourier_spectra: list[np.ndarray]
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
 class CombinedSpectraContainer:
     """Class for holding Fourier Spectra combined metric data."""
 
@@ -183,18 +175,41 @@ class CombinedSpectraContainer:
     fourier_spectra: np.ndarray
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
 class OscillatorContainer:
-    """Class for holding Fourier Spectra metric data."""
+    """Class for holding oscillator time history for a given TraceContainer."""
 
-    periods: np.ndarray
-    dampings: np.ndarray
-    rotations: bool
-    oscillators: list
-    oscillator_dt: np.ndarray
+    period: float
+    damping: float
+    oscillators: list[np.ndarray]
+    oscillator_dt: float
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(repr=False)
+class RotDOscillatorContainer:
+    """Class for holding oscillator time history for a given TraceRotDContainer."""
+
+    period: float
+    damping: float
+    oscillator_matrix: np.ndarray
+    oscillator_dt: float
+
+
+@dataclass(repr=False)
+class OscillatorCollection:
+    """Class for holding a colleciton of OscillatorContainers."""
+
+    oscillators: list[OscillatorContainer]
+
+
+@dataclass(repr=False)
+class RotDOscillatorCollection:
+    """Class for holding a colleciton of OscillatorContainers."""
+
+    oscillators: list[RotDOscillatorContainer]
+
+
+@dataclass(repr=False)
 class TraceRotDContainer:
     """Class for holding traces rotated using the RotD method."""
 
@@ -276,10 +291,10 @@ class Integrate(Component):
 
     def calculate(self):
         logging.info("** Calculating Integrate")
-        self.output = TraceContainer(
-            self.parent.output.trace1.copy().integrate(**self.parameters),
-            self.parent.output.trace2.copy().integrate(**self.parameters),
-        )
+        new_traces = []
+        for trace in self.parent.output.traces:
+            new_traces.append(trace.copy().integrate(**self.parameters))
+        self.output = TraceContainer(new_traces)
 
     @staticmethod
     def get_parameters(config):
@@ -291,13 +306,14 @@ class FourierAmplitudeSpectra(Component):
 
     def calculate(self):
         logging.info("** Calculating FourierAmplitudeSpectra")
-        nfft = self._get_nfft(self.parent.output.trace1)
-        spectra1, freqs1 = self._compute_fft(self.parent.output.trace1, nfft)
-        spectra2, _ = self._compute_fft(self.parent.output.trace2, nfft)
+        nfft = self._get_nfft(self.parent.output.traces[0])
+        spectra_list = []
+        for trace in self.parent.output.traces:
+            spectra1, freqs1 = self._compute_fft(trace, nfft)
+            spectra_list.append(spectra1)
         self.output = FourierSpectraContainer(
             frequency=freqs1,
-            fourier_spectra1=spectra1,
-            fourier_spectra2=spectra2,
+            fourier_spectra=spectra_list,
         )
 
     @staticmethod
@@ -340,9 +356,9 @@ class SpectraQuadraticMean(Component):
 
     def calculate(self):
         logging.info("** Calculating SpectraQuadraticMean")
-        fas1 = self.parent.output.fourier_spectra1
-        fas2 = self.parent.output.fourier_spectra2
-        quad_mean = np.sqrt(0.5 * (fas1**2 + fas2**2))
+        fas_matrix = np.stack(self.parent.output.fourier_spectra)
+        nrow = fas_matrix.shape[0]
+        quad_mean = np.sqrt(np.sum(fas_matrix**2, axis=0) / nrow)
         self.output = CombinedSpectraContainer(
             frequency=self.parent.output.frequency,
             fourier_spectra=quad_mean,
@@ -398,73 +414,69 @@ class SmoothSpectra(Component):
         return spec_smooth, ko_freqs
 
 
-class OscillatorAggregator(Component):
+class TraceOscillator(Component):
     outputs = {}
 
-    def calculate(self):
-        logging.info("** Calculating OscillatorAggregator")
-        iper = self.parameters["periods"]
-        idamp = self.parameters["damping"]
-        all_per = []
-        all_damp = []
-        oscillator_list = []
-        oscillator_dt = []
-        for per, damp in itertools.product(iper, idamp):
-            all_per.append(per)
-            all_damp.append(damp)
-
-            sa_results = new_and_improved_calculate_spectrals(
-                self.parent.output.trace1.copy(),
-                period=per,
-                damping=damp,
-            )
-            acc_sa = sa_results[0]
-            acc_sa *= GAL_TO_PCTG
-
-            oscillator_list.append(acc_sa)
-            oscillator_dt.append(sa_results[4])
-
-
-class Oscillator(Component):
-    outputs = {}
+    INPUT_CLASS = TraceContainer
 
     def calculate(self):
-        logging.info("** Calculating Oscillator")
+        logging.info("** Calculating TraceOscillator")
         iper = self.parameters["periods"]
         idamp = self.parameters["damping"]
-        all_per = []
-        all_damp = []
-        oscillator_list = []
-        oscillator_dt = []
+        all_oscillators = []
         for per, damp in itertools.product(iper, idamp):
-            all_per.append(per)
-            all_damp.append(damp)
-            if isinstance(self.parent.output, TraceContainer):
+            oscillator_list = []
+            for trace in self.parent.output.traces:
                 sa_results = new_and_improved_calculate_spectrals(
-                    self.parent.output.trace1.copy(),
-                    period=per,
-                    damping=damp,
+                    trace.copy(), period=per, damping=damp
                 )
                 acc_sa = sa_results[0]
                 acc_sa *= GAL_TO_PCTG
                 oscillator_list.append(acc_sa)
-                oscillator_dt.append(sa_results[4])
-            elif isinstance(self.parent.output, TraceRotDContainer):
-                # loop over columns in self.parent.output.trace_matrix
-                oscillator_matrix = ...
-                oscillator_list.append(
-                    TraceRotDContainer(trace_matrix=oscillator_matrix, stats=...)
+            all_oscillators.append(
+                OscillatorContainer(
+                    period=per,
+                    damping=damp,
+                    oscillator_dt=sa_results[4],
+                    oscillators=oscillator_list,
                 )
-            else:
-                raise TypeError("Unsupported parent type for Oscillator component.")
+            )
+        self.output = OscillatorCollection(all_oscillators)
 
-        self.output = OscillatorContainer(
-            periods=all_per,
-            dampings=all_damp,
-            rotations=False,
-            oscillator_dt=np.array(oscillator_dt),
-            oscillators=oscillator_list,
-        )
+    @staticmethod
+    def get_parameters(config):
+        return [config["metrics"]["sa"]]
+
+
+class RotDOscillator(Component):
+    outputs = {}
+
+    INPUT_CLASS = TraceRotDContainer
+
+    def calculate(self):
+        logging.info("** Calculating RotDOscillator")
+        iper = self.parameters["periods"]
+        idamp = self.parameters["damping"]
+        all_oscillators = []
+        for per, damp in itertools.product(iper, idamp):
+            oscillator_list = []
+            for trace_data in self.parent.output.trace_matrix:
+                temp_trace = Trace(trace_data, self.parent.output.stats)
+                sa_results = new_and_improved_calculate_spectrals(
+                    temp_trace, period=per, damping=damp
+                )
+                acc_sa = sa_results[0]
+                acc_sa *= GAL_TO_PCTG
+                oscillator_list.append(acc_sa)
+            all_oscillators.append(
+                RotDOscillatorContainer(
+                    period=per,
+                    damping=damp,
+                    oscillator_dt=sa_results[4],
+                    oscillator_matrix=np.stack(oscillator_list),
+                )
+            )
+        self.output = RotDOscillatorCollection(all_oscillators)
 
     @staticmethod
     def get_parameters(config):
@@ -479,11 +491,11 @@ class RotateRotD(Component):
         # rotd matrix has dimensions (m, n), where m is the number rotation angles, n
         # is the number of points in the trace.
         rotd_matrix = self._rotate(
-            self.parent.output.trace1.data, self.parent.output.trace1.data
+            self.parent.output.traces[0].data, self.parent.output.traces[1].data
         )
         self.output = TraceRotDContainer(
             trace_matrix=rotd_matrix,
-            stats=self.parent.output.trace1.stats,
+            stats=self.parent.output.traces[0].stats,
         )
 
     @staticmethod
@@ -505,16 +517,12 @@ class TraceMax(Component):
 
     def calculate(self):
         logging.info("** Calculating TraceMax")
-        self.output = ScalarContainer(
-            ReferenceValue(
-                np.max(np.abs(self.parent.output.trace1.data)),
-                self.parent.output.trace1.stats,
-            ),
-            ReferenceValue(
-                np.max(np.abs(self.parent.output.trace2.data)),
-                self.parent.output.trace1.stats,
-            ),
-        )
+        max_list = []
+        for trace in self.parent.output.traces:
+            max_list.append(
+                ReferenceValue(np.max(np.abs(trace.data)), stats=trace.stats)
+            )
+        self.output = ScalarContainer(max_list)
 
 
 class CombineMax(Component):
@@ -522,13 +530,9 @@ class CombineMax(Component):
 
     def calculate(self):
         logging.info("** Calculating CombineMax")
+        result = np.max([trace.value for trace in self.parent.output.traces])
         self.output = CombinedScalarContainer(
-            ReferenceValue(
-                np.max(
-                    [self.parent.output.trace1.value, self.parent.output.trace2.value]
-                ),
-                self.parent.output.trace1.stats,
-            ),
+            ReferenceValue(result, self.parent.output.traces[0].stats)
         )
 
 
@@ -537,11 +541,8 @@ class CombineGeometricMean(Component):
 
     def calculate(self):
         logging.info("** Calculating CombineMax")
+        values = [trace.value for trace in self.parent.output.traces]
+        geo_mean = np.exp(np.sum(np.log(values) / len(values)))
         self.output = CombinedScalarContainer(
-            ReferenceValue(
-                np.sqrt(
-                    self.parent.output.trace1.value * self.parent.output.trace2.value
-                ),
-                self.parent.output.trace1.stats,
-            ),
+            ReferenceValue(geo_mean, self.parent.output.traces[0].stats)
         )
