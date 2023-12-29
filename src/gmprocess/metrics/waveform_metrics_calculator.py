@@ -49,6 +49,11 @@ is None and the "calculate" method is a no-op.
 from gmprocess.metrics.metric_component_base import Component
 from gmprocess.metrics import containers
 
+from gmprocess.metrics import combine  # noqa pylint: disable=unused-import
+from gmprocess.metrics import reduce  # noqa pylint: disable=unused-import
+from gmprocess.metrics import rotate  # noqa pylint: disable=unused-import
+from gmprocess.metrics import transform  # noqa pylint: disable=unused-import
+
 
 class WaveformMetricCalculator:
     """Class for calculating waveform metrics"""
@@ -84,11 +89,13 @@ class WaveformMetricCalculator:
         for metric, metric_steps in self.steps.items():
             result = self.input_data
             for metric_step in metric_steps:
-                metric_step_class = globals()[metric_step]
-                parameter_list = metric_step_class.get_parameters(self.config)
+                step_module_name, step_class_name = metric_step.split(".")
+                step_module = globals()[step_module_name]
+                step_class = getattr(step_module, step_class_name)
+                parameter_list = step_class.get_parameters(self.config)
                 self.validate_params(parameter_list)
                 for params in parameter_list:
-                    result = metric_step_class(result, params)
+                    result = step_class(result, params)
             self.metric_dict[metric] = result
 
     def validate_params(self, parameter_list):
