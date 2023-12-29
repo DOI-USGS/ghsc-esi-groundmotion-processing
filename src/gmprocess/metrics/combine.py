@@ -6,7 +6,7 @@ from gmprocess.metrics.metric_component_base import Component
 from gmprocess.metrics import containers
 
 
-class CombineMax(Component):
+class Max(Component):
     """Return the maximum across multiple traces."""
 
     outputs = {}
@@ -18,7 +18,7 @@ class CombineMax(Component):
         )
 
 
-class CombineGeometricMean(Component):
+class GeometricMean(Component):
     """Return the geometric mean across multiple traces."""
 
     outputs = {}

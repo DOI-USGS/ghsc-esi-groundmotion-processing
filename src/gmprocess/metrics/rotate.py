@@ -6,7 +6,7 @@ from gmprocess.metrics.metric_component_base import Component
 from gmprocess.metrics import containers
 
 
-class RotateRotD(Component):
+class RotD(Component):
     """Class for doing the RotD rotation."""
 
     outputs = {}
