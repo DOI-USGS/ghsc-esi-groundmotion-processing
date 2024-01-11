@@ -38,16 +38,12 @@ class STREC(object):
                 A gmprocess ScalarEvent object.
         """
         selector = SubductionSelector()
-        tensor_params = None
-        if hasattr(event, "id"):
-            _, _, _, _, tensor_params = selector.getOnlineTensor(event.id)
         strec_dict = selector.getSubductionType(
             event.latitude,
             event.longitude,
             event.depth_km,
             event.magnitude,
             eventid=event.id,
-            tensor_params=tensor_params,
         ).to_dict()
         return cls(strec_dict)
 
