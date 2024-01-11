@@ -10,6 +10,7 @@ from gmprocess.subcommands.lazy_loader import LazyLoader
 confmod = LazyLoader("confmod", globals(), "gmprocess.utils.config")
 ws = LazyLoader("ws", globals(), "gmprocess.io.asdf.stream_workspace")
 constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
+scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
 
 
 class SubcommandModule(ABC):
@@ -95,6 +96,21 @@ class SubcommandModule(ABC):
             if arg not in args:
                 args.__dict__.update({arg: val})
 
+    def _get_event_ids_from_args(self):
+        """Get event ids and events from arguments.
+
+        Returns:
+            Tuple with event ids (list) and events (ScalarEvent).
+        """
+        data_path = self.gmrecords.data_path
+        user_ids = self.gmrecords.args.event_id
+        events_filename = self.gmrecords.args.textfile
+        file_ids, events = scalar_event.get_events_from_file(events_filename)
+        event_ids = scalar_event.get_event_ids(
+            ids=user_ids, file_ids=file_ids, data_dir=data_path
+        )
+        return (event_ids, events)
+
     def append_file(self, tag, filename):
         """Convenience method to add file via tag to self.files_created."""
         if tag in self.files_created:
@@ -123,53 +139,6 @@ class SubcommandModule(ABC):
         self.pstreams = self.workspace.get_streams(
             event_id, labels=[self.gmrecords.args.label], config=config
         )
-
-    def _OBSOLETE_get_events(self):
-        # NOTE: as currently written, `get_events` will do the following,
-        #  **stopping** at the first condition that is met:
-        #     1) Use event ids if event id is not None
-        #     2) Use textfile if it is not None
-        #     4) Use directory if it is not None
-        #     5) Use outdir if it is not None
-        # So in order to ever make use of the 'outdir' argument, we need to
-        # set 'directory' to None, but otherwise set it to proj_data_path.
-        #
-        # This whole thing is really hacky and should probably be completely
-        # rewritten.
-        if hasattr(self.gmrecords.args, "data_source"):
-            if self.gmrecords.args.data_source is None:
-                # Use project directory from config
-                temp_dir = self.gmrecords.data_path
-                if not temp_dir.is_dir():
-                    raise OSError(f"No such directory: {temp_dir}")
-            elif self.gmrecords.args.data_source == "download":
-                temp_dir = None
-            else:
-                temp_dir = self.gmrecords.args.data_source
-                if not temp_dir.is_dir():
-                    raise OSError(f"No such directory: {temp_dir}")
-            self.download_dir = temp_dir
-        else:
-            self.download_dir = None
-
-        tfile = (
-            self.gmrecords.args.textfile
-            if hasattr(self.gmrecords.args, "textfile")
-            else None
-        )
-        if isinstance(self.gmrecords.args.event_id, str):
-            # Need to strip in case there is whitespace
-            self.gmrecords.args.event_id = [
-                eid.strip() for eid in self.gmrecords.args.event_id.split(",")
-            ]
-
-        # self.events = base_utils.get_events(
-        #    eventids=self.gmrecords.args.eventid,
-        #    textfile=tfile,
-        #    eventinfo=info,
-        #    directory=self.download_dir,
-        #    outdir=self.gmrecords.data_path,
-        # )
 
     def _get_labels(self):
         labels = self.workspace.get_labels()

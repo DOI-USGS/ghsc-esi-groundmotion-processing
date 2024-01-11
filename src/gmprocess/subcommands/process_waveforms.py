@@ -43,7 +43,9 @@ class ProcessWaveformsModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
+
+        event_ids, _ = self._get_event_ids_from_args()
+        logging.info(f"Number of events to process: {len(event_ids)}")
 
         # get the process tag from the user or use "default" for tag
         self.process_tag = gmrecords.args.label or "default"

@@ -86,7 +86,7 @@ class CleanModule(base.SubcommandModule):
 
         # ---------------------------------------------------------------------
         # Inside the event directories
-        event_ids = scalar_event.get_event_ids(data_dir=data_path)
+        event_ids, _ = self._get_event_ids_from_args()
         logging.info(f"Number of events: {len(event_ids)}")
         for event_id in event_ids:
             event_dir = gmrecords.data_path / event_id

@@ -35,13 +35,7 @@ class DownloadModule(base.SubcommandModule):
         self.gmrecords = gmrecords
         self._check_arguments()
 
-        data_path = self.gmrecords.data_path
-        user_ids = self.gmrecords.args.event_id
-        events_filename = self.gmrecords.args.textfile
-        file_ids, events = scalar_event.get_events_from_file(events_filename)
-        event_ids = scalar_event.get_event_ids(
-            ids=user_ids, file_ids=file_ids, data_dir=data_path
-        )
+        event_ids, events = self._get_event_ids_from_args()
         logging.info(f"Number of events to assemble: {len(event_ids)}")
         for ievent, event_id in enumerate(event_ids):
             logging.info(
