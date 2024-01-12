@@ -5,7 +5,7 @@ Most of the extensions that we provide are to handle strong motion data and rela
 
 # Documentation
 - Please note, we are in the process of improving the documentation and that there are some incomplete sections.
-- The full documentation can be viewed locally by running the `doc_source/makedocs.sh` script.
+- The full documentation can be viewed locally by running the `docs/makedocs.sh` script.
 - The documentation is also available [here](https://ghsc.code-pages.usgs.gov/esi/groundmotion-processing/).
 
 # Getting Help

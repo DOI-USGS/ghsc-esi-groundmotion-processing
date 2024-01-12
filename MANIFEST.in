@@ -1,5 +1,5 @@
 recursive-include src/gmprocess/data *
 prune tests
-prune doc_source
+prune docs
 prune notebooks
 prune src/gmprocess/data/asdf
