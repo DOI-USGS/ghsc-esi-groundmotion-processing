@@ -33,13 +33,7 @@ class AssembleModule(base.SubcommandModule):
         self.gmrecords = gmrecords
         self._check_arguments()
 
-        data_path = self.gmrecords.data_path
-        user_ids = self.gmrecords.args.event_id
-        events_filename = self.gmrecords.args.textfile
-        file_ids, events = scalar_event.get_events_from_file(events_filename)
-        event_ids = scalar_event.get_event_ids(
-            ids=user_ids, file_ids=file_ids, data_dir=data_path
-        )
+        event_ids, events = self._get_event_ids_from_args()
         logging.info(f"Number of events to assemble: {len(event_ids)}")
 
         overwrite = self.gmrecords.args.overwrite
@@ -68,7 +62,7 @@ class AssembleModule(base.SubcommandModule):
                     self._assemble_event,
                     event_id,
                     event,
-                    data_path,
+                    self.gmrecords.data_path,
                     overwrite,
                     conf,
                     version,
@@ -85,7 +79,7 @@ class AssembleModule(base.SubcommandModule):
                 event = events[ievent] if events else None
                 results.append(
                     self._assemble_event(
-                        event_id, event, data_path, overwrite, conf, version, label
+                        event_id, event, self.gmrecords.data_path, overwrite, conf, version, label
                     )
                 )
 

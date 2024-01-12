@@ -326,7 +326,10 @@ def get_prov_latex(st):
 
     newdf = pd.DataFrame(final_dict)
     # prov_string = newdf.to_latex(index=False)
-    newdf = newdf.map(str_for_latex)
+    if hasattr(newdf, "map") and callable(newdf.map): # applymap ->map in Pandas 2.1.0
+        newdf = newdf.map(str_for_latex)
+    else:
+        newdf = newdf.applymap(str_for_latex)
     prov_string = newdf.style.to_latex(hrules=True)
     # Annoying hack because pandas removed the functionality to hide the index when
     # writing to latex.

@@ -33,7 +33,7 @@ class ExportMetricTablesModule(base.SubcommandModule):
 
         self.gmrecords = gmrecords
         self._check_arguments()
-        event_ids = scalar_event.get_event_ids(data_dir=gmrecords.data_path)
+        event_ids, _ = self._get_event_ids_from_args()
 
         for ievent, event_id in enumerate(event_ids):
             logging.info(
