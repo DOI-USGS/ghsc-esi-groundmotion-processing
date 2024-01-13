@@ -83,9 +83,7 @@ pages:
   script:
     - pip install -e .[doc]
     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
-    - cd doc_source
+    - cd docs
     - conda activate base
     - bash makedocs.sh
-    - cd ..
-    - mv docs public
   stage: docs

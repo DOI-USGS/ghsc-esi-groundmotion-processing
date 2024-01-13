@@ -16,9 +16,9 @@ function build_docs() {
         echo "Failed make HTML. Exiting."
         exit 1
     fi
-    rm -fr ../docs
-    cp -r _build/html ../docs
-    touch ../docs/.nojekyll
+    rm -fr ../public
+    cp -r _build/html ../public
+    touch ../public/.nojekyll
 }
 
 

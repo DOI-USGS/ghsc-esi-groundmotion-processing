@@ -12,10 +12,9 @@ htmlcov
 **/gmprocess.egg-info/
 .pytest_cache
 *.so
-docs/
-doc_source/_build
-doc_source/contents/tutorials/data
-doc_source/contents/tutorials/*.log
+docs/_build
+docs/contents/tutorials/data
+docs/contents/tutorials/*.log
 *code-workspace*
 .vscode/
 dask-worker-space/
