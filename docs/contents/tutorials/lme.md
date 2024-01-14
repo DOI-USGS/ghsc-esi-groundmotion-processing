@@ -19,7 +19,6 @@ First, we import the necessary packages:
 
 ```{code-cell} ipython3
 import os
-import pkg_resources
 
 import numpy as np
 import pandas as pd
@@ -104,10 +103,10 @@ print(mdf.summary())
 The model yields a bias (intercept) of 0.828. We can also look at the between-event terms with in the `random_effects` attribute, which is a dictionary with keys corresponding to the random effect grouping.
 
 ```{code-cell} ipython3
-re_array = [float(re) for group, re in mdf.random_effects.items()]
+re_array = [float(re.iloc[0]) for group, re in mdf.random_effects.items()]
 plt.plot(re_array, 'o')
 plt.xlabel('Index')
-plt.ylabel('Random effect')
+plt.ylabel('Random effect');
 ```
 
 and the within-event residuals
@@ -115,7 +114,7 @@ and the within-event residuals
 ```{code-cell} ipython3
 plt.plot(df['EpicentralDistance'], mdf.resid, 'o')
 plt.xlabel('Epicentral Distance, km')
-plt.ylabel('Within-event residual')
+plt.ylabel('Within-event residual');
 ```
 
 It is useful to merge the random effect terms with the original dataframe to look at the between-event terms as a function of other parameters, such as hypocentral depth.

@@ -1,7 +1,7 @@
 # Command Line Interface
 
 This example covers using the `gmrecords` command line program in a typical workflow for downloading, processing, and generating products for ground-motion records from an earthquake.
-The configuration and parameter files are in the `doc_source/contents/tutorials` directory.
+The configuration and parameter files are in the `docs/contents/tutorials` directory.
 
 ```{seealso}
 Be sure to review the discussion of all of the `gmrecords` subcommands in section {ref}`gmrecords` and configuring projects in section {ref}`Initial Setup`.
@@ -37,6 +37,12 @@ We include the directory with the processing parameters for the project in the s
 :::
 
 :::{command-output} mkdir -p data/cli
+---
+cwd: .
+---
+:::
+
+:::{command-output} pwd
 ---
 cwd: .
 ---
@@ -80,6 +86,7 @@ We now have earthquake rupture information and raw waveforms in the `data/cli` d
 cwd: .
 ---
 :::
+
 **Note** the 'tree' command may not be available and this part can be skipped.
 From the directory tree above, you can see how `gmrecords` organizes the data directory:
 
@@ -283,13 +290,3 @@ cwd: .
       </p>
    </figcaption>
 </figure>
-
-% Indices and tables
-
-% ==================
-
-% * :ref:`genindex`
-
-% * :ref:`modindex`
-
-% * :ref:`search`

@@ -272,9 +272,8 @@ def get_components(wml, stream, config):
                 imtstr = imt
             if imtstr not in imtlist:
                 continue
-            imt_value = float(
-                imt_df.loc[(imt_df["IMT"] == imt) & (imt_df["IMC"] == imc), "Result"]
-            )
+            idx = np.where((imt_df["IMT"] == imt) & (imt_df["IMC"] == imc))[0]
+            imt_value = float(imt_df["Result"].iloc[idx])
             if np.isnan(imt_value):
                 imt_value = "null"
             if imt.startswith("SA"):

@@ -46,7 +46,10 @@ copyright = "Unlicense"
 
 # The full version, including alpha/beta/rc tags
 release = importlib.metadata.version("gmprocess")
-version = release
+release = ".".join(release.split(".")[:3])
+
+nb_execution_mode = "force"
+execution_mode = "force"
 
 # -- General configuration ---------------------------------------------------
 
@@ -92,11 +95,9 @@ todo_include_todos = True
 # a list of builtin themes.
 #
 html_theme = "furo"
-html_logo = "_static/gmprocess_logo.png"
+# html_logo = "_static/gmprocess_icon_small.png"
 
-base_url = (
-    "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/main/doc_source/"
-)
+base_url = "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/main/docs/"
 
 announcement_html = """
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
@@ -110,7 +111,7 @@ announcement_html = """
     base_url,
 )
 
-html_theme_options = {"sidebar_hide_name": True, "announcement": announcement_html}
+html_theme_options = {"sidebar_hide_name": False, "announcement": announcement_html}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

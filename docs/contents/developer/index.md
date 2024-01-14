@@ -9,7 +9,6 @@ maxdepth: 1
    Release Steps <release>
    Merge Request Guidelines <merge_requests>
    Adding New Data Readers <new_readers>
-   Building the Documentation <build_docs>
 ```
 
 

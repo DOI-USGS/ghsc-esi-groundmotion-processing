@@ -16,7 +16,10 @@ mystnb:
 
 You can write Python scripts that call the `GMrecordsApp` application to create high-level workflows.
 In the example below we create a Python script to run several subcommands to download and process ground motions recorded close to the epicenter of a magnitude 4.5 earthquake, and then export the results to CSV files and generate a report summarizing the results.
-The configuration and parameter files are in the `doc_source/contents/tutorials` directory.
+The configuration and parameter files are in the `docs/contents/tutorials` directory.
+
+In this tutorial, the commands are written to be executed in [Jupyter Notebooks](https://jupyter.org/). 
+Within a Jupyter Notebook, commands can be redirected to the terminal with the `!` symbol and we make ue of this functionality here.
 
 ## Local `gmprocess` configuration
 
@@ -55,7 +58,7 @@ See [Configuration File](../manual/config_file) for more information.
 ## Download Data
 
 In this example we will consider ground motions recorded for a [magnitude 4.5 earthquake](https://earthquake.usgs.gov/earthquakes/eventpage/nc73291880/executive) east of San Francisco, California.
-We have cached the results of running `gmrecords download --eventid nc73291880` in the `tests/data/tutorials` directory.
+We have cached a snippet of the results of running `gmrecords download --eventid nc73291880` in the `tests/data/tutorials` directory.
 Consequently, we simply copy the data from `tests/data/tutorials/nc73291880` to `data/scripting/nc73291880`.
 
 ```{code-cell} ipython3
@@ -73,6 +76,8 @@ We now have earthquake rupture information and raw waveforms in the `data/script
 ## Python Script
 
 ```{code-cell} ipython3
+:tags: [hide-output]
+
 # Import the application
 from gmprocess.apps.gmrecords import GMrecordsApp
 
@@ -85,7 +90,7 @@ STEPS = (
     'export_metric_tables',
     'generate_report',
     'generate_station_maps',
-    )
+)
 
 # Initialize the application
 app = GMrecordsApp()
@@ -97,12 +102,12 @@ app.load_subcommands()
 args = {
     'debug': False,
     'quiet': False,
-    'eventid': None,
+    'event_id': "nc73291880",
     'textfile': None,
     'overwrite': False,
     'num_processes': 0,
     'label': None,
-    }
+}
 
 # Loop through the subcommands.
 for step in STEPS:
@@ -114,7 +119,7 @@ for step in STEPS:
         'subcommand': step,
         'func': app.classes[step]['class'],
         'log': f"{step}.log",
-        }
+    }
     args.update(step_args)
 
     # Run the current subcommand
@@ -123,27 +128,10 @@ for step in STEPS:
 
 Running the script will produce CSV files with the waveform metrics in the `data/scripting` directory and reports in the `data/scripting/nc73291880` directory.
 
-```
-ls -1 data/scripting/*.csv
-
-data/scripting/scripting-tutorial_default_events.csv
-data/scripting/scripting-tutorial_default_fit_spectra_parameters.csv
-data/scripting/scripting-tutorial_default_fit_spectra_parameters_README.csv
-data/scripting/scripting-tutorial_default_metrics_h1.csv
-data/scripting/scripting-tutorial_default_metrics_h1_README.csv
-data/scripting/scripting-tutorial_default_metrics_h2.csv
-data/scripting/scripting-tutorial_default_metrics_h2_README.csv
-data/scripting/scripting-tutorial_default_metrics_rotd50.0.csv
-data/scripting/scripting-tutorial_default_metrics_rotd50.0_README.csv
-data/scripting/scripting-tutorial_default_metrics_z.csv
-data/scripting/scripting-tutorial_default_metrics_z_README.csv
-data/scripting/scripting-tutorial_default_snr.csv
-data/scripting/scripting-tutorial_default_snr_README.csv
+```{code-cell} ipython3
+!ls -1 data/scripting/*.csv
 ```
 
-```
-ls -1 data/scripting/nc73291880/*.pdf data/scripting/nc73291880/*.html
-
-data/scripting/nc73291880/scripting-tutorial_default_report_nc73291880.pdf
-data/scripting/nc73291880/stations_map.html
+```{code-cell} ipython3
+!ls -1 data/scripting/nc73291880/*.pdf data/scripting/nc73291880/*.html
 ```

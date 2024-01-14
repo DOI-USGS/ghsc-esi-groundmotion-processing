@@ -13,6 +13,8 @@
   - Changed format for specifying response spectral periods.
   - Changed default integration method to frequency domain.
   - Make the integration config options consistent with the trace.integrate function arguments.
+- Other
+  - Turned off automatic generation of moveout plot since it isn't getting used.
 
 ## 1.3.0 / 2023-11-18
 

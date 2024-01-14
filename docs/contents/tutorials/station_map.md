@@ -54,7 +54,7 @@ pstreams = workspace.get_streams('uw10530748', labels=['default'])
 
 In order to handle lengthy time-series, we need disable the maximum row count of 5000 that altair uses to keep performance in check. There are alternative options that can be used to improve performance if we were working with a larger dataset. See the following documentation for more information: 
 
-- [Why does Altair lead to such large notebooks?](https://altair-viz.github.io/user_guide/faq.html#altair-faq-large-notebook) 
+- [Why does Altair lead to such large notebooks?](https://iliatimofeev.github.io/altair-viz.github.io/user_guide/faq.html#why-does-altair-lead-to-such-extremely-large-notebooks) 
 
 ```{code-cell} ipython3
 alt.data_transformers.disable_max_rows()
