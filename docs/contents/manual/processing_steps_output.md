@@ -46,7 +46,7 @@ Apply clicking check.
     Args:
         st (gmprocess.core.stationstream.StationStream):
            Trace of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.scalar_event.ScalarEvent):
             ScalarEvent object.
         threshold (float):
             Threshold probability.
@@ -286,7 +286,7 @@ Fit spectra vaying stress_drop and moment.
     Args:
         st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.scalar_event.ScalarEvent):
              ScalarEvent object.
         kappa (float):
             Site diminution factor (sec). Typical value for active cruststal
@@ -333,7 +333,7 @@ Select corner frequencies.
     Args:
         st (gmprocess.core.stationstream.StationStream):
             Stream of data.
-        event (gmprocess.utils.event.ScalarEvent):
+        event (gmprocess.utils.scalar_event.ScalarEvent):
             ScalarEvent object.
         method (str):
             Which method to use; currently allowed "snr" or "constant".

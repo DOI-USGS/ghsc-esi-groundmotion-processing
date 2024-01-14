@@ -18,8 +18,7 @@ In either case, it is a good idea to review the [changelog](../developer/changel
 If desired, create a virtual environment that runs a supported Python version. Supported Python versions can be found on the PyPi or Conda-Forge pages for gmprocess, or alternatively, by looking at `pyproject.toml`. To create an environment for gmprocess with `conda`, execute the following command in your terminal, answering `y` or `yes`, if prompted.
 
 ```
-conda create --name gmprocess python=3.9
-
+conda create --name gmprocess python=3.11
 ```
 
 We'll then need to activate the virtual environment to proceed.

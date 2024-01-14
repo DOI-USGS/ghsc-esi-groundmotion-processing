@@ -510,8 +510,7 @@ duplicate:
 # -----------------------------------------------------------------------------
 # This is for building a report, with a one-page summary of the data in each
 # StationStream per page. It will write out the latex file, and then look for
-# the `pdflatex` command and attempt to build the pdf. This requires
-# `summary_plots` to have been run.
+# the `pdflatex` command and attempt to build the pdf. 
 build_report:
     enabled: True
     format: latex

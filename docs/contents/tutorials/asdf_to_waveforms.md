@@ -91,7 +91,7 @@ data.
 
 ```{code-cell} ipython3
 sta_st = sc[0]
-print(sta_st[0].get_prov_dataframe())
+print(sta_st[0].provenance.get_prov_dataframe())
 ```
 
 You can also get the entire provenance document for all stations.

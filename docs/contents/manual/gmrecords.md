@@ -53,7 +53,7 @@ The data includes the earthquake rupture information (for example, magnitude, lo
 The easiest way to get data for events is by specifying USGS ComCat event IDs.
 These event IDs can be found by searching for events on the USGS [Search Earthquake Catalog](https://earthquake.usgs.gov/earthquakes/search/) page.
 With `gmrecords` you can specify a single event ID or a list of event IDs in a text file.
-Also, you can run customized searches of the earthquake catalog in Python using [libcomcat](https://github.com/usgs/libcomcat), [ObsPy](https://github.com/obspy/obspy/wiki/), or webservices directly in your code.
+Also, you can run customized searches of the earthquake catalog in Python using [libcomcat](https://code.usgs.gov/ghsc/esi/libcomcat-python), [ObsPy](https://github.com/obspy/obspy/wiki/), or webservices directly in your code.
 
 A subdirectory for each event will be created in the data directory of the project with the name of the directory set to the event ID.
 Within each subdirectory, the event information will be placed in `event.json` and the raw waveforms in a `raw` subdirectory.

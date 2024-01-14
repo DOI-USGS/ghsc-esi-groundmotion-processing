@@ -11,6 +11,7 @@ function usage() {
 	
 
 function build_docs() {
+    rm -fr _build/.jupyter_cache
     make html
     if [ $? -ne 0 ];then
         echo "Failed make HTML. Exiting."

@@ -1,5 +1,6 @@
 """Methods for handling instrument response."""
 
+import os
 import sys
 import logging
 
@@ -155,20 +156,31 @@ class RemoveResponse(object):
                 output_units = "VEL"
             else:
                 output_units = "ACC"
-            out = OutputGrabber(sys.stderr)
-            out.start()
-            self.trace.remove_response(
-                inventory=self.inv,
-                output=output_units,
-                water_level=self.water_level,
-                pre_filt=self.pre_filt,
-                zero_mean=True,
-                taper=False,
-            )
-            out.stop()
-            match_str = "computed and reported sensitivities differ"
-            if match_str in out.capturedtext:
-                self.trace.warning("Computed and reported sensitivities differ.")
+            if "JPY_PARENT_PID" in os.environ:
+                # Cannot capture sys.stderr if this is called from a jupyter notebook.
+                self.trace.remove_response(
+                    inventory=self.inv,
+                    output=output_units,
+                    water_level=self.water_level,
+                    pre_filt=self.pre_filt,
+                    zero_mean=True,
+                    taper=False,
+                )
+            else:
+                out = OutputGrabber(sys.stderr)
+                out.start()
+                self.trace.remove_response(
+                    inventory=self.inv,
+                    output=output_units,
+                    water_level=self.water_level,
+                    pre_filt=self.pre_filt,
+                    zero_mean=True,
+                    taper=False,
+                )
+                out.stop()
+                match_str = "computed and reported sensitivities differ"
+                if match_str in out.capturedtext:
+                    self.trace.warning("Computed and reported sensitivities differ.")
 
             self.trace.set_provenance(
                 "remove_response",
@@ -191,6 +203,7 @@ class RemoveResponse(object):
             self.trace.stats.standard.units_type = OUTPUT.lower()
             self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
         except BaseException as e:
+            raise e
             reason = (
                 "Encountered an error when attempting to remove instrument response: "
                 f"{str(e)}"

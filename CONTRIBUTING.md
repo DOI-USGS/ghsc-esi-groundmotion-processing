@@ -8,7 +8,7 @@ issue.
 
 If you have direct contributions you would like considered for incorporation
 into the project you can [fork this repository][2] and
-[submit a pull request][3] for review.
+[submit a merge request][3] for review.
 
 For additional information, please see the [USGS software development best
 practices guide][4] and the [USGS Code of Scientific Conduct][5]. 
@@ -134,9 +134,9 @@ Notes:
 
 
 [1]: https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues
-[2]: https://help.github.com/articles/fork-a-repo/
-[3]: https://help.github.com/articles/about-pull-requests/
-[4]: https://github.com/usgs/best-practices
+[2]: https://docs.gitlab.com/ee/user/project/repository/forking_workflow.html
+[3]: https://docs.gitlab.com/ee/user/project/merge_requests/
+[4]: https://www.usgs.gov/products/software/software-management
 [5]: https://www.usgs.gov/about/organization/science-support/science-quality-and-integrity/fundamental-science-practices
 [6]: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 [7]: https://github.com/psf/black

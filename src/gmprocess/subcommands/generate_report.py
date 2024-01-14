@@ -146,10 +146,6 @@ class GenerateReportModule(base.SubcommandModule):
             results = [future.result() for future in futures]
             executor.shutdown()
 
-        moveoutfile = event_dir / "moveout_plot.png"
-        mplot.plot_moveout(pstreams, event.latitude, event.longitude, file=moveoutfile)
-        self.append_file("Moveout plot", moveoutfile)
-
         self.close_workspace()
 
         return pstreams

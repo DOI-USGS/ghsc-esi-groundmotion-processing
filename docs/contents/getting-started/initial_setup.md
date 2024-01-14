@@ -1,8 +1,6 @@
 # Initial Setup
 
-The initial setup includes two steps:
- 1. Project setup
- 2. STREC setup
+The initial setup includes two steps: Project setup, and STREC setup.
 
 ## Project setup
 
