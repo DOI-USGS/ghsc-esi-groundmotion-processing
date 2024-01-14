@@ -65,6 +65,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
         station_list = ds.waveforms.list()
         if not len(station_list):
             self.close_workspace()
+            return
 
         event_dir = self.gmrecords.data_path / event.id
         rupture_filename = rupture_utils.get_rupture_filename(event_dir)
