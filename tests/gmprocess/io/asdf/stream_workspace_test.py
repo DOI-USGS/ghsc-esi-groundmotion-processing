@@ -21,6 +21,18 @@ def assert_cmp_with_nans(d1, d2):
             np.testing.assert_allclose(v1, v2, atol=1e-2)
 
 
+def test_stream_open_close():
+    """Test open and closing StreamWorkspace."""
+    filename = constants.TEST_DATA_DIR / "empty_workspace.h5"
+    filename.unlink(missing_ok=True)
+    ws = StreamWorkspace.create(filename)
+    ws.close()
+
+    ws = StreamWorkspace.open(filename)
+    ws.close()
+    filename.unlink()
+
+
 @vcr.use_cassette()
 def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_path):
     """Test for StreamWorkspace class."""
