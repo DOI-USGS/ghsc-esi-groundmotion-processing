@@ -13,7 +13,6 @@
 
 from pathlib import Path
 import sys
-import importlib.metadata
 from gmprocess.apps.gmrecords import GMrecordsApp
 
 sys.path.insert(0, str(Path(__file__).parent / ".."))
@@ -44,10 +43,6 @@ app.main(**args)
 project = "gmprocess"
 copyright = "Unlicense"
 
-# The full version, including alpha/beta/rc tags
-release = importlib.metadata.version("gmprocess")
-release = ".".join(release.split(".")[:3])
-version = release
 
 nb_execution_mode = "force"
 execution_mode = "force"
