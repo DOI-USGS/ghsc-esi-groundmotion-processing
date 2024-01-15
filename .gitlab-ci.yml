@@ -30,8 +30,7 @@ default:
 stages:
   - test
   - build
-  - doc
-  - custom
+  - docs
 
 run tests and coverage:
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
@@ -70,8 +69,7 @@ run upload pypi:
         echo "check-wheel-contents failed, wheel will not be uploaded to PyPi ..."
       fi
   stage: build
-
-docs:
+pages:
   artifacts:
     paths:
       # The folder that contains the files to be exposed at the Page URL
@@ -88,23 +86,4 @@ docs:
     - cd docs
     - conda activate base
     - bash makedocs.sh
-  stage: doc
-
-pages:
-  stage: custom
-  before_script:
-    - pip install gitlab_versioned_pages
-  script:
-    - mkdir -p ./public
-    - python -m gitlab_versioned_pages
-      --project-id ${CI_PROJECT_ID}
-      --job-name docs
-      --private-token ${CI_DOCS_TOKEN}
-      --output-dir ./public
-      --url "https://${CI_PROJECT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"
-  artifacts:
-    paths:
-      - public
-  only:
-    variables:
-      - $UPDATE_PAGES
+  stage: docs
