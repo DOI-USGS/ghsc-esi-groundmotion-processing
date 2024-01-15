@@ -29,7 +29,7 @@ And now we open an example ASDF file
 
 ```{code-cell} ipython3
 # Path to example data
-data_path = DATA_DIR / 'asdf' / 'nc72282711' / 'workspace.h5'
+data_path = DATA_DIR / 'demo' / 'nc72282711' / 'workspace.h5'
 workspace = StreamWorkspace.open(data_path)
 ```
 
@@ -70,7 +70,7 @@ render:
   image:
     height: 350px
 ---
-st = ds.waveforms['NP.1737']['nc72282711_default']
+st = ds.waveforms['CE.68150']['nc72282711_default']
 print(st)
 st.plot();
 ```
@@ -81,7 +81,7 @@ file
 
 ```{code-cell} ipython3
 sc = workspace.get_streams(
-  'nc72282711', stations=['NP.1737'], labels=['default'])
+  'nc72282711', stations=['CE.68150'], labels=['default'])
 sc.describe()
 ```
 
