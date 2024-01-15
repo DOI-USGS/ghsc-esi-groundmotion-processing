@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace

@@ -47,6 +47,7 @@ copyright = "Unlicense"
 # The full version, including alpha/beta/rc tags
 release = importlib.metadata.version("gmprocess")
 release = ".".join(release.split(".")[:3])
+version = release
 
 nb_execution_mode = "force"
 execution_mode = "force"

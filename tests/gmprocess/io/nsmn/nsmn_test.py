@@ -1,7 +1,7 @@
 import numpy as np
 
 from gmprocess.io.nsmn.core import is_nsmn, read_nsmn
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 
 
 def test_nsmn():

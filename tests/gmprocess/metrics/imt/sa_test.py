@@ -4,13 +4,13 @@ import numpy as np
 # local imports
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.utils import test_utils
+from gmprocess.utils import tests_utils
 from gmprocess.core import scalar_event
 from gmprocess.utils.config import get_config
 
 
 def test_sa():
-    datafiles, _ = test_utils.read_data_dir(
+    datafiles, _ = tests_utils.read_data_dir(
         "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
     )
     datafile_v2 = datafiles[0]

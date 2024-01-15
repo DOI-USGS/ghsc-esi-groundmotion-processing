@@ -7,7 +7,7 @@ from obspy.core.event.origin import Origin
 
 from gmprocess.utils.strec import STREC
 from gmprocess.core import scalar_event
-from gmprocess.utils import test_utils
+from gmprocess.utils import tests_utils
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def setup_event():
     return event
 
 
-@test_utils.vcr.use_cassette()
+@tests_utils.vcr.use_cassette()
 def test_strec(setup_event, tmp_path):
     strec = STREC.from_event(setup_event)
     assert strec.results["TectonicRegion"] == "Subduction"

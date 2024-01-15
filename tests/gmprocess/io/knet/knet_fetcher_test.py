@@ -4,7 +4,7 @@ from pathlib import Path
 from datetime import datetime
 
 from gmprocess.io.knet.knet_fetcher import KNETFetcher
-from gmprocess.utils.test_utils import vcr
+from gmprocess.utils.tests_utils import vcr
 
 
 @vcr.use_cassette()

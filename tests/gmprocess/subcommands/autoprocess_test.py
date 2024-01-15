@@ -3,7 +3,7 @@ import os
 import shutil
 
 from gmprocess.utils import constants
-from gmprocess.utils import test_utils
+from gmprocess.utils import tests_utils
 
 
 def test_autoprocess(script_runner):
@@ -351,7 +351,7 @@ def test_autoprocess(script_runner):
         assert ret.success
 
         ws_filename = ddir / EVENT_ID / constants.WORKSPACE_NAME
-        test_utils.check_workspace(ws_filename, WORKSPACE_ITEMS)
+        tests_utils.check_workspace(ws_filename, WORKSPACE_ITEMS)
 
     except Exception as ex:
         raise ex

@@ -1,7 +1,7 @@
 import os.path
 import numpy as np
 from gmprocess.io.esm.core import is_esm, read_esm
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.utils.constants import TEST_DATA_DIR
 
 

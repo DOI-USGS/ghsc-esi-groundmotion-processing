@@ -7,7 +7,7 @@ from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils import constants
 from gmprocess.utils.config import update_config
 from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.test_utils import vcr
+from gmprocess.utils.tests_utils import vcr
 
 
 def assert_cmp_with_nans(d1, d2):

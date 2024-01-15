@@ -8,7 +8,7 @@ from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.read import read_data
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.waveform_processing import windows
 
 

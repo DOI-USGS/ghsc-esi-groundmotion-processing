@@ -7,11 +7,11 @@ from gmprocess.metrics.reduction.max import Max
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.config import get_config
 from gmprocess.core import scalar_event
-from gmprocess.utils import test_utils
+from gmprocess.utils import tests_utils
 
 
 def test_get_peak_time():
-    datafiles, _ = test_utils.read_data_dir(
+    datafiles, _ = tests_utils.read_data_dir(
         "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
     )
     datafile = datafiles[0]

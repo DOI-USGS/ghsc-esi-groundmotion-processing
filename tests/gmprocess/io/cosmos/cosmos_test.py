@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from gmprocess.io.cosmos.core import is_cosmos, read_cosmos
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.core.stationtrace import PROCESS_LEVELS
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.instrument_response import remove_response

@@ -10,7 +10,7 @@ import pandas as pd
 from gmprocess.io.read import read_data
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils import constants
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.utils.misc_plots import plot_oscillators
 from gmprocess.utils.misc_plots import plot_moveout
 from gmprocess.utils.misc_plots import plot_regression
