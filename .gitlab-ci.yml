@@ -44,7 +44,7 @@ run tests and coverage:
     - *fork
     - *upstream
   script:
-    - pip install .[test]
+    - pip install -e .[test]
     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
     - mkdir /home/usgs-user/slabs
     - cp tests/data/slab_data/*.grd /home/usgs-user/slabs/.
