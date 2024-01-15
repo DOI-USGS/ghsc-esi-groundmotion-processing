@@ -48,7 +48,7 @@ run tests and coverage:
     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
     - mkdir /home/usgs-user/slabs
     - cp tests/data/slab_data/*.grd /home/usgs-user/slabs/.
-    - pytest -x --cov=src/gmprocess/ --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
+    - pytest -x --cov=src/gmprocess/ --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml tests
     - coverage xml
   stage: test
 
