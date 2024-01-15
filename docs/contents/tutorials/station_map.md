@@ -29,11 +29,11 @@ from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils.constants import DATA_DIR
 ```
 
-We are using a ground motion dataset of earthquakes from the 2001 Nisqually earthquake. The processed waveforms in the ASDF file will be used for this tutorial.
+We are using a ground motion dataset of earthquakes from the 2014 Napa earthquake. The processed waveforms in the ASDF file will be used for this tutorial.
 
 ```{code-cell} ipython3
 # Open ASDF file containing Nisqually dataset
-data_path = DATA_DIR / 'asdf' / 'uw10530748' / 'workspace.h5'
+data_path = DATA_DIR / 'demo' / 'nc72282711' / 'workspace.h5'
 workspace = StreamWorkspace.open(data_path)
 ```
 
@@ -48,8 +48,8 @@ print(station_list)
 As an illustration, we will plot the vertical component on a map for a few stations such that clicking on the station will popup a figure of the corresponding vertical component time-series. 
 
 ```{code-cell} ipython3
-event = workspace.get_event('uw10530748')
-pstreams = workspace.get_streams('uw10530748', labels=['default'])
+event = workspace.get_event('nc72282711')
+pstreams = workspace.get_streams('nc72282711', labels=['default'])
 ```
 
 In order to handle lengthy time-series, we need disable the maximum row count of 5000 that altair uses to keep performance in check. There are alternative options that can be used to improve performance if we were working with a larger dataset. See the following documentation for more information: 
@@ -82,7 +82,7 @@ stations = pd.DataFrame(
 )
     
 for i, r in stations.iterrows():
-    st = ds.waveforms[r["network"]+'.'+r["stnames"]]['uw10530748_default']
+    st = ds.waveforms[r["network"]+'.'+r["stnames"]]['nc72282711_default']
     dd = pd.DataFrame({'times':st[2].times(),'Acceleration':st[2].data})
     chart = alt.Chart(dd).mark_line().encode(
         x='times',
