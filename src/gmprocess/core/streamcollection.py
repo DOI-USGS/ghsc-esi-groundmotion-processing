@@ -127,9 +127,8 @@ class StreamCollection(StreamArray):
                 parts = stream.tag.split("_")
                 if len(parts) > 2:
                     label = parts[-1]
-                    eventid = "_".join(parts[0:-1])
                 else:
-                    eventid, label = stream.tag.split("_")
+                    label = stream.tag.split("_")[-1]
                 all_labels.append(label)
             else:
                 all_labels.append("")

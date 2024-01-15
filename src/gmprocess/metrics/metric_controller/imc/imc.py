@@ -24,7 +24,7 @@ class IMC(object):
         self.imt = imt.lower()
         self.period = period
         self.percentile = percentile
-        imts, imcs = gather_pgms()
+        imts, _ = gather_pgms()
         self._available_imts = imts
 
     def valid_combination(self, imt):

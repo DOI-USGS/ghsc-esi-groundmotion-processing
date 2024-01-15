@@ -21,7 +21,7 @@ class IMT(object):
         self.imt = imt.lower()
         self.imc = imc.lower()
         self.period = period
-        imts, imcs = gather_pgms()
+        _, imcs = gather_pgms()
         self._available_imcs = imcs
 
     def valid_combination(self, imc):

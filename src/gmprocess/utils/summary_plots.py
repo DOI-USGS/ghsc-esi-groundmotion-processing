@@ -131,12 +131,14 @@ class SummaryPlot:
         "Compute velocity and displaement"
         self.st_vel = self.st.copy()
         for tr in self.st_vel:
-            tr = tr.integrate(config=self.config)
+            tr = tr.integrate(**self.config["integration"])
 
         # Compute displacement
         self.st_dis = self.st.copy()
         for tr in self.st_dis:
-            tr = tr.integrate(config=self.config).integrate(config=self.config)
+            tr = tr.integrate(**self.config["integration"]).integrate(
+                **self.config["integration"]
+            )
 
     def setup_figure(self):
         "Setup figure"

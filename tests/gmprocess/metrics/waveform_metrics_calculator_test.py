@@ -3,8 +3,7 @@ import pandas as pd
 
 from gmprocess.io.geonet.core import read_geonet
 from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.metrics.exception import PGMException
-from gmprocess.metrics.metrics_controller import MetricsController
+from gmprocess.metrics.waveform_metrics_calculator import WaveformMetricCalculator
 from gmprocess.metrics.utils import component_to_channel
 from gmprocess.core.stationstream import StationStream
 from gmprocess.utils.config import get_config
@@ -55,11 +54,39 @@ def test_get_channel_dict():
     assert sorted(cdict.keys()) == ["Z"]
 
 
-def test_controller():
+def test_metric_calculator():
     datafiles, event = read_data_dir(
         "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
     )
     datafile = datafiles[0]
+    stream = read_geonet(datafile)[0]
+
+    metric_config = {
+        "imc_imts": {
+            "channels": ["pga", "pgv", "sa"],
+            "quadratic_mean": ["fas"],
+        },
+        "sa": {
+            "damping": [0.05],
+            "periods": [0.3, 1.0, 2.0],
+            "percentiles": [50.0],
+        },
+        "fas": {
+            "smoothing": "konno_ohmachi",
+            "bandwidth": 20.0,
+            "allow_nans": True,
+            "frequencies": {
+                "start": 0.001,
+                "stop": 100.0,
+                "num": 401,
+            },
+        },
+    }
+    config["metrics"] = metric_config
+    wm_calc = WaveformMetricCalculator(stream, config)
+    wm_calc.calculate()
+    wm_calc.metric_dict["channels-sa"].output
+
     input_imts = [
         "pgv",
         "pga",
@@ -86,14 +113,12 @@ def test_controller():
         "invalid",
         "quadratic_mean",
     ]
-    stream_v2 = read_geonet(datafile)[0]
 
     # Testing for acceleration --------------------------
     m1 = MetricsController(
         input_imts, input_imcs, stream_v2, event=event, config=config
     )
     pgms = m1.pgms
-    #breakpoint()
     # testing for pga, pgv, sa
     target_imcs = [
         "ROTD(50.0)",
@@ -151,11 +176,9 @@ def test_controller():
             "Z",
         ],
     )
-    #breakpoint()
-    #import pdb; pdb.set_trace()
     _validate_steps(m1.step_sets, "acc")
 
-    # testing for cav 
+    # testing for cav
     imcs = pgms.loc[pgms["IMT"] == "CAV"]["IMC"].tolist()
     assert len(imcs) == 9
     np.testing.assert_array_equal(
@@ -239,6 +262,7 @@ def test_controller():
     )
     _validate_steps(m.step_sets, "vel")
 
+
 def _validate_steps(step_sets, data_type):
     datafile_abspath = TEST_DATA_DIR / "metrics_controller" / "workflows.csv"
     df = pd.read_csv(datafile_abspath)
@@ -250,9 +274,6 @@ def _validate_steps(step_sets, data_type):
         imt = steps["imt"]
         imc = steps["imc"]
         row = wf_df[(wf_df.IMT == imt) & (wf_df.IMC == imc) & (wf_df.Data == data_type)]
-        #breakpoint()
-        #if step_set == "cav_arithmetic_mean": 
-        #    breakpoint()
         assert steps["Transform1"] == row["Transform1"].iloc[0]
         assert steps["Transform2"] == row["Transform2"].iloc[0]
         assert steps["Transform3"] == row["Transform3"].iloc[0]

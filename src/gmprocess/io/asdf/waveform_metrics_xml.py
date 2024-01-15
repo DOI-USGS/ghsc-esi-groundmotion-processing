@@ -45,7 +45,7 @@ class WaveformMetricsXML(MetricXML):
 
             imt_tag = etree.SubElement(root, imtstr, attrib=attdict)
 
-            for i, imc in enumerate(wm.components):
+            for imc in wm.components:
                 imcstr = imc.lower().replace("(", "").replace(")", "")
                 if wm.component_to_channel and imc in wm.component_to_channel:
                     attributes = {"original_channel": wm.component_to_channel[imc]}

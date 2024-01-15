@@ -270,8 +270,6 @@ class MetricsController(object):
                 imt_class_instance = imt_class(imt, imc, period)
                 if not imt_class_instance.valid_combination(imc):
                     continue
-                if (imt=="cav") and (imc=="rotd"):         
-                    breakpoint()
                 imc_class_instance = imc_class(imc, imt, percentile)
                 # Get Steps
                 steps = OrderedDict()

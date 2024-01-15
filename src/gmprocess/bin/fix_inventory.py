@@ -112,7 +112,7 @@ class FixInventory:
         ds = pyasdf.ASDFDataSet(self.file)
         for i, waveform in enumerate(ds.waveforms):
             tags = waveform.get_waveform_tags()
-            for tag in tags:
+            for _ in tags:
                 for net in self.inventories[i]:
                     for sta in net.stations:
                         sta.description = ""
