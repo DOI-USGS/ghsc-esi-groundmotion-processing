@@ -1,7 +1,7 @@
 import os.path
 import numpy as np
 from gmprocess.io.knet.core import is_knet, read_knet
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.utils.constants import TEST_DATA_DIR
 
 

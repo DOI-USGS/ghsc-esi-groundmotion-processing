@@ -1,5 +1,5 @@
 from gmprocess.io.read import read_data, _get_format, _validate_format
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 
 
 def test_read(config):

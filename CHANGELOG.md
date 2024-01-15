@@ -15,6 +15,7 @@
   - Make the integration config options consistent with the trace.integrate function arguments.
 - Other
   - Turned off automatic generation of moveout plot since it isn't getting used.
+  - Renamed src/gmprocess/utils/test_utils.py to src/gmprocess/utils/test_utils.py to avoid it being detected as a unit test module.
 
 ## 1.3.0 / 2023-11-18
 

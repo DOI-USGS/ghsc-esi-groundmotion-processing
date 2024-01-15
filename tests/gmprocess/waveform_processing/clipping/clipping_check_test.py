@@ -7,11 +7,11 @@ from gmprocess.core.stationstream import StationStream
 from gmprocess.waveform_processing.clipping.clipping_check import check_clipping
 from gmprocess.core import scalar_event
 from gmprocess.utils import constants
-from gmprocess.utils import test_utils
+from gmprocess.utils import tests_utils
 
 
 def test_check_clipping():
-    data_files, event = test_utils.read_data_dir(
+    data_files, event = tests_utils.read_data_dir(
         "clipping_samples", "hv70907436", "*.mseed"
     )
     data_files.sort()

@@ -1,6 +1,6 @@
 import numpy as np
 
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.io.read import read_data
 
 

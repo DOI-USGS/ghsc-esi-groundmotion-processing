@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.metrics.exception import PGMException
 from gmprocess.metrics.metrics_controller import MetricsController
 from gmprocess.metrics.utils import component_to_channel

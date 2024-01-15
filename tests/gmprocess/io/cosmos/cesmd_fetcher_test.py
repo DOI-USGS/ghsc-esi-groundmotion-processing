@@ -4,7 +4,7 @@ from pathlib import Path
 from datetime import datetime
 
 from gmprocess.io.cosmos.cesmd_fetcher import CESMDFetcher
-from gmprocess.utils.test_utils import vcr
+from gmprocess.utils.tests_utils import vcr
 
 
 @vcr.use_cassette()

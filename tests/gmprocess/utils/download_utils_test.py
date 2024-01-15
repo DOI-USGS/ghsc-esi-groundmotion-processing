@@ -8,7 +8,7 @@ from obspy.core.utcdatetime import UTCDateTime
 from gmprocess.core import scalar_event
 from gmprocess.utils import constants
 from gmprocess.utils import download_utils
-from gmprocess.utils import test_utils
+from gmprocess.utils import tests_utils
 
 
 EVENT_INFO = {
@@ -22,7 +22,7 @@ EVENT_INFO = {
 }
 
 
-@test_utils.vcr.use_cassette()
+@tests_utils.vcr.use_cassette()
 def test_download_comcat_event():
     data = download_utils.download_comcat_event(EVENT_INFO["id"])
     assert data["id"] == EVENT_INFO["id"]
@@ -37,7 +37,7 @@ def test_download_comcat_event():
     assert origin_time == EVENT_INFO["time"]
 
 
-@test_utils.vcr.use_cassette()
+@tests_utils.vcr.use_cassette()
 def test_download_rupture_file():
     EVENT_ID = "ci38457511"
 
@@ -52,7 +52,7 @@ def test_download_rupture_file():
     file_path.unlink()
 
 
-@test_utils.vcr.use_cassette()
+@tests_utils.vcr.use_cassette()
 def test_get_strec_results():
     data_dir = constants.TEST_DATA_DIR
     event = scalar_event.ScalarEvent.from_params(**EVENT_INFO)

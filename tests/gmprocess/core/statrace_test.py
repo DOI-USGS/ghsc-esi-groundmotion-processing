@@ -9,7 +9,7 @@ from obspy.core.utcdatetime import UTCDateTime
 from gmprocess.utils import constants
 from gmprocess.io.read import read_data
 from gmprocess.core.stationtrace import StationTrace
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 
 
 def test_trace():

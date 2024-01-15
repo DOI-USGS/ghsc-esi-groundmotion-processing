@@ -3,7 +3,7 @@ import pytest
 import copy
 
 from gmprocess.io.read import read_data
-from gmprocess.utils.test_utils import read_data_dir
+from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.utils.config import get_config
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.streamcollection import StreamCollection
