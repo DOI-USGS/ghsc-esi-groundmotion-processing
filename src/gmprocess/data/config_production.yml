@@ -526,10 +526,10 @@ metrics:
   # The 'imc_imts' section has key-value pairs in which the key is the IMC and the
   # value is a list of IMTs for that IMC.
   imc_imts: 
-    channels: [pga, pgv, sa, duration]
-    # rotd: [pga, pgv, sa]
-    # geometric_mean: [duration]
-    # quadratic_mean: [fas]
+    channels: [pga, pgv, sa, duration, cav]
+    rotd: [pga, pgv, sa]
+    geometric_mean: [duration]
+    quadratic_mean: [fas]
 
   # Additional parameters required for SA
   sa:

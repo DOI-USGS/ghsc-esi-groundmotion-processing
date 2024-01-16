@@ -1,7 +1,5 @@
 """Module for holding classes for transformation waveform metric processing steps."""
 
-import itertools
-
 import numpy as np
 
 from obspy import Trace
@@ -23,51 +21,71 @@ class Integrate(Component):
 
     def calculate(self):
         new_traces = []
-        for trace in self.parent.output.traces:
+        for trace in self.prior_step.output.traces:
             new_traces.append(trace.copy().integrate(**self.parameters))
         self.output = containers.Trace(new_traces)
 
     @staticmethod
     def get_parameters(config):
-        return [config["integration"]]
+        return config["integration"]
+
+
+class Arias(Component):
+    """Compute the Arias intensity."""
+
+    outputs = {}
+    INPUT_CLASS = containers.Trace
+
+    def calculate(self):
+        new_traces = []
+        for trace in self.prior_step.output.traces:
+            new_trace = trace.copy()
+            # Convert from cm/s/s to m/s/s
+            new_trace.data *= 0.01
+            # Square acceleration
+            new_trace.data *= new_trace.data
+            # Integrate, and force time domain to avoid frequency-domain artifacts that
+            # creat negative values.
+            # self.parameters["frequency"] = False
+            new_trace.integrate(frequency=False)
+            # Multiply by constants
+            new_trace.data = new_trace.data * np.pi * GAL_TO_PCTG / 2
+
+            new_traces.append(new_trace)
+        self.output = containers.Trace(new_traces)
 
 
 class TraceOscillator(Component):
     """Return the oscillator response of the input traces.
 
-    self.output: containers.OscillatorCollection
+    self.output: containers.Oscillator
     """
 
     outputs = {}
     INPUT_CLASS = containers.Trace
 
     def calculate(self):
-        iper = self.parameters["periods"]
-        idamp = self.parameters["damping"]
-        all_oscillators = []
-        for per, damp in itertools.product(iper, idamp):
-            oscillator_list = []
-            stats_list = []
-            for trace in self.parent.output.traces:
-                sa_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
-                acc_sa = sa_results[0]
-                acc_sa *= GAL_TO_PCTG
-                oscillator_list.append(acc_sa)
-                stats_list.append(dict(trace.stats))
-            all_oscillators.append(
-                containers.Oscillator(
-                    period=per,
-                    damping=damp,
-                    oscillator_dt=sa_results[4],
-                    oscillators=oscillator_list,
-                    stats_list=stats_list,
-                )
-            )
-        self.output = containers.OscillatorCollection(all_oscillators)
+        per = self.parameters["periods"]
+        damp = self.parameters["damping"]
+        oscillator_list = []
+        stats_list = []
+        for trace in self.prior_step.output.traces:
+            sa_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
+            acc_sa = sa_results[0]
+            acc_sa *= GAL_TO_PCTG
+            oscillator_list.append(acc_sa)
+            stats_list.append(dict(trace.stats))
+        self.output = containers.Oscillator(
+            period=per,
+            damping=damp,
+            oscillator_dt=sa_results[4],
+            oscillators=oscillator_list,
+            stats_list=stats_list,
+        )
 
     @staticmethod
     def get_parameters(config):
-        return [config["metrics"]["sa"]]
+        return config["metrics"]["sa"]
 
 
 class RotDOscillator(Component):
@@ -77,32 +95,28 @@ class RotDOscillator(Component):
     INPUT_CLASS = containers.RotDTrace
 
     def calculate(self):
-        iper = self.parameters["periods"]
-        idamp = self.parameters["damping"]
-        ipercent = self.parameters["percentiles"]
-        all_oscillators = []
-        for per, damp, percent in itertools.product(iper, idamp, ipercent):
-            oscillator_list = []
-            for trace_data in self.parent.output.trace_matrix:
-                temp_trace = Trace(trace_data, self.parent.output.stats)
-                sa_results = calculate_spectrals(temp_trace, period=per, damping=damp)
-                acc_sa = sa_results[0]
-                acc_sa *= GAL_TO_PCTG
-                oscillator_list.append(acc_sa)
-            all_oscillators.append(
-                containers.RotDOscillator(
-                    period=per,
-                    damping=damp,
-                    percentile=percent,
-                    oscillator_dt=sa_results[4],
-                    oscillator_matrix=np.stack(oscillator_list),
-                )
-            )
-        self.output = containers.RotDOscillatorCollection(all_oscillators)
+        per = self.parameters["periods"]
+        damp = self.parameters["damping"]
+        percent = self.parameters["percentiles"]
+        oscillator_list = []
+        for trace_data in self.prior_step.output.trace_matrix:
+            temp_trace = Trace(trace_data, self.prior_step.output.stats)
+            sa_results = calculate_spectrals(temp_trace, period=per, damping=damp)
+            acc_sa = sa_results[0]
+            acc_sa *= GAL_TO_PCTG
+            oscillator_list.append(acc_sa)
+        self.output = containers.RotDOscillator(
+            period=per,
+            damping=damp,
+            percentile=percent,
+            oscillator_dt=sa_results[4],
+            oscillator_matrix=np.stack(oscillator_list),
+            stats=self.prior_step.output.stats,
+        )
 
     @staticmethod
     def get_parameters(config):
-        return [config["metrics"]["sa"]]
+        return config["metrics"]["sa"]
 
 
 class FourierAmplitudeSpectra(Component):
@@ -112,9 +126,9 @@ class FourierAmplitudeSpectra(Component):
     INPUT_CLASS = containers.Trace
 
     def calculate(self):
-        nfft = self._get_nfft(self.parent.output.traces[0])
+        nfft = self._get_nfft(self.prior_step.output.traces[0])
         spectra_list = []
-        for trace in self.parent.output.traces:
+        for trace in self.prior_step.output.traces:
             spectra1, freqs1 = self._compute_fft(trace, nfft)
             spectra_list.append(spectra1)
         self.output = containers.FourierSpectra(
@@ -124,7 +138,7 @@ class FourierAmplitudeSpectra(Component):
 
     @staticmethod
     def get_parameters(config):
-        return [config["metrics"]["fas"]]
+        return config["metrics"]["fas"]
 
     @staticmethod
     def _compute_fft(trace, nfft):
@@ -165,8 +179,8 @@ class SmoothSpectra(Component):
 
     def calculate(self):
         ko_spec, ko_freq = self._smooth_spectrum(
-            self.parent.output.fourier_spectra,
-            self.parent.output.frequency,
+            self.prior_step.output.fourier_spectra,
+            self.prior_step.output.frequency,
         )
         self.output = containers.CombinedSpectra(
             frequency=ko_freq,
@@ -175,7 +189,7 @@ class SmoothSpectra(Component):
 
     @staticmethod
     def get_parameters(config):
-        return [config["metrics"]["fas"]]
+        return config["metrics"]["fas"]
 
     def _smooth_spectrum(self, spec, freqs):
         """

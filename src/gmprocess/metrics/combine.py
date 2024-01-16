@@ -13,10 +13,10 @@ class GeometricMean(Component):
     INPUT_CLASS = containers.Scalar
 
     def calculate(self):
-        values = [trace.value for trace in self.parent.output.traces]
+        values = [trace.value for trace in self.prior_step.output.values]
         geo_mean = np.exp(np.sum(np.log(values) / len(values)))
         self.output = containers.CombinedScalar(
-            containers.ReferenceValue(geo_mean, self.parent.output.traces[0].stats)
+            containers.ReferenceValue(geo_mean, self.prior_step.output.values[0].stats)
         )
 
 
@@ -27,10 +27,10 @@ class SpectraQuadraticMean(Component):
     INPUT_CLASS = containers.FourierSpectra
 
     def calculate(self):
-        fas_matrix = np.stack(self.parent.output.fourier_spectra)
+        fas_matrix = np.stack(self.prior_step.output.fourier_spectra)
         nrow = fas_matrix.shape[0]
         quad_mean = np.sqrt(np.sum(fas_matrix**2, axis=0) / nrow)
         self.output = containers.CombinedSpectra(
-            frequency=self.parent.output.frequency,
+            frequency=self.prior_step.output.frequency,
             fourier_spectra=quad_mean,
         )

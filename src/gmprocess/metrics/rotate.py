@@ -16,11 +16,11 @@ class RotD(Component):
         # rotd matrix has dimensions (m, n), where m is the number rotation angles, n
         # is the number of points in the trace.
         rotd_matrix = self._rotate(
-            self.parent.output.traces[0].data, self.parent.output.traces[1].data
+            self.prior_step.output.traces[0].data, self.prior_step.output.traces[1].data
         )
         self.output = containers.RotDTrace(
             trace_matrix=rotd_matrix,
-            stats=self.parent.output.traces[0].stats,
+            stats=self.prior_step.output.traces[0].stats,
         )
 
     @staticmethod
