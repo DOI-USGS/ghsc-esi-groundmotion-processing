@@ -53,14 +53,14 @@ class ExportMetricTablesModule(base.SubcommandModule):
                 logging.warning(
                     "Station metrics not found in workspace for event %s."
                     "Continuing to next event.",
-                    self.eventid,
+                    event_id,
                 )
                 continue
             if "WaveFormMetrics" not in self.workspace.dataset.auxiliary_data:
                 logging.warning(
                     "Waveform metrics not found in workspace for event %s."
                     "Continuing to next event.",
-                    self.eventid,
+                    event_id,
                 )
                 continue
 
