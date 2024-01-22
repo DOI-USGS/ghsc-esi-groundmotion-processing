@@ -1,5 +1,9 @@
 ## main
 
+- Documentation Updates
+  - Switched over to the vectorized openquake for the mixed effects tutorial.
+  - Fixed typos and removed unused imports for openquake
+  - Removed admonition from install.md that resulted in an error (but didn't break the pipeline)
 - Code improvements
   - Created a module/class for handling provenance (core.provenance.Provenance), and added provenance entries for person/software and removed these entries from the Trace provenance.
   - Re-organized waveform_processing/instrument_response.py module.

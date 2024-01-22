@@ -18,18 +18,14 @@ In this tutorial, we will read in some sample ground motion data, compute residu
 First, we import the necessary packages:
 
 ```{code-cell} ipython3
-import os
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 
+from openquake.hazardlib import valid
 from openquake.hazardlib.imt import SA
-from openquake.hazardlib.gsim.base import SitesContext
-from openquake.hazardlib.gsim.base import RuptureContext
-from openquake.hazardlib.gsim.base import DistancesContext
-from openquake.hazardlib.gsim.abrahamson_2014 import AbrahamsonEtAl2014
+from openquake.hazardlib.contexts import simple_cmaker
 from gmprocess.utils.constants import DATA_DIR
 ```
 
@@ -47,7 +43,7 @@ df = pd.read_csv(data_path)
 We will use the ASK14 ground motion model (GMM) and spectral acceleration for an oscillator period of 1.0 seconds.
 
 ```{code-cell} ipython3
-gmm = AbrahamsonEtAl2014()
+gsim = valid.gsim('''[AbrahamsonEtAl2014]''')
 imt = SA(1.0)
 ```
 
@@ -55,35 +51,27 @@ To evaluate the GMM, we must make some simple assumptions regarding the rupture 
 
 ```{code-cell} ipython3
 predicted_data = []
-for eqid in df.EarthquakeId.unique():
-    df_eq = df[df.EarthquakeId == eqid].copy()
-    n = df_eq.shape[0]
-    # Create a context with all the model inputs
-    inputs = RuptureContext()
-    inputs.dip = 90.0
-    inputs.rake = 0.0
-    inputs.mag = df_eq.EarthquakeMagnitude.iloc[0]
-    inputs.width = 10**(-0.76 + 0.27 * inputs.mag)
-    inputs.ztor = df_eq.EarthquakeDepth.iloc[0]
-    inputs.vs30 = np.full(n, 760.0)
-    inputs.vs30measured = np.full(n, False)
-    inputs.z1pt0 = np.full(n, 48.0)
-    inputs.rjb = df_eq.JoynerBooreDistance
-    inputs.rrup = df_eq.RuptureDistance
-    inputs.rx = np.full(n, -1)
-    inputs.ry0 = np.full(n, -1)
-    inputs.sids = np.array(range(n))
 
-    # Evaluate the GMM. Note that due to a recent update, the best practice
-    # is to recycle a single context ("inputs") for all of the input contexts
-    # for the get_mean_and_stddevs method (distance, rupture, and sites).
-    mean, sd = gmm.get_mean_and_stddevs(inputs, inputs, inputs, imt, [])
+cmaker = simple_cmaker([gsim], [str(imt)], mags=["%2.f" % mag for mag in df.EarthquakeMagnitude])
+n = df.shape[0]
+ctx = cmaker.new_ctx(n)
+ctx["mag"] = df.EarthquakeMagnitude
+ctx["dip"] = 90.0
+ctx["rake"] = 0.0
+ctx["width"] = 10**(-0.76 + 0.27 * df.EarthquakeMagnitude)
+ctx["ztor"] = df.EarthquakeDepth
+ctx["vs30"] = 760.0
+ctx["vs30measured"] = False
+ctx["rrup"] = df.RuptureDistance
+ctx["rjb"] = df.JoynerBooreDistance
+ctx["z1pt0"] = 48.0
+ctx["rx"] = -1
+ctx["ry0"] = -1
 
-    # Convert from ln(g) to %g
-    mean = 100.0 * np.exp(mean)
-
-    # Store the predicted data in a list
-    predicted_data += mean.tolist()
+# Evaluate the GMM.
+mean = cmaker.get_mean_stds([ctx])[0][0][0]
+# Convert from ln(g) to %g
+predicted_data = 100.0 * np.exp(mean)
 ```
 
 Now add the model residuals to the dataframe:

@@ -113,7 +113,7 @@ pip install .[doc]
 Then the docs are built with
 
 ```
-cd doc_source/
+cd docs/
 ./makedocs.sh
 ```
 
