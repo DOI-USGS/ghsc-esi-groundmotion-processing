@@ -86,10 +86,6 @@ git clone https://code.usgs.gov/ghsc/esi/groundmotion-processing.git
 cd groundmotion-processing
 ```
 
-:::{admonition} Windows
-:class: important
-:::
-
 Next, install the code with pip
 
 ```
