@@ -12,6 +12,7 @@
   - Adjust io tests to make use of pytest fixtures and get a bit of speedup.
   - Reorganize downloading event information (event, rupture geometry, STREC results) and loading it into the workspace. All information is downloaded in the `download` subcommand, and loaded into the workspace with the `assemble` subcommand. Subsequent commands all load the event information from the workspace.
   - Use full words for keys in `event.json` files (magnitude, magnitude_type, longitude, latitude, depth_km).
+  - Handle the dateline discontinuity in fdsn_fetcher.
 - Config changes
   - Lower default PGA threshold in search_parameters to 0.001 g.
   - Changed format for specifying response spectral periods.
@@ -20,6 +21,7 @@
 - Other
   - Turned off automatic generation of moveout plot since it isn't getting used.
   - Renamed src/gmprocess/utils/test_utils.py to src/gmprocess/utils/test_utils.py to avoid it being detected as a unit test module.
+  - Decrease precision in fetcher bounds and fix Geonet bounds to include negaive longitudes.
 
 ## 1.3.0 / 2023-11-18
 

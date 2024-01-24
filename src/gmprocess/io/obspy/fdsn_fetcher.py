@@ -238,6 +238,14 @@ class FDSNFetcher(DataFetcher):
                     provider_dict["url"] = GEONET_REALTIME_URL
             if "bounds" in provider_dict:
                 bounds = provider_dict["bounds"]
+                if bounds[0] > bounds[1]:  # crossing meridian
+                    lontest = self.lon
+                    cmpxmax = bounds[1] + 360
+                    if self.lon < 0:
+                        lontest = self.lon + 360
+                    outside_lon = lontest > cmpxmax or lontest < bounds[0]
+                else:
+                    outside_lon = self.lon > bounds[1] or self.lon < bounds[0]
                 outside_lat = self.lat > bounds[3] or self.lat < bounds[2]
                 outside_lon = self.lon > bounds[1] or self.lon < bounds[0]
                 if outside_lat or outside_lon:
