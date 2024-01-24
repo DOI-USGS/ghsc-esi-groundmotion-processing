@@ -4,7 +4,7 @@ from lxml import etree
 
 from gmprocess.utils import constants
 from gmprocess.io.asdf.base_metrics_xml import MetricXML
-from gmprocess.metrics.waveform_metric import WaveformMetric
+from gmprocess.metrics.waveform_metric_type import WaveformMetricType
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 
 FLOAT_ATTRIBUTES = ["period", "damping"]
@@ -20,7 +20,7 @@ class WaveformMetricsXML(MetricXML):
             metric_list (list):
                 List of WaveformMetric objects.
         """
-        if not all(isinstance(wm, WaveformMetric) for wm in metric_list):
+        if not all(isinstance(wm, WaveformMetricType) for wm in metric_list):
             raise TypeError("All elements of metric_list must be a WaveformMetric.")
         self.metric_list = metric_list
 
@@ -97,7 +97,7 @@ class WaveformMetricsXML(MetricXML):
                 "metric_attributes": att_dict,
                 "component_to_channel": comp_to_chan,
             }
-            metric_list.append(WaveformMetric.metric_from_dict(mdict))
+            metric_list.append(WaveformMetricType.metric_from_dict(mdict))
         return WaveformMetricList(metric_list)
 
 

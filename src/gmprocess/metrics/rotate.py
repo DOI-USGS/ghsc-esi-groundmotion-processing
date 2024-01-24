@@ -2,15 +2,15 @@
 
 import numpy as np
 
-from gmprocess.metrics.metric_component_base import Component
+from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
 from gmprocess.metrics import containers
 
 
-class RotD(Component):
+class RotD(BaseComponent):
     """Class for doing the RotD rotation."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         # rotd matrix has dimensions (m, n), where m is the number rotation angles, n
@@ -19,7 +19,7 @@ class RotD(Component):
             self.prior_step.output.traces[0].data, self.prior_step.output.traces[1].data
         )
         self.output = containers.RotDTrace(
-            trace_matrix=rotd_matrix,
+            matrix=rotd_matrix,
             stats=self.prior_step.output.traces[0].stats,
         )
 

@@ -1,11 +1,8 @@
 import numpy as np
-import pandas as pd
 
 from gmprocess.io.geonet.core import read_geonet
-from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.metrics.waveform_metrics_calculator import WaveformMetricCalculator
+from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
 from gmprocess.metrics.utils import component_to_channel
-from gmprocess.core.stationstream import StationStream
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import TEST_DATA_DIR
 
@@ -55,21 +52,18 @@ def test_get_channel_dict():
 
 
 def test_metric_calculator():
-    datafiles, event = read_data_dir(
-        "geonet", "us1000778i", "20161113_110259_WTMC_20.V2A"
-    )
-    datafile = datafiles[0]
-    stream = read_geonet(datafile)[0]
-
+    config = get_config()
     metric_config = {
         "imc_imts": {
-            "channels": ["pga", "pgv", "sa"],
+            "channels": ["pga", "pgv", "sa", "arias", "cav", "duration"],
+            "geometric_mean": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "quadratic_mean": ["fas"],
+            "rotd": ["pga", "pgv", "sa"],
         },
         "sa": {
-            "damping": [0.05],
+            "damping": [0.05, 0.1],
             "periods": [0.3, 1.0, 2.0],
-            "percentiles": [50.0],
+            "percentiles": [50.0, 100.0],
         },
         "fas": {
             "smoothing": "konno_ohmachi",
@@ -81,328 +75,115 @@ def test_metric_calculator():
                 "num": 401,
             },
         },
+        "duration": {
+            "intervals": ["5-75", "5-95"],
+        },
     }
     config["metrics"] = metric_config
+    datafile = TEST_DATA_DIR / "geonet" / "us1000778i/20161113_110259_WTMC_20.V2A"
+    stream = read_geonet(datafile)[0]
+
     wm_calc = WaveformMetricCalculator(stream, config)
     wm_calc.calculate()
-    wm_calc.metric_dict["channels-sa"].output
 
-    input_imts = [
-        "pgv",
-        "pga",
-        "sa2",
-        "sa1.0",
-        "sa0.3",
-        "fas2",
-        "fas1.0",
-        "fas0.3",
-        "arias",
-        "cav",
-        "invalid",
-    ]
-    input_imcs = [
-        "rotd50",
-        "rotd100.0",
-        "gmrotd50",
-        "gmrotd100.0",
-        "radial_transverse",
-        "geometric_mean",
-        "arithmetic_mean",
-        "channels",
-        "greater_of_two_horizontals",
-        "invalid",
-        "quadratic_mean",
-    ]
+    chan_pga = wm_calc.metric_dicts["channels-pga"][0]["result"].output.values
+    for chan in chan_pga:
+        if chan.stats.channel[2] == "1":
+            h1_pga = chan.value
+            h1_pga_time = chan.stats["peak_time"]
+        elif chan.stats.channel[2] == "2":
+            h2_pga = chan.value
+            h2_pga_time = chan.stats["peak_time"]
+        elif chan.stats.channel[2] == "Z":
+            z_pga = chan.value
+            z_pga_time = chan.stats["peak_time"]
 
-    # Testing for acceleration --------------------------
-    m1 = MetricsController(
-        input_imts, input_imcs, stream_v2, event=event, config=config
+    np.testing.assert_allclose(h1_pga, 99.24999872535474)
+    np.testing.assert_allclose(h1_pga_time, 49.88)
+
+    np.testing.assert_allclose(h2_pga, 81.23467239067368)
+    np.testing.assert_allclose(h2_pga_time, 50.96)
+
+    np.testing.assert_allclose(z_pga, 183.7722361866693)
+    np.testing.assert_allclose(z_pga_time, 49.14)
+
+    chan_pgv = wm_calc.metric_dicts["channels-pgv"][0]["result"].output.values
+    for chan in chan_pgv:
+        if chan.stats.channel[2] == "1":
+            h1_pgv = chan.value
+            h1_pgv_time = chan.stats["peak_time"]
+        elif chan.stats.channel[2] == "2":
+            h2_pgv = chan.value
+            h2_pgv_time = chan.stats["peak_time"]
+        elif chan.stats.channel[2] == "Z":
+            z_pgv = chan.value
+            z_pgv_time = chan.stats["peak_time"]
+
+    np.testing.assert_allclose(h1_pgv, 101.66136239855638)
+    np.testing.assert_allclose(h1_pgv_time, 51.58)
+
+    np.testing.assert_allclose(h2_pgv, 68.64222974894496)
+    np.testing.assert_allclose(h2_pgv_time, 49.86)
+
+    np.testing.assert_allclose(z_pgv, 39.46762529609578)
+    np.testing.assert_allclose(z_pgv_time, 50.56)
+
+    rotd_pga = wm_calc.metric_dicts["rotd-pga"]
+    for rotd in rotd_pga:
+        if rotd["parameters"]["percentiles"] == 50.0:
+            rotd50_pga = rotd["result"].output.value.value
+        elif rotd["parameters"]["percentiles"] == 100.0:
+            rotd100_pga = rotd["result"].output.value.value
+
+    rotd_pgv = wm_calc.metric_dicts["rotd-pgv"]
+    for rotd in rotd_pgv:
+        if rotd["parameters"]["percentiles"] == 50.0:
+            rotd50_pgv = rotd["result"].output.value.value
+        elif rotd["parameters"]["percentiles"] == 100.0:
+            rotd100_pgv = rotd["result"].output.value.value
+
+    np.testing.assert_allclose(rotd50_pga, 91.40178541935455)
+    np.testing.assert_allclose(rotd100_pga, 100.73875535385548)
+    np.testing.assert_allclose(rotd50_pgv, 82.29808159181434)
+    np.testing.assert_allclose(rotd100_pgv, 114.78926285861922)
+
+    chan_sa = wm_calc.metric_dicts["channels-sa"]
+    for chan in chan_sa:
+        if chan["parameters"]["damping"] != 0.05:
+            continue
+        if chan["parameters"]["periods"] != 1.0:
+            continue
+        for ch in chan["result"].output.values:
+            if ch.stats["channel"][2] == "1":
+                h1_sa1 = ch.value
+            elif ch.stats["channel"][2] == "2":
+                h2_sa1 = ch.value
+            elif ch.stats["channel"][2] == "Z":
+                z_sa1 = ch.value
+
+    np.testing.assert_allclose(h1_sa1, 136.25041187387063)
+    np.testing.assert_allclose(h2_sa1, 84.69296738413021)
+    np.testing.assert_allclose(z_sa1, 27.74118995438756)
+
+    rotd_sa = wm_calc.metric_dicts["rotd-sa"]
+    for rotd in rotd_sa:
+        if rotd["parameters"]["damping"] != 0.05:
+            continue
+        if rotd["parameters"]["periods"] != 1.0:
+            continue
+        if rotd["parameters"]["percentiles"] == 50.0:
+            rotd50_sa1 = rotd["result"].output.value.value
+        if rotd["parameters"]["percentiles"] == 100.0:
+            rotd100_sa1 = rotd["result"].output.value.value
+
+    np.testing.assert_allclose(rotd50_sa1, 106.03202302692158)
+    np.testing.assert_allclose(rotd100_sa1, 146.9023350124098)
+
+    fas = wm_calc.metric_dicts["quadratic_mean-fas"][0]["result"].output
+    np.testing.assert_allclose(
+        fas.frequency[:2], np.array([0.001, 0.0010292005271944286])
     )
-    pgms = m1.pgms
-    # testing for pga, pgv, sa
-    target_imcs = [
-        "ROTD(50.0)",
-        "ROTD(100.0)",
-        "GMROTD(50.0)",
-        "GMROTD(100.0)",
-        "HNR",
-        "HNT",
-        "GEOMETRIC_MEAN",
-        "ARITHMETIC_MEAN",
-        "H1",
-        "H2",
-        "Z",
-        "GREATER_OF_TWO_HORIZONTALS",
-        "QUADRATIC_MEAN",
-    ]
-    for col in ["PGA", "PGV", "SA(1.000)", "SA(2.000)", "SA(0.300)"]:
-        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
-        assert len(imcs) == len(target_imcs)
-        np.testing.assert_array_equal(np.sort(imcs), np.sort(target_imcs))
-
-    # testing for fas
-    for col in ["FAS(1.000)", "FAS(2.000)", "FAS(0.300)"]:
-        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
-        assert len(imcs) == 9
-        np.testing.assert_array_equal(
-            np.sort(imcs),
-            [
-                "ARITHMETIC_MEAN",
-                "GEOMETRIC_MEAN",
-                "GREATER_OF_TWO_HORIZONTALS",
-                "H1",
-                "H2",
-                "HNR",
-                "HNT",
-                "QUADRATIC_MEAN",
-                "Z",
-            ],
-        )
-
-    # testing for arias
-    imcs = pgms.loc[pgms["IMT"] == "ARIAS"]["IMC"].tolist()
-    assert len(imcs) == 9
-    np.testing.assert_array_equal(
-        np.sort(imcs),
-        [
-            "ARITHMETIC_MEAN",
-            "GEOMETRIC_MEAN",
-            "GREATER_OF_TWO_HORIZONTALS",
-            "H1",
-            "H2",
-            "HNR",
-            "HNT",
-            "QUADRATIC_MEAN",
-            "Z",
-        ],
-    )
-    _validate_steps(m1.step_sets, "acc")
-
-    # testing for cav
-    imcs = pgms.loc[pgms["IMT"] == "CAV"]["IMC"].tolist()
-    assert len(imcs) == 9
-    np.testing.assert_array_equal(
-        np.sort(imcs),
-        [
-            "ARITHMETIC_MEAN",
-            "GEOMETRIC_MEAN",
-            "GREATER_OF_TWO_HORIZONTALS",
-            "H1",
-            "H2",
-            "HNR",
-            "HNT",
-            "QUADRATIC_MEAN",
-            "Z",
-        ],
-    )
-    _validate_steps(m1.step_sets, "acc")
-
-    # Testing for Velocity --------------------------
-    for trace in stream_v2:
-        trace.stats.standard.units_type = "vel"
-    m = MetricsController(input_imts, input_imcs, stream_v2, event=event, config=config)
-    pgms = m.pgms
-
-    # testing for pga, pgv, sa
-    target_imcs = [
-        "ROTD(50.0)",
-        "ROTD(100.0)",
-        "GMROTD(50.0)",
-        "GMROTD(100.0)",
-        "HNR",
-        "HNT",
-        "GEOMETRIC_MEAN",
-        "ARITHMETIC_MEAN",
-        "QUADRATIC_MEAN",
-        "H1",
-        "H2",
-        "Z",
-        "GREATER_OF_TWO_HORIZONTALS",
-    ]
-    for col in ["PGA", "PGV", "SA(1.000)", "SA(2.000)", "SA(0.300)"]:
-        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
-        assert len(imcs) == len(target_imcs)
-        np.testing.assert_array_equal(np.sort(imcs), np.sort(target_imcs))
-
-    # testing for fas
-    for col in ["FAS(1.000)", "FAS(2.000)", "FAS(0.300)"]:
-        imcs = pgms.loc[pgms["IMT"] == col]["IMC"].tolist()
-        assert len(imcs) == 9
-        np.testing.assert_array_equal(
-            np.sort(imcs),
-            [
-                "ARITHMETIC_MEAN",
-                "GEOMETRIC_MEAN",
-                "GREATER_OF_TWO_HORIZONTALS",
-                "H1",
-                "H2",
-                "HNR",
-                "HNT",
-                "QUADRATIC_MEAN",
-                "Z",
-            ],
-        )
-
-    # testing for arias
-    imcs = pgms.loc[pgms["IMT"] == "ARIAS"]["IMC"].tolist()
-    assert len(imcs) == 9
-    np.testing.assert_array_equal(
-        np.sort(imcs),
-        [
-            "ARITHMETIC_MEAN",
-            "GEOMETRIC_MEAN",
-            "GREATER_OF_TWO_HORIZONTALS",
-            "H1",
-            "H2",
-            "HNR",
-            "HNT",
-            "QUADRATIC_MEAN",
-            "Z",
-        ],
-    )
-    _validate_steps(m.step_sets, "vel")
-
-
-def _validate_steps(step_sets, data_type):
-    datafile_abspath = TEST_DATA_DIR / "metrics_controller" / "workflows.csv"
-    df = pd.read_csv(datafile_abspath)
-    wf_df = df.apply(lambda x: x.astype(str).str.lower())
-    # test workflows
-    for step_set in step_sets:
-        print(step_set)
-        steps = step_sets[step_set]
-        imt = steps["imt"]
-        imc = steps["imc"]
-        row = wf_df[(wf_df.IMT == imt) & (wf_df.IMC == imc) & (wf_df.Data == data_type)]
-        assert steps["Transform1"] == row["Transform1"].iloc[0]
-        assert steps["Transform2"] == row["Transform2"].iloc[0]
-        assert steps["Transform3"] == row["Transform3"].iloc[0]
-        assert steps["Combination1"] == row["Combination1"].iloc[0]
-        assert steps["Combination2"] == row["Combination2"].iloc[0]
-        assert steps["Rotation"] == row["Rotation"].iloc[0]
-        assert steps["Reduction"] == row["Reduction"].iloc[0]
-        print("Yay")
-
-
-def test_metrics_arrays():
-    homedir = TEST_DATA_DIR / "geonet"
-    datafile_v2 = str(homedir / "us1000778i" / "20161113_110259_WTMC_20.V2A")
-    stream_v2 = read_geonet(datafile_v2)[0]
-    conf = config.copy()
-
-    # SA arrays
-    conf["metrics"]["output[_imcs"] = ["channels"]
-    conf["metrics"]["output_imts"] = ["SA"]
-    conf["metrics"]["sa"]["periods"]["use_array"] = True
-    conf["metrics"]["sa"]["periods"]["start"] = 0.01
-    conf["metrics"]["sa"]["periods"]["stop"] = 0.1
-    conf["metrics"]["sa"]["periods"]["num"] = 3
-    conf["metrics"]["sa"]["periods"]["spacing"] = "linspace"
-    m = MetricsController.from_config(stream_v2, config=conf)
-    periods = [m._parse_period(imt) for imt in m.imts]
-    assert periods == ["0.010", "0.055", "0.100"]
-    conf["metrics"]["sa"]["periods"]["spacing"] = "logspace"
-    m = MetricsController.from_config(stream_v2, config=conf)
-    periods = [m._parse_period(imt) for imt in m.imts]
-    assert periods == ["0.010", "0.032", "0.100"]
-
-    # FAS arrays
-    conf["metrics"]["output_imts"] = ["FAS"]
-    m = MetricsController.from_config(stream_v2, config=conf)
-    period = [m._parse_period(imt) for imt in m.imts]
-    assert period == ["1.000", "2.000", "3.000"]
-    conf["metrics"]["fas"]["periods"]["spacing"] = "logspace"
-    m = MetricsController.from_config(stream_v2, config=conf)
-    period = [m._parse_period(imt) for imt in m.imts]
-    assert period == ["1.000", "1.732", "3.000"]
-    conf["metrics"]["fas"]["periods"]["use_array"] = False
-    m = MetricsController.from_config(stream_v2, config=conf)
-    period = [m._parse_period(imt) for imt in m.imts]
-    assert period == ["0.300"]
-
-
-def test_exceptions():
-    homedir = TEST_DATA_DIR / "geonet"
-    datafile_v2 = str(homedir / "us1000778i" / "20161113_110259_WTMC_20.V2A")
-    stream_v2 = read_geonet(datafile_v2)[0]
-    # Check for origin Error
-    passed = True
-    try:
-        m = MetricsController("pga", "radial_transverse", stream_v2, config=config)
-    except PGMException:
-        passed = False
-    assert passed is False
-
-    # -------- Horizontal Channel Errors -----------
-    # Check for horizontal passthrough gm
-    st2 = stream_v2.select(component="[N1]")
-    st3 = stream_v2.select(component="Z")
-    st1 = StationStream([st2[0], st3[0]])
-    passed = True
-    m = MetricsController("pga", "geometric_mean", st1, config=config)
-    pgm = m.pgms
-    result = pgm["Result"].tolist()[0]
-    assert np.isnan(result)
-    # Check for horizontal passthrough rotd50
-    m = MetricsController("pga", "rotd50", st1, config=config)
-    pgm = m.pgms
-    result = pgm["Result"].tolist()[0]
-    assert np.isnan(result)
-    # Check for horizontal passthrough gmrotd50
-    m = MetricsController("pga", "gmrotd50", st1, config=config)
-    pgm = m.pgms
-    result = pgm["Result"].tolist()[0]
-    assert np.isnan(result)
-    # No horizontal channels
-    try:
-        m = MetricsController("sa3.0", "channels", st3, config=config)
-    except PGMException:
-        passed = False
-    assert passed is True
-
-
-def test_end_to_end():
-    datafiles, _ = read_data_dir("geonet", "us1000778i", "20161113_110259_WTMC_20.V2A")
-    datafile = datafiles[0]
-
-    stream = read_geonet(datafile)[0]
-    input_imcs = [
-        "greater_of_two_horizontals",
-        "channels",
-        "rotd50",
-        "rotd100",
-        "invalid",
-    ]
-    input_imts = ["sa1.0", "PGA", "pgv", "invalid"]
-    m = MetricsController(input_imts, input_imcs, stream, config=config)
-    test_pgms = [
-        ("PGV", "ROTD(100.0)", 114.24894584734818),
-        ("PGV", "ROTD(50.0)", 81.55436750525355),
-        ("PGV", "Z", 37.47740000000001),
-        ("PGV", "H1", 100.81460000000004),
-        ("PGV", "H2", 68.4354),
-        ("PGV", "GREATER_OF_TWO_HORIZONTALS", 100.81460000000004),
-        ("PGA", "ROTD(100.0)", 100.73875535385548),
-        ("PGA", "ROTD(50.0)", 91.40178541935455),
-        ("PGA", "Z", 183.7722361866693),
-        ("PGA", "H1", 99.24999872535474),
-        ("PGA", "H2", 81.23467239067368),
-        ("PGA", "GREATER_OF_TWO_HORIZONTALS", 99.24999872535474),
-        ("SA(1.000)", "ROTD(100.0)", 146.9023350124098),
-        ("SA(1.000)", "ROTD(50.0)", 106.03202302692158),
-        ("SA(1.000)", "Z", 27.74118995438756),
-        ("SA(1.000)", "H1", 136.25041187387063),
-        ("SA(1.000)", "H2", 84.69296738413021),
-        ("SA(1.000)", "GREATER_OF_TWO_HORIZONTALS", 136.25041187387063),
-    ]
-    pgms = m.pgms
-    assert len(pgms) == len(test_pgms)
-    for target in test_pgms:
-        target_imt = target[0]
-        target_imc = target[1]
-        value = target[2]
-        select = (pgms["IMT"] == target_imt) & (pgms["IMC"] == target_imc)
-        df = pgms.loc[select]
-        assert len(df) == 1
-
-        np.testing.assert_array_almost_equal(df["Result"], value, decimal=10)
+    np.testing.assert_allclose(fas.fourier_spectra[0], np.nan)
+    np.testing.assert_allclose(fas.fourier_spectra[60], 0.054067101860127975)
+    np.testing.assert_allclose(fas.fourier_spectra[120], 0.056931415028755865)
+    np.testing.assert_allclose(fas.fourier_spectra[240], 229.7757904681393)

@@ -37,7 +37,7 @@ METRIC_INFO = {
         "Sorted earthquake duration",
         "s",
     ),
-    "ARIASINTENSITY": ("Earthquake arias intensity", "m/s"),
+    "ARIAS": ("Earthquake arias intensity", "m/s"),
     "CAV": ("Earthquake cumulative absolute velocity", "g-s"),
 }
 

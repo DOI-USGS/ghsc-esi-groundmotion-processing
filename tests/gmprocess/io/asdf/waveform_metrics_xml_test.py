@@ -1,10 +1,10 @@
-from gmprocess.metrics import waveform_metric
+from gmprocess.metrics import waveform_metric_type
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
 
 
 def test_waveform_metrics_xml():
-    test_sa = waveform_metric.SA([0.71], ["H1"], period=1.0)
-    test_pga = waveform_metric.PGA([0.23], ["Z"])
+    test_sa = waveform_metric_type.SA([0.71], ["H1"], period=1.0)
+    test_pga = waveform_metric_type.PGA([0.23], ["Z"])
     mxml = WaveformMetricsXML([test_sa, test_pga])
     xml_str = mxml.to_xml()
     xml_target = (

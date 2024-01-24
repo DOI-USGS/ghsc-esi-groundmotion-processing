@@ -127,13 +127,13 @@ class SpectralAcceleration:
 class RotDTrace:
     """Class for holding traces rotated using the RotD method."""
 
-    trace_matrix: np.ndarray
+    matrix: np.ndarray
     stats: dict
 
     def __repr__(self):
         return (
             "containers.RotDTrace(\n"
-            f"  trace_matrix=ndarray {self.trace_matrix.shape}],\n"
+            f"  matrix=ndarray {self.matrix.shape}],\n"
             "  stats=dict,\n"
             ")"
         )
@@ -145,8 +145,7 @@ class RotDOscillator:
 
     period: float
     damping: float
-    percentile: float
-    oscillator_matrix: np.ndarray
+    matrix: np.ndarray
     oscillator_dt: float
     stats: dict
 
@@ -155,8 +154,7 @@ class RotDOscillator:
             "containers.RotDOscillator(\n"
             f"  period={self.period},\n"
             f"  damping={self.damping},\n"
-            f"  percentile={self.percentile},\n"
-            f"  oscillator_matrix=ndarray {self.oscillator_matrix.shape}],\n"
+            f"  matrix=ndarray {self.matrix.shape}],\n"
             f"  oscillator_dt={self.oscillator_dt},\n"
             "  stats=dict,\n"
             ")"
@@ -169,7 +167,6 @@ class RotDMax:
 
     period: float
     damping: float
-    percentile: float
     oscillator_maxes: np.ndarray
     stats: dict
 
@@ -178,7 +175,6 @@ class RotDMax:
             "containers.RotDMax(\n"
             f"  period={self.period},\n"
             f"  damping={self.damping},\n"
-            f"  percentile={self.percentile},\n"
             f"  oscillator_maxes=ndarray {self.oscillator_maxes.shape},\n"
             "  stats=dict,\n"
             ")"

@@ -7,8 +7,8 @@ import logging
 from obspy import read_inventory
 
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
-from gmprocess.metrics.base_metric_collection import MetricCollection
-from gmprocess.metrics.waveform_metrics_calculator import WaveformMetricCalculator
+from gmprocess.metrics.metric_collection_base import MetricCollection
+from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 from gmprocess.io.asdf.path_utils import get_stream_path
 from gmprocess.io.asdf.stream_workspace import array_to_str
@@ -142,8 +142,10 @@ class WaveformMetricCollection(MetricCollection):
         # Need to have something build 'steps'
         for stream in streams:
             if stream.passed:
-                metrics = WaveformMetricCalculator(stream, steps, config)
-                wml = WaveformMetricList.from_df(metrics.pgms, metrics.channel_dict)
+                wmc = WaveformMetricCalculator(stream, config, event)
+                wmc.calculate()
+                # wml = WaveformMetricList.from_df(metrics.pgms, metrics.channel_dict)
+                wml = WaveformMetricList.from_waveform_metric_calculator(wmc)
                 self.waveform_metrics.append(wml)
                 self.stream_paths.append(get_stream_path(stream, tag, config))
 

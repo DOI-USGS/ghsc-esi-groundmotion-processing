@@ -8,16 +8,16 @@ from obspy.signal.util import next_pow_2
 from esi_core.gmprocess.waveform_processing.smoothing import konno_ohmachi
 
 from gmprocess.metrics.oscillator import calculate_spectrals
-from gmprocess.metrics.metric_component_base import Component
+from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
 from gmprocess.metrics import containers
 from gmprocess.utils.constants import GAL_TO_PCTG
 
 
-class Integrate(Component):
+class Integrate(BaseComponent):
     """Integrate the traces."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         new_traces = []
@@ -30,11 +30,11 @@ class Integrate(Component):
         return config["integration"]
 
 
-class Arias(Component):
+class Arias(BaseComponent):
     """Compute the Arias intensity."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         new_traces = []
@@ -55,14 +55,14 @@ class Arias(Component):
         self.output = containers.Trace(new_traces)
 
 
-class TraceOscillator(Component):
+class TraceOscillator(BaseComponent):
     """Return the oscillator response of the input traces.
 
     self.output: containers.Oscillator
     """
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         per = self.parameters["periods"]
@@ -72,7 +72,6 @@ class TraceOscillator(Component):
         for trace in self.prior_step.output.traces:
             sa_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
             acc_sa = sa_results[0]
-            acc_sa *= GAL_TO_PCTG
             oscillator_list.append(acc_sa)
             stats_list.append(dict(trace.stats))
         self.output = containers.Oscillator(
@@ -85,45 +84,48 @@ class TraceOscillator(Component):
 
     @staticmethod
     def get_parameters(config):
-        return config["metrics"]["sa"]
+        return {
+            "periods": config["metrics"]["sa"]["periods"],
+            "damping": config["metrics"]["sa"]["damping"],
+        }
 
 
-class RotDOscillator(Component):
+class RotDOscillator(BaseComponent):
     """Return the oscillator response of traces that have undergone a RotD rotation."""
 
     outputs = {}
-    INPUT_CLASS = containers.RotDTrace
+    INPUT_CLASS = [containers.RotDTrace]
 
     def calculate(self):
         per = self.parameters["periods"]
         damp = self.parameters["damping"]
-        percent = self.parameters["percentiles"]
         oscillator_list = []
-        for trace_data in self.prior_step.output.trace_matrix:
+        for trace_data in self.prior_step.output.matrix:
             temp_trace = Trace(trace_data, self.prior_step.output.stats)
             sa_results = calculate_spectrals(temp_trace, period=per, damping=damp)
             acc_sa = sa_results[0]
-            acc_sa *= GAL_TO_PCTG
             oscillator_list.append(acc_sa)
         self.output = containers.RotDOscillator(
             period=per,
             damping=damp,
-            percentile=percent,
             oscillator_dt=sa_results[4],
-            oscillator_matrix=np.stack(oscillator_list),
+            matrix=np.stack(oscillator_list),
             stats=self.prior_step.output.stats,
         )
 
     @staticmethod
     def get_parameters(config):
-        return config["metrics"]["sa"]
+        return {
+            "periods": config["metrics"]["sa"]["periods"],
+            "damping": config["metrics"]["sa"]["damping"],
+        }
 
 
-class FourierAmplitudeSpectra(Component):
+class FourierAmplitudeSpectra(BaseComponent):
     """Return the Fourier amplitude spectra of the input traces."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         nfft = self._get_nfft(self.prior_step.output.traces[0])
@@ -171,11 +173,11 @@ class FourierAmplitudeSpectra(Component):
         return next_pow_2(nfft)
 
 
-class SmoothSpectra(Component):
+class SmoothSpectra(BaseComponent):
     """Return the smoothed Fourier amplitude spectra of the input spectra."""
 
     outputs = {}
-    INPUT_CLASS = containers.CombinedSpectra
+    INPUT_CLASS = [containers.CombinedSpectra]
 
     def calculate(self):
         ko_spec, ko_freq = self._smooth_spectrum(

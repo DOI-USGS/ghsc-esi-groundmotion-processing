@@ -12,7 +12,7 @@ from esi_utils_rupture.origin import Origin
 from esi_utils_rupture.factory import get_rupture
 
 from gmprocess.utils import constants
-from gmprocess.metrics.base_metric_collection import MetricCollection
+from gmprocess.metrics.metric_collection_base import MetricCollection
 from gmprocess.metrics.station_metric import StationMetric
 from gmprocess.io.asdf.station_metrics_xml import StationMetricsXML
 from gmprocess.io.asdf.path_utils import get_stream_path

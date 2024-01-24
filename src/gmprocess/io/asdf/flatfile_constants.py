@@ -79,7 +79,7 @@ FLATFILE_IMT_COLUMNS = {
         f"p-q percent significant duration ({constants.UNITS['duration']})"
     ),
     "SORTEDDURATION": (f"Sorted significant duration ({constants.UNITS['duration']})"),
-    "ARIASINTENSITY": f"Arias intensity ({constants.UNITS['ariasintensity']})",
+    "ARIASINTENSITY": f"Arias intensity ({constants.UNITS['arias']})",
     "CAV": f"Cumulative Absolute Velocity ({constants.UNITS['cav']})",
 }
 

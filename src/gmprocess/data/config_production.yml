@@ -419,8 +419,6 @@ processing:
 
     - get_corner_frequencies:
 
-    # Apply a cap to the lowpass corner frequency so that it is guaranteed to be
-    # less than or equal to fn_fac * fn, where fn is the Nyquist frequency
     - lowpass_max_frequency:
 
     - cut:
@@ -547,7 +545,7 @@ metrics:
       bandwidth: 20.0
       allow_nans: True
       frequencies:
-        # Parameters defining an array of periods
+        # Parameters defining an array of frequencies.
         # syntax is the same as that used for numpy linspace and logspace
         # start (first value), stop (last value), num (number of values)
         start: 0.001

@@ -2,31 +2,41 @@
 
 import numpy as np
 
-from gmprocess.metrics.metric_component_base import Component
+from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
 from gmprocess.metrics import containers
 from gmprocess.utils.constants import GAL_TO_PCTG
 
 
-class TraceMax(Component):
+class TraceMax(BaseComponent):
     """Return the maximum absolute value for each trace."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         max_list = []
         for trace in self.prior_step.output.traces:
+            idx = np.argmax(np.abs(trace.data))
+            dtimes = trace.times()
+            dtime = dtimes[idx]
+            tstats = trace.stats
+            tstats["peak_time"] = dtime
+            unit_factor = 1.0
+            if tstats["standard"]["units_type"] == "acc":
+                unit_factor = GAL_TO_PCTG
             max_list.append(
-                containers.ReferenceValue(np.max(np.abs(trace.data)), stats=trace.stats)
+                containers.ReferenceValue(
+                    unit_factor * np.abs(trace.data[idx]), stats=tstats
+                )
             )
         self.output = containers.Scalar(max_list)
 
 
-class Duration(Component):
+class Duration(BaseComponent):
     """Return the duration from the Arias intensity."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         duration_list = []
@@ -47,11 +57,11 @@ class Duration(Component):
         return config["metrics"]["duration"]
 
 
-class CAV(Component):
+class CAV(BaseComponent):
     """Compute the cumulative absolute velocity."""
 
     outputs = {}
-    INPUT_CLASS = containers.Trace
+    INPUT_CLASS = [containers.Trace]
 
     def calculate(self):
         cav_list = []
@@ -71,11 +81,11 @@ class CAV(Component):
         self.output = containers.Scalar(cav_list)
 
 
-class OscillatorMax(Component):
+class OscillatorMax(BaseComponent):
     """Return the maximum absolute value for each oscillator."""
 
     outputs = {}
-    INPUT_CLASS = containers.Oscillator
+    INPUT_CLASS = [containers.Oscillator]
 
     def calculate(self):
         # Loop over each record
@@ -84,43 +94,68 @@ class OscillatorMax(Component):
             self.prior_step.output.oscillators, self.prior_step.output.stats_list
         ):
             max_list.append(
-                containers.ReferenceValue(value=np.max(np.abs(osc)), stats=stats)
+                containers.ReferenceValue(
+                    value=GAL_TO_PCTG * np.max(np.abs(osc)), stats=stats
+                )
             )
         self.output = containers.Scalar(max_list)
 
 
-class RotDMax(Component):
-    """Return the maximum absolute value of the oscillators."""
+class RotDTraceMax(BaseComponent):
+    """Return the maximum absolute value of the traces."""
 
     outputs = {}
-    INPUT_CLASS = containers.RotDOscillator
+    INPUT_CLASS = [containers.RotDTrace]
 
     def calculate(self):
-        abs_matrix = np.abs(self.prior_step.output.oscillator_matrix)
+        abs_matrix = np.abs(self.prior_step.output.matrix)
         max_array = np.max(abs_matrix, axis=1)
+        unit_factor = 1.0
+        if self.prior_step.output.stats["standard"]["units_type"] == "acc":
+            unit_factor = GAL_TO_PCTG
         self.output = containers.RotDMax(
-            period=self.prior_step.output.period,
-            damping=self.prior_step.output.damping,
-            percentile=self.prior_step.output.percentile,
-            oscillator_maxes=max_array,
+            period=None,
+            damping=None,
+            oscillator_maxes=unit_factor * max_array,
             stats=self.prior_step.output.stats,
         )
 
 
-class RotDPercentile(Component):
+class RotDOscMax(BaseComponent):
+    """Return the maximum absolute value of the oscillators."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.RotDOscillator]
+
+    def calculate(self):
+        abs_matrix = np.abs(self.prior_step.output.matrix)
+        max_array = np.max(abs_matrix, axis=1)
+        self.output = containers.RotDMax(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            oscillator_maxes=GAL_TO_PCTG * max_array,
+            stats=self.prior_step.output.stats,
+        )
+
+
+class RotDPercentile(BaseComponent):
     """Return the percentile of the oscillator maxes."""
 
     outputs = {}
-    INPUT_CLASS = containers.RotDMax
+    INPUT_CLASS = [containers.RotDMax]
 
     def calculate(self):
-        result = np.percentile(
-            self.prior_step.output.oscillator_maxes,
-            self.prior_step.output.percentile,
-        )
+        percentile = self.parameters["percentiles"]
+        result = np.percentile(self.prior_step.output.oscillator_maxes, percentile)
         self.output = containers.RotD(
             period=self.prior_step.output.period,
             damping=self.prior_step.output.damping,
-            percentile=self.prior_step.output.percentile,
+            percentile=percentile,
             value=containers.ReferenceValue(result, stats=self.prior_step.output.stats),
         )
+
+    @staticmethod
+    def get_parameters(config):
+        return {
+            "percentiles": config["metrics"]["sa"]["percentiles"],
+        }
