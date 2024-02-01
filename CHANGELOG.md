@@ -1,5 +1,6 @@
 ## main
 
+- Fix bug that vs30measured should be bool, not float.
 - Adjust io tests to make use of pytest fixtures and get a bit of speedup.
 - Re-organize waveform_processing/instrument_response.py module.
 - Add trace.warning method.
