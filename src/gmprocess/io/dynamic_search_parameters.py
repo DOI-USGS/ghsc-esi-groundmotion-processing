@@ -80,7 +80,7 @@ class SearchParameters(object):
                 [
                     ("mag", float),
                     ("vs30", float),
-                    ("vs30measured", float),
+                    ("vs30measured", bool),
                     ("z1pt0", float),
                     ("z2pt5", float),
                     ("ztor", float),
