@@ -18,6 +18,9 @@
   - Renamed src/gmprocess/utils/test_utils.py to src/gmprocess/utils/test_utils.py to avoid it being detected as a unit test module.
   - Decrease precision in fetcher bounds and fix Geonet bounds to include negaive longitudes.
 
+## 1.3.2 / 2024-02-03
+- Fix bug in trace units that was created in 1.3.1 and affects all velocity instruments.
+
 ## 1.3.1 / 2024-01-31
 - Fix bug that vs30measured should be bool, not float.
 - Adjust io tests to make use of pytest fixtures and get a bit of speedup.

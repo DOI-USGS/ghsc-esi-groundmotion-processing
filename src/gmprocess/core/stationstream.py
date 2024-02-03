@@ -21,10 +21,9 @@ from obspy.core.inventory import (
 
 # local imports
 from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
 from .stationtrace import StationTrace
 
-UNITS = {"acc": "cm/s/s", "vel": "cm/s"}
-REVERSE_UNITS = {"cm/s/s": "acc", "cm/s": "vel"}
 
 # Number of samples for Landzos interpolation.
 N_LANCZOS = 20
@@ -437,7 +436,6 @@ class StationStream(Stream):
         format_specific = {}
         if "format_specific" in self[0].stats:
             format_specific = dict(self[0].stats.format_specific)
-
         return {"standard": subdict, "format_specific": format_specific}
 
     def check_stream(self):
@@ -472,8 +470,8 @@ class StationStream(Stream):
 
 
 def _channel_from_stats(stats):
-    if stats.standard.units_type in UNITS:
-        units = UNITS[stats.standard.units_type]
+    if stats.standard.units_type in constants.UNITS:
+        units = constants.UNITS[stats.standard.units_type]
     else:
         units = ""
     instrument = stats.standard.instrument

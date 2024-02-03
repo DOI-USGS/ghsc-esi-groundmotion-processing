@@ -13,18 +13,11 @@ from scipy.integrate import cumtrapz
 
 # local imports
 from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
 from gmprocess.io.cosmos.data_structures import BUILDING_TYPES
 from gmprocess.io.seedname import get_units_type
 from gmprocess.core.provenance import TraceProvenance
 
-UNITS = {"acc": "cm/s^2", "vel": "cm/s"}
-REVERSE_UNITS = {
-    "cm/s^2": "acc",
-    "cm/s**2": "acc",
-    "cm/s/s": "acc",
-    "cm/s": "vel",
-    "cm": "disp",
-}
 
 PROCESS_LEVELS = {
     "V0": "raw counts",
@@ -161,7 +154,7 @@ class StationTrace(Trace):
                     f"{header['channel']}"
                 )
                 start_time = header["starttime"]
-                (response, standard, coords, format_specific) = _stats_from_inventory(
+                response, standard, coords, format_specific = _stats_from_inventory(
                     data, inventory, seed_id, start_time
                 )
                 header["response"] = response
@@ -736,7 +729,7 @@ class StationTrace(Trace):
         if "output_units" in prov_attributes.keys():
             self.stats.standard.units = prov_attributes["output_units"]
             try:
-                self.stats.standard.units_type = REVERSE_UNITS[
+                self.stats.standard.units_type = constants.REVERSE_UNITS[
                     prov_attributes["output_units"]
                 ]
             except BaseException:
@@ -1050,7 +1043,7 @@ def _stats_from_header(header, config):
         if "units_type" not in standard or standard["units_type"] == "":
             utype = get_units_type(header["channel"])
             standard["units_type"] = utype
-            standard["units"] = UNITS[utype]
+            standard["units"] = constants.UNIT_TYPES[utype]
         standard["comments"] = ""
         standard["station_name"] = ""
         standard["station_name"] = header["station"]

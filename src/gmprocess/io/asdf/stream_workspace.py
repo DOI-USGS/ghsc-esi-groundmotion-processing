@@ -25,18 +25,14 @@ from gmprocess.core import provenance
 from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils.strec import STREC
 
 from gmprocess.io.asdf import workspace_constants as wc
-from gmprocess.io.asdf.rupture import Rupture
 from gmprocess.io.asdf.path_utils import (
     get_stream_name,
     get_stream_path,
     get_trace_name,
     get_trace_path,
 )
-from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils import constants
 
 TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -204,7 +200,8 @@ class StreamWorkspace(object):
             rupture_model = aux_data["RuptureModels"][dset_name]
         else:
             raise ValueError(
-                f"Could not find a rupture model with event id '{event_id}' and label '{label}."
+                f"Could not find a rupture model with event id '{event_id}' "
+                f"and label '{label}."
             )
 
         cells = rupture_model["Cells"].data
@@ -627,6 +624,17 @@ class StreamWorkspace(object):
                         )
                         for prov_dict in tmp_doc:
                             trace.provenance.append(prov_dict)
+                            prov_attr = prov_dict["prov_attributes"]
+                            if "output_units" in prov_attr.keys():
+                                trace.stats.standard.units = prov_attr["output_units"]
+                                try:
+                                    trace.stats.standard.units_type = (
+                                        constants.REVERSE_UNITS[
+                                            prov_attr["output_units"]
+                                        ]
+                                    )
+                                except BaseException:
+                                    trace.stats.standard.units_type = "unknown"
 
                     # get the trace processing parameters
                     if "TraceProcessingParameters" in auxdata:

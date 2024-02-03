@@ -11,7 +11,7 @@ from enum import Enum
 import numpy as np
 import pandas as pd
 import scipy.constants as sp
-from gmprocess.core.stationtrace import UNITS
+from gmprocess.utils.constants import UNIT_TYPES
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -253,7 +253,6 @@ class TextHeader(object):
         excelfile = pathlib.Path(datadir) / "cosmos_table4.xls"
         table4 = Table4(excelfile)
         # fill in data for text header
-        # UNITS = {"acc": "cm/s^2", "vel": "cm/s"}
         quantity = "velocity"
         if trace.stats.standard.units_type == "acc":
             quantity = "acceleration"
@@ -353,7 +352,7 @@ class TextHeader(object):
         if volume == Volume.RAW:
             self.set_header_value("raw_maximum", trace.max())
             self.set_header_value(
-                "raw_maximum_units", UNITS[trace.stats.standard.units_type]
+                "raw_maximum_units", UNIT_TYPES[trace.stats.standard.units_type]
             )
             self.set_header_value("raw_maximum_time", maxtime)
         else:
@@ -375,7 +374,7 @@ class TextHeader(object):
         self.set_header_value("processing_agency", agency)
         self.set_header_value("data_maximum", dmax)
         self.set_header_value(
-            "data_maximum_units", UNITS[trace.stats.standard.units_type]
+            "data_maximum_units", UNIT_TYPES[trace.stats.standard.units_type]
         )
         self.set_header_value("data_maximum_time", maxtime)
 
@@ -609,7 +608,7 @@ class DataBlock(object):
             quantity = "acceleration"
         npts = len(trace.data)
         itime = int(trace.stats.endtime - trace.stats.starttime)  # duration secs
-        units = UNITS[trace.stats.standard.units_type]
+        units = UNIT_TYPES[trace.stats.standard.units_type]
         ffmt = cfmt_to_ffmt(DATA_FMT, NUM_DATA_COLS)
 
         # fill in comment fields that we use for overflow information
