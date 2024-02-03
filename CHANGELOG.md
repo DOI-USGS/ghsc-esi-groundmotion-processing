@@ -1,12 +1,15 @@
-## main
 
+## 1.3.2 / 2024-02-03
+- Fix bug in trace units that was created in 1.3.1 and affects all velocity instruments.
+
+## 1.3.1 / 2024-01-31
 - Fix bug that vs30measured should be bool, not float.
 - Adjust io tests to make use of pytest fixtures and get a bit of speedup.
 - Re-organize waveform_processing/instrument_response.py module.
 - Add trace.warning method.
 - Add trace warning when computed and reported sensitivities differ (captured from obspy).
 - Lower default PGA threshold in search_parameters to 0.001 g.
-- Created a module/class for handling provenance (core.provenance.Provenance), and added provenance entries for person/software and removed these entries from the Trace provenance.
+- Created a module/class for handling provenance (core.provenance.Provenance), and added provenance entries for person/software and removed these entr
 
 ## 1.3.0 / 2023-11-18
 

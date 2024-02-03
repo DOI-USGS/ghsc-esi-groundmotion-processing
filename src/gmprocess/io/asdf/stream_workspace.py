@@ -39,6 +39,14 @@ TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 VERSION = importlib.metadata.version("gmprocess")
 
+REVERSE_UNITS = {
+    "cm/s^2": "acc",
+    "cm/s**2": "acc",
+    "cm/s/s": "acc",
+    "cm/s": "vel",
+    "cm": "disp",
+}
+
 
 class StreamWorkspace(object):
     """Class for interacting with the ASDF file."""
@@ -638,6 +646,15 @@ class StreamWorkspace(object):
                         )
                         for prov_dict in tmp_doc:
                             trace.provenance.append(prov_dict)
+                            prov_attr = prov_dict["prov_attributes"]
+                            if "output_units" in prov_attr.keys():
+                                trace.stats.standard.units = prov_attr["output_units"]
+                                try:
+                                    trace.stats.standard.units_type = REVERSE_UNITS[
+                                        prov_attr["output_units"]
+                                    ]
+                                except BaseException:
+                                    trace.stats.standard.units_type = "unknown"
 
                     # get the trace processing parameters
                     if "TraceProcessingParameters" in auxdata:
