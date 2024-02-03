@@ -30,6 +30,8 @@ WORKSPACE_NAME = "workspace.h5"
 WORKSPACE_NAME_OLD = "workspace.hdf"
 
 
+UNIT_TYPES = {"acc": "cm/s^2", "vel": "cm/s"}
+
 UNITS = {
     "pga": "%g",
     "pgv": "cm/s",
@@ -38,6 +40,14 @@ UNITS = {
     "fas": "cm/s",
     "duration": "s",
     "sortedduration": "s",
+}
+
+REVERSE_UNITS = {
+    "cm/s^2": "acc",
+    "cm/s**2": "acc",
+    "cm/s/s": "acc",
+    "cm/s": "vel",
+    "cm": "disp",
 }
 
 DIMENSION_UNITS = {
