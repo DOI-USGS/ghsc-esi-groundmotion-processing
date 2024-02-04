@@ -57,6 +57,7 @@ class StreamWorkspace(object):
             self.dataset = pyasdf.ASDFDataSet(filename)
         else:
             self.dataset = pyasdf.ASDFDataSet(filename, compression=compression)
+        self.filename = filename
         self.format_version = wc.FORMAT_VERSION
 
         # Add the config data as workspace attribute if it is present
