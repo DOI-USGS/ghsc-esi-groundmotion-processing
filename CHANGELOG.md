@@ -17,6 +17,7 @@
   - Turned off automatic generation of moveout plot since it isn't getting used.
   - Renamed src/gmprocess/utils/test_utils.py to src/gmprocess/utils/test_utils.py to avoid it being detected as a unit test module.
   - Decrease precision in fetcher bounds and fix Geonet bounds to include negaive longitudes.
+  - Move the "config" subcommand to be a stand-alone command line program called "gmprocess_config".
 
 ## 1.3.2 / 2024-02-03
 - Fix bug in trace units that was created in 1.3.1 and affects all velocity instruments.
