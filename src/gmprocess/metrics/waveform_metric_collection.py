@@ -143,9 +143,7 @@ class WaveformMetricCollection(MetricCollection):
         for stream in streams:
             if stream.passed:
                 wmc = WaveformMetricCalculator(stream, config, event)
-                wmc.calculate()
-                # wml = WaveformMetricList.from_df(metrics.pgms, metrics.channel_dict)
-                wml = WaveformMetricList.from_waveform_metric_calculator(wmc)
+                wml = wmc.calculate()
                 self.waveform_metrics.append(wml)
                 self.stream_paths.append(get_stream_path(stream, tag, config))
 

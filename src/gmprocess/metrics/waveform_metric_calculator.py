@@ -47,8 +47,11 @@ attribute is None.
 
 """
 
+import json
 import itertools
 
+from gmprocess.metrics.waveform_metric_list import WaveformMetricList
+from gmprocess.metrics.waveform_metric_type import WaveformMetricType
 from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
 from gmprocess.metrics import containers
 
@@ -56,6 +59,15 @@ from gmprocess.metrics import combine
 from gmprocess.metrics import reduce
 from gmprocess.metrics import rotate
 from gmprocess.metrics import transform
+from gmprocess.utils import constants
+import gmprocess.metrics.waveform_metric_component as wm_comp
+
+COMP_CLASS = {
+    "channels": wm_comp.Channels,
+    "geometric_mean": wm_comp.GeometricMean,
+    "quadratic_mean": wm_comp.QuadraticMean,
+    "rotd": wm_comp.RotD,
+}
 
 
 class WaveformMetricCalculator:
@@ -80,14 +92,22 @@ class WaveformMetricCalculator:
         self.steps = {}
         self._set_steps()
         self.metric_dicts = None
+        self.wml = None
 
         self.input_data = InputDataComponent(containers.Trace(stream.traces))
 
     def calculate(self):
         """Calculate waveform metrics."""
         self.metric_dicts = {}
+        metric_dict = {}
 
+        # metric is something like "channels-pga", i.e., an imc-imt
+        # metric_steps is the list of operations that will produce the
+        #   metric, such as "reduce.TraceMax"
         for metric, metric_steps in self.steps.items():
+            imc, imt = metric.split("-")
+            if imt not in metric_dict:
+                metric_dict[imt] = {}
             metric_results = [self.input_data]
             for metric_step in metric_steps:
                 parameters = metric_step.get_parameters(self.config)
@@ -110,6 +130,58 @@ class WaveformMetricCalculator:
                 self.metric_dicts[metric].append(
                     {"result": result, "parameters": param_dict}
                 )
+                # This is ugly. We don't want the percentiles in the params
+                # because they cause all of the rotd components to live in
+                # separate component lists. But a more organic way of handling
+                # the precentiles should be found (like adding another loop
+                # that processes the imc parameters)
+                if "percentiles" in param_dict:
+                    percentile = param_dict["percentiles"]
+                    del param_dict["percentiles"]
+                else:
+                    percentile = None
+
+                param_key = hash(json.dumps(param_dict))
+                if param_key not in metric_dict[imt]:
+                    # This fixes a disagreement between functions on whether
+                    # the argument should be "period" or "periods"
+                    if "periods" in param_dict:
+                        param_dict["period"] = param_dict["periods"]
+                        del param_dict["periods"]
+                    metric_dict[imt][param_key] = {
+                        "values": [],
+                        "components": [],
+                        "type": imt,
+                        "units": constants.UNITS[imt],
+                        "format_type": "",
+                        "metric_attributes": param_dict,
+                    }
+                if hasattr(result.output, "values"):
+                    results = result.output.values
+                    for rr in results:
+                        metric_dict[imt][param_key]["components"].append(
+                            COMP_CLASS[imc](rr.stats["channel"])
+                        )
+                        metric_dict[imt][param_key]["values"].append(rr.value)
+                else:
+                    if imc == "rotd":
+                        metric_dict[imt][param_key]["components"].append(
+                            COMP_CLASS[imc](percentile)
+                        )
+                    else:
+                        metric_dict[imt][param_key]["components"].append(
+                            COMP_CLASS[imc]()
+                        )
+                    metric_dict[imt][param_key]["values"].append(
+                        result.output.value.value
+                    )
+        metric_list = []
+        for dval in metric_dict.values():
+            for mdict in dval.values():
+                metric_list.append(WaveformMetricType.metric_from_dict(mdict))
+
+        self.wml = WaveformMetricList(metric_list)
+        return self.wml
 
     def _flatten_params(self, parameters):
         """Validate that the parameter_list has the correct structure.
