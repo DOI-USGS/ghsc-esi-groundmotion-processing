@@ -3,7 +3,6 @@ import numpy as np
 from gmprocess.io.cosmos.core import is_cosmos, read_cosmos
 from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.core.stationtrace import PROCESS_LEVELS
-from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.instrument_response import remove_response
 
 
@@ -120,7 +119,6 @@ def test_v0():
     try:
         rstreams = read_cosmos(dfile)
         tstream = rstreams[0].copy()  # raw stream
-        streams = StreamCollection(rstreams)
         pstream = remove_response(rstreams[0], 0, 0)
         pstream.detrend(type="demean")
 
