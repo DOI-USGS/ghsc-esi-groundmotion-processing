@@ -8,7 +8,7 @@ import copy
 class BaseComponent(ABC):
     """Abstract base class for processing components."""
 
-    def __init__(self, input_data, parameters=None):
+    def __init__(self, input_data, parameters=None, imc_parameters=None):
         """Initialize a Component.
 
         Args:
@@ -21,13 +21,17 @@ class BaseComponent(ABC):
         self.prior_step = input_data
         self._validate()
         self.parameters = parameters
+        self.imc_parameters = imc_parameters
         # - we need to define a key for self.outputs, which is unique for a given
         #   input_data object as well as any processing parameters for the current
         #   calculation.
         # - think of this as a table lookup (the table is self.outputs) and the table
         #   is unique for each sequence of steps (e.g., ["Integrate", "TraceMax"]).
         param_str = json.dumps(self.parameters)
-        output_key = str(id(self.prior_step)) + str(hash(param_str))
+        imc_param_str = json.dumps(self.imc_parameters)
+        output_key = (
+            str(id(self.prior_step)) + str(hash(param_str)) + str(hash(imc_param_str))
+        )
         if output_key in self.outputs:  # pylint:disable=no-member
             # Note that self.output is a list of Component objects.
             # pylint:disable-next=no-member
@@ -74,6 +78,31 @@ class BaseComponent(ABC):
         parameter.
         """
 
+    def get_component_results(self):
+        """Get the scalar(s) and component(s) of the output
+
+        Metrics that do not reduce to a scalar will not implement
+        this method and will throw an exception.
+        """
+        raise NotImplementedError(
+            "This class does not implement get_waveform_metric_results"
+        )
+
+    @staticmethod
+    def get_imc_parameters(config):
+        """Populate a list of params for a metric IMC.
+
+        This needs to be a list of dictionaries.
+
+        The default is a list with an empty dictionary because not all child classes
+        need parameters.
+
+        Args:
+            config (dict):
+                Config dictionary.
+        """
+        return {}
+
     @staticmethod
     def get_parameters(config):
         """Populate a list of params for a metric Component.
@@ -88,3 +117,20 @@ class BaseComponent(ABC):
                 Config dictionary.
         """
         return {}
+
+
+def get_channel_outputs(mbc):
+    """Returns a tuple of two lists: the scalar outputs and the channel
+    objects of the input waveform base class."""
+    vals = []
+    coms = []
+    for trace in mbc.output.values:
+        vals.append(trace.value)
+        coms.append(trace.stats["channel"])
+    return (vals, coms)
+
+
+def get_component_output(mbc, comp):
+    """Returns a tuple of two lists: the scalar output and the component
+    object of the input waveform base class."""
+    return ([mbc.output.value.value], [comp()])

@@ -40,6 +40,10 @@ def test_waveform_metric_collection():
         "sa": {
             "damping": [0.05],
             "periods": [0.5, 1.0],
+        },
+    }
+    config["components"] = {
+        "rotd": {
             "percentiles": [50.0],
         },
     }

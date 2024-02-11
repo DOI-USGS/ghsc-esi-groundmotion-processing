@@ -2,9 +2,13 @@
 
 import numpy as np
 
-from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
+from gmprocess.metrics.waveform_metric_calculator_component_base import (
+    BaseComponent,
+    get_channel_outputs,
+)
 from gmprocess.metrics import containers
 from gmprocess.utils.constants import GAL_TO_PCTG
+import gmprocess.metrics.waveform_metric_component as wm_comp
 
 
 class TraceMax(BaseComponent):
@@ -31,6 +35,9 @@ class TraceMax(BaseComponent):
             )
         self.output = containers.Scalar(max_list)
 
+    def get_component_results(self):
+        return get_channel_outputs(self)
+
 
 class Duration(BaseComponent):
     """Return the duration from the Arias intensity."""
@@ -51,6 +58,9 @@ class Duration(BaseComponent):
             dur = times[ind1] - times[ind0]
             duration_list.append(containers.ReferenceValue(dur, stats=trace.stats))
         self.output = containers.Scalar(duration_list)
+
+    def get_component_results(self):
+        return get_channel_outputs(self)
 
     @staticmethod
     def get_parameters(config):
@@ -80,6 +90,9 @@ class CAV(BaseComponent):
             cav_list.append(containers.ReferenceValue(cav, stats=trace.stats))
         self.output = containers.Scalar(cav_list)
 
+    def get_component_results(self):
+        return get_channel_outputs(self)
+
 
 class OscillatorMax(BaseComponent):
     """Return the maximum absolute value for each oscillator."""
@@ -99,6 +112,9 @@ class OscillatorMax(BaseComponent):
                 )
             )
         self.output = containers.Scalar(max_list)
+
+    def get_component_results(self):
+        return get_channel_outputs(self)
 
 
 class RotDTraceMax(BaseComponent):
@@ -145,7 +161,7 @@ class RotDPercentile(BaseComponent):
     INPUT_CLASS = [containers.RotDMax]
 
     def calculate(self):
-        percentile = self.parameters["percentiles"]
+        percentile = self.imc_parameters["percentiles"]
         result = np.percentile(self.prior_step.output.oscillator_maxes, percentile)
         self.output = containers.RotD(
             period=self.prior_step.output.period,
@@ -154,8 +170,14 @@ class RotDPercentile(BaseComponent):
             value=containers.ReferenceValue(result, stats=self.prior_step.output.stats),
         )
 
+    def get_component_results(self):
+        return (
+            [self.output.value.value],
+            [wm_comp.RotD(self.imc_parameters["percentiles"])],
+        )
+
     @staticmethod
-    def get_parameters(config):
+    def get_imc_parameters(config):
         return {
-            "percentiles": config["metrics"]["sa"]["percentiles"],
+            "percentiles": config["components"]["rotd"]["percentiles"],
         }

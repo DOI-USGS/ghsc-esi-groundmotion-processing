@@ -6,20 +6,12 @@ import json
 import pandas as pd
 
 from gmprocess.metrics.waveform_metric_type import WaveformMetricType
-import gmprocess.metrics.waveform_metric_component as wm_comp
 from gmprocess.utils import constants
 
 FLOAT_MATCH = r"[0-9]*\.[0-9]*"
 SA_DEFAULT_DAMPING = 5.0
 FAS_DEFAULT_SMOOTHING = 20.0
 FAS_DEFAULT_METHOD = "Konno-Omachi"
-
-COMP_CLASS = {
-    "channels": wm_comp.Channels,
-    "geometric_mean": wm_comp.GeometricMean,
-    "quadratic_mean": wm_comp.QuadraticMean,
-    "rotd": wm_comp.RotD,
-}
 
 
 class WaveformMetricList(object):
@@ -75,97 +67,6 @@ class WaveformMetricList(object):
             }
         )
         return dataframe
-
-    @classmethod
-    def from_waveform_metric_calculator(cls, wmc):
-        """Construct a WaveformMetricList object from a pandas dataframe.
-
-        Args:
-            wmc (WaveformMetricsCalculator):
-                A WaveformMetricsCalculator object.
-        """
-        imc_imt_list = list(wmc.steps.keys())
-        all_imts = list(set([imt_imt.split("-")[1] for imt_imt in imc_imt_list]))
-        metric_list = []
-        for imt in all_imts:
-            print(f"\n\n### imt: {imt}")
-            units = constants.UNITS[imt]
-
-            # Need to get the unique set of metric parameters for this IMT
-
-            # Collect entries for all imcs for this imt and unique set of parameters.
-            all_attr_dicts = []
-            for mkey, mdl in wmc.metric_dicts.items():
-                timc, timt = mkey.split("-")
-                if timt == imt:
-                    for md in mdl:
-                        all_attr_dicts.append(json.dumps(md["parameters"]))
-            unique_pars = list(set(all_attr_dicts))
-
-            for unique_par in unique_pars:
-                # Collect entries for all imcs for this imt and unique set of
-                # parameters.
-                all_metric_dicts = []
-                all_attr_dicts = []
-                for mkey, mdl in wmc.metric_dicts.items():
-                    timc, timt = mkey.split("-")
-                    if timt == imt:
-                        # append the imc to the mdl dicts so that we have it for later.
-                        for md in mdl:
-                            tunique_par = json.dumps(md["parameters"])
-                            if tunique_par == unique_par:
-                                md["component"] = timc
-                                all_metric_dicts.append(md)
-
-                imc_list = []
-                val_list = []
-                for metric_dicts in all_metric_dicts:
-                    print(f"### len(metric_dicts): {len(metric_dicts)}")
-                    for metric_dict in metric_dicts:
-                        component_str = metric_dict["component"]
-                        print(f"### component_str: {component_str}")
-                        component_class = COMP_CLASS[component_str]
-                        metric_attributes = metric_dict["parameters"]
-                        # Need to check if the result includes an array (e.g., for channels)
-                        # or if it is scalar.
-                        output = metric_dict["result"].output
-                        if hasattr(output, "values"):
-                            print("### hasattr(output, 'values')")
-                            results = output.values
-                            for result in results:
-                                # This is hacky... but the only time that 'output' has the
-                                # 'values' attribute is for Channels, in which case the
-                                # trace channel is a n argument.
-                                imc_list.append(
-                                    component_class(result.stats["channel"])
-                                )
-                                val_list.append(result.value)
-                        else:
-                            print("### hasattr(output, 'value')")
-                            result = output.value
-                            # This is hacky... but we need to sort out that the RotD class
-                            # needs the percentile. Hopefully we can update this in the
-                            # future with a better design.
-                            if component_str == "rotd":
-                                imc_list.append(
-                                    component_class(metric_attributes["percentiles"])
-                                )
-                            else:
-                                imc_list.append(component_class())
-                            val_list.append(result.value)
-
-                mdict = {
-                    "values": val_list,
-                    "components": imc_list,
-                    "type": imt,
-                    "format_type": "",
-                    "units": units,
-                    "metric_attributes": metric_attributes,
-                }
-                breakpoint()
-                wm = WaveformMetricType.metric_from_dict(mdict)
-                metric_list.append(wm)
-        return cls(metric_list)
 
     @classmethod
     def from_df(cls, dataframe, component_to_channel=None):

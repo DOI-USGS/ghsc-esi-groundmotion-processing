@@ -2,8 +2,12 @@
 
 import numpy as np
 
-from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
+from gmprocess.metrics.waveform_metric_calculator_component_base import (
+    BaseComponent,
+    get_component_output,
+)
 from gmprocess.metrics import containers
+import gmprocess.metrics.waveform_metric_component as wm_comp
 
 
 class GeometricMean(BaseComponent):
@@ -18,6 +22,9 @@ class GeometricMean(BaseComponent):
         self.output = containers.CombinedScalar(
             containers.ReferenceValue(geo_mean, self.prior_step.output.values[0].stats)
         )
+
+    def get_component_results(self):
+        return get_component_output(self, wm_comp.GeometricMean)
 
 
 class SpectraQuadraticMean(BaseComponent):
@@ -34,3 +41,6 @@ class SpectraQuadraticMean(BaseComponent):
             frequency=self.prior_step.output.frequency,
             fourier_spectra=quad_mean,
         )
+
+    def get_component_results(self):
+        return get_component_output(self, wm_comp.QuadraticMean)

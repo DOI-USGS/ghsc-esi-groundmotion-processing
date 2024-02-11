@@ -60,14 +60,6 @@ from gmprocess.metrics import reduce
 from gmprocess.metrics import rotate
 from gmprocess.metrics import transform
 from gmprocess.utils import constants
-import gmprocess.metrics.waveform_metric_component as wm_comp
-
-COMP_CLASS = {
-    "channels": wm_comp.Channels,
-    "geometric_mean": wm_comp.GeometricMean,
-    "quadratic_mean": wm_comp.QuadraticMean,
-    "rotd": wm_comp.RotD,
-}
 
 
 class WaveformMetricCalculator:
@@ -91,56 +83,60 @@ class WaveformMetricCalculator:
         self._set_all_steps()
         self.steps = {}
         self._set_steps()
-        self.metric_dicts = None
+        # self.metric_dicts = None
         self.wml = None
 
         self.input_data = InputDataComponent(containers.Trace(stream.traces))
 
     def calculate(self):
         """Calculate waveform metrics."""
-        self.metric_dicts = {}
+
+        # self.metric_dicts and the stuff that builds it can be removed if
+        # we never think we're going to use it
+        # self.metric_dicts = {}
         metric_dict = {}
 
         # metric is something like "channels-pga", i.e., an imc-imt
         # metric_steps is the list of operations that will produce the
         #   metric, such as "reduce.TraceMax"
         for metric, metric_steps in self.steps.items():
-            imc, imt = metric.split("-")
+            _, imt = metric.split("-")
             if imt not in metric_dict:
                 metric_dict[imt] = {}
             metric_results = [self.input_data]
             for metric_step in metric_steps:
                 parameters = metric_step.get_parameters(self.config)
                 parameter_list = self._flatten_params(parameters)
+                comp_parameters = metric_step.get_imc_parameters(self.config)
+                comp_parameter_list = self._flatten_params(comp_parameters)
                 next_step = []
                 for prior_step in metric_results:
-                    for params in parameter_list:
-                        next_step.append(metric_step(prior_step, params))
+                    for comp_params in comp_parameter_list:
+                        for params in parameter_list:
+                            next_step.append(
+                                metric_step(prior_step, params, comp_params)
+                            )
                 metric_results = next_step
-            self.metric_dicts[metric] = []
+            # self.metric_dicts[metric] = []
             # 'metric_results' list maps to the alternative parameters for 'metric'
             for result in metric_results:
                 param_dict = {}
+                # imc_param_dict = {}
                 result_temp = result
                 while not isinstance(result_temp, InputDataComponent):
                     if result_temp.parameters:
                         # assume parameter keys are not re-used.
                         param_dict.update(result_temp.parameters)
+                    # if result_temp.imc_parameters:
+                    #     imc_param_dict.update(result_temp.imc_parameters)
                     result_temp = result_temp.prior_step
-                self.metric_dicts[metric].append(
-                    {"result": result, "parameters": param_dict}
-                )
-                # This is ugly. We don't want the percentiles in the params
-                # because they cause all of the rotd components to live in
-                # separate component lists. But a more organic way of handling
-                # the precentiles should be found (like adding another loop
-                # that processes the imc parameters)
-                if "percentiles" in param_dict:
-                    percentile = param_dict["percentiles"]
-                    del param_dict["percentiles"]
-                else:
-                    percentile = None
-
+                # self.metric_dicts[metric].append(
+                #     {
+                #         "result": result,
+                #         "parameters": param_dict,
+                #         "imc_parameters": imc_param_dict,
+                #     }
+                # )
                 param_key = hash(json.dumps(param_dict))
                 if param_key not in metric_dict[imt]:
                     # This fixes a disagreement between functions on whether
@@ -156,25 +152,9 @@ class WaveformMetricCalculator:
                         "format_type": "",
                         "metric_attributes": param_dict,
                     }
-                if hasattr(result.output, "values"):
-                    results = result.output.values
-                    for rr in results:
-                        metric_dict[imt][param_key]["components"].append(
-                            COMP_CLASS[imc](rr.stats["channel"])
-                        )
-                        metric_dict[imt][param_key]["values"].append(rr.value)
-                else:
-                    if imc == "rotd":
-                        metric_dict[imt][param_key]["components"].append(
-                            COMP_CLASS[imc](percentile)
-                        )
-                    else:
-                        metric_dict[imt][param_key]["components"].append(
-                            COMP_CLASS[imc]()
-                        )
-                    metric_dict[imt][param_key]["values"].append(
-                        result.output.value.value
-                    )
+                (vals, comps) = result.get_component_results()
+                metric_dict[imt][param_key]["values"] += vals
+                metric_dict[imt][param_key]["components"] += comps
         metric_list = []
         for dval in metric_dict.values():
             for mdict in dval.values():
