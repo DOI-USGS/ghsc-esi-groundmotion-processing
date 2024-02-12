@@ -32,21 +32,35 @@ def test_waveform_metric_collection():
     event = ws.get_event("ci38457511")
     config = ws.config
     config["metrics"] = {
-        "imc_imts": {
+        "components_and_types": {
             "channels": ["pga", "sa"],
             "geometric_mean": ["pga", "sa"],
             "rotd": ["sa"],
         },
-        "sa": {
-            "damping": [0.05],
-            "periods": [0.5, 1.0],
+        "type_parameters": {
+            "sa": {
+                "damping": [0.05],
+                "periods": [0.5, 1.0],
+            },
         },
-    }
-    config["components"] = {
-        "rotd": {
-            "percentiles": [50.0],
+        "component_parameters": {
+            "rotd": {
+                "percentiles": [50.0],
+            },
         },
     }
     wmc2 = WaveformMetricCollection.from_streams(streams, event, config)
-    breakpoint()
-    assert wmc2.__repr__() == "WaveformMetricCollection: 2 stations"
+    assert wmc2.__repr__() == "WaveformMetricCollection: 3 stations"
+    for wml, sp in zip(wmc2.waveform_metrics, wmc2.stream_paths):
+        if sp.startswith("CI.CCC"):
+            for metric in wml.metric_list:
+                if metric.type != "SA":
+                    continue
+                if metric.metric_attributes["period"] != 1.0:
+                    continue
+                mdict = metric.to_dict()
+                idx = np.where(
+                    np.array(mdict["components"]) == "RotD(percentile=50.0)"
+                )[0]
+                test_sa = np.array(mdict["values"])[idx][0]
+                np.testing.assert_allclose(test_sa, 53.144627)

@@ -54,7 +54,7 @@ def test_get_channel_dict():
 def test_metric_calculator():
     config = get_config()
     metric_config = {
-        "imc_imts": {
+        "components_and_types": {
             "channels": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "geometric_mean": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "quadratic_mean": ["fas"],

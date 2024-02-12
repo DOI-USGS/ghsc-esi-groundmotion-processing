@@ -135,23 +135,25 @@ CONF_SCHEMA = Schema(
         },
         "build_report": {"enabled": True, "format": "latex"},
         "metrics": {
-            "imc_imts": dict,
-            "sa": {
-                "damping": list,
-                "periods": list,
-                "percentiles": list,
-            },
-            "fas": {
-                "smoothing": str,
-                "bandwidth": float,
-                "allow_nans": bool,
-                "frequencies": {
-                    "start": float,
-                    "stop": float,
-                    "num": int,
+            "components_and_types": dict,
+            "type_parameters": {
+                "sa": {
+                    "damping": list,
+                    "periods": list,
                 },
+                "fas": {
+                    "smoothing": str,
+                    "bandwidth": float,
+                    "allow_nans": bool,
+                    "frequencies": {
+                        "start": float,
+                        "stop": float,
+                        "num": int,
+                    },
+                },
+                "duration": {"intervals": list},
             },
-            "duration": {"intervals": list},
+            "component_parameters": {"rotd": {"percentiles": list}},
         },
         "integration": {
             "frequency": bool,

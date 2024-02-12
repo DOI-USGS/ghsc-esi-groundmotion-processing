@@ -24,7 +24,7 @@ class GeometricMean(BaseComponent):
         )
 
     def get_component_results(self):
-        return get_component_output(self, wm_comp.GeometricMean)
+        return get_component_output(self, str(wm_comp.GeometricMean()))
 
 
 class SpectraQuadraticMean(BaseComponent):
@@ -43,4 +43,4 @@ class SpectraQuadraticMean(BaseComponent):
         )
 
     def get_component_results(self):
-        return get_component_output(self, wm_comp.QuadraticMean)
+        return get_component_output(self, str(wm_comp.QuadraticMean()))

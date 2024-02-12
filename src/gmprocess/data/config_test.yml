@@ -510,45 +510,47 @@ build_report:
 # -----------------------------------------------------------------------------
 # This section is for calculating metrics
 metrics:
-  # Specify output IMs (intensity metric)
+  # Specify output IMs (intensity metrics).
   # Each IM is defined by an IMC (IM component) and a IMT (IM type)
   # Supported IMCs: channels, geometric_mean, quadratic_mean, rotd
   # Supported IMT: pga, pgv, sa, duration, sorted_duration, arias, fas
 
-  # The 'imc_imts' section has key-value pairs in which the key is the IMC and the
-  # value is a list of IMTs for that IMC.
-  imc_imts: 
+  # The 'components_and_types' section has key-value pairs in which the key is the
+  # metric component and the value is a list of metric types for that component.
+  components_and_types: 
     channels: [pga, pgv, sa, duration]
     # rotd: [pga, pgv, sa]
     # geometric_mean: [duration]
     # quadratic_mean: [fas]
 
-  # Additional parameters required for SA
-  sa:
-      # damping used to calculate the spectral response; if this list includes more than
-      # one value, all periods will be computed for each damping level.
-      damping: [0.05]
-      # periods for which the spectral response is calculated
-      periods: [0.01, 0.1,0.3, 1.0, 3.0, 10.0]
-      # Percentiles used for RotD
-      percentiles: [50.0]
+  component_parameters:
+    rotd:
+       percentiles: [50.0]
+  type_parameters:
+    # Additional parameters required for SA
+    sa:
+        # damping used to calculate the spectral response; if this list includes more than
+        # one value, all periods will be computed for each damping level.
+        damping: [0.05]
+        # periods for which the spectral response is calculated
+        periods: [0.01, 0.1,0.3, 1.0, 3.0, 10.0]
 
-  # Additional parameters required for FAS
-  fas:
-      smoothing: konno_ohmachi
-      bandwidth: 20.0
-      allow_nans: True
-      frequencies:
-        # Parameters defining an array of periods
-        # syntax is the same as that used for numpy linspace and logspace
-        # start (first value), stop (last value), num (number of values)
-        start: 0.001
-        stop: 100.0
-        num: 401
+    # Additional parameters required for FAS
+    fas:
+        smoothing: konno_ohmachi
+        bandwidth: 20.0
+        allow_nans: True
+        frequencies:
+            # Parameters defining an array of periods
+            # syntax is the same as that used for numpy linspace and logspace
+            # start (first value), stop (last value), num (number of values)
+            start: 0.001
+            stop: 100.0
+            num: 401
 
-  # Additional parameters required for duration
-  duration:
-      intervals: [5-75, 5-95]
+    # Additional parameters required for duration
+    duration:
+        intervals: [5-75, 5-95]
 
 # -----------------------------------------------------------------------------
 # This section is for options for integration method

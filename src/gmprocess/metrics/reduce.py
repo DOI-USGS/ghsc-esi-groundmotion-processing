@@ -63,8 +63,8 @@ class Duration(BaseComponent):
         return get_channel_outputs(self)
 
     @staticmethod
-    def get_parameters(config):
-        return config["metrics"]["duration"]
+    def get_type_parameters(config):
+        return config["metrics"]["type_parameters"]["duration"]
 
 
 class CAV(BaseComponent):
@@ -173,11 +173,13 @@ class RotDPercentile(BaseComponent):
     def get_component_results(self):
         return (
             [self.output.value.value],
-            [wm_comp.RotD(self.imc_parameters["percentiles"])],
+            [str(wm_comp.RotD(self.imc_parameters["percentiles"]))],
         )
 
     @staticmethod
-    def get_imc_parameters(config):
+    def get_component_parameters(config):
         return {
-            "percentiles": config["components"]["rotd"]["percentiles"],
+            "percentiles": config["metrics"]["component_parameters"]["rotd"][
+                "percentiles"
+            ],
         }

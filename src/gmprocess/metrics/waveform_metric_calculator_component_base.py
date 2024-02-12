@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 import json
 import copy
 
+from gmprocess.metrics.waveform_metric_component import Channels
+
 
 class BaseComponent(ABC):
     """Abstract base class for processing components."""
@@ -89,7 +91,7 @@ class BaseComponent(ABC):
         )
 
     @staticmethod
-    def get_imc_parameters(config):
+    def get_component_parameters(config):
         """Populate a list of params for a metric IMC.
 
         This needs to be a list of dictionaries.
@@ -104,7 +106,7 @@ class BaseComponent(ABC):
         return {}
 
     @staticmethod
-    def get_parameters(config):
+    def get_type_parameters(config):
         """Populate a list of params for a metric Component.
 
         This needs to be a list of dictionaries.
@@ -126,11 +128,11 @@ def get_channel_outputs(mbc):
     coms = []
     for trace in mbc.output.values:
         vals.append(trace.value)
-        coms.append(trace.stats["channel"])
+        coms.append(str(Channels(trace.stats["channel"])))
     return (vals, coms)
 
 
 def get_component_output(mbc, comp):
     """Returns a tuple of two lists: the scalar output and the component
     object of the input waveform base class."""
-    return ([mbc.output.value.value], [comp()])
+    return ([mbc.output.value.value], [comp])

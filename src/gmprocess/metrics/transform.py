@@ -26,7 +26,7 @@ class Integrate(BaseComponent):
         self.output = containers.Trace(new_traces)
 
     @staticmethod
-    def get_parameters(config):
+    def get_type_parameters(config):
         return config["integration"]
 
 
@@ -83,10 +83,10 @@ class TraceOscillator(BaseComponent):
         )
 
     @staticmethod
-    def get_parameters(config):
+    def get_type_parameters(config):
         return {
-            "periods": config["metrics"]["sa"]["periods"],
-            "damping": config["metrics"]["sa"]["damping"],
+            "periods": config["metrics"]["type_parameters"]["sa"]["periods"],
+            "damping": config["metrics"]["type_parameters"]["sa"]["damping"],
         }
 
 
@@ -114,10 +114,10 @@ class RotDOscillator(BaseComponent):
         )
 
     @staticmethod
-    def get_parameters(config):
+    def get_type_parameters(config):
         return {
-            "periods": config["metrics"]["sa"]["periods"],
-            "damping": config["metrics"]["sa"]["damping"],
+            "periods": config["metrics"]["type_parameters"]["sa"]["periods"],
+            "damping": config["metrics"]["type_parameters"]["sa"]["damping"],
         }
 
 
@@ -139,8 +139,8 @@ class FourierAmplitudeSpectra(BaseComponent):
         )
 
     @staticmethod
-    def get_parameters(config):
-        return config["metrics"]["fas"]
+    def get_type_parameters(config):
+        return config["metrics"]["type_parameters"]["fas"]
 
     @staticmethod
     def _compute_fft(trace, nfft):
@@ -190,8 +190,8 @@ class SmoothSpectra(BaseComponent):
         )
 
     @staticmethod
-    def get_parameters(config):
-        return config["metrics"]["fas"]
+    def get_type_parameters(config):
+        return config["metrics"]["type_parameters"]["fas"]
 
     def _smooth_spectrum(self, spec, freqs):
         """

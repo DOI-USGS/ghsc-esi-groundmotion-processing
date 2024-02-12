@@ -105,9 +105,9 @@ class WaveformMetricCalculator:
                 metric_dict[imt] = {}
             metric_results = [self.input_data]
             for metric_step in metric_steps:
-                parameters = metric_step.get_parameters(self.config)
+                parameters = metric_step.get_type_parameters(self.config)
                 parameter_list = self._flatten_params(parameters)
-                comp_parameters = metric_step.get_imc_parameters(self.config)
+                comp_parameters = metric_step.get_component_parameters(self.config)
                 comp_parameter_list = self._flatten_params(comp_parameters)
                 next_step = []
                 for prior_step in metric_results:
@@ -190,7 +190,7 @@ class WaveformMetricCalculator:
         return parameter_list
 
     def _set_steps(self):
-        for imc, imt_list in self.config["metrics"]["imc_imts"].items():
+        for imc, imt_list in self.config["metrics"]["components_and_types"].items():
             for imt in imt_list:
                 step_key = "-".join([imc, imt])
                 if step_key not in self.all_steps:

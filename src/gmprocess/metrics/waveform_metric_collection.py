@@ -9,7 +9,6 @@ from obspy import read_inventory
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
 from gmprocess.metrics.metric_collection_base import MetricCollection
 from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
-from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 from gmprocess.io.asdf.path_utils import get_stream_path
 from gmprocess.io.asdf.stream_workspace import array_to_str
 
@@ -136,7 +135,6 @@ class WaveformMetricCollection(MetricCollection):
             label (str):
                 Processing label.
         """
-        # imts, imcs = get_config_imts_imcs(config)
         event_id = event.id.replace("smi:local/", "")
         tag = f"{event_id}_{label}"
         # Need to have something build 'steps'
