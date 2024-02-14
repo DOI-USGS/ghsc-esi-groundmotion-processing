@@ -25,6 +25,7 @@ from gmprocess.core import provenance
 from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.utils import constants
 from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils.config_versioning import get_config_version, config_from_v1
 
 from gmprocess.io.asdf import workspace_constants as wc
 from gmprocess.io.asdf.path_utils import (
@@ -290,6 +291,9 @@ class StreamWorkspace(object):
         # Load config from the workshapce file
         conf_str = "".join([chr(b) for b in bytelist])
         custom_config = json.loads(conf_str)
+        conf_version = get_config_version(custom_config)
+        if conf_version == 1:
+            custom_config = config_from_v1(custom_config)
 
         # Get the default config
         default_config_file = constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
@@ -696,9 +700,9 @@ class StreamWorkspace(object):
                                             "highpass"
                                         ] = fc_dict["highpass"].data[0]
                                     if "lowpass" in fc_dict:
-                                        review_dict["corner_frequencies"][
-                                            "lowpass"
-                                        ] = fc_dict["lowpass"].data[0]
+                                        review_dict["corner_frequencies"]["lowpass"] = (
+                                            fc_dict["lowpass"].data[0]
+                                        )
                                 trace.set_parameter("review", review_dict)
 
                     stream = StationStream(traces=[trace], config=config)

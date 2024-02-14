@@ -5,6 +5,7 @@ import json
 import copy
 
 from gmprocess.metrics.waveform_metric_component import Channels
+from gmprocess.metrics.utils import component_to_channel
 
 
 class BaseComponent(ABC):
@@ -81,14 +82,12 @@ class BaseComponent(ABC):
         """
 
     def get_component_results(self):
-        """Get the scalar(s) and component(s) of the output
+        """Get the scalar(s) and component(s) of the output.
 
         Metrics that do not reduce to a scalar will not implement
         this method and will throw an exception.
         """
-        raise NotImplementedError(
-            "This class does not implement get_waveform_metric_results"
-        )
+        raise NotImplementedError("This class does not implement get_component_results")
 
     @staticmethod
     def get_component_parameters(config):
@@ -126,9 +125,13 @@ def get_channel_outputs(mbc):
     objects of the input waveform base class."""
     vals = []
     coms = []
+    channels = [val.stats["channel"] for val in mbc.output.values]
+    _, chan2comp = component_to_channel(channels)
     for trace in mbc.output.values:
         vals.append(trace.value)
-        coms.append(str(Channels(trace.stats["channel"])))
+        coms.append(
+            str(Channels(trace.stats["channel"], chan2comp[trace.stats["channel"]]))
+        )
     return (vals, coms)
 
 

@@ -3,7 +3,6 @@
 import logging
 import os
 
-import numpy as np
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 from schema import Optional, Or, Schema
@@ -12,6 +11,7 @@ from gmprocess.utils import constants
 
 CONF_SCHEMA = Schema(
     {
+        "version": int,
         "user": {"name": str, "email": str},
         "fetchers": {
             "search_parameters": {
@@ -142,8 +142,8 @@ CONF_SCHEMA = Schema(
                     "periods": list,
                 },
                 "fas": {
-                    "smoothing": str,
-                    "bandwidth": float,
+                    "smoothing_method": str,
+                    "smoothing_parameter": float,
                     "allow_nans": bool,
                     "frequencies": {
                         "start": float,
@@ -344,37 +344,3 @@ def __conf_path_to_config(config_path, default_config):
     for cf in conf_files:
         default_config = update_config(cf, default_config)
     return default_config
-
-
-def get_config_imts_imcs(conf):
-    """Method to extract imt and imc lists from config.
-
-    Args:
-        conf (dict):
-            Config options.
-    """
-    metrics = conf["metrics"]
-    config_imts = [imt.lower() for imt in metrics["output_imts"]]
-    imcs = [imc.lower() for imc in metrics["output_imcs"]]
-    # append periods for sa and fas, interval for duration
-    imts = []
-    for imt in config_imts:
-        if imt == "sa":
-            for period in metrics["sa"]["periods"]:
-                imts += ["sa" + str(period)]
-        elif imt == "fas":
-            start = metrics["fas"]["periods"]["start"]
-            stop = metrics["fas"]["periods"]["stop"]
-            num = metrics["fas"]["periods"]["num"]
-            if metrics["fas"]["periods"]["spacing"] == "logspace":
-                periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-            else:
-                periods = np.linspace(start, stop, num=num)
-            for period in periods:
-                imts += ["fas" + str(period)]
-        elif imt == "duration":
-            for interval in metrics["duration"]["intervals"]:
-                imts += ["duration" + interval]
-        else:
-            imts += [imt]
-    return imts, imcs

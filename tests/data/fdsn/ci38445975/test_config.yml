@@ -201,7 +201,7 @@ processing:
         # Presense of this check says to do the signa-to-noise ratio check. Requires
         # minimum SNR of `threshold` between `min_freq` and `max_freq` using
         # Konno-Omachi smoothed spectra with `bandwidth` parameter.
-        bandwidth: 20.0
+        smoothing_parameter: 20.0
         check:
             threshold: 3.0
             min_freq: 0.5
@@ -428,8 +428,8 @@ metrics:
           - 7.5
           - 10.0
   fas:
-      smoothing: konno_ohmachi
-      bandwidth: 80.0
+      smoothing_method: konno_ohmachi
+      smoothing_parameter: 80.0
       allow_nans: True
       periods:
         # Parameters defining an array of periods

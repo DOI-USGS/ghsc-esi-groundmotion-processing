@@ -59,7 +59,7 @@ def test_plot():
 def test_plot_oscillators():
     ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511"
     ws = StreamWorkspace.open(ddir / "workspace.h5")
-    st = ws.get_streams("ci38457511")[0]
+    st = ws.get_streams("ci38457511", labels=["default"])[0]
     tdir = Path(tempfile.mkdtemp())
     filepath = tdir / "oscillator_plot.png"
     try:

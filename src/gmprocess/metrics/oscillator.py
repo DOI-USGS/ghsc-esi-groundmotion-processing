@@ -1,20 +1,24 @@
 """Module for computing oscillator response for a trace."""
 
-import matplotlib.pyplot as plt
+import numpy as np
+from scipy.signal import windows
 
 from esi_core.gmprocess.metrics.oscillators import calculate_spectrals as spec_calc
+
+
+def get_window(npts, percent=0.02):
+    half_width = int(0.5 * percent * npts)
+    taper = windows.hann(2 * half_width)
+    window = np.ones((npts,))
+    window[:half_width] = taper[:half_width]
+    window[(npts - half_width) :] = taper[half_width:]
+    return np.fft.ifftshift(window)
 
 
 def calculate_spectrals(trace, period, damping):
     """
     Pull some stuff out of cython that shouldn't be there.
     """
-    pfile1 = "/Users/emthompson/scratch/resample_test1.png"
-    pfile1 = "/Users/emthompson/scratch/resample_test2.png"
-    # trace.taper()
-    ttimes = trace.times()
-    trace.taper(max_percentage=0.05)
-    plt.plot(ttimes, trace.data, "-")
     new_dt = trace.stats.delta
     new_np = trace.stats.npts
     new_sample_rate = trace.stats.sampling_rate
@@ -33,14 +37,8 @@ def calculate_spectrals(trace, period, damping):
         # Make a copy because resampling happens in place
         trace = trace.copy()
         # Resample the trace
-        trace.resample(new_sample_rate, window=None)
-        # "lanczos" method is about 10x slower
-        # trace.interpolate(new_sample_rate, method="lanczos", a=10)
-    ttimes2 = trace.times()
-    plt.plot(ttimes2, trace.data, "-")
-    # plt.xlim(0, 20)
-    plt.savefig(pfile1, dpi=300)
-    plt.close()
-
+        window = get_window(trace.stats.npts, percent=0.02)
+        trace.resample(new_sample_rate, window=window)
     sa_list = spec_calc(trace.data, new_np, new_dt, new_sample_rate, period, damping)
+    # Note: sa_list has elements: [acc, vel, dis], in which each element is an ndarray.
     return sa_list

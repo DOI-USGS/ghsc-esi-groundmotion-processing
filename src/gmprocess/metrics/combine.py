@@ -10,6 +10,23 @@ from gmprocess.metrics import containers
 import gmprocess.metrics.waveform_metric_component as wm_comp
 
 
+class ArithmeticMean(BaseComponent):
+    """Return the arithmetic mean across multiple traces."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.Scalar]
+
+    def calculate(self):
+        values = [trace.value for trace in self.prior_step.output.values]
+        amean = np.mean(values)
+        self.output = containers.CombinedScalar(
+            containers.ReferenceValue(amean, self.prior_step.output.values[0].stats)
+        )
+
+    def get_component_results(self):
+        return get_component_output(self, str(wm_comp.ArithmeticMean()))
+
+
 class GeometricMean(BaseComponent):
     """Return the geometric mean across multiple traces."""
 

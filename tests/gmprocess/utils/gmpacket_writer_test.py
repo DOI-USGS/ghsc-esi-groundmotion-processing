@@ -10,32 +10,16 @@ from gmpacket.packet import GroundMotionPacket
 
 # local imports
 from gmprocess.utils.export_gmpacket_utils import GroundMotionPacketWriter
+from gmprocess.utils.constants import TEST_DATA_DIR
 
 
 def test_gmpacket_writer(datafile=None, save_file=False):
     if datafile is None:
+        # datafile = DATA_DIR / "asdf" / "nc72282711" / "workspace.h5"
         datafile = (
-            pathlib.Path(__file__).parent
-            / ".."
-            / ".."
-            / ".."
-            / "src"
-            / "gmprocess"
-            / "data"
-            / "asdf"
-            / "nc72282711"
-            / "workspace.h5"
+            TEST_DATA_DIR / "demo_steps" / "exports" / "ci38457511" / "workspace.h5"
         )
-        datafile = (
-            pathlib.Path(__file__).parent
-            / ".."
-            / ".."
-            / "data"
-            / "demo_steps"
-            / "exports"
-            / "ci38457511"
-            / "workspace.h5"
-        )
+
     tempdir = None
     fmt = "%(levelname)s -- %(asctime)s -- %(module)s.%(funcName)s -- %(message)s"
     logging.basicConfig(level=logging.INFO, format=fmt)
@@ -60,7 +44,7 @@ def test_gmpacket_writer(datafile=None, save_file=False):
             "station_latitude": 35.525,
             "station_elevation": 0.0,
             "epicentral_distance_km": 34.80446348367976,
-            "component": "H1",
+            "component": "Channels(component=h1)",
             "location": "--",
             "PGA(%g)": 47.028,
             "PGV(cm/s)": 78.356,
@@ -103,5 +87,5 @@ def test_gmpacket_writer(datafile=None, save_file=False):
                 shutil.copy(file, outfile)
         del packet_writer
     finally:
-        if tempfile is not None:
+        if tempdir is not None:
             shutil.rmtree(tempdir)

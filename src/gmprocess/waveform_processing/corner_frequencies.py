@@ -212,7 +212,7 @@ def from_magnitude(
     return st
 
 
-def from_snr(st, event, same_horiz=True, bandwidth=20):
+def from_snr(st, event, same_horiz=True, smoothing_parameter=20):
     """Set corner frequencies from SNR.
 
     Args:
@@ -221,7 +221,7 @@ def from_snr(st, event, same_horiz=True, bandwidth=20):
         same_horiz (bool):
             If True, horizontal traces in the stream must have the same
             corner frequencies.
-        bandwidth (float):
+        smoothing_parameter (float):
             Konno-Omachi smoothing bandwidth parameter.
 
     Returns:
@@ -230,7 +230,7 @@ def from_snr(st, event, same_horiz=True, bandwidth=20):
     for tr in st:
         # Check for prior calculation of 'snr'
         if not tr.has_cached("snr"):
-            tr = compute_snr_trace(tr, event.magnitude, bandwidth)
+            tr = compute_snr_trace(tr, event.magnitude, smoothing_parameter)
 
         # If the SNR doesn't exist then it must have failed because it didn't
         # have enough points in the noise or signal windows

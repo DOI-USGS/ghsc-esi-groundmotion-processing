@@ -11,6 +11,7 @@ from gmprocess.metrics.oscillator import calculate_spectrals
 from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
 from gmprocess.metrics import containers
 from gmprocess.utils.constants import GAL_TO_PCTG
+import gmprocess.metrics.waveform_metric_component as wm_comp
 
 
 class Integrate(BaseComponent):
@@ -152,7 +153,7 @@ class FourierAmplitudeSpectra(BaseComponent):
     def _get_nfft(self, trace):
         """Get number of points in the FFT.
 
-        If allow_nans is True, returns the number of points for the FFT that
+        If allow_nans is False, returns the number of points for the FFT that
         will ensure that the Fourier Amplitude Spectrum can be computed without
         returning NaNs (due to the spectral resolution requirements of the
         Konno-Ohmachi smoothing). Otherwise, just use the length of the trace
@@ -165,7 +166,7 @@ class FourierAmplitudeSpectra(BaseComponent):
         if self.parameters["allow_nans"]:
             nfft = len(trace.data)
         else:
-            bw = self.parameters["bandwidth"]
+            bw = self.parameters["smoothing_parameter"]
             nyquist = 0.5 * trace.stats.sampling_rate
             min_freq = self.parameters["frequencies"]["start"]
             df = (min_freq * 10 ** (3.0 / bw)) - (min_freq / 10 ** (3.0 / bw))
@@ -193,6 +194,10 @@ class SmoothSpectra(BaseComponent):
     def get_type_parameters(config):
         return config["metrics"]["type_parameters"]["fas"]
 
+    def get_component_results(self):
+        # return get_component_output(self, str(wm_comp.QuadraticMean()))
+        return ([self.output], [str(wm_comp.QuadraticMean())])
+
     def _smooth_spectrum(self, spec, freqs):
         """
         Smooths the amplitude spectrum following the algorithm of
@@ -207,7 +212,7 @@ class SmoothSpectra(BaseComponent):
         Returns:
             numpy.ndarray: Smoothed amplitude data and frequencies.
         """
-        bandwidth = self.parameters["bandwidth"]
+        smoothing_parameter = self.parameters["smoothing_parameter"]
         freq_conf = self.parameters["frequencies"]
         ko_freqs = np.logspace(
             np.log10(freq_conf["start"]), np.log10(freq_conf["stop"]), freq_conf["num"]
@@ -217,7 +222,7 @@ class SmoothSpectra(BaseComponent):
 
         # Konno Omachi Smoothing
         konno_ohmachi.konno_ohmachi_smooth(
-            spec.astype(np.double), freqs, ko_freqs, spec_smooth, bandwidth
+            spec.astype(np.double), freqs, ko_freqs, spec_smooth, smoothing_parameter
         )
         # Set any results outside of range of freqs to nans
         spec_smooth[(ko_freqs > np.max(freqs)) | (ko_freqs < np.min(freqs))] = np.nan

@@ -31,7 +31,9 @@ def test_export_metric_tables(script_runner):
                     count += 1
         assert count == 8
         # Check contents of one file
-        h1df = pd.read_csv(os.path.join(ddir, "test_default_metrics_h1.csv"))
+        h1df = pd.read_csv(
+            os.path.join(ddir, "test_default_metrics_channels(component=h1).csv")
+        )
         for i in range(h1df.shape[0]):
             assert h1df["EarthquakeId"][i] == "ci38457511"
         np.testing.assert_allclose(
@@ -51,7 +53,7 @@ def test_export_metric_tables(script_runner):
     finally:
         shutil.rmtree(str(constants.CONFIG_PATH_TEST), ignore_errors=True)
         # Remove created files
-        patterns = ["_metrics_", "_events.", "_fit_spectra_parameters"]
+        patterns = ["_metrics_", "_events.", "_fit_spectra_parameters", "_snr"]
         for root, _, files in os.walk(ddir):
             for file in files:
                 for pattern in patterns:

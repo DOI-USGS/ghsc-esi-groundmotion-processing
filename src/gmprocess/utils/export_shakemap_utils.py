@@ -10,9 +10,13 @@ from collections import OrderedDict
 import numpy as np
 
 from gmprocess.io.cosmos.core import BUILDING_TYPES
-from gmprocess.utils.constants import EVENT_TIMEFMT, COMPONENTS, UNITS
+from gmprocess.utils.constants import EVENT_TIMEFMT, UNITS
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.metrics.station_metric_collection import StationMetricCollection
+from gmprocess.metrics.waveform_metric_component import (
+    Channels,
+    get_supported_metric_types,
+)
 
 # Will need to update this when we support additional damping values.
 DEFAULT_DAMPING = 5.0
@@ -92,7 +96,6 @@ def create_json(
             wm_meta[0]["latitude"],
             wm_meta[0]["elevation"],
         ]
-
         station_feature = get_station_feature(
             wm_meta, wml, sm, coordinates, expanded_imts=expanded_imts
         )
@@ -147,7 +150,7 @@ def create_json(
     station_feature_dict = {"type": "FeatureCollection", "features": station_features}
     stationfile = event_dir / f"{event.id}_groundmotions_dat.json"
     # debugging
-    iterdict(station_feature_dict)
+    # iterdict(station_feature_dict)
     # end debugging
     with open(stationfile, "wt") as f:
         json.dump(station_feature_dict, f, allow_nan=False)
@@ -190,26 +193,27 @@ def get_station_feature(wm_meta, wml, sm, coordinates, expanded_imts=False):
     station_properties["source"] = wm_meta[0]["source"]
     station_channels = []
     station_channel_names = ["H1", "H2", "Z"]
+    # station_channel_names = [
+    #     comp for comp in wml[0].components if isinstance(comp, Channels)
+    # ]
 
-    imt_df = wml.to_df()
+    # imt_df = wml.to_df()
     if expanded_imts:
-        imts = list(set([i for i in imt_df["IMT"].to_numpy() if i.startswith("SA")]))
+        imts = [wm.identifier for wm in wml if wm.identifier.startswith("SA")]
         imt_lower = [s.lower() for s in imts]
         imt_units = [UNITS["sa"]] * len(imts)
-        if "PGA" in imt_df["IMT"].tolist():
-            imts.append("PGA")
-            imt_lower.append("pga")
-            imt_units.append(UNITS["PGA"])
-        if "PGV" in imt_df["IMT"].tolist():
-            imts.append("PGV")
-            imt_lower.append("pgv")
-            imt_units.append(UNITS["PGV"])
+        imts.append("PGA")
+        imt_lower.append("pga")
+        imt_units.append(UNITS["PGA"])
+        imts.append("PGV")
+        imt_lower.append("pgv")
+        imt_units.append(UNITS["PGV"])
         station_amps = {k: v for k, v in zip(imts, zip(imt_lower, imt_units))}
     else:
         station_amps = {
-            "SA(0.300)": ("sa(0.3)", UNITS["sa"]),
-            "SA(1.000)": ("sa(1.0)", UNITS["sa"]),
-            "SA(3.000)": ("sa(3.0)", UNITS["sa"]),
+            "SA(T=0.3000, D=0.050)": ("sa(T=0.3000, D=0.050)", UNITS["sa"]),
+            "SA(T=1.0000, D=0.050)": ("sa(T=1.0000, D=0.050)", UNITS["sa"]),
+            "SA(T=3.0000, D=0.050)": ("sa(T=3.0000, D=0.050)", UNITS["sa"]),
             "PGA": ("pga", UNITS["pga"]),
             "PGV": ("pgv", UNITS["pgv"]),
         }
@@ -217,17 +221,18 @@ def get_station_feature(wm_meta, wml, sm, coordinates, expanded_imts=False):
     comp_to_chan = wml.metric_list[0].component_to_channel
 
     for channel_name in station_channel_names:
+        chan_code = comp_to_chan[channel_name]
         station_channel = OrderedDict()
         if channel_name in comp_to_chan:
             station_channel["name"] = comp_to_chan[channel_name]
             station_amplitudes = []
             for gm_imt, station_tuple in station_amps.items():
-                imt_value = float(
-                    imt_df.loc[
-                        (imt_df["IMT"] == gm_imt) & (imt_df["IMC"] == channel_name),
-                        "Result",
-                    ]
-                )
+                selected_wm = [wm for wm in wml if wm.identifier == gm_imt][0]
+                for ch, val in selected_wm.values.items():
+                    if isinstance(ch, Channels):
+                        if ch.component_attributes["channel"] == chan_code:
+                            imt_value = val
+                            continue
                 station_amplitude = OrderedDict()
                 station_amplitude["name"] = station_tuple[0]
                 station_amplitude["ln_sigma"] = 0
@@ -254,10 +259,7 @@ def get_components(wml, stream, config):
     imts = list(set(imt_df["IMT"]))
     comp_to_chan = wml.metric_list[0].component_to_channel
     for imc in all_components:
-        if imc in ["H1", "H2", "Z"]:
-            imtlist = COMPONENTS["CHANNELS"]
-        else:
-            imtlist = COMPONENTS[imc]
+        imtlist = get_supported_metric_types(imc)
         measures = OrderedDict()
         spectral_values = []
         spectral_periods = []
@@ -265,7 +267,7 @@ def get_components(wml, stream, config):
         fourier_periods = []
         for imt in imts:
             if imt.startswith("FAS"):
-                imtstr = "FAS"
+                continue
             elif imt.startswith("SA"):
                 imtstr = "SA"
             else:
@@ -273,6 +275,8 @@ def get_components(wml, stream, config):
             if imtstr not in imtlist:
                 continue
             idx = np.where((imt_df["IMT"] == imt) & (imt_df["IMC"] == imc))[0]
+            if not idx:
+                continue
             imt_value = float(imt_df["Result"].iloc[idx])
             if np.isnan(imt_value):
                 imt_value = "null"
@@ -292,8 +296,11 @@ def get_components(wml, stream, config):
                 units = UNITS[imt.lower()]
                 measures[imt] = {"value": imt_value, "units": units}
 
-        if imc in ["H1", "H2", "Z"]:
-            imcname = comp_to_chan[imc]
+        if isinstance(imc, Channels):
+            for k, v in comp_to_chan.items():
+                if v == imc.component_attributes["channel"]:
+                    imcname = k
+            # imcname = comp_to_chan[imc.component_attributes["channel"]]
             measures["as_recorded"] = True
             for tr in stream:
                 if tr.stats.channel.endswith(imcname[-1]):
@@ -326,7 +333,7 @@ def get_components(wml, stream, config):
             measures["azimuth"] = azimuth
             measures["dip"] = dip
         else:
-            imcname = imc
+            imcname = str(imc)
             measures["as_recorded"] = False
         components[imcname] = measures
         if spectral_values:

@@ -41,6 +41,6 @@ def test_flatfile(load_ci38457511_demo_export):
     event_table, imc_tables, _ = ff.get_tables()
     np.testing.assert_allclose(event_table["magnitude"][0], 7.1)
     assert len(imc_tables) == 4
-    rot50_table = imc_tables["ROTD50.0"]
+    rot50_table = imc_tables["RotD(percentile=50.0)"]
     target_sa = np.array([53.144627, 17.922639, 41.612646])
-    np.testing.assert_allclose(rot50_table["SA(1.000)"], target_sa)
+    np.testing.assert_allclose(rot50_table["SA(T=1.0000, D=0.050)"], target_sa)

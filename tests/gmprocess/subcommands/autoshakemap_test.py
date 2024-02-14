@@ -4,7 +4,6 @@ import shutil
 import json
 
 from gmprocess.utils import constants
-from gmprocess.utils import tests_utils
 
 
 def test_autoshakemap(script_runner):

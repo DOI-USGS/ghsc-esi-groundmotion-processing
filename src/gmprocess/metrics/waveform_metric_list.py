@@ -21,6 +21,48 @@ class WaveformMetricList(object):
             raise TypeError("All elements of metric_list must be a WaveformMetric.")
         self.metric_list = metric_list
 
+    def __iter__(self):
+        return self.metric_list.__iter__()
+
+    def __getitem__(self, i):
+        return self.metric_list[i]
+
+    def len(self):
+        return len(self.metric_list)
+
+    def select(self, mtype=None, **kwargs):
+        """Return a new WaveformMetricList that meets some criteria.
+
+        Args:
+            mtype (str):
+                The metric type to select.
+            **kwargs:
+                Additional critera to be applied to the metric's 'metric_attributes'.
+        """
+        selected = []
+        for metric in self:
+            if mtype is None or metric.type != mtype:
+                continue
+            att_match = []
+            for k, v in kwargs.items():
+                if k not in metric.metric_attributes:
+                    att_match.append(False)
+                    continue
+                if metric.metric_attributes[k] != v:
+                    att_match.append(False)
+                else:
+                    att_match.append(True)
+            if all(att_match):
+                selected.append(metric)
+        return WaveformMetricList(selected)
+
+    @property
+    def metric_types(self):
+        mtypes = []
+        for metric in self:
+            mtypes.append(metric.type)
+        return mtypes
+
     def __repr__(self):
         wmstring = ""
         n_metrics = len(self.metric_list)
@@ -36,27 +78,18 @@ class WaveformMetricList(object):
                 wmstring += f"  {m}\n"
         return wmstring
 
-    def len(self):
-        """Number of metrics in list."""
-        return len(self.metric_list)
-
     def to_df(self):
         """Output the WaveformMetricList in a pandas dataframe format."""
         values = []
         imcs = []
         imts = []
-        for metric in self.metric_list:
+        for metric in self:
             mdict = metric.to_dict()
-            format_imt = mdict["type"].upper()
-            if format_imt in ["SA", "FAS"]:
-                format_imt += f"({mdict['metric_attributes']['period']:.3f})"
-            elif format_imt == "DURATION":
-                format_imt += f"({mdict['metric_attributes']['interval']})"
 
             for comp, val in zip(mdict["components"], mdict["values"]):
                 values.append(val)
-                imcs.append(comp)
-                imts.append(format_imt)
+                imcs.append(str(comp))
+                imts.append(metric.identifier)
 
         dataframe = pd.DataFrame(
             {
@@ -106,7 +139,7 @@ class WaveformMetricList(object):
                 fixed_imt = "CAV"
             elif imt.startswith("arias"):
                 metric_attributes = {}
-                fixed_imt = "AriasIntensity"
+                fixed_imt = "Arias"
             elif imt.startswith("sorted"):
                 metric_attributes = {}
                 fixed_imt = "SortedDuration"

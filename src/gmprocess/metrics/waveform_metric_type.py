@@ -62,8 +62,15 @@ class WaveformMetricType(ABC):
         return list(self._values.keys())
 
     def value(self, component):
-        """Return the value for the specified component"""
-        return self._values[component]
+        """Return the value for the specified component.
+
+        Args:
+            component (str):
+                String representaiton of a WaveformMetricComponent.
+        """
+        for k, v in self._values.items():
+            if str(k) == str(component):
+                return v
 
     @staticmethod
     def metric_from_dict(mdict):
@@ -128,8 +135,12 @@ class PGA(WaveformMetricType):
 class PGV(WaveformMetricType):
     """WaveformMetricType subclass for PGV."""
 
-    def __init__(self, values, components, component_to_channel=None):
+    def __init__(self, values, components, component_to_channel=None, **kwargs):
         """Construct a PGV metric object.
+
+        Note: kwargs is needed because there are parameters that will get automatically
+        passed here due to the integration processing step that we do not actually
+        want to keep as metric parameters.
 
         Args:
             values (list):
@@ -204,24 +215,33 @@ class FAS(WaveformMetricType):
         self,
         values,
         components,
-        period,
-        smoothing=20.0,
-        method="Konno-Omachi",
+        frequencies,  # noqa
+        smoothing_parameter=20.0,
+        smoothing_method="Konno-Omachi",
+        allow_nans=True,
         component_to_channel=None,
     ):
         """Construct a FAS metric object.
+
+        Note that "frequencies" is passed in as a metric parameter, but the resulting
+        array of frequencies is in the "values" container so there's no need to do
+        anything with the "frequencies" array.
 
         Args:
             values (list):
                 List of FAS values.
             components (list):
                 List of the components that map to the FAS values.
-            period (float):
-                Period for this fAS (in seconds).
-            smoothing (float):
+            frequencies (array):
+                Frequencies for this FAS (Hz).
+            smoothing_parameter (float):
                 Smoothing bandwidth parameter; default is 20.
-            method (str):
+            smoothing_method (str):
                 Smoothing method; default is Konno-Omachi.
+            allow_nans (book):
+                Default (True) just uses the number of points in the record, which can
+                result in nans when smoothed using the Konno-Omachi method. False
+                adjusts the number of points in the FFT to ensure no nans.
             component_to_channel (dict):
                 Optional dictionary mapping the simplifued component names to the
                 as-recorded channel names.
@@ -235,16 +255,19 @@ class FAS(WaveformMetricType):
         self.format_type = "pgm"
         self._units = constants.UNITS[self._type.lower()]
         self.metric_attributes = {
-            "period": period,
-            "smoothing": smoothing,
-            "method": method,
+            "smoothing_parameter": smoothing_parameter,
+            "smoothing_method": smoothing_method,
+            "allow_nans": allow_nans,
         }
         self.component_to_channel = component_to_channel
 
     @property
     def identifier(self):
         attrs = self.metric_attributes
-        return f"FAS(T={float(attrs['period']):.4f}, B={float(attrs['smoothing']):.1f})"
+        return f"FAS(B={float(attrs['smoothing_parameter']):.1f})"
+
+    def __repr__(self):
+        return f"{self.identifier}: {self.components}"
 
 
 class Duration(WaveformMetricType):
@@ -315,11 +338,11 @@ class SortedDuration(WaveformMetricType):
         return "SortedDuration"
 
 
-class AriasIntensity(WaveformMetricType):
+class Arias(WaveformMetricType):
     """WaveformMetricType subclass for Arias Intensity."""
 
     def __init__(self, values, components, component_to_channel=None):
-        """Construct a AriasIntensity metric object.
+        """Construct a Arias metric object.
 
         Args:
             values (list):
@@ -343,7 +366,7 @@ class AriasIntensity(WaveformMetricType):
 
     @property
     def identifier(self):
-        return "AriasIntensity"
+        return "Arias"
 
 
 class CAV(WaveformMetricType):

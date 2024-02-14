@@ -65,6 +65,87 @@ from gmprocess.utils import constants
 class WaveformMetricCalculator:
     """Class for calculating waveform metrics"""
 
+    all_steps = {
+        "channels-pga": [reduce.TraceMax],
+        "channels-pgv": [transform.Integrate, reduce.TraceMax],
+        "channels-sa": [transform.TraceOscillator, reduce.OscillatorMax],
+        "channels-arias": [transform.Arias, reduce.TraceMax],
+        "channels-duration": [transform.Arias, reduce.Duration],
+        "channels-cav": [reduce.CAV],
+        "arithmetic_mean-pga": [reduce.TraceMax, combine.ArithmeticMean],
+        "arithmetic_mean-pgv": [
+            transform.Integrate,
+            reduce.TraceMax,
+            combine.ArithmeticMean,
+        ],
+        "arithmetic_mean-sa": [
+            transform.TraceOscillator,
+            reduce.OscillatorMax,
+            combine.ArithmeticMean,
+        ],
+        "arithmetic_mean-arias": [
+            transform.Arias,
+            reduce.TraceMax,
+            combine.ArithmeticMean,
+        ],
+        "arithmetic_mean-duration": [
+            transform.Arias,
+            reduce.Duration,
+            combine.ArithmeticMean,
+        ],
+        "arithmetic_mean-cav": [
+            reduce.CAV,
+            combine.ArithmeticMean,
+        ],
+        "geometric_mean-pga": [reduce.TraceMax, combine.GeometricMean],
+        "geometric_mean-pgv": [
+            transform.Integrate,
+            reduce.TraceMax,
+            combine.GeometricMean,
+        ],
+        "geometric_mean-sa": [
+            transform.TraceOscillator,
+            reduce.OscillatorMax,
+            combine.GeometricMean,
+        ],
+        "geometric_mean-arias": [
+            transform.Arias,
+            reduce.TraceMax,
+            combine.GeometricMean,
+        ],
+        "geometric_mean-duration": [
+            transform.Arias,
+            reduce.Duration,
+            combine.GeometricMean,
+        ],
+        "geometric_mean-cav": [
+            reduce.CAV,
+            combine.GeometricMean,
+        ],
+        "quadratic_mean-fas": [
+            transform.FourierAmplitudeSpectra,
+            combine.SpectraQuadraticMean,
+            transform.SmoothSpectra,
+        ],
+        "rotd-pga": [
+            rotate.RotD,
+            reduce.RotDTraceMax,
+            reduce.RotDPercentile,
+        ],
+        "rotd-pgv": [
+            transform.Integrate,
+            rotate.RotD,
+            reduce.RotDTraceMax,
+            reduce.RotDPercentile,
+        ],
+        "rotd-sa": [
+            rotate.RotD,
+            transform.RotDOscillator,
+            reduce.RotDOscMax,
+            reduce.RotDPercentile,
+        ],
+    }
+
     def __init__(self, stream, config, event=None):
         """WaveformMetricCalculator initializer.
 
@@ -79,14 +160,17 @@ class WaveformMetricCalculator:
         self.event = event
         self.stream = stream
         self.config = config
-        self.all_steps = {}
-        self._set_all_steps()
         self.steps = {}
         self._set_steps()
         # self.metric_dicts = None
         self.wml = None
 
         self.input_data = InputDataComponent(containers.Trace(stream.traces))
+
+    @classmethod
+    def available_imcs(cls):
+        all_imcs = [k.split("-")[0] for k in cls.all_steps.keys()]
+        return list(set(all_imcs))
 
     def calculate(self):
         """Calculate waveform metrics."""
@@ -144,6 +228,10 @@ class WaveformMetricCalculator:
                     if "periods" in param_dict:
                         param_dict["period"] = param_dict["periods"]
                         del param_dict["periods"]
+                    # ditto for intervals vs interval
+                    if "intervals" in param_dict:
+                        param_dict["interval"] = param_dict["intervals"]
+                        del param_dict["intervals"]
                     metric_dict[imt][param_key] = {
                         "values": [],
                         "components": [],
@@ -196,63 +284,6 @@ class WaveformMetricCalculator:
                 if step_key not in self.all_steps:
                     raise ValueError(f"The {step_key} metric is not supported.")
                 self.steps[step_key] = self.all_steps[step_key]
-
-    def _set_all_steps(self):
-        self.all_steps = {
-            "channels-pga": [reduce.TraceMax],
-            "channels-pgv": [transform.Integrate, reduce.TraceMax],
-            "channels-sa": [transform.TraceOscillator, reduce.OscillatorMax],
-            "channels-arias": [transform.Arias, reduce.TraceMax],
-            "channels-duration": [transform.Arias, reduce.Duration],
-            "channels-cav": [reduce.CAV],
-            "geometric_mean-pga": [reduce.TraceMax, combine.GeometricMean],
-            "geometric_mean-pgv": [
-                transform.Integrate,
-                reduce.TraceMax,
-                combine.GeometricMean,
-            ],
-            "geometric_mean-sa": [
-                transform.TraceOscillator,
-                reduce.OscillatorMax,
-                combine.GeometricMean,
-            ],
-            "geometric_mean-arias": [
-                transform.Arias,
-                reduce.TraceMax,
-                combine.GeometricMean,
-            ],
-            "geometric_mean-duration": [
-                transform.Arias,
-                reduce.Duration,
-                combine.GeometricMean,
-            ],
-            "geometric_mean-cav": [
-                reduce.CAV,
-                combine.GeometricMean,
-            ],
-            "quadratic_mean-fas": [
-                transform.FourierAmplitudeSpectra,
-                combine.SpectraQuadraticMean,
-                transform.SmoothSpectra,
-            ],
-            "rotd-pga": [
-                rotate.RotD,
-                reduce.RotDTraceMax,
-                reduce.RotDPercentile,
-            ],
-            "rotd-pgv": [
-                transform.Integrate,
-                rotate.RotD,
-                reduce.RotDTraceMax,
-                reduce.RotDPercentile,
-            ],
-            "rotd-sa": [
-                rotate.RotD,
-                transform.RotDOscillator,
-                reduce.RotDOscMax,
-                reduce.RotDPercentile,
-            ],
-        }
 
 
 class InputDataComponent(BaseComponent):

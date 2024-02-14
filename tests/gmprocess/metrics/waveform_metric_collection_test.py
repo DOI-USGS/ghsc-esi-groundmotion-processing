@@ -23,9 +23,7 @@ def test_waveform_metric_collection():
                 continue
             if metric.metric_attributes["period"] != 1.0:
                 continue
-            mdict = metric.to_dict()
-            idx = np.where(np.array(mdict["components"]) == "ROTD50.0")[0]
-            test_sa = np.array(mdict["values"])[idx][0]
+            test_sa = metric.value("RotD(percentile=50.0)")
             np.testing.assert_allclose(test_sa, 53.144627)
 
     streams = ws.get_streams("ci38457511", labels=["default"])

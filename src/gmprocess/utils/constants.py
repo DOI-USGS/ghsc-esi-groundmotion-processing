@@ -56,8 +56,8 @@ DIMENSION_UNITS = {
     "damping": "%",
     "start percentage": "%",
     "end percentage": "%",
-    "smoothing": "",
-    "method": "",
+    "smoothing_method": "",
+    "smoothing_parameter": "",
 }
 
 STATION_METRIC_UNITS = {
@@ -113,10 +113,12 @@ METRICS_XML_FLOAT_STRING_FORMAT = {
     "pgm": "%.8g",
     "period": "%.3f",
     "damping": "%.2f",
-    "smoothing": "%.2f",
     "back_azimuth": "%.2f",
     "vs30": "%.2f",
     "distance": "%.2f",
+    "smoothing_method": "%s",
+    "allow_nans": "%s",
+    "smoothing_parameter": "%.2f",
 }
 
 # Default float format when we don't have a preference
@@ -158,12 +160,3 @@ NON_IMT_COLS = set(
         "SourceFile",
     ]
 )
-
-COMPONENTS = {
-    "ROTD50.0": ["SA", "PGA", "PGV"],
-    "GREATER_OF_TWO_HORIZONTALS": ["SA", "PGA", "PGV"],
-    "QUADRATIC_MEAN": ["FAS"],
-    "GEOMETRIC_MEAN": ["FAS"],
-    "ARITHMETIC_MEAN": ["FAS"],
-    "CHANNELS": ["SA", "PGA", "PGV", "DURATION", "SORTED_DURATION", "ARIAS", "CAV"],
-}

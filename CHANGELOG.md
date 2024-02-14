@@ -9,6 +9,7 @@
   - Reorganize downloading event information (event, rupture geometry, STREC results) and loading it into the workspace. All information is downloaded in the `download` subcommand, and loaded into the workspace with the `assemble` subcommand. Subsequent commands all load the event information from the workspace.
   - Use full words for keys in `event.json` files (magnitude, magnitude_type, longitude, latitude, depth_km).
   - Handle the dateline discontinuity in fdsn_fetcher.
+  - Modified the taper applied in the frequency domain when resampling for high-frequency response spectra; this narrows the taper so that it doesn't affect the amplitude as much.
 - Config changes
   - Changed format for specifying response spectral periods.
   - Changed default integration method to frequency domain.
@@ -18,6 +19,7 @@
   - Renamed src/gmprocess/utils/test_utils.py to src/gmprocess/utils/test_utils.py to avoid it being detected as a unit test module.
   - Decrease precision in fetcher bounds and fix Geonet bounds to include negaive longitudes.
   - Move the "config" subcommand to be a stand-alone command line program called "gmprocess_config".
+  - Removed "list_metrics" command.
 
 ## 1.3.2 / 2024-02-03
 - Fix bug in trace units that was created in 1.3.1 and affects all velocity instruments.

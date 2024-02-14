@@ -1,5 +1,5 @@
 """Module to define fixutres for the io package."""
-import json
+
 import pathlib
 
 import pytest

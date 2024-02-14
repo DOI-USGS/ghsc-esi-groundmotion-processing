@@ -259,7 +259,7 @@ processing:
         # Presense of this check says to do the signa-to-noise ratio check. Requires
         # minimum SNR of `threshold` between `min_freq` and `max_freq` using
         # Konno-Omachi smoothed spectra with `bandwidth` parameter.
-        bandwidth: 20.0
+        smoothing_parameter: 20.0
 
     - snr_check:
         # Impose a minimum SNR critera across a frequency band for accepting the record.
@@ -537,8 +537,8 @@ metrics:
 
     # Additional parameters required for FAS
     fas:
-        smoothing: konno_ohmachi
-        bandwidth: 20.0
+        smoothing_method: konno_ohmachi
+        smoothing_parameter: 20.0
         allow_nans: True
         frequencies:
             # Parameters defining an array of periods
@@ -681,3 +681,4 @@ pickers:
         model : iasp91
 strec:
     enabled: False
+version: 2
