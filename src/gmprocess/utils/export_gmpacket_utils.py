@@ -24,7 +24,7 @@ from gmpacket.provenance import Provenance
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.metrics.gather import gather_pgms
+from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
 from gmprocess.core import provenance
 
 METRIC_INFO = {
@@ -37,7 +37,8 @@ METRIC_INFO = {
         "Sorted earthquake duration",
         "s",
     ),
-    "ARIASINTENSITY": ("Earthquake arias intensity", "m/s"),
+    "ARIAS": ("Earthquake arias intensity", "m/s"),
+    "CAV": ("Earthquake cumulative absolute velocity", "g-s"),
 }
 
 VERSION = "0.1dev"
@@ -85,7 +86,7 @@ class GroundMotionPacketWriter(object):
 
     def get_trace_properties(self, trace, channel, loc, as_recorded):
         gmp_trace_props = TraceProperties(
-            channel_code=channel,
+            channel_code=str(channel),
             location_code=loc,
             as_recorded=as_recorded,
             azimuth=trace.stats.standard.horizontal_orientation,
@@ -149,7 +150,7 @@ class GroundMotionPacketWriter(object):
         return gmp_metrics
 
     def write(self):
-        available_imcs = [x for x in gather_pgms()[1]]
+        available_imcs = WaveformMetricCalculator.available_imcs()
         nevents = 0
         nstreams = 0
         ntraces = 0
@@ -208,14 +209,13 @@ class GroundMotionPacketWriter(object):
                         ):
                             if f"{net}.{sta}" in sp:
                                 waveform_metric_list = wm
-                                stream_metadata = sm
                                 break
                         gmp_traces = []
                         for channel in waveform_metric_list.metric_list[0].components:
                             gmp_metrics = None
                             as_recorded = True
                             for imc in available_imcs:
-                                if imc in channel.lower():
+                                if imc in str(channel).lower():
                                     as_recorded = False
                                     break
                             gmp_trace_props = self.get_trace_properties(

@@ -7,10 +7,8 @@ import logging
 from obspy import read_inventory
 
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
-from gmprocess.metrics.base_metric_collection import MetricCollection
-from gmprocess.metrics.metrics_controller import MetricsController
-from gmprocess.metrics.waveform_metric_list import WaveformMetricList
-from gmprocess.utils.config import get_config_imts_imcs
+from gmprocess.metrics.metric_collection_base import MetricCollection
+from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
 from gmprocess.io.asdf.path_utils import get_stream_path
 from gmprocess.io.asdf.stream_workspace import array_to_str
 
@@ -34,7 +32,7 @@ class WaveformMetricCollection(MetricCollection):
     "from_streams" or "from_workspace" methods.
 
     The "from_streams" class method initializes from a list of StationStreams, and
-    computes the waveform metrics with the MetricsController class, while the
+    computes the waveform metrics with the WaveformMetricCalculator class, while the
     "from_workspace" method loads the pre-computed metrics from the StreamWorkspace
     file.
     """
@@ -137,27 +135,13 @@ class WaveformMetricCollection(MetricCollection):
             label (str):
                 Processing label.
         """
-        imts, imcs = get_config_imts_imcs(config)
-        damping = config["metrics"]["sa"]["damping"]
-        smoothing = config["metrics"]["fas"]["smoothing"]
-        bandwidth = config["metrics"]["fas"]["bandwidth"]
-        allow_nans = config["metrics"]["fas"]["allow_nans"]
         event_id = event.id.replace("smi:local/", "")
         tag = f"{event_id}_{label}"
+        # Need to have something build 'steps'
         for stream in streams:
             if stream.passed:
-                metrics = MetricsController(
-                    imts,
-                    imcs,
-                    stream,
-                    bandwidth=bandwidth,
-                    allow_nans=allow_nans,
-                    damping=damping,
-                    event=event,
-                    smooth_type=smoothing,
-                    config=config,
-                )
-                wml = WaveformMetricList.from_df(metrics.pgms, metrics.channel_dict)
+                wmc = WaveformMetricCalculator(stream, config, event)
+                wml = wmc.calculate()
                 self.waveform_metrics.append(wml)
                 self.stream_paths.append(get_stream_path(stream, tag, config))
 

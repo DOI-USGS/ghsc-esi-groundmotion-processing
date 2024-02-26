@@ -1,7 +1,4 @@
-# stdlib imports
 import json
-
-
 from gmprocess.utils.config import merge_dicts
 
 

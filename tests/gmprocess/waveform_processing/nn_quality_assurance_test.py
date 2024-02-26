@@ -19,7 +19,7 @@ def test_nnet(geonet_WTMC_uncorrected):
         "processing": [
             {"detrend": {"detrending_method": "demean"}},
             {"detrend": {"detrending_method": "linear"}},
-            {"compute_snr": {"bandwidth": 20.0}},
+            {"compute_snr": {"smoothing_parameter": 20.0}},
             {"snr_check": {"max_freq": 5.0, "min_freq": 0.2, "threshold": 3.0}},
             {"nnet_qa": {"acceptance_threshold": 0.5, "model_name": "CantWell"}},
         ]

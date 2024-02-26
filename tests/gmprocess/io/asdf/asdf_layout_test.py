@@ -9,7 +9,6 @@ from gmprocess.io.asdf.core import write_asdf
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
 from gmprocess.io.asdf.station_metrics_xml import StationMetricsXML
-from gmprocess.utils.config import update_config
 from gmprocess.utils import constants
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.metrics.station_metric_collection import StationMetricCollection
@@ -29,10 +28,13 @@ def generate_workspace(config, load_data_us1000778i, tmp_path, configure_strec):
     try:
         write_asdf(tfilename, streams, event, label="unprocessed")
 
-        config = update_config(
-            str(constants.TEST_DATA_DIR / "config_min_freq_0p2.yml"), config
-        )
-
+        # Simplify for tests
+        config["metrics"]["type_parameters"]["sa"]["periods"] = [1.0, 2.0, 3.0]
+        config["metrics"]["type_parameters"]["fas"]["frequencies"] = {
+            "start": 0.1,
+            "stop": 1.0,
+            "num": 11,
+        }
         workspace = StreamWorkspace.open(tfilename)
         raw_streams = workspace.get_streams(
             EVENTID, labels=["unprocessed"], config=config
@@ -66,7 +68,10 @@ def test_layout(generate_workspace):
 
     tfilename = generate_workspace
     h5 = h5py.File(tfilename, "r")
-
+    # To regenerate an updated version of the asdf_layout.txt file:
+    #   - Install hdf5 command line tools,
+    #   - h5dump -n workspace.h5 > asdf_layout.txt
+    #   - Clean up extra content
     testroot = str(constants.TEST_DATA_DIR / "asdf")
     layout_abspath = os.path.join(testroot, LAYOUT_FILENAME)
     with open(layout_abspath, "r", encoding="utf-8") as fin:

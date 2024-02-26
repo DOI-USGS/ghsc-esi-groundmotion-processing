@@ -3,7 +3,6 @@
 import logging
 import os
 
-import numpy as np
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 from schema import Optional, Or, Schema
@@ -12,6 +11,7 @@ from gmprocess.utils import constants
 
 CONF_SCHEMA = Schema(
     {
+        "version": int,
         "user": {"name": str, "email": str},
         "fetchers": {
             "search_parameters": {
@@ -135,39 +135,34 @@ CONF_SCHEMA = Schema(
         },
         "build_report": {"enabled": True, "format": "latex"},
         "metrics": {
-            "output_imcs": list,
-            "output_imts": list,
-            "sa": {
-                "damping": float,
-                "periods": {
-                    "start": float,
-                    "stop": float,
-                    "num": int,
-                    "spacing": str,
-                    "use_array": bool,
-                    "defined_periods": list,
+            "components_and_types": dict,
+            "type_parameters": {
+                "sa": {
+                    "damping": list,
+                    "periods": list,
                 },
-            },
-            "fas": {
-                "smoothing": str,
-                "bandwidth": float,
-                "allow_nans": bool,
-                "periods": {
-                    "start": float,
-                    "stop": float,
-                    "num": int,
-                    "spacing": str,
-                    "use_array": bool,
-                    "defined_periods": list,
+                "fas": {
+                    "smoothing_method": str,
+                    "smoothing_parameter": float,
+                    "allow_nans": bool,
+                    "frequencies": {
+                        "start": float,
+                        "stop": float,
+                        "num": int,
+                    },
                 },
+                "duration": {"intervals": list},
             },
-            "duration": {"intervals": list},
+            "component_parameters": {"rotd": {"percentiles": list}},
         },
         "integration": {
             "frequency": bool,
             "initial": float,
             "demean": bool,
-            "taper": {"taper": bool, "type": str, "width": float, "side": str},
+            "taper": bool,
+            "taper_width": float,
+            "taper_type": str,
+            "taper_side": str,
         },
         "gmm_selection": {
             "ActiveShallow": str,
@@ -349,52 +344,3 @@ def __conf_path_to_config(config_path, default_config):
     for cf in conf_files:
         default_config = update_config(cf, default_config)
     return default_config
-
-
-def get_config_imts_imcs(conf):
-    """Method to extract imt and imc lists from config.
-
-    Args:
-        conf (dict):
-            Config options.
-    """
-    metrics = conf["metrics"]
-    config_imts = [imt.lower() for imt in metrics["output_imts"]]
-    imcs = [imc.lower() for imc in metrics["output_imcs"]]
-    # append periods for sa and fas, interval for duration
-    imts = []
-    for imt in config_imts:
-        if imt == "sa":
-            if metrics["sa"]["periods"]["use_array"]:
-                start = metrics["sa"]["periods"]["start"]
-                stop = metrics["sa"]["periods"]["stop"]
-                num = metrics["sa"]["periods"]["num"]
-                if metrics["sa"]["periods"]["spacing"] == "logspace":
-                    periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-                else:
-                    periods = np.linspace(start, stop, num=num)
-                for period in periods:
-                    imts += ["sa" + str(period)]
-            else:
-                for period in metrics["sa"]["periods"]["defined_periods"]:
-                    imts += ["sa" + str(period)]
-        elif imt == "fas":
-            if metrics["fas"]["periods"]["use_array"]:
-                start = metrics["fas"]["periods"]["start"]
-                stop = metrics["fas"]["periods"]["stop"]
-                num = metrics["fas"]["periods"]["num"]
-                if metrics["fas"]["periods"]["spacing"] == "logspace":
-                    periods = np.logspace(np.log10(start), np.log10(stop), num=num)
-                else:
-                    periods = np.linspace(start, stop, num=num)
-                for period in periods:
-                    imts += ["fas" + str(period)]
-            else:
-                for period in metrics["fas"]["periods"]["defined_periods"]:
-                    imts += ["fas" + str(period)]
-        elif imt == "duration":
-            for interval in metrics["duration"]["intervals"]:
-                imts += ["duration" + interval]
-        else:
-            imts += [imt]
-    return imts, imcs

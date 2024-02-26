@@ -8,11 +8,12 @@ import numpy as np
 import scipy.interpolate as spint
 from ruamel.yaml import YAML
 
-from gmprocess.utils.config import update_dict, get_config, get_config_imts_imcs
+from gmprocess.utils.config import update_dict, get_config
 from gmprocess.utils import constants
 from gmprocess.io.asdf import flatfile_constants as flat_const
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.metrics.station_metric_collection import StationMetricCollection
+from gmprocess.metrics.utils import component_to_channel
 
 
 class Flatfile(object):
@@ -111,17 +112,17 @@ class Flatfile(object):
                 continue
 
             wm_df = wml.to_df()
-            imclist = np.unique(wm_df["IMC"]).tolist()
+            self.imclist = list(set(wm_df["IMC"]))
             self.imtlist = np.unique(wm_df["IMT"]).tolist()
             self.imtlist.sort(key=_natural_keys)
 
-            for imc in imclist:
-                if imc not in self.imc_tables:
-                    self.imc_tables[imc] = []
+            for imc in self.imclist:
+                if str(imc) not in self.imc_tables:
+                    self.imc_tables[str(imc)] = []
                 row = self.get_imt_row(passed_traces, wml, imc)
                 if not row:
                     continue
-                self.imc_tables[imc].append(row)
+                self.imc_tables[str(imc)].append(row)
 
     def get_imt_row(self, passed_traces, wml, imc):
         """Get one row of the IMT flatfile fom a stream.
@@ -131,7 +132,7 @@ class Flatfile(object):
                 List dictionaries containing metadata for the passed traces.
             wml (WaveformMetricList):
                 A WaveformMetricList object.
-            imc (str):
+            imc (WaveformMetricComponent):
                 The intensity metric component.
         """
         row = {}
@@ -148,7 +149,7 @@ class Flatfile(object):
         row.update(filter_dict)
 
         wm_df = wml.to_df()
-        wm_df = wm_df.loc[wm_df["IMC"] == imc]
+        wm_df = wm_df.loc[wm_df["IMC"] == str(imc)]
         imts = wm_df["IMT"].tolist()
         imt_vals = wm_df["Result"].tolist()
         for imt, val in zip(imts, imt_vals):
@@ -209,15 +210,16 @@ class Flatfile(object):
     def get_filter_dict(self, passed_traces, imc):
         """Get the filter corner frequency dictionary (and also deal with station id).
 
-        This became a very confusion method becuse of the bandaids we had to add to
+        This became a very confusing method becuse of the bandaids we had to add to
         support the "use_array" use-case.
 
         Args:
             passed_traces (list):
-                List dictionaries containing metadata for the passed traces.
-            imc (str):
+                List of dictionaries containing metadata for the passed traces.
+            imc (WaveformMetricComponent):
                 The intensity metric component.
         """
+        # Sort out station id
         tr_met = passed_traces[0]
         base_station_id = ".".join(
             [tr_met["network"], tr_met["station"], tr_met["location"]]
@@ -227,70 +229,26 @@ class Flatfile(object):
         else:
             station_id = ".".join([base_station_id, tr_met["channel"][0:2]])
 
-        if imc.lower() == "channels":
-            if len(passed_traces) > 1:
-                raise ValueError(
-                    "Stream must be length 1 to get row for imc=='channels'."
-                )
-            if not tr_met["passed"]:
-                return {}
-            lpf = tr_met["lowpass_filter"] if "lowpass_filter" in tr_met else np.nan
-            hpf = tr_met["highpass_filter"] if "highpass_filter" in tr_met else np.nan
-            filter_dict = {
-                "Lowpass": lpf,
-                "Highpass": hpf,
-                "StationID": station_id,
-            }
-            station_id = ".".join([base_station_id, tr_met["channel"]])
-        elif imc == "Z":
-            z = [tr_met for tr_met in passed_traces if tr_met["channel"].endswith("Z")]
-            if not z:
-                return {}
-            z = z[0]
-            station_id = ".".join([base_station_id, z["channel"]])
-            if not z["passed"]:
-                return {}
-            lpf = z["lowpass_filter"] if "lowpass_filter" in z else np.nan
-            hpf = z["highpass_filter"] if "highpass_filter" in z else np.nan
-            filter_dict = {
-                "ZLowpass": lpf,
-                "ZHighpass": hpf,
-                "StationID": station_id,
-            }
-        else:
-            h1 = [tr for tr in passed_traces if tr["channel"].endswith("1")]
-            h2 = [tr for tr in passed_traces if tr["channel"].endswith("2")]
-            if not h1:
-                h1 = [tr for tr in passed_traces if tr["channel"].endswith("N")]
-                h2 = [tr for tr in passed_traces if tr["channel"].endswith("E")]
+        # Deal with channel vs simpler component names
+        channels = [pt["channel"] for pt in passed_traces]
+        _, chan2comp = component_to_channel(channels)
+        components = []
+        for chan in channels:
+            components.append(chan2comp[chan])
 
-            # Return empty dict if no horizontal channels are found
-            if not h1 or not h2:
-                return {}
+        filter_dict = {
+            "StationID": station_id,
+        }
+        for comp, meta in zip(components, passed_traces):
+            lp_key = f"{comp}Lowpass"
+            hp_key = f"{comp}Highpass"
+            filter_dict[lp_key] = (
+                meta["lowpass_filter"] if "lowpass_filter" in meta else np.nan
+            )
+            filter_dict[hp_key] = (
+                meta["highpass_filter"] if "highpass_filter" in meta else np.nan
+            )
 
-            h1 = h1[0]
-            h2 = h2[0]
-
-            # Return empty dict if the stream has not passed for the IMC requested
-            if imc == "H1":
-                if not h1["passed"]:
-                    return {}
-                station_id = ".".join([base_station_id, h1["channel"]])
-            if imc == "H2":
-                if not h2["passed"]:
-                    return {}
-                station_id = ".".join([base_station_id, h1["channel"]])
-            h1lpf = h1["lowpass_filter"] if "lowpass_filter" in h1 else np.nan
-            h1hpf = h1["highpass_filter"] if "highpass_filter" in h1 else np.nan
-            h2lpf = h2["lowpass_filter"] if "lowpass_filter" in h2 else np.nan
-            h2hpf = h2["highpass_filter"] if "highpass_filter" in h2 else np.nan
-            filter_dict = {
-                "H1Lowpass": h1lpf,
-                "H1Highpass": h1hpf,
-                "H2Lowpass": h2lpf,
-                "H2Highpass": h2hpf,
-                "StationID": station_id,
-            }
         return filter_dict
 
     def get_tables(self):
@@ -410,9 +368,8 @@ class Flatfile(object):
             tuple of pandas DataFrames, which consists of the SNR dataframe and its
             associated readme.
         """
-        imts, _ = get_config_imts_imcs(self.workspace.config)
         periods = np.array(
-            [float(imt.strip("sa")) for imt in imts if imt.startswith("sa")]
+            self.workspace.config["metrics"]["type_parameters"]["sa"]["periods"]
         )
 
         # List that will hold a dictionary for each row of the table

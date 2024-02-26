@@ -19,7 +19,7 @@ MIN_POINTS_IN_WINDOW = 10
 
 
 @processing_step
-def compute_snr(st, event, bandwidth=20.0, config=None):
+def compute_snr(st, event, smoothing_parameter=20.0, config=None):
     """Compute SNR dictionaries for a stream, looping over all traces.
 
     Args:
@@ -27,7 +27,7 @@ def compute_snr(st, event, bandwidth=20.0, config=None):
            Trace of data.
         event (ScalarEvent):
            ScalarEvent object.
-        bandwidth (float):
+        smoothing_parameter (float):
            Konno-Omachi smoothing bandwidth parameter.
         config (dict):
             Configuration dictionary (or None). See get_config().
@@ -37,7 +37,7 @@ def compute_snr(st, event, bandwidth=20.0, config=None):
     """
     for tr in st:
         # Do we have estimates of the signal split time?
-        compute_snr_trace(tr, event.magnitude, bandwidth)
+        compute_snr_trace(tr, event.magnitude, smoothing_parameter)
     return st
 
 
@@ -67,7 +67,7 @@ def snr_check(
             Brune corner frequency will be used.
         max_freq (float):
             Maximum frequency for threshold to be exeeded.
-        bandwidth (float):
+        smoothing_parameter (float):
             Konno-Omachi smoothing bandwidth parameter.
         f0_options (dict):
             Dictionary of f0 options (see config file).
@@ -112,13 +112,13 @@ def snr_check(
     return st
 
 
-def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
+def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
     """Compute SNR dictionaries for a trace.
 
     Args:
         event_magnitude (float):
             Earthquake magnitude.
-        bandwidth (float):
+        smoothing_parameter (float):
             Konno-Omachi smoothing bandwidth parameter.
 
     """
@@ -176,7 +176,7 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
             # ** better to know the FIRST reason if I have to pick one.
             if tr.passed:
                 tr.fail("SNR check; Not enough points in noise window")
-            compute_and_smooth_spectrum(tr, bandwidth, "event")
+            compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
             return tr
 
         # Check that there are a minimum number of points in the event window
@@ -184,12 +184,14 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
             # Fail the trace, but still compute the event spectra
             if tr.passed:
                 tr.fail("SNR check; Not enough points in event window")
-            compute_and_smooth_spectrum(tr, bandwidth, "event")
+            compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
             return tr
 
         nfft = max(next_pow_2(event.stats.npts), next_pow_2(preevent_noise.stats.npts))
-        compute_and_smooth_spectrum(tr, bandwidth, "noise", preevent_noise, nfft)
-        compute_and_smooth_spectrum(tr, bandwidth, "event", event, nfft)
+        compute_and_smooth_spectrum(
+            tr, smoothing_parameter, "noise", preevent_noise, nfft
+        )
+        compute_and_smooth_spectrum(tr, smoothing_parameter, "event", event, nfft)
 
         # Noise, event, and signal durations.
         #
@@ -254,7 +256,7 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
         )
         smooth_signal_normspectrum = smooth_signal_spectrum / np.sqrt(dur_shaking)
         snr = smooth_signal_normspectrum / smooth_event_noise_normspectrum
-        snr_dict = tr.set_cached(
+        tr.set_cached(
             "snr",
             {
                 "snr": snr,
@@ -264,6 +266,6 @@ def compute_snr_trace(tr, event_magnitude, bandwidth=20.0):
 
     else:
         # We do not have an estimate of the event split time for this trace
-        compute_and_smooth_spectrum(tr, bandwidth, "event")
+        compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
 
     return tr

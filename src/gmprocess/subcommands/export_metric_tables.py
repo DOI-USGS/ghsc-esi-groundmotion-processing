@@ -47,7 +47,6 @@ class ExportMetricTablesModule(base.SubcommandModule):
             if not self.workspace:
                 continue
             self._get_labels()
-            config = self._get_config()
 
             if "StationMetrics" not in self.workspace.dataset.auxiliary_data:
                 logging.warning(

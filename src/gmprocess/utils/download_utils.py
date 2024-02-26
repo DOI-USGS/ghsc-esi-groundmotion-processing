@@ -1,17 +1,14 @@
 """Module for download unility functions."""
 
 # stdlib imports
-import glob
 import json
 import logging
-import os
 import warnings
 
 # third party imports
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
-from obspy.core.utcdatetime import UTCDateTime
 from obspy.geodetics.base import locations2degrees
 from obspy.taup import TauPyModel
 

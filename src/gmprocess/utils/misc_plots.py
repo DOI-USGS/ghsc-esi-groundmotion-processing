@@ -7,12 +7,13 @@ from collections import Counter
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+from obspy import Trace
 from obspy.geodetics.base import gps2dist_azimuth
 from esi_utils_colors.cpalette import ColorPalette
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.dates import num2date
 
-from gmprocess.metrics.transform.oscillator import get_spectral
+from gmprocess.metrics.oscillator import calculate_spectrals
 
 MIN_MAG = 4.0
 MAX_MAG = 7.0
@@ -296,7 +297,7 @@ def plot_moveout(
     return (fig, ax)
 
 
-def plot_oscillators(st, periods=[0.1, 2, 5, 10], file=None, show=False):
+def plot_oscillators(st, periods=[0.1, 2, 5, 10], damping=0.05, file=None, show=False):
     """
     Produces a figure of the oscillator responses for a StationStream. The
     figure will plot the acceleration traces in the first row, and then an
@@ -308,6 +309,8 @@ def plot_oscillators(st, periods=[0.1, 2, 5, 10], file=None, show=False):
             StaionStream of data.
         periods (list):
             A list of periods (floats, in seconds).
+        damping (float):
+            Critical damping.
         file (str):
             File where the image will be saved. Default is None.
         show (bool):
@@ -321,27 +324,29 @@ def plot_oscillators(st, periods=[0.1, 2, 5, 10], file=None, show=False):
         # Ensure that axes is a 2D numpy array
         axes = axes.reshape(-1, 1)
 
+    # i is loop over periods
     for i in range(axes.shape[0]):
-        if i == 0:
-            plot_st = st
-            ylabel = "Acceleration (cm/s$^2$)"
-            textstr = "T: %s s \nPGA: %.2g cm/s$^2$"
-        else:
-            prd = periods[i - 1]
-            plot_st = get_spectral(prd, st)
-            ylabel = "SA %s s (%%g)" % prd
-            textstr = "T: %s s \nSA: %.2g %%g"
+        for j, trace in enumerate(st):
+            if i == 0:
+                result = trace
+                ylabel = "Acceleration (cm/s$^2$)"
+                textstr = "T: %s s \nPGA: %.2g cm/s$^2$"
+            else:
+                tmp = calculate_spectrals(trace, periods[i - 1], damping)[0]
+                result = trace.copy()
+                result.data = tmp
+                ylabel = "SA %s s (%%g)" % periods[i - 1]
+                textstr = "T: %s s \nSA: %.2g %%g"
 
-        for j, tr in enumerate(plot_st):
             ax = axes[i, j]
             dtimes = np.linspace(
-                0, tr.stats.endtime - tr.stats.starttime, tr.stats.npts
+                0, result.stats.endtime - result.stats.starttime, result.stats.npts
             )
-            ax.plot(dtimes, tr.data, "k", linewidth=0.5)
+            ax.plot(dtimes, result.data, "k", linewidth=0.5)
 
             # Get time and amplitude of max SA (using absolute value)
-            tmax = dtimes[np.argmax(abs(tr.data))]
-            sa_max = max(tr.data, key=abs)
+            tmax = dtimes[np.argmax(abs(result.data))]
+            sa_max = max(result.data, key=abs)
 
             ax.axvline(tmax, c="r", ls="--")
             ax.scatter([tmax], [sa_max], c="r", edgecolors="k", zorder=10)
@@ -350,7 +355,7 @@ def plot_oscillators(st, periods=[0.1, 2, 5, 10], file=None, show=False):
             )
 
             if i == 0:
-                ax.set_title(tr.id)
+                ax.set_title(result.id)
             if i == len(periods):
                 ax.set_xlabel("Time (s)")
             ax.set_ylabel(ylabel)

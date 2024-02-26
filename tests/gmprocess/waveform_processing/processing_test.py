@@ -40,7 +40,7 @@ def test_process_streams(geonet_uncorrected_waveforms):
             },
             {"detrend": {"detrending_method": "linear"}},
             {"detrend": {"detrending_method": "demean"}},
-            {"compute_snr": {"bandwidth": 20.0}},
+            {"compute_snr": {"smoothing_parameter": 20.0}},
             {
                 "snr_check": {
                     "threshold": 3.0,

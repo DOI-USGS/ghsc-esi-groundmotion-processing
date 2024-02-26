@@ -23,7 +23,7 @@ def test_gmprocess_config_test(tmp_path, script_runner):
     )
     assert ret.success
     assert dst_config_file.exists()
-    assert ws.config["fetchers"]["search_parameters"]["enabled"]
+    assert not ws.config["fetchers"]["search_parameters"]["enabled"]
     ws.close()
 
     # Read in config file
@@ -33,7 +33,7 @@ def test_gmprocess_config_test(tmp_path, script_runner):
         test_config = yaml.load(f)
 
     # Change a value
-    test_config["fetchers"]["search_parameters"]["enabled"] = False
+    test_config["fetchers"]["search_parameters"]["enabled"] = True
     dst_config_file.unlink()
     yaml.indent(mapping=4)
     yaml.preserve_quotes = True
@@ -50,4 +50,4 @@ def test_gmprocess_config_test(tmp_path, script_runner):
     ws = StreamWorkspace(dst_ws_file)
 
     # Check that update from file was made
-    assert ws.config["fetchers"]["search_parameters"]["enabled"] is False
+    assert ws.config["fetchers"]["search_parameters"]["enabled"] is True

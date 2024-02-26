@@ -690,7 +690,7 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
     # get undocumented SCNL code if it is present because location code doesn't seem to
     # be reported in the header.
     if "<SCNL>" in standard["comments"]:
-        scnl = re.search("<SCNL>(.*?)(?=\s)", standard["comments"]).group(1)
+        scnl = re.search("<SCNL>(.*?)(?=\s)", standard["comments"]).group(1)  # noqa
         # Do not use channel from here because we got it from orientation info
         # previously
         hdr["station"], _, hdr["network"], hdr["location"] = scnl.split(".")

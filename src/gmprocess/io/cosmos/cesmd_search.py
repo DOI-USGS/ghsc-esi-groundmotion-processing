@@ -495,7 +495,7 @@ def get_records(
         myzip.close()
 
         datafiles = []
-        for root, fdir, files in os.walk(output):
+        for root, _, files in os.walk(output):
             for tfile in files:
                 if not tfile.endswith(".json"):
                     datafile = os.path.join(root, tfile)
