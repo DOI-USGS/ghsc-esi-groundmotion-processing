@@ -1,5 +1,6 @@
 ## main
 
+## 2.0.0 / 2024-02-26
 - Documentation Updates
   - Switched over to the vectorized openquake for the mixed effects tutorial.
   - Fixed typos and removed unused imports for openquake
