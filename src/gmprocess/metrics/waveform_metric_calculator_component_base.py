@@ -119,6 +119,11 @@ class BaseComponent(ABC):
         """
         return {}
 
+    @classmethod
+    def clear_children(cls):
+        for sub_cls in cls.__subclasses__():
+            sub_cls.outputs = {}
+
 
 def get_channel_outputs(mbc):
     """Returns a tuple of two lists: the scalar outputs and the channel
