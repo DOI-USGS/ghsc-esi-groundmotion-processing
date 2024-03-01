@@ -249,6 +249,7 @@ class WaveformMetricCalculator:
                 metric_list.append(WaveformMetricType.metric_from_dict(mdict))
 
         self.wml = WaveformMetricList(metric_list)
+        BaseComponent.clear_children()
         return self.wml
 
     def _flatten_params(self, parameters):
