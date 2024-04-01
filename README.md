@@ -7,6 +7,7 @@ Most of the extensions that we provide are to handle strong motion data and rela
 - Please note, we are in the process of improving the documentation and that there are some incomplete sections.
 - The full documentation can be viewed locally by running the `docs/makedocs.sh` script.
 - The documentation is also available [here](https://ghsc.code-pages.usgs.gov/esi/groundmotion-processing/).
+- The Matlab functions included in the `tools/matlab` directory include a short [tutorial](tools/matlab/readme.html)
 
 # Getting Help
 The developers can be reached at [gmprocess@usgs.gov](mailto:gmprocess@usgs.gov).
