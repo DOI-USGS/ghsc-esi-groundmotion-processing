@@ -63,3 +63,5 @@ command needs to be run to to set up the config files and download relevant data
 ```{code-block}
 strec_cfg update [--datafolder /PATH/TO/STREC_DATA_DIR] --gcmt
 ```
+Note that `/PATH/TO/STREC_DATA_DIR` can be any directory on your system that you
+prefer. It will be used for storing the data that STREC uses.
