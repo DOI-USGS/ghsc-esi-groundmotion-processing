@@ -38,7 +38,7 @@ def test_regression():
 
 def test_plot():
     # read in data
-    datafiles, _ = read_data_dir("cwb", "us1000chhc", "2-ECU.dat")
+    datafiles, _ = read_data_dir("cwa", "us1000chhc", "2-ECU.dat")
     st = read_data(datafiles[0])[0]
 
     # Moveout plots

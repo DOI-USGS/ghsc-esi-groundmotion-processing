@@ -22,6 +22,8 @@
   - Move the "config" subcommand to be a stand-alone command line program called "gmprocess_config".
   - Removed "list_metrics" command.
   - Removed cap on python version, increased minimum version to 3.9
+  - Updated cwb_gather command, and renamed to cwa_gather and updated instructions to include TSMIP and StationXML now that it is available. 
+  - Capped scipy version to be less than 1.13 because of incompatibility with obspy (should be fixed in next version of obspy).
 
 ## 1.3.2 / 2024-02-03
 - Fix bug in trace units that was created in 1.3.1 and affects all velocity instruments.

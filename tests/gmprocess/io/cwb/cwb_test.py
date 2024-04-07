@@ -12,19 +12,19 @@ from gmprocess.utils.tests_utils import read_data_dir
 
 
 def test():
-    cwb_file, _ = read_data_dir("cwb", "us1000chhc", files=["1-EAS.dat"])
-    cwb_file = cwb_file[0]
-    assert is_cwb(cwb_file)
+    cwa_file, _ = read_data_dir("cwa", "us1000chhc", files=["1-EAS.dat"])
+    cwa_file = cwa_file[0]
+    assert is_cwb(cwa_file)
     assert is_cwb(os.path.abspath(__file__)) is False
-    stream = read_cwb(cwb_file)[0]
+    stream = read_cwb(cwa_file)[0]
     np.testing.assert_almost_equal(np.abs(stream[0].max()), 0.83699999999999997)
     assert stream[0].stats["sampling_rate"] == 50
 
-    cwb_file, _ = read_data_dir("cwb", "us1000chhc", files=["2-ECU.dat"])
-    cwb_file = cwb_file[0]
-    assert is_cwb(cwb_file)
+    cwa_file, _ = read_data_dir("cwa", "us1000chhc", files=["2-ECU.dat"])
+    cwa_file = cwa_file[0]
+    assert is_cwb(cwa_file)
     assert is_cwb(os.path.abspath(__file__)) is False
-    stream = read_cwb(cwb_file)[0]
+    stream = read_cwb(cwa_file)[0]
     for trace in stream:
         stats = trace.stats
         assert stats["station"] == "ECU"

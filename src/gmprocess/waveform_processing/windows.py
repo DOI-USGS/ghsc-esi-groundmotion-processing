@@ -13,6 +13,7 @@ from gmprocess.waveform_processing.phase import (
     pick_power,
     pick_ar,
     pick_baer,
+    pick_yeck,
     pick_kalkan,
     pick_travel,
 )
@@ -177,7 +178,7 @@ def signal_split(st, event, model=None, config=None):
 
     picker_config = config["pickers"]
 
-    loc, mean_snr = pick_travel(st, event, model)
+    loc, mean_snr = pick_travel(st, event, config, model)
     if loc > 0:
         tsplit = st[0].stats.starttime + loc
         preferred_picker = "travel_time"
@@ -187,23 +188,15 @@ def signal_split(st, event, model=None, config=None):
         for pick_method in pick_methods:
             try:
                 if pick_method == "ar":
-                    loc, mean_snr = pick_ar(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_ar(st, config=config)
                 elif pick_method == "baer":
-                    loc, mean_snr = pick_baer(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_baer(st, config=config)
                 elif pick_method == "power":
-                    loc, mean_snr = pick_power(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_power(st, config=config)
                 elif pick_method == "kalkan":
-                    loc, mean_snr = pick_kalkan(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_kalkan(st, config=config)
                 elif pick_method == "yeck":
-                    loc, mean_snr = pick_kalkan(st)
+                    loc, mean_snr = pick_yeck(st, config=config)
             except BaseException:
                 loc = -1
                 mean_snr = np.nan

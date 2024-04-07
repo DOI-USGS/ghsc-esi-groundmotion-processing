@@ -44,7 +44,7 @@ def test_gmpacket_writer(datafile=None, save_file=False):
             "station_latitude": 35.525,
             "station_elevation": 0.0,
             "epicentral_distance_km": 34.80446348367976,
-            "component": "Channels(component=h1)",
+            "component": "h1",
             "location": "--",
             "PGA(%g)": 47.028,
             "PGV(cm/s)": 78.356,
