@@ -16,12 +16,9 @@ from obspy.geodetics.base import locations2degrees
 from obspy.taup import TauPyModel
 
 # local imports
-from gmprocess.utils.config import get_config
 from gmprocess.core import scalar_event
 
 NAN_TIME = UTCDateTime("1970-01-01T00:00:00")
-
-CONFIG = get_config()
 
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
@@ -215,15 +212,12 @@ def power_picker(
     return rt2
 
 
-def pick_kalkan(stream, picker_config=None, config=None):
+def pick_kalkan(stream, config):
     """Wrapper around the Kalkan P-phase picker.
 
     Args:
         stream (gmprocess.core.stationstream.StationStream):
             Stream containing waveforms that need to be picked.
-        picker_config (dict):
-            Dictionary with parameters for Kalkan P-phase picker.
-            See picker.yml.
         config (dict):
             Configuration dictionary. Key value here is:
                 windows:
@@ -234,9 +228,8 @@ def pick_kalkan(stream, picker_config=None, config=None):
             - Best estimate for p-wave arrival time (s since start of trace).
             - Mean signal to noise ratio based on the pick.
     """
-    if picker_config is None:
-        picker_config = CONFIG["pickers"]
-    min_noise_dur = CONFIG["windows"]["window_checks"]["min_noise_duration"]
+    picker_config = config["pickers"]
+    min_noise_dur = config["windows"]["window_checks"]["min_noise_duration"]
     params = picker_config["kalkan"]
     locs = []
     for trace in stream:
@@ -257,14 +250,12 @@ def pick_kalkan(stream, picker_config=None, config=None):
     return (minloc, mean_snr)
 
 
-def pick_ar(stream, picker_config=None, config=None):
+def pick_ar(stream, config):
     """Wrapper around the AR P-phase picker.
 
     Args:
         stream (gmprocess.core.stationstream.StationStream):
             Stream containing waveforms that need to be picked.
-        picker_config (dict):
-            Dictionary with parameters for AR P-phase picker. See picker.yml.
         config (dict):
             Configuration dictionary. Key value here is:
                 windows:
@@ -275,9 +266,8 @@ def pick_ar(stream, picker_config=None, config=None):
             - Best estimate for p-wave arrival time (s since start of trace).
             - Mean signal to noise ratio based on the pick.
     """
-    if picker_config is None:
-        picker_config = CONFIG["pickers"]
-    min_noise_dur = CONFIG["windows"]["window_checks"]["min_noise_duration"]
+    picker_config = config["pickers"]
+    min_noise_dur = config["windows"]["window_checks"]["min_noise_duration"]
     params = picker_config["ar"]
     # Get the east, north, and vertical components from the stream
     st_e = stream.select(channel="??[E1]")
@@ -301,14 +291,12 @@ def pick_ar(stream, picker_config=None, config=None):
     return (minloc, mean_snr)
 
 
-def pick_baer(stream, picker_config=None, config=None):
+def pick_baer(stream, config):
     """Wrapper around the Baer P-phase picker.
 
     Args:
         stream (gmprocess.core.stationstream.StationStream):
             Stream containing waveforms that need to be picked.
-        picker_config (dict):
-            Dictionary with parameters for Baer P-phase picker. See picker.yml.
         config (dict):
             Configuration dictionary. Key value here is:
                 windows:
@@ -319,9 +307,8 @@ def pick_baer(stream, picker_config=None, config=None):
             - Best estimate for p-wave arrival time (s since start of trace).
             - Mean signal to noise ratio based on the pick.
     """
-    if picker_config is None:
-        picker_config = CONFIG["pickers"]
-    min_noise_dur = CONFIG["windows"]["window_checks"]["min_noise_duration"]
+    picker_config = config["pickers"]
+    min_noise_dur = config["windows"]["window_checks"]["min_noise_duration"]
     params = picker_config["baer"]
     # fix some param types
     params["tdownmax"] = int(params["tdownmax"])
@@ -347,7 +334,7 @@ def pick_baer(stream, picker_config=None, config=None):
     return (minloc, mean_snr)
 
 
-def pick_travel(stream, event, model=None, picker_config=None):
+def pick_travel(stream, event, config, model=None):
     """Use TauP travel time model to find P-Phase arrival time.
 
     Args:
@@ -355,6 +342,8 @@ def pick_travel(stream, event, model=None, picker_config=None):
             StationStream containing 1 or more channels of waveforms.
         event (scalar_event.ScalarEvent):
             Event origin/magnitude information.
+        config (dict):
+            Dictionary of config options.
         model (TauPyModel):
             TauPyModel object for computing travel times.
     Returns:
@@ -363,8 +352,7 @@ def pick_travel(stream, event, model=None, picker_config=None):
             - Mean signal to noise ratio based on the pick.
     """
     if model is None:
-        if picker_config is None:
-            picker_config = CONFIG["pickers"]
+        picker_config = config["pickers"]
         model = TauPyModel(picker_config["travel_time"]["model"])
     if stream[0].stats.starttime == NAN_TIME:
         return (-1, 0)
@@ -399,19 +387,21 @@ def pick_travel(stream, event, model=None, picker_config=None):
     return (minloc, mean_snr)
 
 
-def pick_yeck(stream):
+def pick_yeck(stream, config):
     """IN DEVELOPMENT! SNR based P-phase picker.
 
     Args:
         stream (StationStream):
             Stream containing waveforms that need to be picked.
+        config (dict):
+            Dictionary of config options.
     Returns:
         tuple:
             - Best estimate for p-wave arrival time (s since start of trace).
             - Mean signal to noise ratio based on the pick.
     """
     min_window = 5.0  # put into config
-    min_noise_dur = CONFIG["windows"]["window_checks"]["min_noise_duration"]
+    min_noise_dur = config["windows"]["window_checks"]["min_noise_duration"]
     locs = []
     for trace in stream:
         data = trace.data
@@ -440,14 +430,12 @@ def pick_yeck(stream):
     return (minloc, mean_snr)
 
 
-def pick_power(stream, picker_config=None, config=None):
+def pick_power(stream, config):
     """Wrapper around the power_picker.
 
     Args:
         stream (StationStream):
             Stream containing waveforms that need to be picked.
-        picker_config (dict):
-            Dictionary with parameters for power_picker. See picker.yml.
         config (dict):
             Configuration dictionary. Key value here is:
                 windows:
@@ -458,9 +446,8 @@ def pick_power(stream, picker_config=None, config=None):
             - Best estimate for p-wave arrival time (s since start of trace).
             - Mean signal to noise ratio based on the pick.
     """
-    if picker_config is None:
-        picker_config = CONFIG["pickers"]
-    min_noise_dur = CONFIG["windows"]["window_checks"]["min_noise_duration"]
+    picker_config = config["pickers"]
+    min_noise_dur = config["windows"]["window_checks"]["min_noise_duration"]
     params = picker_config["power"]
     locs = []
     for trace in stream:
@@ -725,7 +712,7 @@ def create_travel_time_dataframe(streams, catalog_file, ddepth, ddist, model):
     df_catalog = pd.read_csv(catalog_file)
 
     # Replace any negative depths with 0
-    df_catalog["depth"].clip(lower=0, inplace=True)
+    df_catalog["depth"] = df_catalog["depth"].clip(lower=0)
     catalog = []
     for idx, row in df_catalog.iterrows():
         event = scalar_event.ScalarEvent.from_params(

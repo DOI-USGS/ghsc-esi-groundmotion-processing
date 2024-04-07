@@ -156,7 +156,7 @@ class StreamArray(object):
                 if not fnmatch.fnmatch(inst.upper(), instrument.upper()):
                     continue
             sel.append(st)
-        return self.__class__(sel)
+        return self.__class__(sel, config=self.config)
 
     @property
     def n_passed(self):

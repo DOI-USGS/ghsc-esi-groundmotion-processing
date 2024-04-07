@@ -86,7 +86,7 @@ class GroundMotionPacketWriter(object):
 
     def get_trace_properties(self, trace, channel, loc, as_recorded):
         gmp_trace_props = TraceProperties(
-            channel_code=str(channel),
+            channel_code=channel._gmpacket_channel_code,
             location_code=loc,
             as_recorded=as_recorded,
             azimuth=trace.stats.standard.horizontal_orientation,
@@ -104,7 +104,6 @@ class GroundMotionPacketWriter(object):
         }
         gmp_metrics = []
         for metric in waveform_metric_list.metric_list:
-            logging.info("Outputting metric %s.%s.%s.%s", net, sta, channel, metric)
             data_value = metric.value(channel)
             if data_value is None:
                 continue
@@ -128,7 +127,6 @@ class GroundMotionPacketWriter(object):
                 gmp_metrics.append(gmp_metric)
         for metric_type, metric_holder in array_metrics.items():
             if metric_type == "FAS":
-                logging.warning("FAS metric type not fully supported by gmpacket yet.")
                 continue
             dimensions = metric_holder.get_dimensions()
             values = metric_holder.get_values()
@@ -157,7 +155,6 @@ class GroundMotionPacketWriter(object):
         files = []
         wmc = WaveformMetricCollection.from_workspace(self._workspace)
         for eventid in self._workspace.get_event_ids():
-            nevents += 1
             gmp_event = self.get_gmp_event(eventid)
             ds = self._workspace.dataset
             gmp_features = []
@@ -197,7 +194,9 @@ class GroundMotionPacketWriter(object):
                                 prov_doc = self._workspace.dataset.provenance[skey]
                             label_provenance = (
                                 provenance.LabelProvenance.from_provenance_document(
-                                    prov_doc, label=self._label
+                                    prov_doc,
+                                    label=self._label,
+                                    config=self._workspace.config,
                                 )
                             )
                             gmp_provenance = self.get_provenance(label_provenance)
@@ -265,8 +264,9 @@ class GroundMotionPacketWriter(object):
                 gmp_packet.save_to_json(outfile)
                 files.append(outfile)
                 nevents += 1
-
-        return (files, nevents, nstreams, ntraces)
+                return (files, nevents, nstreams, ntraces)
+            else:
+                return ([], 0, 0, 0)
 
     def __del__(self):
         self._workspace.close()

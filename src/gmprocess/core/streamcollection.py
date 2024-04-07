@@ -402,8 +402,9 @@ class StreamCollection(StreamArray):
                 preferred over dmg files.
         """
 
-        # If arguments are None, check the config
-        # If not in the config, use the default values at top of the file
+        # Note, that self.config will not exist in some circumstanses, so we need to
+        # provide defaults.
+
         preferences = {
             "max_dist_tolerance": max_dist_tolerance,
             "preference_order": preference_order,
@@ -411,12 +412,24 @@ class StreamCollection(StreamArray):
             "format_preference": format_preference,
         }
 
-        for key, val in preferences.items():
-            if val is None:
-                if self.config is None:
-                    self.config = get_config()
-                preferences[key] = self.config["duplicate"][key]
-
+        # Set the values from the config if it exists:
+        if hasattr(self, "config") and self.config is not None:
+            for key, val in preferences.items():
+                if val is None:
+                    preferences[key] = self.config["duplicate"][key]
+        else:
+            # Set to defaults:
+            preferences["max_dist_tolerance"] = 500.0
+            preferences["preference_order"] = [
+                "process_level",
+                "source_format",
+                "starttime",
+                "npts",
+                "sampling_rate",
+                "location_code",
+            ]
+            preferences["process_level_preference"] = ["V1", "V0", "V2"]
+            preferences["format_preference"] = ["cosmos", "dmg"]
         stream_params = gather_stream_parameters(self.streams)
 
         traces = []
@@ -718,9 +731,11 @@ def choose_preferred(
         elif pref == "location_code":
             sorted_codes = sorted([tr.stats.location for tr in traces])
             tr_prefs = [
-                sorted_codes.index(tr.stats.location)
-                if tr.stats.location != "--"
-                else np.nan
+                (
+                    sorted_codes.index(tr.stats.location)
+                    if tr.stats.location != "--"
+                    else np.nan
+                )
                 for tr in traces
             ]
 

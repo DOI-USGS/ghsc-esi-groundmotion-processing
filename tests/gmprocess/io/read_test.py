@@ -4,7 +4,7 @@ from gmprocess.utils.tests_utils import read_data_dir
 
 def test_read(config):
     cosmos_files, _ = read_data_dir("cosmos", "ci14155260", "Cosmos12TimeSeriesTest.v1")
-    cwb_files, _ = read_data_dir("cwb", "us1000chhc", "1-EAS.dat")
+    cwa_files, _ = read_data_dir("cwa", "us1000chhc", "1-EAS.dat")
     dmg_files, _ = read_data_dir("dmg", "nc71734741", "CE89146.V2")
     geonet_files, _ = read_data_dir(
         "geonet", "us1000778i", "20161113_110259_WTMC_20.V1A"
@@ -14,7 +14,7 @@ def test_read(config):
 
     file_dict = {}
     file_dict["cosmos"] = cosmos_files[0]
-    file_dict["cwb"] = cwb_files[0]
+    file_dict["cwb"] = cwa_files[0]
     file_dict["dmg"] = dmg_files[0]
     file_dict["geonet"] = geonet_files[0]
     file_dict["knet"] = knet_files[0]
