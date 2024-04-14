@@ -44,7 +44,7 @@ class DownloadModule(base.SubcommandModule):
             event_dir = gmrecords.data_path / event_id
             event_dir.mkdir(exist_ok=True)
 
-            if not events[ievent]:
+            if (events is None) or (not events[ievent]):
                 event_info = download_utils.download_comcat_event(event_id)
                 scalar_event.write_geojson(event_info, event_dir)
 
