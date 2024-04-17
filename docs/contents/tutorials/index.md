@@ -1,5 +1,9 @@
 # Tutorials
 
+:::{attention}
+The path to the data files for the tutorials is a relative path, and so these tutorial must be run from the base of the repository for the tutorial data to be found, or the paths must be manually adjusted.
+:::
+
 ```{toctree}
 ---
 maxdepth: 1
