@@ -215,7 +215,7 @@ Compute SNR dictionaries for a stream, looping over all traces.
            Trace of data.
         event (ScalarEvent):
            ScalarEvent object.
-        bandwidth (float):
+        smoothing_parameter (float):
            Konno-Omachi smoothing bandwidth parameter.
         config (dict):
             Configuration dictionary (or None). See get_config().
@@ -598,7 +598,7 @@ Check signal-to-noise ratio.
             Brune corner frequency will be used.
         max_freq (float):
             Maximum frequency for threshold to be exeeded.
-        bandwidth (float):
+        smoothing_parameter (float):
             Konno-Omachi smoothing bandwidth parameter.
         f0_options (dict):
             Dictionary of f0 options (see config file).
