@@ -11,7 +11,7 @@ maxdepth: 1
 Command Line Interface <cli>
 Python Scripting <scripting>
 Linear Mixed Effects Regressions <lme>
-Processed Waveforms from ASDF File <asdf_to_waveforms>
+Working with the gmprocess ASDF file <asdf_to_waveforms>
 Plotting Seismograms on Station Map <station_map>
 ```
 
