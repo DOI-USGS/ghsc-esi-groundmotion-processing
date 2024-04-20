@@ -9,7 +9,7 @@ The [default config file](https://code.usgs.gov/ghsc/esi/groundmotion-processing
 This is a useful reference as an overview of the config options. 
 
 When a project is created, it has an associated "config directory." 
-The project creation project will create a single file: 
+The project creation process will create a single file: 
 
 ```
 conf/
@@ -19,17 +19,7 @@ conf/
 Any `*.yml` files in this directory will be merged with the default config that is in  source code repository. 
 The reason for this system is that 
 (1) we don't want to overwrite your customized config when the code is updated, and 
-(2) by merging your project config into the default config, we should avoid breaking functionality that relies on config updates.
-
-In many cases, you may want to turn off or turn on specific fetchers. 
-This is done with the `enabled` key within each fetcher. 
-For example, to turn off a fetcher you would need to add the following code to a `*.yml` in the project conf directory:
-
-```yaml
-fetchers:
-    KNETFetcher:
-        enabled: False
-```
+(2) by merging your project config into the default config, we avoid breaking functionality that relies on config updates.
 
 Note that the name of the config file doesn't matter. 
 You can put this in the `user.yml`  file or into another file, whatever is most convenient for you. 

@@ -4,10 +4,10 @@
 ---
 maxdepth: 1
 ---
-   Data Structures <data_structures>
-   Workspace <workspace>
+   Core gmprocess objects <data_structures>
+   The gmprocess Extension of the ASDF file <workspace>
    Configuration File <config_file>
-   `gmrecords` Program <gmrecords>
+   The gmrecords Program <gmrecords>
    Processing Steps <processing>
    Utilities <utilities>
 ```

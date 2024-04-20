@@ -1,5 +1,5 @@
-Workspace
-=========
+The gmprocess Extension of the ASDF file
+========================================
 
 We use the term "workspace" to refer to the HDF file that serves as a
 container to hold the inputs, important intermediate results, and
