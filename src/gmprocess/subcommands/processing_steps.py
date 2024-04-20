@@ -2,6 +2,7 @@
 
 import logging
 import collections
+import inspect
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
@@ -51,6 +52,7 @@ class processing_stepsModule(base.SubcommandModule):
                 print("")
                 print(step)
                 print("=" * len(step))
+                print(f"{func.__name__}{inspect.signature(func)}\n")
                 print(func.__doc__)
         else:
             with open(gmrecords.args.output_markdown, "w") as out:
@@ -58,5 +60,6 @@ class processing_stepsModule(base.SubcommandModule):
                     out.write("\n")
                     out.write("## " + step + "\n")
                     out.write("```\n")
+                    out.write(f"{func.__name__}{inspect.signature(func)}\n\n")
                     out.write(func.__doc__ + "\n")
                     out.write("```\n")

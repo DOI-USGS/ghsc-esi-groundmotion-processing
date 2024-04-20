@@ -19,7 +19,12 @@ files output by gmprocess, the overview of the organizational structure in the
 should be a useful reference. 
 
 Note that the `StreamWorkspace` object is essentially a gmprocess wrapper around the ASDF structure, and that ASDF is a specific HDF5 format developed for seismological data.
-As such, it is possible to work with the ASDF file using the `StreamWorkspace` functions, the pyasdf library, or the h5py library. 
+As such, it is possible to work with the ASDF file using the `StreamWorkspace` functions, the pyasdf library, or the h5py library.
+
+```{note} 
+We recommend that users who are new to python and/or gmprocess should only use the `StreamWorkspace` interface, which handles a lot of the more confusing bookkeeping for accessing and arranging data from the various sections of the ASDF file (e.g., `Waveforms`, `AuxiliaryData`, and `Provenance`). 
+Only more advanced users should attempt to use the pyasdf and h5py interfaces.
+```
 
 ## The StreamWorkspace interface
 

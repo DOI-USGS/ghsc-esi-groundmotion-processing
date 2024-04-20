@@ -1,6 +1,8 @@
 
 ## adjust_highpass_corner
 ```
+adjust_highpass_corner(st, step_factor=1.5, maximum_freq=0.5, max_final_displacement=0.2, max_displacment_ratio=0.2, config=None)
+
 Adjust high pass corner frequency.
 
     Options for further refinement of the highpass corner. Currently, this
@@ -38,6 +40,8 @@ Adjust high pass corner frequency.
 
 ## check_clipping
 ```
+check_clipping(st, event, threshold=0.2, config=None)
+
 Apply clicking check.
 
     Lower thresholds will pass fewer streams but will give less false negatives
@@ -61,6 +65,8 @@ Apply clicking check.
 
 ## check_free_field
 ```
+check_free_field(st, reject_non_free_field=True, config=None)
+
 Checks free field status of stream.
 
     Args:
@@ -78,6 +84,8 @@ Checks free field status of stream.
 
 ## check_instrument
 ```
+check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None)
+
 Test the channels of the station.
 
     The purpose of the maximum limit is to skip over stations with muliple
@@ -107,6 +115,8 @@ Test the channels of the station.
 
 ## check_max_amplitude
 ```
+check_max_amplitude(st, min=5, max=2000000.0, config=None)
+
 Check the maximum amplitude of the traces.
 
     Checks that the maximum amplitude of the traces in the stream are within a defined
@@ -130,6 +140,8 @@ Check the maximum amplitude of the traces.
 
 ## check_sta_lta
 ```
+check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=None)
+
 Apply STA/LTA ratio criteria.
 
     Checks that the maximum STA/LTA ratio of the stream's traces is above a threshold.
@@ -153,6 +165,8 @@ Apply STA/LTA ratio criteria.
 
 ## check_tail
 ```
+check_tail(st, duration=5.0, max_vel_ratio=0.3, max_dis_ratio=0.9, config=None)
+
 Check for abnormally arge values in the tail of the stream.
 
     This QA check looks for the presence of abnomally large values in the tail
@@ -186,6 +200,8 @@ Check for abnormally arge values in the tail of the stream.
 
 ## check_zero_crossings
 ```
+check_zero_crossings(st, min_crossings=0.1, config=None)
+
 Requires a minimum zero crossing rate.
 
     This is intended to screen out instrumental failures or resetting.
@@ -208,6 +224,8 @@ Requires a minimum zero crossing rate.
 
 ## compute_snr
 ```
+compute_snr(st, event, smoothing_parameter=20.0, config=None)
+
 Compute SNR dictionaries for a stream, looping over all traces.
 
     Args:
@@ -227,6 +245,8 @@ Compute SNR dictionaries for a stream, looping over all traces.
 
 ## cut
 ```
+cut(st, sec_before_split=2.0, config=None)
+
 Cut/trim the record.
 
     This method minimally requires that the windows.signal_end method has been
@@ -256,6 +276,8 @@ Cut/trim the record.
 
 ## detrend
 ```
+detrend(st, detrending_method=None, config=None)
+
 Detrend stream.
 
     Args:
@@ -281,6 +303,8 @@ Detrend stream.
 
 ## fit_spectra
 ```
+fit_spectra(st, event, kappa=0.035, RP=0.55, VHC=0.7071068, FSE=2.0, density=2.8, shear_vel=3.7, R0=1.0, moment_factor=100, min_stress=0.1, max_stress=10000, config=None)
+
 Fit spectra vaying stress_drop and moment.
 
     Args:
@@ -324,6 +348,8 @@ Fit spectra vaying stress_drop and moment.
 
 ## get_corner_frequencies
 ```
+get_corner_frequencies(st, event, method='snr', constant={'highpass': 0.08, 'lowpass': 20.0}, snr={'same_horiz': True}, magnitude={'minmag': [-999.0, 3.5, 5.5], 'highpass': [0.5, 0.3, 0.1], 'lowpass': [25.0, 35.0, 40.0]}, config=None)
+
 Select corner frequencies.
 
     Note that this step only selects the highpass and lowpass corners. The results can
@@ -353,6 +379,8 @@ Select corner frequencies.
 
 ## highpass_filter
 ```
+highpass_filter(st, frequency_domain=True, filter_order=5, number_of_passes=1, config=None)
+
 Apply the highpass filter.
 
     Args:
@@ -375,6 +403,8 @@ Apply the highpass filter.
 
 ## lowpass_filter
 ```
+lowpass_filter(st, frequency_domain=True, filter_order=5, number_of_passes=1, config=None)
+
 Apply the lowpass filter.
 
     Args:
@@ -397,6 +427,8 @@ Apply the lowpass filter.
 
 ## lowpass_max_frequency
 ```
+lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None)
+
 Cap lowpass corner frequency.
 
     Options on this include a constant maximum, or as a fraction of the Nyquist.
@@ -418,6 +450,8 @@ Cap lowpass corner frequency.
 
 ## max_traces
 ```
+max_traces(st, n_max=3, config=None)
+
 Reject a stream if it has more than n_max traces.
 
     The purpose of this is to skip over stations with muliple strong motion
@@ -439,6 +473,8 @@ Reject a stream if it has more than n_max traces.
 
 ## min_sample_rate
 ```
+min_sample_rate(st, min_sps=20.0, config=None)
+
 Require a minimum sample rate.
 
     Args:
@@ -456,6 +492,8 @@ Require a minimum sample rate.
 
 ## nnet_qa
 ```
+nnet_qa(st, acceptance_threshold, model_name, config=None)
+
 Apply the neural network QA algorithm by Bellagamba et al. (2019),
 
     Assess the quality of a stream by analyzing its two horizontal components
@@ -488,6 +526,8 @@ Apply the neural network QA algorithm by Bellagamba et al. (2019),
 
 ## remove_response
 ```
+remove_response(st, pre_filt=True, f1=0.001, f2=0.005, f3=None, f4=None, water_level=60, inv=None, config=None)
+
 Perform the instrument response correction.
 
     If the response information is not already attached to the stream, then an
@@ -525,6 +565,8 @@ Perform the instrument response correction.
 
 ## resample
 ```
+resample(st, new_sampling_rate=None, method=None, a=None, config=None)
+
 Resample stream.
 
     Args:
@@ -546,6 +588,8 @@ Resample stream.
 
 ## ridder_fchp
 ```
+ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None)
+
 Search for highpass corner using Ridder's method.
 
     Search such that the criterion that the ratio between the maximum of a third order
@@ -582,6 +626,8 @@ Search for highpass corner using Ridder's method.
 
 ## snr_check
 ```
+snr_check(st, mag, threshold=2.0, min_freq='f0', max_freq=5.0, f0_options={'stress_drop': 10, 'shear_vel': 3.7, 'ceiling': 2.0, 'floor': 0.1}, config=None)
+
 Check signal-to-noise ratio.
 
     Requires noise/signal windowing to have succeeded.
@@ -612,6 +658,8 @@ Check signal-to-noise ratio.
 
 ## taper
 ```
+taper(st, type='hann', width=0.05, side='both', config=None)
+
 Taper streams.
 
     Args:
@@ -633,6 +681,8 @@ Taper streams.
 
 ## trim_multiple_events
 ```
+trim_multiple_events(st, event, catalog, travel_time_df, pga_factor, pct_window_reject, gmpe, site_parameters, rupture_parameters)
+
 Trim record windows based on local event catalog and travel times.
 
     Uses a catalog (list of ScalarEvents) to handle cases where a trace might

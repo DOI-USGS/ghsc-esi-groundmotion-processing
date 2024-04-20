@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-# Core gmprocess objects
+# Core gmprocess Objects
 
 
 ## StationTrace

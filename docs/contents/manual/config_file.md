@@ -4,6 +4,8 @@
 ## Overview
 
 The config file is the primary means by which users can adjust and customize *gmprocess*. 
+In this section, we give a quick high-level overview of the config file to illustrate how it works, and subsequent sections go into more detail.
+Modifying the config can be somewhat confusing for new users, but bear in mind that if you just want the default config options, you do not have to make any changes to the config file.
 
 The [default config file](https://code.usgs.gov/ghsc/esi/groundmotion-processing/blob/main/src/gmprocess/data/config_production.yml) in the source code includes comments to help explain the values and their units.
 This is a useful reference as an overview of the config options. 
@@ -16,12 +18,22 @@ conf/
 └── user.yml
 ```
 
+Initially, this file will simply contain your name and email (which you are prompted to provide when creating the project) like this
+```yaml
+user:
+    name: George M. Process
+    email: gmprocess@usgs.gov
+```
+
+This information is important to put in the data provenance so that anyone you share the data with will have a record of who created it. 
+
 Any `*.yml` files in this directory will be merged with the default config that is in  source code repository. 
 The reason for this system is that 
 (1) we don't want to overwrite your customized config when the code is updated, and 
 (2) by merging your project config into the default config, we avoid breaking functionality that relies on config updates.
+(3) specifying all config options can result in a long file, and it can be convenient to break it up into smaller files.
 
-Note that the name of the config file doesn't matter. 
+Note that the name of the config files doesn't matter. 
 You can put this in the `user.yml`  file or into another file, whatever is most convenient for you. 
 For example, it might be convenient to organize the config files by the top level sections:
 
@@ -34,10 +46,30 @@ conf/
 └── processing.yml
 ```
 
+A very simple and common change to the config file is to turn specific data fetcheres on or off.
+By default, all the fetchers are turned on, but if you know that you are not interested in data from Japan for a specific project, you can turn it off by settign the "enabled" value to "False:
+```yaml
+fetchers:
+    KNETFetcher:
+        # Enable this fetcher?
+        enabled: True
+```
+
+Additionally, if you know that you will be using the KNETFetcher, you will want to enable it and fill in your username and password:
+```yaml
+fetchers:
+    KNETFetcher:
+        # Enable this fetcher?
+        enabled: True
+        user: gmprocess
+        password: n0tarea1pa$$w0rd
+```
+
+
 ## The "processing" section
 
-The `processing` section behaves somewhat differently than other sections because it is how you control the processing steps. 
-In many cases, processing steps must be repeated, such as the `detrend` step. 
+The `processing` section behaves somewhat differently than other sections because some steps may need to be repeated. 
+The most common example is of this is the `detrend` step, which often has to happen multiple times. 
 Here is an example of the processing section that specifies the processing steps but does not specify any of the function arguments except for the `detrend` step:
 
 ```yaml
@@ -70,7 +102,7 @@ processing:
     - fit_spectra:
 ```
 
-The more complex structure in this section is necessary so that you can modify the steps that are used and their order. 
+The more complex structure in this section is necessary so that you can not only modify the steps that are used, but also control their order. 
 Thus, in this section, you turn off a step by deleting it's entry.
 
 To see the available arguments for each step and their default values, you can look up the function in the `gmprocess/waveform_processing` directory 
@@ -82,7 +114,33 @@ If you are familiar with python, you'll note that each available processing step
 marked with the `@processing_step` decorator. 
 ```
 
-Many sections of the config file are not of interest to most uses, such as the details of the `pickers` section. 
+One challenge for new users can be identifying the available options for the processing steps. 
+For example, let's say you want to change the width for the taper step.
+One option is to look in the entry for the `taper` step in the 
+[Processing Steps](https://ghsc.code-pages.usgs.gov/esi/groundmotion-processing/contents/manual/processing.html#taper)
+section of the manual.
+Here, you can see the argument defaults and that the "taper" step has the following arguments:
+```
+        st (StationStream):
+            Stream of data.
+        type (str):
+            Taper type.
+        width (float):
+            Taper width as percentage of trace length.
+        side (str):
+            Valid options: "both", "left", "right".
+        config (dict):
+            Configuration dictionary (or None). See get_config().
+```
+Note that the `st` and `config` arguments are handled internally by the processing code, and so they are not specified in the config file.
+So if you want to change the width, you would modify the entry within "processing" section of the config file like this:
+
+```yaml
+    - taper:
+        width: 0.1
+```
+
+Many sections of the config file are not of interest most of the time, such as the details of the `pickers` section. 
 However, the `p_arrival_shift` value is very useful if you are collecting data in a region where the travel time picks are often later than the actual p-wave arrival, causing some of the shaking to be placed in the "noise" window, which in turn causes the record to fail the signal-to-noise ratio test.
 
 Please post any questions or issues that you have regarding the config to the GitLab
@@ -227,6 +285,10 @@ The end of the signal window is defined in the `signal_end` subsection here, and
    - `model`: Set the end of the signal window using a shaking duration model; this options makes use of the keys `model` and `epsilon`.
    - `magnitude`: Use the magnitude-based signal end as defined by CISN, which is `magnitude/2` (units of minutes).
    - `none`: Use the full available record; this is useful if the records have already been trimmed to a reasonable level and you do not wish to further reduce trace duration.
+
+The `no_noise` option allows processing to run for older data for which no pre-event noise is available.
+Essentially it sets the "split time" to be the start time of the record, which would normally fail because it is estiamted as the p-wave arrival time. 
+
 
 ## The "check_stream" section
 

@@ -4,7 +4,7 @@
 ---
 maxdepth: 1
 ---
-   Core gmprocess objects <data_structures>
+   Core gmprocess Objects <data_structures>
    The gmprocess Extension of the ASDF file <workspace>
    Configuration File <config_file>
    The gmrecords Program <gmrecords>
