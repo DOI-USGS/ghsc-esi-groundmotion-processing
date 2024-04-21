@@ -152,8 +152,14 @@ class ScalarEvent(Event):
             }
 
         """Create a ScalarEvent (subclass of Event) from event geojson file."""
-        with open(filename, "rt", encoding="utf-8") as fin:
-            data = json.load(fin)
+        if isinstance(filename, dict):
+            # This is just a workaround so that we can hand off the dictionary returned
+            # by `download_comcat_event` without having to write it to a file. This is
+            # helpful for the tutorial in the documentation.
+            data = filename
+        else:
+            with open(filename, "rt", encoding="utf-8") as fin:
+                data = json.load(fin)
         if "properties" in data:
             event_values = geojson_to_event(data)
         else:

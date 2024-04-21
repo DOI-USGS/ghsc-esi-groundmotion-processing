@@ -110,8 +110,8 @@ To see the available arguments for each step and their default values, you can l
 is the link to it). 
 
 ```{Hint}
-If you are familiar with python, you'll note that each available processing step is
-marked with the `@processing_step` decorator. 
+For those that are familiar with python, each available processing step is marked with the `@processing_step` decorator. 
+This makes it easy to find the processing step functions in the source code.
 ```
 
 One challenge for new users can be identifying the available options for the processing steps. 

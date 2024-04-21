@@ -14,10 +14,11 @@ If not, please contact the developers.
 ---
 maxdepth: 1
 ---
+A Simple Introduction <simple>
 Command Line Interface <cli>
 Python Scripting <scripting>
 Linear Mixed Effects Regressions <lme>
-Working with the gmprocess ASDF file <asdf_to_waveforms>
+Working with the gmprocess ASDF File <asdf_file>
 Plotting Seismograms on Station Map <station_map>
 ```
 

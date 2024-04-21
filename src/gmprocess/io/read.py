@@ -24,7 +24,7 @@ def read_data(filename, config=None, read_format=None, **kwargs):
             Format of file
 
     Returns:
-        list: Sequence of obspy.core.stream.Streams read from file
+        list: Sequence of StationStream objects.
     """
     filename = Path(filename)
 
