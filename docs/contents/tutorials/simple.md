@@ -79,7 +79,7 @@ It is worth emphasizing that an important feature of gmprocess is that although 
 To plot the data from one of the StationStreams
 ```{code-cell} ipython3
 ---
-render:
+mystnb:
   image:
     height: 350px
 ---
@@ -197,7 +197,7 @@ And we can plot the processed waveforms and compare to the unprocessed waveforms
 
 ```{code-cell} ipython3
 ---
-render:
+mystnb:
   image:
     height: 350px
 ---

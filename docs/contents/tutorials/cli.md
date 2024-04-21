@@ -4,7 +4,7 @@ This example covers using the `gmrecords` command line program in a typical work
 The configuration and parameter files are in the `docs/contents/tutorials` directory.
 
 ```{seealso}
-Be sure to review the discussion of all of the `gmrecords` subcommands in section {ref}`gmrecords` and configuring projects in section {ref}`Initial Setup`.
+Be sure to review the discussion of all of the `gmrecords` subcommands in section {ref}`The gmrecords Program` and configuring projects in section {ref}`Initial Setup`.
 ```
 
 ## Local `gmprocess` configuration

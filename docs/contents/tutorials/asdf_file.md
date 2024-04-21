@@ -15,8 +15,8 @@ kernelspec:
 For browsing information in the 
 [HDF5](https://www.hdfgroup.org/solutions/hdf5/)/[ASDF](https://asdf-definition.readthedocs.io/en/latest/)
 files output by gmprocess, the overview of the organizational structure in the 
-[Workspace section of the manual](../manual/workspace)
-should be a useful reference. 
+[Workspace](../manual/workspace)
+section of the manual should be a useful reference. 
 
 Note that the `StreamWorkspace` object is essentially a gmprocess wrapper around the ASDF structure, and that ASDF is a specific HDF5 format developed for seismological data.
 As such, it is possible to work with the ASDF file using the `StreamWorkspace` functions, the pyasdf library, or the h5py library.
@@ -71,7 +71,7 @@ The `describe` function prints a summary of the StreamCollection, which groups t
 And the waveforms can be plotted by selecting the first (and only) StationStream with
 ```{code-cell} ipython3
 ---
-render:
+mystnb:
   image:
     height: 350px
 ---
@@ -247,7 +247,7 @@ Note that ASDF uses a "tag" that combines the event ID and label.
 
 ```{code-cell} ipython3
 ---
-render:
+mystnb:
   image:
     height: 350px
 ---
