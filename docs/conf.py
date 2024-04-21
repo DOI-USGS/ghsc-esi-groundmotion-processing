@@ -18,7 +18,7 @@ from gmprocess.apps.gmrecords import GMrecordsApp
 sys.path.insert(0, str(Path(__file__).parent / ".."))
 
 
-# -- Create processing steps markdown ----------------------------------------
+# -- Create processing steps with myst syntax --------------------------------
 app = GMrecordsApp()
 app.load_subcommands()
 args = {
@@ -32,9 +32,10 @@ args = {
     "subcommand": "processing_steps",
     "func": app.classes["processing_steps"]["class"],
     "log": None,
-    "output_markdown": str(
+    "path": str(
         Path(__file__).parent / "contents" / "manual" / "processing_steps_output.md"
     ),
+    "output_type": "myst",
 }
 app.main(**args)
 
