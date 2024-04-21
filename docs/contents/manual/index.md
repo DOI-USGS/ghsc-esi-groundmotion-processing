@@ -9,7 +9,6 @@ maxdepth: 1
    Configuration File <config_file>
    The gmrecords Program <gmrecords>
    Processing Steps <processing>
-   Utilities <utilities>
 ```
 
 % Indices and tables
