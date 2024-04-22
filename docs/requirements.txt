@@ -6,7 +6,6 @@ myst-parser
 altair
 nbsphinx
 recommonmark
-sphinx-autoapi
 setuptools_scm
 sphinx-copybutton
 sphinx-inline-tabs

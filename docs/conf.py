@@ -65,6 +65,7 @@ extensions = [
     "myst_nb",
     "sphinx_copybutton",
     "sphinx_inline_tabs",
+    "sphinx-apidoc",
 ]
 
 myst_enable_extensions = [
