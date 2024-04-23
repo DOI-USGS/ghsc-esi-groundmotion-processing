@@ -351,56 +351,50 @@ This section is for setting options for the waveform metrics.
 The options are further described in this example:
 ```yaml
 metrics:
-  # Output IMCs
-  # Valid IMCs: channels, geometric_mean, gmrotd,
-  # greater_of_two_horizontals, rotd
-  output_imcs: [ROTD50, channels]
-  # Output IMTs
-  # Valid IMTs: arias, fas, pga, pgv, sa, duration, sorted_duration
-  output_imts: [PGA, PGV, SA, duration, sorted_duration]
-  # Periods defined for the SA and FAS imts
-  sa:
-      # damping used to calculate the spectral response
-      damping: 0.05
-      # periods for which the spectral response is calculated
-      periods:
-        # Parameters defining an array of periods
-        # syntax is the same as that used for numpy linspace and logspace
-        # start (first value), stop (last value), num (number of values)
-        start: 1.0
-        stop: 3.0
-        num: 3
-        # Valid spacing: linspace, logspace
-        spacing: linspace
-        # Defines whether the above array is used. If False, only the
-        # defined_periods are used
-        use_array: False
-        # Defines a list of user defined periods that are not
-        # predefined by the array of periods
-        defined_periods: [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25,
-          0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0]
-  fas:
-      smoothing: konno_ohmachi
-      bandwidth: 20.0
-      allow_nans: True
-      periods:
-        # Parameters defining an array of periods
-        # syntax is the same as that used for numpy linspace and logspace
-        # start (first value), stop (last value), num (number of values)
-        start: 1.0
-        stop: 3.0
-        num: 3
-        # Valid spacing: linspace, logspace
-        spacing: linspace
-        # Defines whether the above array is used. If false, only the
-        # defined_periods are used
-        use_array: True
-        # A list of user defined periods that are not
-        # predefined by the array of periods.
-        defined_periods: [0.3]
-  duration:
-      intervals: [5-75, 5-95]
+  # Specify output IMs (intensity metric)
+  # Each IM is defined by an IMC (IM component) and a IMT (IM type)
+  # Supported IMCs: channels, arithmetric_mean, geometric_mean, quadratic_mean, rotd
+  # Supported IMT: pga, pgv, sa, duration, sorted_duration, arias, fas, cav
 
+  # The 'components_and_types' section has key-value pairs in which the key is the
+  # metric component and the value is a list of metric types for that component.
+  # Do *not* delete a key to remove a component, it will be replaced with the default.
+  # To remove a component, set it's types as an empty list.
+  components_and_types: 
+    channels: [pga, pgv, sa, duration, cav]
+    rotd: [pga, pgv, sa]
+    geometric_mean: [duration]
+    quadratic_mean: [fas]
+
+  component_parameters:
+    rotd:
+       percentiles: [50.0]
+
+  type_parameters:
+    # Additional parameters required for SA
+    sa:
+        # damping used to calculate the spectral response; if this list includes more than
+        # one value, all periods will be computed for each damping level.
+        damping: [0.05]
+        # periods for which the spectral response is calculated
+        periods: [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0]
+
+    # Additional parameters required for FAS
+    fas:
+        smoothing_method: konno_ohmachi
+        smoothing_parameter: 20.0
+        allow_nans: True
+        frequencies:
+            # Parameters defining an array of frequencies.
+            # syntax is the same as that used for numpy linspace and logspace
+            # start (first value), stop (last value), num (number of values)
+            start: 0.001
+            stop: 100.0
+            num: 401
+
+    # Additional parameters required for duration
+    duration:
+        intervals: [5-75, 5-95]
 ```
 
 ## The "gmm_selection" section
@@ -424,18 +418,18 @@ gmm_selection:
 Options for how integration is performed. 
 
 ```yaml
+integration:
     # Frequency or time domain integration?
-    frequency: False
+    frequency: True
     # Assumption for the first value returned in the resulting trace.
     initial: 0.0
     # Remove the mean of the data prior to integration.
     demean: False
     # Taper the data prior to integration.
-    taper:
-        taper: False
-        type: hann
-        width: 0.05
-        side: both
+    taper: False
+    taper_width: 0.05
+    taper_type: hann
+    taper_side: both
 ```
 
 ## The "differentiation" section 
