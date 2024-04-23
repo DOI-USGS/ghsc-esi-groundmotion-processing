@@ -52,9 +52,6 @@ def cut(st, sec_before_split=2.0, config=None):
     specified, which uses the noise/signal split time that was estiamted by the
     windows.signal_split mehtod.
 
-    # Recent changes to reflect major updates to how oq-hazardlib works:
-    # https://github.com/gem/oq-engine/issues/7018
-
     Args:
         st (StationStream):
             Stream of data.

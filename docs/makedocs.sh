@@ -19,7 +19,6 @@ function build_docs() {
     fi
     rm -fr ../public
     cp -r _build/html ../public
-    touch ../public/.nojekyll
 }
 
 

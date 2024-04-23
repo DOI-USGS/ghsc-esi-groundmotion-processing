@@ -1,4 +1,4 @@
-# gmrecords
+# The gmrecords Program
 
 ```{seealso}
 Be sure to review the discussion of how the `gmrecords` command line interface makes use of "projects" in the {ref}`Initial Setup` section.
