@@ -30,7 +30,7 @@
             "strong motion",
             "amplitudes",
             "ground motion",
-            "usgs-artificial-intelligence"
+            "usg-artificial-intelligence"
         ],
         "contact": {
             "name": "Eric Thompson",
@@ -38,8 +38,7 @@
         },
         "date": {
             "metadataLastUpdated": "2024-02-26"
-        },
-        "licenseURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/v2.0.0/LICENSE.md"
+        }
     },
     {
         "name": "groundmotion-processing",
@@ -79,8 +78,7 @@
         },
         "date": {
             "metadataLastUpdated": "2024-02-03"
-        },
-        "licenseURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/v1.3.2/LICENSE.md"
+        }
     },
     {
         "name": "groundmotion-processing",
@@ -120,8 +118,7 @@
         },
         "date": {
             "metadataLastUpdated": "2024-01-31"
-        },
-        "licenseURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/v1.3.1/LICENSE.md"
+        }
     },
     {
         "name": "groundmotion-processing",
@@ -162,8 +159,7 @@
         },
         "date": {
             "metadataLastUpdated": "2023-11-18"
-        },
-        "licenseURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/v1.3.0/LICENSE.md"
+        }
     },
     {
         "name": "groundmotion-processing",
