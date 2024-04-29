@@ -20,7 +20,7 @@ Acknowledgements
 Reference
 : If you wish to cite this software, please use this reference:
 
-: > Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey Software Release. [https://doi.org/10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ)
+: > Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey software release. [https://doi.org/10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ)
 
 
 License
