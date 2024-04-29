@@ -3,7 +3,7 @@
         "name": "groundmotion-processing",
         "description": "Read and process ground motion waveform data",
         "version": "v2.0.0",
-        "status": "Development",
+        "status": "Production",
         "organization": "U.S. Geological Survey",
         "vcs": "git",
         "repositoryURL": "https://code.usgs.gov/ghsc/esi/groundmotion-processing.git",
@@ -21,13 +21,16 @@
             "exemptionText": null
         },
         "laborHours": 1,
-        "languages": ["python"],
+        "languages": [
+            "python"
+        ],
         "tags": [
             "earthquake",
             "impact",
             "strong motion",
             "amplitudes",
-            "ground motion"
+            "ground motion",
+            "usgs-artificial-intelligence"
         ],
         "contact": {
             "name": "Eric Thompson",
@@ -60,7 +63,9 @@
             "exemptionText": null
         },
         "laborHours": 1,
-        "languages": ["python"],
+        "languages": [
+            "python"
+        ],
         "tags": [
             "earthquake",
             "impact",
@@ -99,7 +104,9 @@
             "exemptionText": null
         },
         "laborHours": 1,
-        "languages": ["python"],
+        "languages": [
+            "python"
+        ],
         "tags": [
             "earthquake",
             "impact",
