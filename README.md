@@ -18,9 +18,9 @@ If you would like to contribute merge requests to this repository, please let us
 This will require that you create an account at code.usgs.gov, which is a more involved process than creating a personal account at gitub.com and posting to the issues on the github mirror.
 
 # Suggested Citation
-If you wish to cite this software, please use this reference:
+If you wish to cite this software please cite:
 
-- Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey Software Release. [https://doi.org/10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ)
+- Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey software release. [https://doi.org/10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ)
   
 
 # Disclaimer
