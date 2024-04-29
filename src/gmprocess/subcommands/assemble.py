@@ -55,7 +55,7 @@ class AssembleModule(base.SubcommandModule):
             )
             for ievent, event_id in enumerate(event_ids):
                 logging.info(
-                    f"Assembling event {event.id} ({1+ievent} of {len(event_ids)})..."
+                    f"Assembling event {event_id} ({1+ievent} of {len(event_ids)})..."
                 )
                 event = events[ievent] if events else None
                 future = executor.submit(
@@ -79,7 +79,13 @@ class AssembleModule(base.SubcommandModule):
                 event = events[ievent] if events else None
                 results.append(
                     self._assemble_event(
-                        event_id, event, self.gmrecords.data_path, overwrite, conf, version, label
+                        event_id,
+                        event,
+                        self.gmrecords.data_path,
+                        overwrite,
+                        conf,
+                        version,
+                        label,
                     )
                 )
 

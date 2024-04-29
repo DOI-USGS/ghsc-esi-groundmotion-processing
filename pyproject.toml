@@ -13,7 +13,7 @@ authors = [
 ]
 license = {file = "LICENSE.md"}
 readme = "README.md"
-requires-python = ">=3.8,<3.11"
+requires-python = ">=3.9"
 
 # Requirements:
 dependencies = [
@@ -28,6 +28,7 @@ dependencies = [
     "h5py>=2.8",
     "lxml>=4.6.1",
     "matplotlib>=3.1.0",
+    "numba>=0.58",
     "numpy>=1.21,<2.0",
     "obspy>=1.4.0",
     "openpyxl>=3.0.8",
@@ -39,7 +40,7 @@ dependencies = [
     "requests>=2.29",
     "ruamel.yaml>=0.17.16",
     "schema>=0.7",
-    "scipy>=1.7",
+    "scipy>=1.7,<1.13",
     "setuptools-scm>=6.3.2",
     "statsmodels>=0.12.2",
     "usgs-strec>=2.3.2",
@@ -89,7 +90,7 @@ gmrecords = "gmprocess.bin.gmrecords:main"
 gmworkspace = "gmprocess.bin.gmworkspace:main"
 gmprocess_config = "gmprocess.bin.gmprocess_config:main"
 list_metrics = "gmprocess.bin.list_metrics:main"
-cwb_gather = "gmprocess.bin.cwb_gather:main"
+cwa_gather = "gmprocess.bin.cwa_gather:main"
 fix_inventory = "gmprocess.bin.fix_inventory:main"
 
 [build-system]

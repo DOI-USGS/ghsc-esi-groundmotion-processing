@@ -1,4 +1,5 @@
 recursive-include src/gmprocess/data *
+recursive-include src/gmprocess/bin *
 prune tests
 prune docs
 prune notebooks

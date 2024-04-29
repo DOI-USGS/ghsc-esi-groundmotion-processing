@@ -4,34 +4,36 @@
 ## Overview
 
 The config file is the primary means by which users can adjust and customize *gmprocess*. 
+In this section, we give a quick high-level overview of the config file to illustrate how it works, and subsequent sections go into more detail.
+Modifying the config can be somewhat confusing for new users, but bear in mind that if you just want the default config options, you do not have to make any changes to the config file.
 
 The [default config file](https://code.usgs.gov/ghsc/esi/groundmotion-processing/blob/main/src/gmprocess/data/config_production.yml) in the source code includes comments to help explain the values and their units.
 This is a useful reference as an overview of the config options. 
 
 When a project is created, it has an associated "config directory." 
-The project creation project will create a single file: 
+The project creation process will create a single file: 
 
 ```
 conf/
 └── user.yml
 ```
 
+Initially, this file will simply contain your name and email (which you are prompted to provide when creating the project) like this
+```yaml
+user:
+    name: George M. Process
+    email: gmprocess@usgs.gov
+```
+
+This information is important to put in the data provenance so that anyone you share the data with will have a record of who created it. 
+
 Any `*.yml` files in this directory will be merged with the default config that is in  source code repository. 
 The reason for this system is that 
 (1) we don't want to overwrite your customized config when the code is updated, and 
-(2) by merging your project config into the default config, we should avoid breaking functionality that relies on config updates.
+(2) by merging your project config into the default config, we avoid breaking functionality that relies on config updates.
+(3) specifying all config options can result in a long file, and it can be convenient to break it up into smaller files.
 
-In many cases, you may want to turn off or turn on specific fetchers. 
-This is done with the `enabled` key within each fetcher. 
-For example, to turn off a fetcher you would need to add the following code to a `*.yml` in the project conf directory:
-
-```yaml
-fetchers:
-    KNETFetcher:
-        enabled: False
-```
-
-Note that the name of the config file doesn't matter. 
+Note that the name of the config files doesn't matter. 
 You can put this in the `user.yml`  file or into another file, whatever is most convenient for you. 
 For example, it might be convenient to organize the config files by the top level sections:
 
@@ -44,10 +46,30 @@ conf/
 └── processing.yml
 ```
 
+A very simple and common change to the config file is to turn specific data fetcheres on or off.
+By default, all the fetchers are turned on, but if you know that you are not interested in data from Japan for a specific project, you can turn it off by settign the "enabled" value to "False:
+```yaml
+fetchers:
+    KNETFetcher:
+        # Enable this fetcher?
+        enabled: True
+```
+
+Additionally, if you know that you will be using the KNETFetcher, you will want to enable it and fill in your username and password:
+```yaml
+fetchers:
+    KNETFetcher:
+        # Enable this fetcher?
+        enabled: True
+        user: gmprocess
+        password: n0tarea1pa$$w0rd
+```
+
+
 ## The "processing" section
 
-The `processing` section behaves somewhat differently than other sections because it is how you control the processing steps. 
-In many cases, processing steps must be repeated, such as the `detrend` step. 
+The `processing` section behaves somewhat differently than other sections because some steps may need to be repeated. 
+The most common example is of this is the `detrend` step, which often has to happen multiple times. 
 Here is an example of the processing section that specifies the processing steps but does not specify any of the function arguments except for the `detrend` step:
 
 ```yaml
@@ -80,7 +102,7 @@ processing:
     - fit_spectra:
 ```
 
-The more complex structure in this section is necessary so that you can modify the steps that are used and their order. 
+The more complex structure in this section is necessary so that you can not only modify the steps that are used, but also control their order. 
 Thus, in this section, you turn off a step by deleting it's entry.
 
 To see the available arguments for each step and their default values, you can look up the function in the `gmprocess/waveform_processing` directory 
@@ -88,11 +110,37 @@ To see the available arguments for each step and their default values, you can l
 is the link to it). 
 
 ```{Hint}
-If you are familiar with python, you'll note that each available processing step is
-marked with the `@processing_step` decorator. 
+For those that are familiar with python, each available processing step is marked with the `@processing_step` decorator. 
+This makes it easy to find the processing step functions in the source code.
 ```
 
-Many sections of the config file are not of interest to most uses, such as the details of the `pickers` section. 
+One challenge for new users can be identifying the available options for the processing steps. 
+For example, let's say you want to change the width for the taper step.
+One option is to look in the entry for the `taper` step in the 
+[Processing Steps](https://ghsc.code-pages.usgs.gov/esi/groundmotion-processing/contents/manual/processing.html#taper)
+section of the manual.
+Here, you can see the argument defaults and that the "taper" step has the following arguments:
+```
+        st (StationStream):
+            Stream of data.
+        type (str):
+            Taper type.
+        width (float):
+            Taper width as percentage of trace length.
+        side (str):
+            Valid options: "both", "left", "right".
+        config (dict):
+            Configuration dictionary (or None). See get_config().
+```
+Note that the `st` and `config` arguments are handled internally by the processing code, and so they are not specified in the config file.
+So if you want to change the width, you would modify the entry within "processing" section of the config file like this:
+
+```yaml
+    - taper:
+        width: 0.1
+```
+
+Many sections of the config file are not of interest most of the time, such as the details of the `pickers` section. 
 However, the `p_arrival_shift` value is very useful if you are collecting data in a region where the travel time picks are often later than the actual p-wave arrival, causing some of the shaking to be placed in the "noise" window, which in turn causes the record to fail the signal-to-noise ratio test.
 
 Please post any questions or issues that you have regarding the config to the GitLab
@@ -238,6 +286,10 @@ The end of the signal window is defined in the `signal_end` subsection here, and
    - `magnitude`: Use the magnitude-based signal end as defined by CISN, which is `magnitude/2` (units of minutes).
    - `none`: Use the full available record; this is useful if the records have already been trimmed to a reasonable level and you do not wish to further reduce trace duration.
 
+The `no_noise` option allows processing to run for older data for which no pre-event noise is available.
+Essentially it sets the "split time" to be the start time of the record, which would normally fail because it is estiamted as the p-wave arrival time. 
+
+
 ## The "check_stream" section
 
 This section currently only has one key: `any_trace_failures`. 
@@ -299,56 +351,50 @@ This section is for setting options for the waveform metrics.
 The options are further described in this example:
 ```yaml
 metrics:
-  # Output IMCs
-  # Valid IMCs: channels, geometric_mean, gmrotd,
-  # greater_of_two_horizontals, rotd
-  output_imcs: [ROTD50, channels]
-  # Output IMTs
-  # Valid IMTs: arias, fas, pga, pgv, sa, duration, sorted_duration
-  output_imts: [PGA, PGV, SA, duration, sorted_duration]
-  # Periods defined for the SA and FAS imts
-  sa:
-      # damping used to calculate the spectral response
-      damping: 0.05
-      # periods for which the spectral response is calculated
-      periods:
-        # Parameters defining an array of periods
-        # syntax is the same as that used for numpy linspace and logspace
-        # start (first value), stop (last value), num (number of values)
-        start: 1.0
-        stop: 3.0
-        num: 3
-        # Valid spacing: linspace, logspace
-        spacing: linspace
-        # Defines whether the above array is used. If False, only the
-        # defined_periods are used
-        use_array: False
-        # Defines a list of user defined periods that are not
-        # predefined by the array of periods
-        defined_periods: [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25,
-          0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0]
-  fas:
-      smoothing: konno_ohmachi
-      bandwidth: 20.0
-      allow_nans: True
-      periods:
-        # Parameters defining an array of periods
-        # syntax is the same as that used for numpy linspace and logspace
-        # start (first value), stop (last value), num (number of values)
-        start: 1.0
-        stop: 3.0
-        num: 3
-        # Valid spacing: linspace, logspace
-        spacing: linspace
-        # Defines whether the above array is used. If false, only the
-        # defined_periods are used
-        use_array: True
-        # A list of user defined periods that are not
-        # predefined by the array of periods.
-        defined_periods: [0.3]
-  duration:
-      intervals: [5-75, 5-95]
+  # Specify output IMs (intensity metric)
+  # Each IM is defined by an IMC (IM component) and a IMT (IM type)
+  # Supported IMCs: channels, arithmetric_mean, geometric_mean, quadratic_mean, rotd
+  # Supported IMT: pga, pgv, sa, duration, sorted_duration, arias, fas, cav
 
+  # The 'components_and_types' section has key-value pairs in which the key is the
+  # metric component and the value is a list of metric types for that component.
+  # Do *not* delete a key to remove a component, it will be replaced with the default.
+  # To remove a component, set it's types as an empty list.
+  components_and_types: 
+    channels: [pga, pgv, sa, duration, cav]
+    rotd: [pga, pgv, sa]
+    geometric_mean: [duration]
+    quadratic_mean: [fas]
+
+  component_parameters:
+    rotd:
+       percentiles: [50.0]
+
+  type_parameters:
+    # Additional parameters required for SA
+    sa:
+        # damping used to calculate the spectral response; if this list includes more than
+        # one value, all periods will be computed for each damping level.
+        damping: [0.05]
+        # periods for which the spectral response is calculated
+        periods: [0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0]
+
+    # Additional parameters required for FAS
+    fas:
+        smoothing_method: konno_ohmachi
+        smoothing_parameter: 20.0
+        allow_nans: True
+        frequencies:
+            # Parameters defining an array of frequencies.
+            # syntax is the same as that used for numpy linspace and logspace
+            # start (first value), stop (last value), num (number of values)
+            start: 0.001
+            stop: 100.0
+            num: 401
+
+    # Additional parameters required for duration
+    duration:
+        intervals: [5-75, 5-95]
 ```
 
 ## The "gmm_selection" section
@@ -372,18 +418,18 @@ gmm_selection:
 Options for how integration is performed. 
 
 ```yaml
+integration:
     # Frequency or time domain integration?
-    frequency: False
+    frequency: True
     # Assumption for the first value returned in the resulting trace.
     initial: 0.0
     # Remove the mean of the data prior to integration.
     demean: False
     # Taper the data prior to integration.
-    taper:
-        taper: False
-        type: hann
-        width: 0.05
-        side: both
+    taper: False
+    taper_width: 0.05
+    taper_type: hann
+    taper_side: both
 ```
 
 ## The "differentiation" section 

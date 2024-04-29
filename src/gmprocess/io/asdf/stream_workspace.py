@@ -557,14 +557,6 @@ class StreamWorkspace(object):
         if config is None:
             if hasattr(self, "config"):
                 config = self.config
-                default_config_file = (
-                    constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
-                )
-                with open(default_config_file, "r", encoding="utf-8") as f:
-                    yaml = YAML()
-                    yaml.preserve_quotes = True
-                    default_config = yaml.load(f)
-                update_dict(self.config, default_config)
             else:
                 config = get_config()
 

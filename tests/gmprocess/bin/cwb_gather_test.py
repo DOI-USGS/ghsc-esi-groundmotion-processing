@@ -15,10 +15,10 @@ data_path = [datadir]
 PROJ_PATH = pathlib.Path(".") / ".gmprocess"
 
 
-def test_cwb_gather():
+def test_cwa_gather():
     eqid = "us6000hyun"
-    seedfile = TEST_DATA_DIR / "cwb_gather" / "cwb_chkh_data_test.mseed"
-    tarball = TEST_DATA_DIR / "cwb_gather" / "cwb_chkh_inst_test.tgz"
+    mseedfile = TEST_DATA_DIR / "cwa_gather" / "test_cwbsn_data.mseed"
+    metadata = TEST_DATA_DIR / "cwa_gather" / "test_cwbsn.xml"
     tmp_dir = pathlib.Path(tempfile.mkdtemp())
     try:
         conf_dir = tmp_dir / "conf"
@@ -33,7 +33,7 @@ def test_cwb_gather():
             f.write(proj_str)
         with open(proj_conf, "r", encoding="utf-8") as f:
             print(f.read())
-        cmd = f"cwb_gather --event={eqid} {str(seedfile)} {str(tarball)}"
+        cmd = f"cwa_gather --event={eqid} {str(mseedfile)} {str(metadata)}"
         rc, so, se = get_command_output(cmd)
         assert rc
     finally:

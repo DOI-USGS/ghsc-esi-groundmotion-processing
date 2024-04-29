@@ -118,7 +118,7 @@ for step in STEPS:
     step_args = {
         'subcommand': step,
         'func': app.classes[step]['class'],
-        'log': f"{step}.log",
+        'log': None,
     }
     args.update(step_args)
 

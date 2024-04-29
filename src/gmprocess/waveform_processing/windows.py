@@ -5,9 +5,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from openquake.hazardlib.gsim.base import RuptureContext
-from openquake.hazardlib import const
-from openquake.hazardlib import imt
+from openquake.hazardlib.contexts import simple_cmaker
 
 from obspy.geodetics.base import gps2dist_azimuth
 
@@ -15,6 +13,7 @@ from gmprocess.waveform_processing.phase import (
     pick_power,
     pick_ar,
     pick_baer,
+    pick_yeck,
     pick_kalkan,
     pick_travel,
 )
@@ -52,9 +51,6 @@ def cut(st, sec_before_split=2.0, config=None):
     To trim the beginning of the record, the sec_before_split must be
     specified, which uses the noise/signal split time that was estiamted by the
     windows.signal_split mehtod.
-
-    # Recent changes to reflect major updates to how oq-hazardlib works:
-    # https://github.com/gem/oq-engine/issues/7018
 
     Args:
         st (StationStream):
@@ -179,7 +175,7 @@ def signal_split(st, event, model=None, config=None):
 
     picker_config = config["pickers"]
 
-    loc, mean_snr = pick_travel(st, event, model)
+    loc, mean_snr = pick_travel(st, event, config, model)
     if loc > 0:
         tsplit = st[0].stats.starttime + loc
         preferred_picker = "travel_time"
@@ -189,23 +185,15 @@ def signal_split(st, event, model=None, config=None):
         for pick_method in pick_methods:
             try:
                 if pick_method == "ar":
-                    loc, mean_snr = pick_ar(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_ar(st, config=config)
                 elif pick_method == "baer":
-                    loc, mean_snr = pick_baer(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_baer(st, config=config)
                 elif pick_method == "power":
-                    loc, mean_snr = pick_power(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_power(st, config=config)
                 elif pick_method == "kalkan":
-                    loc, mean_snr = pick_kalkan(
-                        st, picker_config=picker_config, config=config
-                    )
+                    loc, mean_snr = pick_kalkan(st, config=config)
                 elif pick_method == "yeck":
-                    loc, mean_snr = pick_kalkan(st)
+                    loc, mean_snr = pick_yeck(st, config=config)
             except BaseException:
                 loc = -1
                 mean_snr = np.nan
@@ -300,20 +288,6 @@ def signal_end(
         stats['processing_parameters']['signal_end'] dictionary.
 
     """
-    # Load openquake stuff if method="model"
-    if method == "model":
-        dmodel = load_model(model)
-
-        # Set some "conservative" inputs (in that they will tend to give
-        # larger durations).
-        rctx = RuptureContext()
-        rctx.mag = event_mag
-        rctx.rake = -90.0
-        rctx.vs30 = np.array([180.0])
-        rctx.z1pt0 = np.array([0.51])
-        dur_imt = imt.from_string("RSD595")
-        stddev_types = [const.StdDev.TOTAL]
-
     for tr in st:
         if not tr.has_parameter("signal_split"):
             logging.warning("No signal split in trace, cannot set signal end.")
@@ -336,6 +310,16 @@ def signal_end(
         elif method == "model":
             if model is None:
                 raise ValueError('Must specify model if method is "model".')
+            dmodel = load_model(model)
+
+            # Set some "conservative" inputs (in that they will tend to give
+            # larger durations).
+            cmaker = simple_cmaker([dmodel], ["RSD595"], mags="%2.f" % event_mag)
+            ctx = cmaker.new_ctx(1)
+            ctx["mag"] = event_mag
+            ctx["rake"] = -90.0
+            ctx["vs30"] = np.array([180.0])
+            ctx["z1pt0"] = np.array([0.51])
             epi_dist = (
                 gps2dist_azimuth(
                     lat1=event_lat,
@@ -347,12 +331,14 @@ def signal_end(
             )
             # Repi >= Rrup, so substitution here should be conservative
             # (leading to larger durations).
-            rctx.rrup = np.array([epi_dist])
-            rctx.sids = np.array(range(np.size(rctx.rrup)))
-            lnmu, lnstd = dmodel.get_mean_and_stddevs(
-                rctx, rctx, rctx, dur_imt, stddev_types
-            )
-            duration = np.exp(lnmu + epsilon * lnstd[0])
+            ctx["rrup"] = np.array([epi_dist])
+
+            result = cmaker.get_mean_stds([ctx])
+            lnmu = result[0][0][0]
+            lnstd = result[1][0][0]
+
+            duration = np.exp(lnmu + epsilon * lnstd)
+
             # Get split time
             split_time = tr.get_parameter("signal_split")["split_time"]
             end_time = split_time + float(duration)
@@ -485,28 +471,26 @@ def trim_multiple_events(
 
     # Load the GMPE model
     gmpe = load_model(gmpe)
-
-    # Generic context
-    rctx = RuptureContext()
+    cmaker = simple_cmaker([gmpe], ["PGA"], mags="%2.f" % event.magnitude)
+    ctx = cmaker.new_ctx(1)
+    ctx["mag"] = event.magnitude
 
     # Make sure that site parameter values are converted to numpy arrays
     site_parameters_copy = site_parameters.copy()
     for k, v in site_parameters_copy.items():
         site_parameters_copy[k] = np.array([site_parameters_copy[k]])
-    rctx.__dict__.update(site_parameters_copy)
+    ctx.__dict__.update(site_parameters_copy)
 
     # Filter by arrivals that have significant expected PGA using GMPE
     is_significant = []
     for eqid, arrival_time in arrivals.items():
         event = next(event for event in catalog if event.id == eqid)
 
-        # Set rupture parameters
-        rctx.__dict__.update(rupture_parameters)
-        rctx.mag = event.magnitude
+        ctx.__dict__.update(rupture_parameters)
 
         # TODO: distances should be calculated when we refactor to be
         # able to import distance calculations
-        rctx.repi = np.array(
+        ctx.repi = np.array(
             [
                 gps2dist_azimuth(
                     st[0].stats.coordinates.latitude,
@@ -517,11 +501,12 @@ def trim_multiple_events(
                 / 1000
             ]
         )
-        rctx.rjb = rctx.repi
-        rctx.rhypo = np.sqrt(rctx.repi**2 + event.depth_km**2)
-        rctx.rrup = rctx.rhypo
-        rctx.sids = np.array(range(np.size(rctx.rrup)))
-        pga, sd = gmpe.get_mean_and_stddevs(rctx, rctx, rctx, imt.PGA(), [])
+        ctx.rjb = ctx.repi
+        ctx.rhypo = np.sqrt(ctx.repi**2 + event.depth_km**2)
+        ctx.rrup = ctx.rhypo
+
+        result = cmaker.get_mean_stds([ctx])
+        pga = result[0][0][0]
 
         # Convert from ln(g) to %g
         predicted_pga = 100 * np.exp(pga[0])

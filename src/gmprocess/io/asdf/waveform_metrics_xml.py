@@ -1,5 +1,6 @@
 """Module for converting waveform metrics dictionaries to XML."""
 
+import logging
 from lxml import etree
 import numpy as np
 
@@ -119,10 +120,13 @@ class WaveformMetricsXML(MetricXML):
                 # For, FAS, imc_element will have additional children for frequency and
                 # spectra.
                 if etag.lower() == "fas":
-                    fas = imc_element.getchildren()
-                    frequency = np.fromstring(fas[0].text, sep=" ")
-                    spectra = np.fromstring(fas[1].text, sep=" ")
-                    mvalues.append(CombinedSpectra(frequency, spectra))
+                    try:
+                        fas = imc_element.getchildren()
+                        frequency = np.fromstring(fas[0].text, sep=" ")
+                        spectra = np.fromstring(fas[1].text, sep=" ")
+                        mvalues.append(CombinedSpectra(frequency, spectra))
+                    except IndexError:
+                        logging.warning("Cannot parse FAS from old ASDF format.")
                 else:
                     mvalues.append(float(imc_element.text))
 

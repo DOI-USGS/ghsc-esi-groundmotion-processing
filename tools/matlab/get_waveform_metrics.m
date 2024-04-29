@@ -60,6 +60,7 @@ function peaks = get_waveform_metrics(h5file)
                             end
                         else
                             peaks.(imc) = struct2table(row);
+                            peaks.(imc) = movevars(peaks.(imc), {'event','network','station','location','channel'},'Before',1);
                         end
                     end
                 end
@@ -77,6 +78,7 @@ function rows = parse_metrics(xmlstr, eventid, network, station, location, chann
     dom = xmlread(tmpfile);
     metrics = dom.getElementsByTagName('waveform_metrics').item(0);
     imts = metrics.getChildNodes();
+    allimcs = {};
     for i=0:imts.getLength()-1
         imt = imts.item(i);
         if imt.getNodeType() ~= imt.ELEMENT_NODE
@@ -101,7 +103,17 @@ function rows = parse_metrics(xmlstr, eventid, network, station, location, chann
             imcname = char(imc.getNodeName());
             % field names cannot contain periods.
             imcname = strrep(imcname, '.', '_');
-            imt_value = str2double(imc.getFirstChild.getData());
+            if ~any(strcmp(allimcs,imcname))
+                allimcs{end+1} = imcname;
+            end
+            try
+                child = imc.getFirstChild;
+                if strcmp(class(child),'org.apache.xerces.dom.DeferredTextImpl')
+                    imt_value = str2double(child.getData());
+                end
+            catch
+                x = 1;
+            end
             if ~isfield(rows, imcname)
                 estruct = struct;
                 rows = setfield(rows, imcname, estruct);
@@ -109,14 +121,10 @@ function rows = parse_metrics(xmlstr, eventid, network, station, location, chann
             rows.(imcname).(imtname) = imt_value;
         end
     end
-    for i=0:imcs.getLength()-1
-        imc = imcs.item(i);
-        if imc.getNodeType() ~= imc.ELEMENT_NODE
-            continue
-        end
-        imcname = char(imc.getNodeName());
+    for i=1:length(allimcs)
+        imc = allimcs{i};
         % field names cannot contain periods.
-        imcname = strrep(imcname, '.', '_');
+        imcname = strrep(imc, '.', '_');
         rows.(imcname).('event') = eventid;
         rows.(imcname).('network') = network;
         rows.(imcname).('station') = station;
