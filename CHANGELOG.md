@@ -2,6 +2,8 @@
 
 - New features
   - Add UCLA review GUI
+- Bug fixes
+  - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
 
 ## 2.0.0 / 2024-02-26
 - Documentation Updates
