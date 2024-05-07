@@ -9,6 +9,7 @@ maxdepth: 1
    Configuration File <config_file>
    The gmrecords Program <gmrecords>
    Processing Steps <processing>
+   UCLA Review GUI <ucla_gui>
 ```
 
 % Indices and tables
