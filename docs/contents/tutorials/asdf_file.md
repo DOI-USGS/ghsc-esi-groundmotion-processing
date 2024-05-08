@@ -123,16 +123,16 @@ print_dict(rupt)
 ```
 
 We can see that the rupture is represented as a dictionary with keys of "cells", "description", "reference", and "vertices".
-In this case, we can see that this is rupture extent is was created by Jack Boatwright based on a finite fault slip inversion from Doug Dreger. 
-These are the verticies that are used for computing finite fault distances.
+In this case, we can see that this rupture extent was created by Jack Boatwright based on a slip inversion from Doug Dreger. 
+These are the verticies that are used for computing finite source distances.
 
 The config file that was used for this event is a dictionary stored as a
 [ruamel](https://yaml.readthedocs.io/en/latest/) object
 that can be access as the `config` attribute to the workspace file.
 ```{code-cell} ipython3
-type(workspace.config)
+print(f"{type(workspace.config)=}")
 conf_dict = dict(workspace.config)
-print(conf_dict.keys())
+print(f"{conf_dict.keys()=}")
 ```
 
 Here, we only print the "metrics" section to keep things simple.
@@ -149,7 +149,7 @@ wmc = WaveformMetricCollection.from_workspace(workspace, label='default')
 print(wmc)
 ```
 
-Printing the WaveformMetricCollection simply indicates that there is one station available in the small dataset for this tutorial.
+Printing the WaveformMetricCollection object simply indicates that there is one station available in the small dataset for this tutorial.
 We can see the attributes of the object that may be useful with
 
 ```{code-cell} ipython3
@@ -159,15 +159,15 @@ wmc.__dict__.keys()
 Let's inspect the `waveform_metrics` attribute further.
 First, we can see that it is a list with length one
 ```{code-cell} ipython3
-print(type(wmc.waveform_metrics))
-print(len(wmc.waveform_metrics))
+print(f"{type(wmc.waveform_metrics)=}")
+print(f"{len(wmc.waveform_metrics)=}")
 ```
 
-The length is one because we only have one station in this dataset, and the waveform_metric list elements map to the stations.
+The length is one because we only have one station in this dataset, and the elements of `waveform_metrics` list have a one-to-one correspondance to the stations.
 
-And each element of the list is a WaveformMetricList object:
+And each element of the `waveform_metrics` list is a WaveformMetricList object:
 ```{code-cell} ipython3
-print(type(wmc.waveform_metrics[0]))
+print(f"{type(wmc.waveform_metrics[0])=}")
 ```
 
 So let's select the first WaveformMetricList object and look at it
@@ -182,16 +182,16 @@ For each metric, there are different values for each component (e.g., the as-rec
 
 The constituent data within the WaveformMetricList is in the `metric_list` attribute
 ```{code-cell} ipython3
-print(type(wml.metric_list))
+print(f"{type(wml.metric_list)=}")
 print(wml.metric_list)
 ```
 
 Each element in this list is a WaveformMetricType subclass
 ```{code-cell} ipython3
-print(type(wml.metric_list[0]))
+print(f"{type(wml.metric_list[0])=}")
 ```
 
-You can learn more about these class and their attributes by browsing the source code 
+You can learn more about these classes and their attributes by browsing the source code 
 [here](https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/blob/main/src/gmprocess/metrics/waveform_metric_type.py?ref_type=heads).
 But for this tutorial, we will just convert them to a dictionary
 ```{code-cell} ipython3
@@ -199,7 +199,7 @@ pga_dict = wml.metric_list[0].to_dict()
 print(pga_dict)
 ```
 
-So, if we want to select the SA for the "h1" component, we have to write a loop to collect the values
+So, if we want to select the SA for the "h1" component for all of the available periods, we have to write a loop to collect the values
 ```{code-cell} ipython3
 sa = []
 period = []
@@ -212,8 +212,8 @@ for metric in wml.metric_list:
         if comp.component_attributes["component_string"] == "h1":
             sa.append(val)
     period.append(mdict["metric_attributes"]["period"])
-print(period)
-print(sa)
+print(f"{period=}")
+print(f"{sa=}")
 ```
 
 And here you can see that there are only three periods conigured for the spectral acceleration calculation.
@@ -223,7 +223,8 @@ If a larger number of periods were specified in the config file, it would likely
 
 ## The pyasdf interface
 
-The ASDF data structure can be accessed directly from the StreamWorkspace object via the `dataset` attribute and print a summary of the ASDF object
+The ASDF data structure can be accessed directly from the StreamWorkspace object via the `dataset` attribute.
+Here, we print a summary of the ASDF object
 ```{code-cell} ipython3
 ds = workspace.dataset
 print(ds)
@@ -239,7 +240,7 @@ print(ds)
 It is easy to get a list of the stations in the dataset
 ```{code-cell} ipython3
 station_list = ds.waveforms.list()
-print(station_list)
+print(f"{station_list=}")
 ```
 
 You can retrieve an obspy stream from the ASDF file by browsing the waveforms with knowledge of the stations, event ID, and labels. 
@@ -309,3 +310,31 @@ catalog = obspy.read_events(bytes)
 print(catalog)
 ```
 
+The list of events is given as an attribute to the catalog
+```{code-cell} ipython3
+print(catalog.events)
+```
+
+We can then select the only event in the list
+```{code-cell} ipython3
+event = catalog.events[0]
+print(f"{type(event)=}")
+print(event)
+```
+
+And Event object many attributes and we may be primarily interested in the magnitudes and origins:
+```{code-cell} ipython3
+event = catalog.events[0]
+print(event.magnitudes)
+print(event.origins)
+```
+
+And finally, we may want to access the latitutde, longitude, depth, and magnitude of the earthquake:
+```{code-cell} ipython3
+magnitude = event.magnitudes[0]
+origin = event.origins[0]
+print(f"{magnitude.mag=}")
+print(f"{origin.longitude=}")
+print(f"{origin.latitude=}")
+print(f"{origin.depth=}")
+```
