@@ -18,7 +18,6 @@ PREAMBLE = """
 % Allows for 9pt article class
 \\usepackage{extsizes}
 
-\\usepackage{sansmathfonts}
 \\usepackage[T1]{fontenc}
 
 \\usepackage{graphicx}
@@ -326,7 +325,7 @@ def get_prov_latex(st):
 
     newdf = pd.DataFrame(final_dict)
     # prov_string = newdf.to_latex(index=False)
-    if hasattr(newdf, "map") and callable(newdf.map): # applymap ->map in Pandas 2.1.0
+    if hasattr(newdf, "map") and callable(newdf.map):  # applymap ->map in Pandas 2.1.0
         newdf = newdf.map(str_for_latex)
     else:
         newdf = newdf.applymap(str_for_latex)
