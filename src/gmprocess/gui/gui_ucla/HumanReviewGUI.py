@@ -128,7 +128,6 @@ class HumanReviewGUI:
         self.Cha = None
         self.dt = None
         self.event_id = None
-        self.fclp_display = None
         self.freq_u = None
         self.NCR = None
         self.NetSta = None
@@ -185,19 +184,23 @@ class HumanReviewGUI:
             layout=Layout(width="17%"),
         )
         self.fclp_checkbox_widget = widgets.Checkbox(
-            value=False, description="fclp", indent=False
+            value=True, description="fclp", indent=False
         )
         self.fclp_widget = widgets.FloatText(
             description="fclp (Hz):",
             indent=False,
             disabled=True,
             step=1.0,
-            min=0.0,
+            min=1.0,
+            value=100,
             layout=Layout(width="15%"),
         )
+        self.progress_widget = widgets.IntProgress(description='Loading:',bar_style='info', 
+            orientation='horizontal',layout=Layout(width="80%")) 
 
         panel = widgets.VBox(
             [
+                self.progress_widget,
                 widgets.HBox(
                     [
                         self.workspace_widget,
@@ -235,7 +238,7 @@ class HumanReviewGUI:
         self.fchp_widget.disabled = False
         self.fclp_widget.disabled = False
         display(panel)
-        self.fig, self.ax = plt.subplots(nrows=2, ncols=2, figsize=(8, 6), dpi=300)
+        self.fig, self.ax = plt.subplots(nrows=2, ncols=2, figsize=(8, 6), dpi=100)
         self.ax[0, 0].set_ylabel("acc (m/s$^2$)")
         self.ax[0, 0].set_xlabel("time (s)")
         self.ax[1, 0].set_ylabel("disp (m)")
@@ -265,6 +268,10 @@ class HumanReviewGUI:
         (self.ln["smooth_noise_spectrum"],) = self.ax[0, 1].plot(
             [], [], c="C2", label="noise", zorder=2
         )
+        (self.ln["snr"],) = self.ax[0, 1].plot(
+            [], [], c="gray", label="SNR", zorder=2
+        ) 
+        self.flag_plot = 0 #flag_plot will help to create the legend only once
         self.ln_filt["Facc_fchp"] = self.ax[0, 1].axvline(
             x=0.01, label="f$_c$", linestyle="--", color="black"
         )
@@ -282,14 +289,14 @@ class HumanReviewGUI:
         self.ln_filt["Tmax"] = self.ax[1, 1].axvline(
             x=0.01, linestyle="--", color="black"
         )
+        # self.ln_filt["Tmin"] = self.ax[1, 1].axvline(x=0.01, linestyle="--", color="black") #Sometimes the user wants to see where the fclp influences in the PSA
         self.ax[0, 1].set_xscale("log")
         self.ax[1, 1].set_xscale("log")
         self.ax[0, 1].set_yscale("log")
         self.ax[1, 1].set_yscale("log")
-        self.ax[0, 1].legend(ncol=2, prop={"size": 8})
         for a1 in self.ax:
             for a in a1:
-                a.autoscale_view()
+                # a.autoscale_view()
                 a.grid(True, alpha=0.5, which="both")
         plt.tight_layout()
         self.next_button.on_click(self.next_waveform)
@@ -313,6 +320,7 @@ class HumanReviewGUI:
         """
         self.load_workspace_button.disabled = True
         self.workspace = StreamWorkspace.open(self.workspace_widget.value)
+        self.progress_widget.max = len(self.workspace.dataset.waveforms.list())
         try:
             self.event_id = self.workspace.getEventIds()[0]
         except:
@@ -325,6 +333,7 @@ class HumanReviewGUI:
         Distance_array = []
         lat_event = self.workspace.dataset.events.events[0].origins[0].latitude
         long_event = self.workspace.dataset.events.events[0].origins[0].longitude
+        self.reviewed_count = 0
         for NetSta in self.workspace.dataset.waveforms.list():
             try:
                 streams = self.workspace.getStreams(
@@ -354,6 +363,7 @@ class HumanReviewGUI:
                                     "reviewed": 1,
                                     "accepted": 0,
                                 }
+                            self.reviewed_count += 1
                         except:
                             self.human_review[NetSta + ", " + cha] = {
                                 "reviewed": 0,
@@ -379,12 +389,21 @@ class HumanReviewGUI:
                         Streams_index_array.append(i)
                         Trace_index_array.append(j)
                         Distance_array.append(distance)
+            self.progress_widget.value += 1
+            
         self.trace_data["NetSta"] = NetSta_array
         self.trace_data["Channel"] = Channel_array
         self.trace_data["Streams_index"] = Streams_index_array
         self.trace_data["Trace_index"] = Trace_index_array
         self.trace_data["Repi"] = Distance_array
         self.load_workspace_button.disabled = False
+        
+        self.total_count = len(NetSta_array)
+        self.progress_widget.description="%s%s%s%s%s" % ("Progress (",self.reviewed_count,"/",self.total_count,"):") 
+        self.progress_widget.style= {'description_width': 'initial'}
+        self.progress_widget.max = self.total_count 
+        self.progress_widget.value = self.reviewed_count 
+        
         self.set_waveform_list({})
         return
 
@@ -534,10 +553,10 @@ class HumanReviewGUI:
         time_u = np.linspace(self.dt, self.dt * len(acc_u_plot), len(acc_u_plot))
         self.T = ars.get_ngawest2_T()
         Sa = ars.get_response_spectrum(
-            motions=acc/9.81, T=self.T, D=0.05, dt=self.dt, verbose=0, zeropad=0
+            motions=[acc/9.81], T=self.T, D=0.05, dt=self.dt, verbose=0, zeropad=0
         )
         Sa_u = ars.get_response_spectrum(
-            motions=acc_u_plot/9.81, T=self.T, D=0.05, dt=self.dt, verbose=0, zeropad=0
+            motions=[acc_u_plot/9.81], T=self.T, D=0.05, dt=self.dt, verbose=0, zeropad=0
         )
         self.NFFT = npts_u
         Facc = np.fft.rfft(acc, n=npts)
@@ -552,12 +571,15 @@ class HumanReviewGUI:
                 fchp = self.tr.getParameter("review")["corner_frequencies"]["highpass"]
             except:
                 fchp = self.tr.get_parameter("review")["corner_frequencies"]["highpass"]
+            review_flag = 1 #indicator that the record has been reviewed. It's used to check on uncheck fclp_checkbox_widget
         except:
+            
             try:
                 fchp = self.tr.getParameter("corner_frequencies")['highpass']
             except:
                 fchp = self.tr.get_parameter("corner_frequencies")['highpass']
             fchp = np.round(fchp, 4)
+            review_flag = 0 #indicator that the record has been reviewed. It's used to check on uncheck fclp_checkbox_widget
         try:
             try:
                 self.fclp_display = self.tr.getParameter("review")[
@@ -567,7 +589,12 @@ class HumanReviewGUI:
                 self.fclp_display = self.tr.get_parameter("review")[
                     "corner_frequencies"
                 ]["lowpass"]
+            self.fclp_checkbox_widget.value = True 
         except:
+            if review_flag == 1:
+                self.fclp_checkbox_widget.value = False #if the record was reviewed and the previous "try" couldn't find "lowpass" means that the record doesn't need to filter out the high frequencies.
+            else:
+                self.fclp_checkbox_widget.value = True #if the record was not reviewed, then show the fclp.
             try:
                 self.fclp_display = self.tr.getParameter("corner_frequencies")['lowpass']
             except:
@@ -579,6 +606,17 @@ class HumanReviewGUI:
         noise_freq = np.asarray(self.tr.cached["noise_spectrum"]["freq"])
         smooth_noise_freq = np.asarray(self.tr.cached["smooth_noise_spectrum"]["freq"])
         smooth_noise_spec = np.asarray(self.tr.cached["smooth_noise_spectrum"]["spec"])
+        snr_freq = np.asarray(self.tr.cached["snr"]["freq"]) 
+        snr_spec = np.asarray(self.tr.cached["snr"]["snr"]) 
+        
+        if self.flag_plot == 0: #flag_plot will help to create the legend only once
+            threshold = self.tr.getParameter("snr_conf")['threshold']
+            (self.ln["snr_3"],) = self.ax[0, 1].plot([0.003, 100.0],[threshold*min(FAS_plot), threshold*min(FAS_plot)],linestyle="--", c="gray", zorder=2, label=f"SNR={threshold}")
+            handles, labels = self.ax[0,1].get_legend_handles_labels()
+            order = [0,1,2,3,4,7,5,6]
+            self.ax[0, 1].legend([handles[k] for k in order], [labels[k] for k in order], ncol=2, prop={"size": 8})
+            self.flag_plot = 1
+        
         self.ln["acc_u"].set_data(time_u, acc_u_plot)
         self.ln["acc"].set_data(time, acc)
         self.ln["disp"].set_data(time, disp)
@@ -591,6 +629,7 @@ class HumanReviewGUI:
             / 100
             / np.sqrt(len(noise_freq)),
         )
+        self.ln["snr"].set_data(snr_freq,snr_spec * min(FAS_plot)) 
         self.ln["Sa"].set_data(self.T, Sa[0])
         self.ln["Sa_u"].set_data(self.T, Sa_u[0])
         self.ln["Facc_u"].set_data(
@@ -608,14 +647,6 @@ class HumanReviewGUI:
             self.fclp_widget.value == fclp_old
         ):
             self.fc_change(" ")
-        try:
-            try:
-                fclp1 = self.tr.getParameter("review")["corner_frequencies"]["lowpass"]
-            except:
-                fclp1 = self.tr.get_parameter("review")["corner_frequencies"]["lowpass"]
-            self.fclp_checkbox_widget.value = True
-        except:
-            self.fclp_checkbox_widget.value = False
         metadata_html = (
             "User: "
             + self.workspace.config["user"]["name"]
@@ -639,8 +670,10 @@ class HumanReviewGUI:
         """
         if self.fclp_checkbox_widget.value == True:
             fclp_corner = self.fclp_widget.value
+            # self.ln_filt["Tmin"].set_xdata(x=1.25 / fclp_corner) #Sometimes the user wants to see where the fclp influences in the PSA
         else:
             fclp_corner = None
+            # self.ln_filt["Tmin"].set_xdata(x=None) #Sometimes the user wants to see where the fclp influences in the PSA
         acc_filt = self.apply_filter()
         acc_filt = acc_filt - np.mean(acc_filt)
         time = np.linspace(0, len(acc_filt) * self.dt, len(acc_filt))
@@ -651,7 +684,7 @@ class HumanReviewGUI:
         Fdisp_filt = np.hstack((0.0, Fdisp_filt))
         disp_filt = np.fft.irfft(Fdisp_filt)
         Sa_filt = ars.get_response_spectrum(
-            motions=acc_filt/9.81, T=self.T, D=0.05, dt=self.dt, verbose=0, zeropad=0
+            motions=[acc_filt/9.81], T=self.T, D=0.05, dt=self.dt, verbose=0, zeropad=0
         )
         self.ln["Facc_filt"].set_data(
             self.freq_u[self.freq_u > 0],
@@ -663,6 +696,7 @@ class HumanReviewGUI:
         self.ln_filt["Facc_fchp"].set_xdata(x=self.fchp_widget.value)
         self.ln_filt["Facc_fclp"].set_xdata(x=fclp_corner)
         self.ln_filt["Tmax"].set_xdata(x=1 / (1.25 * self.fchp_widget.value))
+        
         for a1 in self.ax:
             for a in a1:
                 a.relim()
@@ -724,14 +758,6 @@ class HumanReviewGUI:
             self.next_button.disabled = True
         self.waveform_widget.value = self.waveform_widget.options[I + 1]
         self.previous_button.disabled = False
-        try:
-            try:
-                fclp1 = self.tr.getParameter("review")["corner_frequencies"]["lowpass"]
-            except:
-                fclp1 = self.tr.get_parameter("review")["corner_frequencies"]["lowpass"]
-            self.fclp_checkbox_widget.value = True
-        except:
-            self.fclp_checkbox_widget.value = False
         return
 
     def previous_waveform(self, b):
@@ -745,14 +771,6 @@ class HumanReviewGUI:
             self.previous_button.disabled = True
         self.waveform_widget.value = self.waveform_widget.options[I - 1]
         self.next_button.disabled = False
-        try:
-            try:
-                fclp1 = self.tr.getParameter("review")["corner_frequencies"]["lowpass"]
-            except:
-                fclp1 = self.tr.get_parameter("review")["corner_frequencies"]["lowpass"]
-            self.fclp_checkbox_widget.value = True
-        except:
-            self.fclp_checkbox_widget.value = False
         return
 
     def accept_record(self, b):
@@ -806,7 +824,11 @@ class HumanReviewGUI:
             self.set_waveform_list(b)
         else:
             self.set_waveform_list(b)
-        self.fclp_checkbox_widget.value = False
+        self.fclp_checkbox_widget.value = True
+        
+        self.reviewed_count += 1
+        self.progress_widget.value = self.reviewed_count 
+        self.progress_widget.description="%s%s%s%s%s" % ("Progress (",self.reviewed_count,"/",self.total_count,"):") 
         return
 
     def reject_record(self, b):
@@ -860,7 +882,10 @@ class HumanReviewGUI:
             self.set_waveform_list(b)
         else:
             self.set_waveform_list(b)
-        self.fclp_checkbox_widget.value = False
+        self.fclp_checkbox_widget.value = True
+        self.reviewed_count += 1
+        self.progress_widget.value = self.reviewed_count 
+        self.progress_widget.description="%s%s%s%s%s" % ("Progress (",self.reviewed_count,"/",self.total_count,"):") 
         return
 
     def clear_plots(self):
