@@ -2,6 +2,8 @@
 
 - New features
   - Add UCLA review GUI
+- Enhancements
+  - Remove sansmathfonts latex package since it is not necessary.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
 
