@@ -4,6 +4,7 @@
   - Add UCLA review GUI
 - Enhancements
   - Remove sansmathfonts latex package since it is not necessary.
+  - Speed up station metric calculations by removing unnecessary repeated calculations.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
 
