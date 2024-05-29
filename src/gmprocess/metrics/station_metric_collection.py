@@ -136,13 +136,13 @@ class StationMetricCollection(MetricCollection):
         # Note: tag for station metrics does not have processing label
         tag = origin.id
 
+        rrup_interp, rjb_interp = self.get_ps2ff_interpolation(origin)
+
         for stream in streams:
             coord_dict = stream[0].stats.coordinates
             lat = coord_dict["latitude"]
             lon = coord_dict["longitude"]
             elev = coord_dict["elevation"]
-
-            rrup_interp, rjb_interp = self.get_ps2ff_interpolation(origin)
 
             geo_tuple = gps2dist_azimuth(lat, lon, origin.lat, origin.lon)
             sta_repi = geo_tuple[0] / constants.M_PER_KM
