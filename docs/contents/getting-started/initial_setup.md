@@ -2,6 +2,13 @@
 
 The initial setup includes two steps: Project setup, and STREC setup.
 
+```{admonition} New in version 2.1
+:class: note
+
+The use of projects is optional.
+If you do not wish to use projects, you need to specify the `confdir` and `datadir` command line arguments when calling the `gmrecords` command.
+```
+
 ## Project setup
 
 In order to simplify the command line interface, the `gmrecords` command makes use of "projects".

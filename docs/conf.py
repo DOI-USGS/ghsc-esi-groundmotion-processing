@@ -27,6 +27,8 @@ args = {
     "eventid": None,
     "textfile": None,
     "overwrite": False,
+    "datadir": None,
+    "confdir": None,
     "num_processes": 0,
     "label": None,
     "subcommand": "processing_steps",

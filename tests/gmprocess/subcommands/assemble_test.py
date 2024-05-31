@@ -83,6 +83,12 @@ def test_assemble(script_runner):
         ret = script_runner.run("gmrecords", "assemble")
         assert ret.success
 
+        # try with the --datadir and --confdir arguments
+        ret = script_runner.run(
+            "gmrecords", "-o", "--datadir", ddir, "--confdir", cdir, "assemble"
+        )
+        assert ret.success
+
         ws_filename = ddir / EVENT_ID / constants.WORKSPACE_NAME
         tests_utils.check_workspace(ws_filename, WORKSPACE_ITEMS)
 
