@@ -364,11 +364,17 @@ def validate_projects_config(config, projects_filepath):
     def check_project_paths(project, projects_filepath):
         """Check that project configuration paths are valid."""
         msg = ""
-        conf_path = (projects_filepath.parent / project["conf_path"]).resolve()
+        if projects_filepath is None:
+            # Not using projects
+            conf_path = pathlib.Path(project["conf_path"]).resolve()
+            data_path = pathlib.Path(project["data_path"]).resolve()
+        else:
+            conf_path = (projects_filepath.parent / project["conf_path"]).resolve()
+            data_path = (projects_filepath.parent / project["data_path"]).resolve()
+
         if not conf_path.is_dir():
             msg += f"Could not find 'conf_path' directory {conf_path}."
 
-        data_path = (projects_filepath.parent / project["data_path"]).resolve()
         if not data_path.is_dir():
             msg += f"Could not find 'data_path' directory {data_path}."
 

@@ -2,6 +2,7 @@
 
 - New features
   - Add UCLA review GUI
+  - Add --conf and --data command line arguments for the gmrecords command.
 - Enhancements
   - Remove sansmathfonts latex package since it is not necessary.
   - Speed up station metric calculations by removing unnecessary repeated calculations.
