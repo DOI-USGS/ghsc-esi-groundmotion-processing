@@ -281,7 +281,7 @@ class TextHeader(object):
         maxtime = trace.stats.delta * maxidx  # seconds since rec start
 
         # line 1
-        self.set_header_value("param_type", f"{level} {quantity} {units}")
+        self.set_header_value("param_type", f"{level} {quantity}")
         self.set_header_value("cosmos_format", COSMOS_FORMAT)
         self.set_header_value("number_lines", HEADER_LINES)
         self.set_header_value("agency_reserved", AGENCY_RESERVED)
@@ -713,7 +713,7 @@ class DataBlock(object):
         self.header_line1 = (
             f'{ncomments:4d} Comment line(s) follow, each starting with a "|":'
         )
-        int_units = TABLE2[units]
+        int_units = TABLE2[trace.stats.standard.units_type]
         self.header_line2 = (
             f"{npts:8d} {quantity} pts, approx {itime} secs, "
             f"units={units} ({int_units}),Format=({ffmt})"

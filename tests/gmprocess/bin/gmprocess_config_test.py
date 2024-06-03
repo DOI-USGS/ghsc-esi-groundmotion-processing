@@ -1,9 +1,8 @@
 import shutil
 
-from ruamel.yaml import YAML
-
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.utils.constants import TEST_DATA_DIR
+from ruamel.yaml import YAML
 
 
 def test_gmprocess_config_test(tmp_path, script_runner):
@@ -19,7 +18,11 @@ def test_gmprocess_config_test(tmp_path, script_runner):
 
     # Save the config to a file
     ret = script_runner.run(
-        "gmprocess_config", "--workspace", dst_ws_file, "--save", dst_config_file
+        "gmprocess_config",
+        "--workspace",
+        str(dst_ws_file),
+        "--save",
+        str(dst_config_file),
     )
     assert ret.success
     assert dst_config_file.exists()
@@ -42,7 +45,11 @@ def test_gmprocess_config_test(tmp_path, script_runner):
 
     # Update the workspace file
     ret = script_runner.run(
-        "gmprocess_config", "--workspace", dst_ws_file, "--update", dst_config_file
+        "gmprocess_config",
+        "--workspace",
+        dst_ws_file,
+        "--update",
+        dst_config_file,
     )
     assert ret.success
 
