@@ -12,6 +12,7 @@ From SEIS-PROV docs regarding IDs:
 Note that it is important to recognize the difference between the above ID and the
 "prov:id" provenance property, which corresponds to the keys in Provenance.ACTIVITIES.
 """
+
 from abc import ABC, abstractmethod
 import logging
 from datetime import datetime
@@ -118,7 +119,7 @@ class LabelProvenance(Provenance):
         self.provenance_list.append(prov_dict)
 
     @classmethod
-    def from_provenance_document(cls, provdoc, label):
+    def from_provenance_document(cls, provdoc, label, config):
         """Add provenance entires from a provenance document.
 
         Args:
@@ -126,8 +127,10 @@ class LabelProvenance(Provenance):
                 Provenance document.
             label (str):
                 Processing label.
+            config (dict):
+                Dictionary of config options.
         """
-        prov_obj = cls(label)
+        prov_obj = cls(label, config=config)
         prov_obj._from_provenance_document(provdoc)
         return prov_obj
 

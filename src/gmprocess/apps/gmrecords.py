@@ -84,17 +84,36 @@ class GMrecordsApp(object):
             self.parser.print_help()
             sys.exit()
         else:
+            if self.args.datadir is None and self.args.confdir is None:
+                self.use_projects = True
+            elif self.args.datadir is not None and self.args.confdir is not None:
+                self.use_projects = False
+            else:
+                raise ValueError(
+                    "Arguments --datadir and --confdir both must be set or both must "
+                    "not be set (and thus these paths will be taken from the "
+                    "configured project)."
+                )
+
             subcmds_noinit = ["init", "processing_steps"]
             if self.args.subcommand not in subcmds_noinit:
                 self._initialize()
 
             subcmds_quiet = ["init", "projects", "proj", "processing_steps"]
             if self.args.subcommand not in subcmds_quiet and not self.args.quiet:
-                # Print the current project information to avoid confusion
-                proj = Project.from_config(self.projects_conf, self.project_name)
+                if self.use_projects:
+                    # Print the current project information to avoid confusion
+                    proj = Project.from_config(self.projects_conf, self.project_name)
+                else:
+                    proj_paths = {
+                        "conf_path": self.args.confdir,
+                        "data_path": self.args.datadir,
+                    }
+                    proj = Project("None", proj_paths, "None", True)
                 print("-" * 80)
                 print(proj)
                 print("-" * 80)
+
             # -----------------------------------------------------------------
             # This calls the init method of the subcommand that was specified
             # at the command line and hands off the GmpApp object ("self") as
@@ -157,11 +176,17 @@ class GMrecordsApp(object):
 
     @property
     def conf_path(self):
-        return (self.projects_path / self.current_project["conf_path"]).resolve()
+        if self.projects_path:
+            return (self.projects_path / self.current_project["conf_path"]).resolve()
+        else:
+            return Path(self.current_project["conf_path"]).resolve()
 
     @property
     def data_path(self):
-        return (self.projects_path / self.current_project["data_path"]).resolve()
+        if self.projects_path:
+            return (self.projects_path / self.current_project["data_path"]).resolve()
+        else:
+            return Path(self.current_project["data_path"]).resolve()
 
     def _initialize(self):
         require_config = self.args.subcommand not in ["projects", "proj"]
@@ -183,7 +208,7 @@ class GMrecordsApp(object):
 
     def _load_config(self, require_config=True):
         self.projects_conf = None
-        if not self.projects_file.is_file():
+        if (not self.projects_file.is_file()) and self.use_projects:
             if not require_config:
                 return
 
@@ -211,9 +236,23 @@ class GMrecordsApp(object):
             else:
                 sys.exit(0)
 
-        self.projects_conf = configobj.ConfigObj(
-            str(self.projects_file), encoding="utf-8"
-        )
+        if not self.use_projects:
+            self.projects_path = None
+            self.projects_file = None
+            self.projects_conf = {
+                "project": "None",
+                "projects": {
+                    "None": {
+                        "conf_path": self.args.confdir,
+                        "data_path": self.args.datadir,
+                    }
+                },
+            }
+        else:
+            self.projects_conf = configobj.ConfigObj(
+                str(self.projects_file), encoding="utf-8"
+            )
+
         projmod.validate_projects_config(self.projects_conf, self.projects_path)
 
         if "CALLED_FROM_PYTEST" in os.environ:
@@ -336,6 +375,27 @@ class GMrecordsApp(object):
             default=False,
             help="Overwrite results if they exist.",
             action="store_true",
+        )
+
+        parser.add_argument(
+            "--datadir",
+            type=str,
+            default=None,
+            help=(
+                "Path to data directory. "
+                "Setting this disables the use of projects. "
+                "Setting this also requires --confdir to be set. "
+            ),
+        )
+        parser.add_argument(
+            "--confdir",
+            type=str,
+            default=None,
+            help=(
+                "Path to directly containing config files. "
+                "Setting this disables the use of projects. "
+                "Setting this also requires --datafile to be set."
+            ),
         )
 
         # Parsers for subcommands

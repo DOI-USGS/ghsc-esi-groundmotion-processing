@@ -1,5 +1,14 @@
 ## main
 
+- New features
+  - Add UCLA review GUI
+  - Add --conf and --data command line arguments for the gmrecords command.
+- Enhancements
+  - Remove sansmathfonts latex package since it is not necessary.
+  - Speed up station metric calculations by removing unnecessary repeated calculations.
+- Bug fixes
+  - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
+
 ## 2.0.0 / 2024-02-26
 - Documentation Updates
   - Switched over to the vectorized openquake for the mixed effects tutorial.
@@ -21,6 +30,9 @@
   - Decrease precision in fetcher bounds and fix Geonet bounds to include negaive longitudes.
   - Move the "config" subcommand to be a stand-alone command line program called "gmprocess_config".
   - Removed "list_metrics" command.
+  - Removed cap on python version, increased minimum version to 3.9
+  - Updated cwb_gather command, and renamed to cwa_gather and updated instructions to include TSMIP and StationXML now that it is available. 
+  - Capped scipy version to be less than 1.13 because of incompatibility with obspy (should be fixed in next version of obspy).
 
 ## 1.3.2 / 2024-02-03
 - Fix bug in trace units that was created in 1.3.1 and affects all velocity instruments.

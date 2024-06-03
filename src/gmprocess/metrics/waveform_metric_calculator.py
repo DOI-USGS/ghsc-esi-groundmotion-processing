@@ -160,6 +160,7 @@ class WaveformMetricCalculator:
         self.event = event
         self.stream = stream
         self.config = config
+
         self.steps = {}
         self._set_steps()
         # self.metric_dicts = None

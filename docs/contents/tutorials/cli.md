@@ -4,7 +4,7 @@ This example covers using the `gmrecords` command line program in a typical work
 The configuration and parameter files are in the `docs/contents/tutorials` directory.
 
 ```{seealso}
-Be sure to review the discussion of all of the `gmrecords` subcommands in section {ref}`gmrecords` and configuring projects in section {ref}`Initial Setup`.
+Be sure to review the discussion of all of the `gmrecords` subcommands in section {ref}`The gmrecords Program` and configuring projects in section {ref}`Initial Setup`.
 ```
 
 ## Local `gmprocess` configuration
@@ -51,7 +51,32 @@ cwd: .
 At this point we have an empty `data/cli` directory.
 The `conf/cli` directory has two files: `fetchers.yml` and `user.yml`.
 These configuration files hold parameters that override default values provided with the source code.
-See [Configuration File](../manual/config_file) for more information.
+See [Configuration File](../manual/config_file) for more detailed information.
+For example, a common change would be to disable the KNETFetcher if it is not needed by changing the `enabled` keyword to `False`:
+
+```yaml
+fetchers:
+    KNETFetcher:
+        enabled: False
+```
+
+Another example would be to modify the processing steps, which involves replacing the steps listed in the `processing` section and optionally changing some of their arguments.
+If one wanted to do only a minimal set of processing steps, and apply a constant conrner frequency for filtering, the `processing` section could be modified to this:
+
+```yaml
+processing:
+    - detrend:
+        detrending_method: demean
+    - remove_response:
+    - get_corner_frequencies:
+        method: constant
+        constant:
+          highpass: 0.08
+          lowpass: 20.0
+    - highpass_filter:
+    - lowpass_filter:
+```
+
 
 ## Download Data
 

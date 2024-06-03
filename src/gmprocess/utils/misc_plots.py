@@ -7,7 +7,6 @@ from collections import Counter
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from obspy import Trace
 from obspy.geodetics.base import gps2dist_azimuth
 from esi_utils_colors.cpalette import ColorPalette
 from mpl_toolkits.axes_grid1 import make_axes_locatable
