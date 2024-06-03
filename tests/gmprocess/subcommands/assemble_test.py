@@ -2,8 +2,7 @@ import io
 import os
 import shutil
 
-from gmprocess.utils import constants
-from gmprocess.utils import tests_utils
+from gmprocess.utils import constants, tests_utils
 
 
 def test_assemble(script_runner):
@@ -85,7 +84,13 @@ def test_assemble(script_runner):
 
         # try with the --datadir and --confdir arguments
         ret = script_runner.run(
-            "gmrecords", "-o", "--datadir", ddir, "--confdir", cdir, "assemble"
+            "gmrecords",
+            "-o",
+            "--datadir",
+            ddir,
+            "--confdir",
+            cdir,
+            "assemble",
         )
         assert ret.success
 
