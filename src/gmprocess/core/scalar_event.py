@@ -323,7 +323,10 @@ def get_event_ids(ids=None, file_ids=None, data_dir=None):
     event_ids = ids or file_ids
     if event_ids:
         if isinstance(event_ids, str):
-            event_ids = [event_ids]
+            if "," in event_ids:
+                event_ids = [eid.strip() for eid in event_ids.split(",")]
+            else:
+                event_ids = [event_ids]
     elif data_dir:
         event_ids = [ev_id.name for ev_id in data_dir.iterdir() if ev_id.is_dir()]
         event_ids = sorted(event_ids)

@@ -5,6 +5,45 @@ import shutil
 from gmprocess.utils import constants, tests_utils
 
 
+def test_assemble_event_list(script_runner):
+    try:
+        # Need to create profile first.
+        cdir = constants.CONFIG_PATH_TEST
+        ddir = constants.TEST_DATA_DIR / "demo"
+        setup_inputs = io.StringIO(f"test\n{cdir}\n{str(ddir)}\nname\ntest@email.com\n")
+        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
+        setup_inputs.close()
+        assert ret.success
+
+        ret = script_runner.run("gmrecords", "assemble")
+        assert ret.success
+
+        EVENT_IDS = "us10004ehj, us10004fhj"
+        ret = script_runner.run(
+            "gmrecords",
+            "-e",
+            EVENT_IDS,
+            "-o",
+            "--datadir",
+            ddir,
+            "--confdir",
+            cdir,
+            "assemble",
+        )
+        assert ret.success
+
+    except Exception as ex:
+        raise ex
+    finally:
+        shutil.rmtree(constants.CONFIG_PATH_TEST)
+        # Remove workspace and image files
+        pattern = ["workspace.h5", ".png"]
+        for root, _, files in os.walk(ddir):
+            for file in files:
+                if any(file.endswith(ext) for ext in pattern):
+                    os.remove(os.path.join(root, file))
+
+
 def test_assemble(script_runner):
     EVENT_ID = "ci38457511"
     WORKSPACE_ITEMS = (

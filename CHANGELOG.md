@@ -4,10 +4,11 @@
   - Add UCLA review GUI
   - Add --conf and --data command line arguments for the gmrecords command.
 - Enhancements
-  - Remove sansmathfonts latex package since it is not necessary.
+  - Remove sansmathfonts latex package since it is not necessary and can create latex dependency issues on some systems.
   - Speed up station metric calculations by removing unnecessary repeated calculations.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
+  - Fix bug in setting event id as a comma separated list with the "-e" argument.
 
 ## 2.0.0 / 2024-02-26
 - Documentation Updates
