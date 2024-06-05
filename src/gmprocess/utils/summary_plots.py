@@ -354,19 +354,13 @@ class SummaryPlot:
         if "corner_frequencies" in self.tr.get_parameter_keys():
             hp = self.tr.get_parameter("corner_frequencies")["highpass"]
             lp = self.tr.get_parameter("corner_frequencies")["lowpass"]
-            self.ax.axvline(hp, color="black", linestyle="--", label="Highpass")
-            self.ax.axvline(lp, color="black", linestyle="--", label="Lowpass")
+            self.ax.axvline(hp, color="black", ls="dashed", label="Highpass")
+            self.ax.axvline(lp, color="black", ls="dashed", label="Lowpass")
 
         if self.snr_conf is not None:
-            self.ax.axhline(
-                self.snr_conf["threshold"], color="0.75", linestyle="-", linewidth=2
-            )
-            self.ax.axvline(
-                self.snr_conf["max_freq"], color="0.75", linewidth=2, linestyle="-"
-            )
-            self.ax.axvline(
-                self.snr_conf["min_freq"], color="0.75", linewidth=2, linestyle="-"
-            )
+            self.ax.axhline(self.snr_conf["threshold"], color="0.75", ls="dotted", lw=2)
+            self.ax.axvline(self.snr_conf["max_freq"], color="0.75", lw=2, ls="dashed")
+            self.ax.axvline(self.snr_conf["min_freq"], color="0.75", lw=2, ls="dashed")
 
         if self.snr_dict is not None:
             self.ax.loglog(self.snr_dict["freq"], self.snr_dict["snr"], label="SNR")

@@ -6,6 +6,7 @@
 - Enhancements
   - Remove sansmathfonts latex package since it is not necessary and can create latex dependency issues on some systems.
   - Speed up station metric calculations by removing unnecessary repeated calculations.
+  - Updated line styles of annotation lines in SNR plots.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
   - Fix bug in setting event id as a comma separated list with the "-e" argument.
