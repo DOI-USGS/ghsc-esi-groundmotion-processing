@@ -367,3 +367,7 @@ class SummaryPlot:
 
         self.ax.set_xlabel("Frequency (Hz)")
         self.ax.set_xlim(self.xlim)
+        ymin, ymax = self.ax.get_ylim()
+        if ymin < 0.1:
+            ymin = 0.1
+        self.ax.set_ylim([ymin, ymax])
