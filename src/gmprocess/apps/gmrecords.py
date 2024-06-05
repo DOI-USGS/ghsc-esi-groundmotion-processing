@@ -394,7 +394,7 @@ class GMrecordsApp(object):
             help=(
                 "Path to directly containing config files. "
                 "Setting this disables the use of projects. "
-                "Setting this also requires --datafile to be set."
+                "Setting this also requires --datadir to be set."
             ),
         )
 
