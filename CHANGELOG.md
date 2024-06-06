@@ -7,9 +7,11 @@
   - Remove sansmathfonts latex package since it is not necessary and can create latex dependency issues on some systems.
   - Speed up station metric calculations by removing unnecessary repeated calculations.
   - Updated line styles of annotation lines in SNR plots.
+  - Remove the `export_shakemap` subcommand.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
   - Fix bug in setting event id as a comma separated list with the "-e" argument.
+  - Fix `autoshakemap` to use `export_gmpacket` subcommand instead of `export_shakemap`.
 
 ## 2.0.0 / 2024-02-26
 - Documentation Updates

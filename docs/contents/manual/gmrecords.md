@@ -35,6 +35,7 @@ Create a configuration file for projects in the current directory.
 :::{command-output} gmrecords init -h
 :::
 
+
 ### `projects`
 
 Manage local directory or system-level projects.
@@ -77,6 +78,15 @@ All subsequent commands only access the ASDF file.
 
 ## Processing subcommands
 
+
+### `processing_steps`
+
+Print a summary of the currently available processing steps.
+
+:::{command-output} gmrecords processing_steps -h
+:::
+
+
 ### `process_waveforms`
 
 Perform processing steps on the raw waveforms, such as baseline correction, bandpass filtering, and trimming.
@@ -98,40 +108,30 @@ Compute waveform metrics, such as PGA, PGV, pseudospectral acceleration, and Fou
 :::{command-output} gmrecords compute_waveform_metrics -h
 :::
 
-### `auto_shakemap`
+### `autoshakemap`
 
 An alias for downloading and assembling data, processing waveforms, computing station metrics, computing waveform metrics, and exporting files for ShakeMap.
 
-:::{command-output} gmrecords auto_shakemap -h
+:::{command-output} gmrecords autoshakemap -h
 :::
 
-### `auto_process`
+### `autoprocess`
 
 An alias for downloading and assembling data, processing waveforms, computing station metrics, computing waveform metrics, and generating a report and station map.
 
-:::{command-output} gmrecords auto_shakemap -h
+:::{command-output} gmrecords autoprocess -h
 :::
 
 ## Export subcommands
 
+### `export_cosmos`
+
+:::{command-output} gmrecords export_cosmos -h
+:::
+
 ### `export_failure_tables`
 
 :::{command-output} gmrecords export_failure_tables -h
-:::
-
-### `export_metric_tables`
-
-:::{command-output} gmrecords export_metric_tables -h
-:::
-
-### `export_provenance_tables`
-
-:::{command-output} gmrecords export_provenance_tables -h
-:::
-
-### `export_shakemap`
-
-:::{command-output} gmrecords export_shakemap -h
 :::
 
 ### `export_gmpacket`
@@ -139,7 +139,28 @@ An alias for downloading and assembling data, processing waveforms, computing st
 :::{command-output} gmrecords export_gmpacket -h
 :::
 
+### `export_metric_tables`
+
+:::{command-output} gmrecords export_metric_tables -h
+:::
+
+
+### `export_provenance_tables`
+
+:::{command-output} gmrecords export_provenance_tables -h
+:::
+
+
 ## Diagnostic subcommands
+
+## `generate_regression_plot`
+
+:::{important}
+You must run the `export_metric_tables` subcommand before running the `generate_regression_plot` subcommand.
+:::
+
+:::{command-output} gmrecords generate_regression_plot -h
+:::
 
 ## `generate_report`
 
@@ -151,11 +172,3 @@ An alias for downloading and assembling data, processing waveforms, computing st
 :::{command-output} gmrecords generate_station_maps -h
 :::
 
-## `generate_regression_plot`
-
-:::{important}
-You must run the `export_metric_tables` subcommand before running the `generate_regression_plot` subcommand.
-:::
-
-:::{command-output} gmrecords generate_regression_plot -h
-:::

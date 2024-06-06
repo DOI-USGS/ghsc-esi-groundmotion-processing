@@ -26,8 +26,8 @@ compute_waveform_metrics = LazyLoader(
 export_metric_tables = LazyLoader(
     "export_metric_tables", globals(), "gmprocess.subcommands.export_metric_tables"
 )
-export_shakemap = LazyLoader(
-    "export_shakemap", globals(), "gmprocess.subcommands.export_shakemap"
+export_gmpacket = LazyLoader(
+    "export_gmpacket", globals(), "gmprocess.subcommands.export_gmpacket"
 )
 generate_regression_plot = LazyLoader(
     "generate_regression_plot",
@@ -107,7 +107,7 @@ class AutoShakemapModule(base.SubcommandModule):
             process_waveforms.ProcessWaveformsModule().main(gmrecords)
             compute_station_metrics.ComputeStationMetricsModule().main(gmrecords)
             compute_waveform_metrics.ComputeWaveformMetricsModule().main(gmrecords)
-            export_shakemap.ExportShakeMapModule().main(gmrecords)
+            export_gmpacket.ExportGMPacketModule().main(gmrecords)
 
             if gmrecords.args.diagnostics:
                 export_metric_tables.ExportMetricTablesModule().main(gmrecords)

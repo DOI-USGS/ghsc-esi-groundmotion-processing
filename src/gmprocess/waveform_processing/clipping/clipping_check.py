@@ -15,7 +15,7 @@ M_TO_KM = 1.0 / 1000
 
 @processing_step
 def check_clipping(st, event, threshold=0.2, config=None):
-    """Apply clicking check.
+    """Apply clipping check.
 
     Lower thresholds will pass fewer streams but will give less false negatives
     (i.e., streams in which clipping actually occurred but were missed).
