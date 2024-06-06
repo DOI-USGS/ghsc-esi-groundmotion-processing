@@ -32,25 +32,15 @@ def test_autoshakemap(script_runner):
 
         event_dir = ddir / EVENT_ID
 
-        filename = event_dir / f"{EVENT_ID}_metrics.json"
-        with open(filename, encoding="utf-8") as fin:
-            metrics = json.load(fin)
-            assert metrics["software"]["name"] == "gmprocess"
-            assert metrics["event"]["id"] == EVENT_ID
-            assert len(metrics["features"]) == len(STATION_IDS)
-            for i_station, station_id in enumerate(STATION_IDS):
-                properties = metrics["features"][i_station]["properties"]
-                network_code, station_code = station_id.split(".")
-                assert properties["network_code"] == network_code
-                assert properties["station_code"] == station_code
-
-        filename = event_dir / f"{EVENT_ID}_groundmotions_dat.json"
+        filename = event_dir / f"{EVENT_ID}_groundmotion_packet.json"
         with open(filename, encoding="utf-8") as fin:
             data = json.load(fin)
             assert len(data["features"]) == len(STATION_IDS)
             for i_station, station_id in enumerate(STATION_IDS):
-                feature = data["features"][i_station]
-                assert feature["id"] == station_id
+                fprops = data["features"][i_station]["properties"]
+                assert (
+                    f"{fprops['network_code']}.{fprops['station_code']}" == station_id
+                )
 
     except Exception as ex:
         raise ex
