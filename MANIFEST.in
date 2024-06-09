@@ -1,5 +1,7 @@
 recursive-include src/gmprocess/data *
 recursive-include src/gmprocess/bin *
+include src/gmprocess/gui/gui_ucla/Documentation.md
+include src/gmprocess/gui/gui_ucla/GUI_human_review.ipynb
 prune tests
 prune docs
 prune notebooks

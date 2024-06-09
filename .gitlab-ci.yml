@@ -60,7 +60,7 @@ run upload pypi:
     - pip install .[build]
     - python -m build
     - python -m zipfile --list dist/*whl
-    - check-wheel-contents --package src/gmprocess/ --package-omit src/gmprocess/data/asdf dist/ src/gmprocess/gui/gui_ucla/
+    - check-wheel-contents --package src/gmprocess/ --package-omit src/gmprocess/data/asdf dist/
     - |
       if [ $? -eq 0 ]; then
         echo "check-wheel-contents has passed, uploading to PyPi ..."
