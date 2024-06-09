@@ -12,6 +12,7 @@
     - Change KO smoothing paramter to 188.5.
     - Add arias intensity.
     - Lower pga threshold on distance search criteria.
+    - Update release instructions in CONTRIBUTING.md.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
   - Fix bug in setting event id as a comma separated list with the "-e" argument.
