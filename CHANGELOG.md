@@ -1,5 +1,6 @@
 ## main
 
+## 2.1.0 / 2024-06-09
 - New features
   - Add UCLA review GUI
   - Add --conf and --data command line arguments for the gmrecords command.
