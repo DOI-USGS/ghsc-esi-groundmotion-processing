@@ -8,6 +8,10 @@
   - Speed up station metric calculations by removing unnecessary repeated calculations.
   - Updated line styles of annotation lines in SNR plots.
   - Remove the `export_shakemap` subcommand.
+  - Default config updates
+    - Change KO smoothing paramter to 188.5.
+    - Add arias intensity.
+    - Lower pga threshold on distance search criteria.
 - Bug fixes
   - Resolve failing unit test related to obspy bugfix (https://github.com/obspy/obspy/pull/3422)
   - Fix bug in setting event id as a comma separated list with the "-e" argument.

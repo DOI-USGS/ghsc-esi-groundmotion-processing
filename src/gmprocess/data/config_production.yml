@@ -14,7 +14,7 @@ fetchers:
             # StableShallow GMM.
             # The distance will be the the distance at which the threshold PGA (in g) is
             # exceeded based on the GMM.
-            pga: 0.001
+            pga: 0.0001
             # The maximum distance (in km) that can be returned.
             max_distance: 800.0
             # NOTE: the GMM is evaluated with a number of simplifications, including 
@@ -526,7 +526,7 @@ metrics:
   # Do *not* delete a key to remove a component, it will be replaced with the default.
   # To remove a component, set it's types as an empty list.
   components_and_types: 
-    channels: [pga, pgv, sa, duration, cav]
+    channels: [pga, pgv, sa, duration, cav, arias]
     rotd: [pga, pgv, sa]
     geometric_mean: [duration]
     quadratic_mean: [fas]
@@ -547,7 +547,7 @@ metrics:
     # Additional parameters required for FAS
     fas:
         smoothing_method: konno_ohmachi
-        smoothing_parameter: 20.0
+        smoothing_parameter: 188.5
         allow_nans: True
         frequencies:
             # Parameters defining an array of frequencies.
