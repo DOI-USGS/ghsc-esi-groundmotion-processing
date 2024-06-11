@@ -2,6 +2,7 @@
 
 ## 2.1.1 / 2024-06-11
 - Enhancements
+  - Modified default frequencies for FAS metrics to be consistent with (Kottke AR, et al, 2021) 
   - Added FAS check to unit test for `export_metric_tables`
 - Bug fixes
   - Fix bug in FAS not being exported correctly when running `mtables`
