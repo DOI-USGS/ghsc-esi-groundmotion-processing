@@ -388,7 +388,9 @@ metrics:
             # Parameters defining an array of frequencies.
             # syntax is the same as that used for numpy linspace and logspace
             # start (first value), stop (last value), num (number of values)
-            start: 0.001
+            # Reference: (Kottke AR, et al, 2021) doi:10.1177/87552930211019052
+            # "Selection of random vibration theory procedures for the NGA-East project and ground-motion"
+            start: 0.01
             stop: 100.0
             num: 401
 

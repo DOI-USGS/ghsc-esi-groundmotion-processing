@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from gmprocess.utils import constants
+from gmprocess.utils.config import get_config
 
 
 def test_export_metric_tables(script_runner):
@@ -14,10 +15,17 @@ def test_export_metric_tables(script_runner):
         cdir = str(constants.CONFIG_PATH_TEST)
         ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "exports")
 
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
+        setup_inputs = io.StringIO(
+            f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n"
+        )
+        ret = script_runner.run(
+            "gmrecords", "projects", "-c", stdin=setup_inputs
+        )
         setup_inputs.close()
         assert ret.success
+
+        config = get_config()
+        config["metrics"]["components_and_types"]["quadratic_mean"] = "fas"
 
         ret = script_runner.run("gmrecords", "mtables")
         assert ret.success
@@ -29,10 +37,12 @@ def test_export_metric_tables(script_runner):
             for file in files:
                 if pattern in file:
                     count += 1
-        assert count == 8
+        assert count == 12
         # Check contents of one file
         h1df = pd.read_csv(
-            os.path.join(ddir, "test_default_metrics_channels(component=h1).csv")
+            os.path.join(
+                ddir, "test_default_metrics_channels(component=h1).csv"
+            )
         )
         for i in range(h1df.shape[0]):
             assert h1df["EarthquakeId"][i] == "ci38457511"
@@ -46,6 +56,25 @@ def test_export_metric_tables(script_runner):
         )
         np.testing.assert_allclose(
             h1df["EarthquakeDepth"], np.full_like(h1df["EarthquakeDepth"], 8.0)
+        )
+        np.testing.assert_allclose(
+            h1df["EarthquakeDepth"], np.full_like(h1df["EarthquakeDepth"], 8.0)
+        )
+
+        config["metrics"]["components_and_types"][
+            "channels"
+        ] = ""  # Turn off default metrics
+        assert ret.success
+
+        ret = script_runner.run("gmrecords", "mtables")
+        assert ret.success
+
+        qmdf = pd.read_csv(
+            os.path.join(ddir, "test_default_metrics_quadraticmean().csv")
+        )
+        np.testing.assert_allclose(
+            qmdf["FAS(f=5.62341325, B=20.0)"].iloc[0],
+            63.022771,
         )
 
     except Exception as ex:

@@ -11,7 +11,9 @@ from ruamel.yaml import YAML
 from gmprocess.utils.config import update_dict, get_config
 from gmprocess.utils import constants
 from gmprocess.io.asdf import flatfile_constants as flat_const
-from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
+from gmprocess.metrics.waveform_metric_collection import (
+    WaveformMetricCollection,
+)
 from gmprocess.metrics.station_metric_collection import StationMetricCollection
 from gmprocess.metrics.utils import component_to_channel
 
@@ -72,7 +74,9 @@ class Flatfile(object):
         """
         if hasattr(self.workspace, "config"):
             config = self.workspace.config
-            default_config_file = constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
+            default_config_file = (
+                constants.DATA_DIR / constants.CONFIG_FILE_PRODUCTION
+            )
             with open(default_config_file, "r", encoding="utf-8") as f:
                 yaml = YAML()
                 yaml.preserve_quotes = True
@@ -83,7 +87,9 @@ class Flatfile(object):
         any_trace_failures = config["check_stream"]["any_trace_failures"]
         use_array = not config["read"]["use_streamcollection"]
 
-        wmc = WaveformMetricCollection.from_workspace(self.workspace, self.label)
+        wmc = WaveformMetricCollection.from_workspace(
+            self.workspace, self.label
+        )
         smc = StationMetricCollection.from_workspace(self.workspace)
         for wml, stream_meta, station_metrics in zip(
             wmc.waveform_metrics, wmc.stream_metadata, smc.station_metrics
@@ -92,7 +98,9 @@ class Flatfile(object):
                 continue
 
             self._station_metrics = station_metrics
-            passed_traces = [tr_met for tr_met in stream_meta if tr_met["passed"]]
+            passed_traces = [
+                tr_met for tr_met in stream_meta if tr_met["passed"]
+            ]
 
             n_passed = len(passed_traces)
             for tr in passed_traces:
@@ -116,13 +124,13 @@ class Flatfile(object):
             self.imtlist = np.unique(wm_df["IMT"]).tolist()
             self.imtlist.sort(key=_natural_keys)
 
-            for imc in self.imclist:
+            for imc in self.imclist:  # if "FAS" SAVE
                 if str(imc) not in self.imc_tables:
                     self.imc_tables[str(imc)] = []
                 row = self.get_imt_row(passed_traces, wml, imc)
                 if not row:
                     continue
-                self.imc_tables[str(imc)].append(row)
+                self.imc_tables[str(imc)].append(row)  #
 
     def get_imt_row(self, passed_traces, wml, imc):
         """Get one row of the IMT flatfile fom a stream.
@@ -153,7 +161,12 @@ class Flatfile(object):
         imts = wm_df["IMT"].tolist()
         imt_vals = wm_df["Result"].tolist()
         for imt, val in zip(imts, imt_vals):
-            row.update({imt: val})
+            if imt.startswith("FAS("):
+                for idx, freq in enumerate(val.frequency):
+                    value = val.fourier_spectra[idx]
+                    row.update({f"FAS(f={freq}, {imt.split('(')[1]}": value})
+            else:
+                row.update({imt: val})
         return row
 
     def get_record_dict(self, trace_meta):
@@ -273,7 +286,9 @@ class Flatfile(object):
                 imt_cols = [x for x in imt_cols if x not in fas_cols]
             imt_cols.sort(key=_natural_keys)
 
-            non_imt_cols = [col for col in table.columns if col not in self.imtlist]
+            non_imt_cols = [
+                col for col in table.columns if col not in self.imtlist
+            ]
             table = table[non_imt_cols + imt_cols]
             self.imc_tables[key] = table
             readme_dict = {}
@@ -283,15 +298,17 @@ class Flatfile(object):
                 else:
                     imt = col.upper()
                     if imt.startswith("SA"):
-                        readme_dict["SA(X)"] = flat_const.FLATFILE_IMT_COLUMNS["SA(X)"]
+                        readme_dict["SA(X)"] = flat_const.FLATFILE_IMT_COLUMNS[
+                            "SA(X)"
+                        ]
                     elif imt.startswith("FAS"):
                         readme_dict["FAS(X)"] = flat_const.FLATFILE_IMT_COLUMNS[
                             "FAS(X)"
                         ]
                     elif imt.startswith("DURATION"):
-                        readme_dict["DURATIONp-q"] = flat_const.FLATFILE_IMT_COLUMNS[
-                            "DURATIONp-q"
-                        ]
+                        readme_dict["DURATIONp-q"] = (
+                            flat_const.FLATFILE_IMT_COLUMNS["DURATIONp-q"]
+                        )
                     else:
                         readme_dict[imt] = flat_const.FLATFILE_IMT_COLUMNS[imt]
             df_readme = pd.DataFrame.from_dict(readme_dict, orient="index")
@@ -338,7 +355,9 @@ class Flatfile(object):
                         fit_dict["StationLongitude"] = coords.longitude
                         fit_dict["StationElevation"] = coords.elevation
                         if trace.has_parameter("corner_frequencies"):
-                            freq_dict = trace.get_parameter("corner_frequencies")
+                            freq_dict = trace.get_parameter(
+                                "corner_frequencies"
+                            )
                             fit_dict["fmin"] = freq_dict["highpass"]
                             fit_dict["fmax"] = freq_dict["lowpass"]
                         fit_table.append(fit_dict)
@@ -351,7 +370,9 @@ class Flatfile(object):
         # Ensure that the DataFrame columns are ordered correctly
         fit_df = fit_df[flat_const.FIT_SPECTRA_COLUMNS.keys()]
 
-        readme = pd.DataFrame.from_dict(flat_const.FIT_SPECTRA_COLUMNS, orient="index")
+        readme = pd.DataFrame.from_dict(
+            flat_const.FIT_SPECTRA_COLUMNS, orient="index"
+        )
         readme.reset_index(level=0, inplace=True)
         readme.columns = ["Column header", "Description"]
 
@@ -417,7 +438,8 @@ class Flatfile(object):
         df_final = pd.concat([df1, df2], axis=1)
 
         readme = pd.DataFrame.from_dict(
-            {**flat_const.SNR_COLUMNS, **flat_const.SNR_FREQ_COLUMNS}, orient="index"
+            {**flat_const.SNR_COLUMNS, **flat_const.SNR_FREQ_COLUMNS},
+            orient="index",
         )
         readme.reset_index(level=0, inplace=True)
         readme.columns = ["Column header", "Description"]
@@ -450,7 +472,10 @@ def _natural_keys(text):
     Helper function for sorting IMT list. This is needed because using the
     plain .sort() will put SA(10.0) before SA(2.0), for example.
     """
-    return [_atof(c) for c in re.split(r"[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)", text)]
+    return [
+        _atof(c)
+        for c in re.split(r"[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)", text)
+    ]
 
 
 def _atof(text):
