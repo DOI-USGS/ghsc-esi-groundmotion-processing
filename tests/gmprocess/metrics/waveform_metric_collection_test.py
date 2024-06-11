@@ -1,7 +1,9 @@
 import numpy as np
 
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
-from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
+from gmprocess.metrics.waveform_metric_collection import (
+    WaveformMetricCollection,
+)
 from gmprocess.utils import constants
 
 
@@ -24,7 +26,7 @@ def test_waveform_metric_collection():
             if metric.metric_attributes["period"] != 1.0:
                 continue
             test_sa = metric.value("RotD(percentile=50.0)")
-            np.testing.assert_allclose(test_sa, 53.144627)
+            np.testing.assert_allclose(test_sa, 53.133845)
 
     streams = ws.get_streams("ci38457511", labels=["default"])
     event = ws.get_event("ci38457511")
@@ -61,4 +63,4 @@ def test_waveform_metric_collection():
                     np.array(mdict["components"]) == "RotD(percentile=50.0)"
                 )[0]
                 test_sa = np.array(mdict["values"])[idx][0]
-                np.testing.assert_allclose(test_sa, 53.144627)
+                np.testing.assert_allclose(test_sa, 53.133845)

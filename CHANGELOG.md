@@ -1,5 +1,11 @@
 ## main
 
+## 2.1.1 / 2024-06-11
+- Enhancements
+  - Added FAS check to unit test for `export_metric_tables`
+- Bug fixes
+  - Fix bug in FAS not being exported correctly when running `mtables`
+
 ## 2.1.0 / 2024-06-09
 - New features
   - Add UCLA review GUI

@@ -9,15 +9,15 @@ def test_flatfile(load_ci38457511_demo_export):
     spect_table, _ = ff.get_fit_spectra_table()
     target_f0 = np.array(
         [
-            0.18404403,
-            0.14632835,
-            0.47972901,
-            0.02019254,
-            0.03875098,
-            0.05347112,
-            0.13864016,
-            0.09723006,
-            0.19382767,
+            0.184331412949,
+            0.146276292955,
+            0.480365487228,
+            0.020329709006,
+            0.038951622906,
+            0.004691576598,
+            0.139481632418,
+            0.097327682036,
+            0.194052895563,
         ]
     )
     np.testing.assert_allclose(spect_table["f0"], target_f0)
@@ -25,22 +25,22 @@ def test_flatfile(load_ci38457511_demo_export):
     snr_table, _ = ff.get_snr_table()
     target_snr = np.array(
         [
-            1.36913029e04,
-            1.36827316e04,
-            9.31650424e03,
-            4.96294139e01,
-            1.19447091e01,
-            2.39717323e01,
-            5.84182387e03,
-            3.99108685e03,
-            1.89513166e03,
+            4.6524055383e03,
+            4.6494923423e03,
+            3.1654944033e03,
+            5.5508988924e01,
+            1.3659890143e01,
+            2.7015974078e01,
+            2.1172353792e03,
+            1.4461666852e03,
+            6.8618301565e02,
         ]
     )
     np.testing.assert_allclose(snr_table["SNR(1)"], target_snr)
 
     event_table, imc_tables, _ = ff.get_tables()
     np.testing.assert_allclose(event_table["magnitude"][0], 7.1)
-    assert len(imc_tables) == 4
+    assert len(imc_tables) == 6
     rot50_table = imc_tables["RotD(percentile=50.0)"]
-    target_sa = np.array([53.144627, 17.922639, 41.612646])
+    target_sa = np.array([53.133845, 17.926331, 41.583194])
     np.testing.assert_allclose(rot50_table["SA(T=1.0000, D=0.050)"], target_sa)
