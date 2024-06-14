@@ -17,8 +17,8 @@ def adjust_highpass_corner(
     st,
     step_factor=1.5,
     maximum_freq=0.5,
-    max_final_displacement=0.2,
-    max_displacment_ratio=0.2,
+    max_final_displacement=0.025,
+    max_displacement_ratio=0.2,
     config=None,
 ):
     """Adjust high pass corner frequency.
@@ -31,7 +31,7 @@ def adjust_highpass_corner(
         using an automated protocol. Earthquake Spectra, 32(2), pp.1281-1302.
 
     This algorithm begins with an initial corner frequency that was selected
-    as configured in the `get_corner_frequencies` step. It then chcks the
+    as configured in the `get_corner_frequencies` step. It then checks the
     criteria descibed below; if the criteria are not met then the high pass
     corner is increased the multiplicative step factor until the criteria
     are met.
@@ -46,8 +46,8 @@ def adjust_highpass_corner(
             to search across to pass displacement checks.
         max_final_displacement (float):
             Maximum allowable value (in cm) for final displacement.
-        max_displacment_ratio (float):
-            Maximum allowable ratio of final displacement to max displacment.
+        max_displacement_ratio (float):
+            Maximum allowable ratio of final displacement to max displacement.
         config (dict):
             Configuration dictionary (or None). See get_config().
 
@@ -65,7 +65,7 @@ def adjust_highpass_corner(
             initial_corners = tr.get_parameter("corner_frequencies")
             f_hp = initial_corners["highpass"]
             ok = __disp_checks(
-                tr, max_final_displacement, max_displacment_ratio, config
+                tr, max_final_displacement, max_displacement_ratio, config
             )
             while not ok:
                 f_hp = step_factor * f_hp
@@ -78,13 +78,13 @@ def adjust_highpass_corner(
                 initial_corners["highpass"] = f_hp
                 tr.set_parameter("corner_frequencies", initial_corners)
                 ok = __disp_checks(
-                    tr, max_final_displacement, max_displacment_ratio, config
+                    tr, max_final_displacement, max_displacement_ratio, config
                 )
     return st
 
 
 def __disp_checks(
-    tr, max_final_displacement=0.025, max_displacment_ratio=0.2, config=None
+    tr, max_final_displacement=0.025, max_displacement_ratio=0.2, config=None
 ):
     # Need to find the high/low pass filtering steps in the config
     # to ensure that filtering here is done with the same options
@@ -93,9 +93,9 @@ def __disp_checks(
     processing_steps = config["processing"]
     ps_names = [list(ps.keys())[0] for ps in processing_steps]
     ind = int(np.where(np.array(ps_names) == "highpass_filter")[0][0])
-    hp_args = processing_steps[ind]["highpass_filter"]
+    hp_args = processing_steps[ind]["highpass_filter"] or {}
     ind = int(np.where(np.array(ps_names) == "lowpass_filter")[0][0])
-    lp_args = processing_steps[ind]["lowpass_filter"]
+    lp_args = processing_steps[ind]["lowpass_filter"] or {}
 
     # Make a copy of the trace so we don't modify it in place with
     # filtering or integration
@@ -108,19 +108,19 @@ def __disp_checks(
     # Apply baseline correction
     trdis = correct_baseline(trdis, config)
 
-    # Integrate to displacment
+    # Integrate to displacement
     trdis = get_disp(trdis, config=config)
 
     # Checks
     ok = True
-    max_displacment = np.max(np.abs(trdis.data))
+    max_displacement = np.max(np.abs(trdis.data))
     final_displacement = np.abs(trdis.data[-1])
-    disp_ratio = final_displacement / max_displacment
+    disp_ratio = final_displacement / max_displacement
 
     if final_displacement > max_final_displacement:
         ok = False
 
-    if disp_ratio > max_displacment_ratio:
+    if disp_ratio > max_displacement_ratio:
         ok = False
 
     return ok

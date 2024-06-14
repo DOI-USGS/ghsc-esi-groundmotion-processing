@@ -1,6 +1,5 @@
 # stdlib imports
 import pathlib
-import shutil
 import tempfile
 import time
 from io import StringIO
@@ -157,7 +156,9 @@ def get_sample_data(volume):
     else:
         labels.remove("unprocessed")
     plabel = labels[0]
-    streams = workspace.get_streams(eventid, stations=[station], labels=[plabel])
+    streams = workspace.get_streams(
+        eventid, stations=[station], labels=[plabel]
+    )
     gmprocess_version = workspace.get_gmprocess_version()
     idx = gmprocess_version.find(".dev")
     gmprocess_version = gmprocess_version[0:idx]
@@ -171,7 +172,9 @@ def test_text_header():
     # get some data
     volume = Volume.PROCESSED
     trace, _, scalar_event, stream, gmprocess_version = get_sample_data(volume)
-    text_header = TextHeader(trace, scalar_event, stream, volume, gmprocess_version)
+    text_header = TextHeader(
+        trace, scalar_event, stream, volume, gmprocess_version
+    )
     cosmos_file = StringIO()
     text_header.write(cosmos_file)
     output = cosmos_file.getvalue()
@@ -183,7 +186,9 @@ def test_text_header():
     # get some data
     volume = Volume.RAW
     trace, _, scalar_event, stream, gmprocess_version = get_sample_data(volume)
-    text_header = TextHeader(trace, scalar_event, stream, volume, gmprocess_version)
+    text_header = TextHeader(
+        trace, scalar_event, stream, volume, gmprocess_version
+    )
     cosmos_file = StringIO()
     text_header.write(cosmos_file)
     output = cosmos_file.getvalue()
@@ -196,7 +201,9 @@ def test_text_header():
 def test_int_header():
     volume = Volume.PROCESSED
     trace, _, scalar_event, stream, gmprocess_version = get_sample_data(volume)
-    int_header = IntHeader(trace, scalar_event, stream, volume, gmprocess_version)
+    int_header = IntHeader(
+        trace, scalar_event, stream, volume, gmprocess_version
+    )
     cosmos_file = StringIO()
     int_header.write(cosmos_file)
     output = cosmos_file.getvalue()
@@ -259,7 +266,9 @@ def test_data_block():
 def test_cosmos_writer(datafile=None):
     if datafile is None:
         # datafile = TEST_DATA_DIR / "asdf" / "nc71126864" / "workspace.h5"
-        datafile = TEST_DATA_DIR / "data" / "asdf" / "nc71126864" / "workspace.h5"
+        datafile = (
+            TEST_DATA_DIR / "data" / "asdf" / "nc71126864" / "workspace.h5"
+        )
     tempdir = None
     with tempfile.TemporaryDirectory() as tempdir:
         cosmos_writer = CosmosWriter(

@@ -1,16 +1,8 @@
 import numpy as np
 
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.io.read import read_data
-from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.utils.config import get_config
-
-from gmprocess.waveform_processing.windows import signal_split
-from gmprocess.waveform_processing.windows import signal_end
-from gmprocess.waveform_processing.windows import window_checks
-
-from gmprocess.waveform_processing.corner_frequencies import get_corner_frequencies
-from gmprocess.waveform_processing.snr import compute_snr, snr_check
+from gmprocess.waveform_processing.corner_frequencies import (
+    get_corner_frequencies,
+)
 
 
 def test_corner_frequencies(setup_corner_freq_test):
