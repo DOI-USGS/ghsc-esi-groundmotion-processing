@@ -256,7 +256,7 @@ processing:
     #     max_final_displacement: 0.025
     #
     #     # Maximum ratio of the final displacement to the maximum displacement:
-    #     max_displacment_ratio: 0.2
+    #     max_displacement_ratio: 0.2
 
     # - resample:
     #

@@ -1,5 +1,4 @@
 import numpy as np
-import json
 import obspy
 
 from gmprocess.io.read import read_data
