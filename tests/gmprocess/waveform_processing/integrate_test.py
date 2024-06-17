@@ -1,7 +1,4 @@
 import numpy as np
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.io.read import read_data
-from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.waveform_processing.integrate import get_disp, get_vel
 from gmprocess.utils.config import get_config
 

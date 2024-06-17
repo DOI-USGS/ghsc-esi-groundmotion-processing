@@ -1,6 +1,5 @@
 import io
 import shutil
-import pytest
 from gmprocess.utils import constants
 
 EVENTS = ["ci38457511", "ci38457511_rupt"]
@@ -18,8 +17,12 @@ def test_compute_waveform_metrics(script_runner):
             dst = str(ddir / event / "_workspace.h5")
             shutil.copyfile(src, dst)
 
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
+        setup_inputs = io.StringIO(
+            f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n"
+        )
+        ret = script_runner.run(
+            "gmrecords", "projects", "-c", stdin=setup_inputs
+        )
         setup_inputs.close()
         assert ret.success
 

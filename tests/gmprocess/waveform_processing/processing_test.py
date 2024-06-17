@@ -3,10 +3,8 @@ import logging
 import numpy as np
 
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.io.read import read_data
 from gmprocess.waveform_processing.processing import process_streams
 from gmprocess.utils.logging import setup_logger
-from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.utils.config import get_config, update_dict, update_config
 from gmprocess.utils.constants import TEST_DATA_DIR
 
@@ -46,7 +44,11 @@ def test_process_streams(geonet_uncorrected_waveforms):
                     "threshold": 3.0,
                     "min_freq": 0.2,
                     "max_freq": 5.0,
-                    "f0_options": {"stress_drop": 10, "shear_vel": 3.7, "ceiling": 2.0},
+                    "f0_options": {
+                        "stress_drop": 10,
+                        "shear_vel": 3.7,
+                        "ceiling": 2.0,
+                    },
                 }
             },
             {
@@ -77,7 +79,9 @@ def test_process_streams(geonet_uncorrected_waveforms):
     # update_dict(config['processing'][11], update)
     # update_dict(config, update)
 
-    config = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG)
+    config = update_config(
+        str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG
+    )
 
     streams, event = geonet_uncorrected_waveforms
 
@@ -103,7 +107,9 @@ def test_process_streams(geonet_uncorrected_waveforms):
     )
 
     np.testing.assert_allclose(
-        trace_maxes, np.array([157.81244924, 240.37952095, 263.6015194]), rtol=1e-5
+        trace_maxes,
+        np.array([157.81244924, 240.37952095, 263.6015194]),
+        rtol=1e-5,
     )
 
     # x: array([158.99, 239.48, 258.44])
@@ -139,7 +145,13 @@ def test_check_instrument(fdsn_nc51194936):
     # Update default rather than loading static config
     update = {
         "processing": [
-            {"check_instrument": {"n_max": 3, "n_min": 1, "require_two_horiz": True}},
+            {
+                "check_instrument": {
+                    "n_max": 3,
+                    "n_min": 1,
+                    "require_two_horiz": True,
+                }
+            },
         ]
     }
     update_dict(config, update)

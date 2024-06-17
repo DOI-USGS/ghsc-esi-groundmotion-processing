@@ -116,7 +116,7 @@ def lowpass_filter(
 
 
 def lowpass_filter_trace(
-    tr, frequency_domain, filter_order=5, number_of_passes=1, config=None
+    tr, frequency_domain=True, filter_order=5, number_of_passes=1, config=None
 ):
     """
     Lowpass filter.

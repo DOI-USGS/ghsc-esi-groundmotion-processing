@@ -1,7 +1,5 @@
 import pytest
 
-import copy
-
 from gmprocess.io.read import read_data
 from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.utils.config import get_config
