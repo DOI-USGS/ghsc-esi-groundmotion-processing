@@ -2,7 +2,7 @@ default:
   # image: ${CI_REGISTRY}/devops/images/usgs/python:3.9
   image: ${DEVOPS_REGISTRY}usgs/python:3.9
   tags:
-    - development
+    - build
   before_script:
     - python --version
     - export PATH="/home/usgs-user/.local/bin:$PATH"
