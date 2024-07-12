@@ -1,26 +1,26 @@
 # stdlib imports
-import tempfile
 import logging
 import sys
+import tempfile
 
 # third party imports
 import pytz
-from obspy.core.utcdatetime import UTCDateTime
-from obspy.clients.fdsn.header import URL_MAPPINGS, FDSNException
-from obspy.clients.fdsn import Client
-from obspy.clients.fdsn.mass_downloader import (
-    CircularDomain,
-    RectangularDomain,
-    Restrictions,
-    MassDownloader,
-)
+from gmprocess.core.streamcollection import StreamCollection
 
 # local imports
 from gmprocess.io.fetcher import DataFetcher
 from gmprocess.io.obspy.core import read_obspy
-from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.utils.config import get_config
 
+from obspy.clients.fdsn import Client
+from obspy.clients.fdsn.header import URL_MAPPINGS, FDSNException
+from obspy.clients.fdsn.mass_downloader import (
+    CircularDomain,
+    MassDownloader,
+    RectangularDomain,
+    Restrictions,
+)
+from obspy.core.utcdatetime import UTCDateTime
 
 OBSPY_LOGGER = "obspy.clients.fdsn.mass_downloader"
 
@@ -251,7 +251,7 @@ class FDSNFetcher(DataFetcher):
                 if outside_lat or outside_lon:
                     continue
             try:
-                # Is authetication information configured?
+                # Is authentication information configured?
                 fdsn_auth = self.config["fetchers"]["FDSNFetcher"]["authentication"]
                 fdsn_user = fdsn_auth[provider_dict["name"]]["user"]
                 fdsn_password = fdsn_auth[provider_dict["name"]]["password"]

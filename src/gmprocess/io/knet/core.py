@@ -1,21 +1,21 @@
 """Module for NIED/KNET reader."""
 
 # stdlib imports
-from datetime import datetime, timedelta
-import re
-import os
 import logging
+import os
+import re
+from datetime import datetime, timedelta
 
-# third party
-from obspy.core.trace import Stats
 import numpy as np
+from gmprocess.core.stationstream import StationStream
+from gmprocess.core.stationtrace import PROCESS_LEVELS, StationTrace
 
 # local imports
 from gmprocess.io.seedname import get_channel_name, get_units_type
-from gmprocess.core.stationtrace import StationTrace, PROCESS_LEVELS
-from gmprocess.core.stationstream import StationStream
 from gmprocess.io.utils import is_binary
 
+# third party
+from obspy.core.trace import Stats
 
 TEXT_HDR_ROWS = 17
 TIMEFMT = "%Y/%m/%d %H:%M:%S"
@@ -103,6 +103,8 @@ def read_knet(filename, config=None, **kwargs):
     standard["units_type"] = "acc"
     standard["units_type"] = "cm/s/s"
 
+    is_north = False
+    is_vertical = False
     dir_string = lines[12].split()[1].strip()
     # knet files have directions listed as N-S, E-W, or U-D,
     # whereas in kiknet those directions are '4', '5', or '6'.
@@ -169,9 +171,15 @@ def read_knet(filename, config=None, **kwargs):
     data *= calib
 
     # fill out the rest of the standard dictionary
+    azimuth = 90.0
+    altitude = 0.0
+    if is_north:
+        azimuth = 0.0
+    if is_vertical:
+        altitude = 90.0
     standard["units_type"] = get_units_type(hdr["channel"])
-    standard["horizontal_orientation"] = np.nan
-    standard["vertical_orientation"] = np.nan
+    standard["horizontal_orientation"] = azimuth
+    standard["vertical_orientation"] = altitude
     standard["instrument_period"] = np.nan
     standard["instrument_damping"] = np.nan
     standard["process_time"] = ""
