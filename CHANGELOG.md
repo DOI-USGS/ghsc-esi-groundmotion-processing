@@ -6,6 +6,7 @@
   - Added FAS check to unit test for `export_metric_tables`
 - Bug fixes
   - Fix bug in FAS not being exported correctly when running `mtables`
+  - Fixed missing vertical/horizontal orientation information in KNET reader.
 
 ## 2.1.0 / 2024-06-09
 - New features
