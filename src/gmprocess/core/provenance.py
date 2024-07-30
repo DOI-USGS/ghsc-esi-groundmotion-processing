@@ -315,7 +315,7 @@ class TraceProvenance(Provenance):
         self.provenance_list.append(prov_dict)
 
     def select(self, prov_id):
-        """Return only the provenance entres that match a given prov_id.
+        """Return only the provenance entries that match a given prov_id.
 
         Args:
             prov_id (str):
@@ -329,7 +329,7 @@ class TraceProvenance(Provenance):
 
     @classmethod
     def from_provenance_document(cls, provdoc, stats):
-        """Add provenance entires from a provenance document.
+        """Add provenance entries from a provenance document.
 
         Args:
             provdoc (prov.model.ProvDocument):
