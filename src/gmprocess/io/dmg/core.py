@@ -215,6 +215,8 @@ def _read_volume_one(filename, line_offset, location="", units="acc", config=Non
             Input DMG V1 filename.
         line_offset (int):
             Line offset to beginning of channel text block.
+        location (str):
+            Location metadata.
         units (str):
             units to get.
         config (dict):
@@ -322,6 +324,8 @@ def _read_volume_two(filename, line_offset, location="", units="acc"):
             Input DMG V2 filename.
         line_offset (int):
             Line offset to beginning of channel text block.
+        location (str):
+            Location metadata.
         units (str):
             Units to get.
 
@@ -461,6 +465,8 @@ def _get_header_info_v1(int_data, flt_data, lines, level, location="", config=No
             List of text headers (str)
         level (str):
             Process level code (V0, V1, V2, V3)
+        location (str):
+            Location metadata
         config (dict):
             Config options.
 
@@ -657,6 +663,7 @@ def _get_header_info(int_data, flt_data, lines, level, location=""):
         flt_data (ndarray): Array of float data
         lines (list): List of text headers (str)
         level (str): Process level code (V0, V1, V2, V3)
+        location (str): Location metadata. 
 
     Returns:
         dictionary: Dictionary of header/metadata information
@@ -821,11 +828,15 @@ def _get_channel(angle, sampling_rate):
 
 
 def _read_lines(skip_rows, max_rows, widths, filename):
-    """Read lines of headers and.
+    """Read lines of headers and return list of comments or array of data.
 
     Args:
         skip_rows (int):
             Number of rows to skip.
+        max_rows (int):
+            Maximum number of rows to read.
+        widths (int):
+            Delimiter spacing to use for headers.
         filename (str):
             Path to possible DMG data file.
     Returns:
@@ -845,10 +856,10 @@ def _get_data_format(filename, skip_rows, npts):
     """Read data header and return the format.
 
     Args:
-        skip_rows (int):
-            Number of rows to skip.
         filename (str):
             Path to possible DMG data file.
+        skip_rows (int):
+            Number of rows to skip.
         npts (int):
             Number of data points.
     Returns:

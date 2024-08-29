@@ -195,7 +195,7 @@ def tanh(v_input):
     Performs a hyperbolic tangent operation on the input (2/(e(2x)+1))
 
     Args:
-        v_input (float) a number defined on R (real)
+        v_input (float): a number defined on R (real)
 
     Returns:
         float: tanh result (a number between -1 and 1)

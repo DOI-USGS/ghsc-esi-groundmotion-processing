@@ -31,7 +31,7 @@ class StationMetricsXML(MetricXML):
         """Construct a StationMetricsXML instance.
 
         Args:
-            metric_list (list):
+            metrics (list):
                 A StationMetric object.
         """
         self.metrics = metrics

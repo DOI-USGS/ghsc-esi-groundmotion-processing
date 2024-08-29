@@ -233,10 +233,17 @@ def _read_header(
             (10,10) numpy array containing header data.
         station (str):
             Station code obtained from previous text portion of header.
-        location (str):
-            Location string obtained from previous text portion of header.
+        name (str):
+            Station name obtained from previous text portion of header.
         component (str):
             Component direction (N18E, S72W, etc.)
+        data_format (str):
+            Data format (for example "V1")
+        instrument (str):
+            Instrument metadata obtained from previous text portion of header.
+        resolution (float):
+            Sensor bit resolution.
+
 
     Returns:
         Dictionary containing fields:

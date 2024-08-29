@@ -137,10 +137,12 @@ class StreamWorkspace(object):
         """
         self.dataset.add_quakeml(event)
 
-    def add_rupture(self, rupture, event_id, label):
+    def add_rupture(self, rupture, event, label):
         """Inserts information from the rupture model into the workspace.
 
         Args:
+            rupture (dict):
+                Rupture model.
             event (Event):
                 Obspy event object.
             label (str):
@@ -175,7 +177,7 @@ class StreamWorkspace(object):
             reference, data_name="RuptureModels", path=rupture_path + "/Reference"
         )
 
-    def get_rupture(self, event_id, label="default"):
+    def get_rupture(self, event, label="default"):
         """Retrieves cells, vertices, description, and reference for a rupture.
 
         Args:

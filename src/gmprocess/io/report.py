@@ -143,6 +143,8 @@ def build_report_latex(
             Config dictionary.
         gmprocess_version:
             gmprocess version.
+        build_latex (bool):
+            Build the report (default is True).
     Returns:
         tuple:
             - Name of pdf or latex report file created.

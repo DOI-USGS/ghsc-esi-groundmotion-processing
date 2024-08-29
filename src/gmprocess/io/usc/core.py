@@ -158,6 +158,10 @@ def read_volume_one(filename, location="", alternate=False, config=None):
     Args:
         filename (str):
             Input DMG V1 filename.
+        location (str):
+            Location metadata.
+        alternate (bool):
+            Alternate file format for reading (default is False).
         config (dict):
             Config options.
 
@@ -193,6 +197,10 @@ def _read_channel(filename, line_offset, volume, location="", alternate=False):
             Line offset to beginning of channel text block.
         volume (dictionary):
             Dictionary of formatting information.
+        location (str):
+            Location metadata.
+        alternate (bool):
+            Alternate file format for reading (default is False)
 
     Returns:
         tuple: (obspy Trace, int line offset)
@@ -316,6 +324,8 @@ def _get_header_info(int_data, flt_data, lines, volume, location=""):
         int_data (ndarray): Array of integer data
         flt_data (ndarray): Array of float data
         lines (list): List of text headers (str)
+        volume (dictionary): Dictionary of formatting information.
+        location (str): Location metadata.
 
     Returns:
         dictionary: Dictionary of header/metadata information

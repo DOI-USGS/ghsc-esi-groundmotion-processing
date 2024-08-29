@@ -364,6 +364,8 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
             List of text headers (str).
         cmt_data (ndarray):
             Array of comments (str).
+        location (str):
+            Location metadata.
 
     Returns:
         dictionary: Dictionary of header/metadata information
