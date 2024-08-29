@@ -199,12 +199,12 @@ class StreamWorkspace(object):
         if "RuptureModels" not in aux_data:
             return None
 
-        dset_name = f"{event_id}_{label}"
+        dset_name = f"{event}_{label}"
         if dset_name in aux_data["RuptureModels"]:
             rupture_model = aux_data["RuptureModels"][dset_name]
         else:
             raise ValueError(
-                f"Could not find a rupture model with event id '{event_id}' "
+                f"Could not find a rupture model with event id '{event}' "
                 f"and label '{label}."
             )
 

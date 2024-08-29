@@ -33,7 +33,7 @@ def is_asdf(filename, config=None):
         return False
 
 
-def read_asdf(filename, label=None):
+def read_asdf(filename, eventid=None, stations=None, label=None):
     """Read Streams of data (complete with processing metadata) from an ASDF
     file.
 
