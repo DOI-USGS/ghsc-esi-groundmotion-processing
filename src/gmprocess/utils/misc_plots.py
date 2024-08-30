@@ -155,7 +155,7 @@ def plot_moveout(
             Minimum font size. Default is 14.
         normalize (bool):
             Normalize the data. Default is True.
-        factor (int, float):
+        factor (Union[int, float]):
             Factor for scaling the trace. Default is 0.2, meaning that the
             trace with the greatest amplitude variation will occupy 20% of the
             vertical space in the plot.

@@ -37,6 +37,8 @@ class SummaryPlot:
         Args:
             st (gmprocess.core.stationtrace.StationStream):
                 Stream of data.
+            st_raw (gmprocess.core.stationtrace.StationStream):
+                Raw stream of data.
             directory (str):
                 Directory for saving plots.
             event (gmprocess.utils.scalar_event.ScalarEvent):

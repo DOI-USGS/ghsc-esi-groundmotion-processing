@@ -70,9 +70,10 @@ class WorkspaceApp(object):
             Args:
                 name (str):
                     Name of the dataset.
-
                 dataset (h5py.Dataset):
                     HDF5 dataset
+                level (int):
+                   Level of group in HDF5 hierarchy (root level is 0).
             """
             shape = ",".join([str(d) for d in dataset.shape])
             indent = INDENT * min(level, 1)
@@ -85,6 +86,8 @@ class WorkspaceApp(object):
             Args:
                 items (iterable):
                    Iterable object of items in a group.
+                level (int):
+                   Level of group in HDF5 hierarchy (root level is 0).
             """
             for name, item in items:
                 if isinstance(item, h5py.Group):

@@ -20,6 +20,8 @@ class BaseComponent(ABC):
                 previous step).
             parameters (dict):
                 Dictionary of processing parameters required by the Component.
+            imc_parameters (dict):
+                Dictionary of imc parameters
         """
         self.prior_step = input_data
         self._validate()

@@ -41,15 +41,15 @@ class Histogram(ClipDetection):
         Args:
             st (StationStream):
                 Stream of data.
-            test_all (bool, default=False):
-                If true, compute and store number of clipped intervals for
-                all traces.
             num_bins (int, default=6200):
                 Number of bins for amplitude histogram.
             min_width (int, default=7):
                 Minimum width of a bump to be indicative of clipping.
             search_width_bins (int, default=700):
                 Bin grouping size.
+            test_all (bool, default=False):
+                If true, compute and store number of clipped intervals for
+                all traces.
         """
         ClipDetection.__init__(self, st.copy(), test_all)
         self.num_bins = num_bins

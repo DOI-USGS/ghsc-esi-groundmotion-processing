@@ -20,6 +20,8 @@ def read_data(filename, config=None, read_format=None, **kwargs):
     Args:
         filename (str or pathlib.Path):
             Path to file
+        config (dict):
+            Dictionary containing configuration.
         read_format (str):
             Format of file
 

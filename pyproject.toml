@@ -22,7 +22,7 @@ dependencies = [
     "esi-core>=1.0.1",
     "esi-utils-colors>1.0",
     "esi-utils-io>1.0",
-    "esi-utils-rupture>1.0",
+    "esi-utils-rupture>1.0,<=1.0.4",
     "folium>=0.12",
     "gmpacket>=0.1.6",
     "h5py>=3.11",

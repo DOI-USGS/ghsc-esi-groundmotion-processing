@@ -10,7 +10,7 @@ def resample(st, new_sampling_rate=None, method=None, a=None, config=None):
     Args:
         st (StationStream):
             Stream of data.
-        sampling_rate (float):
+        new_sampling_rate (float):
             New sampling rate, in Hz.
         method (str):
             Method for interpolation. Currently only supports 'lanczos'.

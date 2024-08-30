@@ -53,6 +53,8 @@ def highpass_filter_trace(
             Filter order.
         number_of_passes (int):
             Number of passes.
+        config (dict):
+            Dictionary containing configuration.
 
     Returns:
         StationTrace: With highpass filter applied.
