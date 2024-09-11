@@ -1,23 +1,22 @@
 """Module for assemble helper functions."""
 
 # stdlib imports
-import os
-import logging
 import csv
+import logging
+import os
 from pathlib import Path
+
+from gmprocess.core import scalar_event
+from gmprocess.core.streamarray import StreamArray
 
 # local imports
 from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.core.streamarray import StreamArray
-from gmprocess.core import scalar_event
-from gmprocess.utils import constants
-from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.io.asdf.rupture import Rupture
+from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.io.read_directory import directory_to_streams
+from gmprocess.utils import constants, rupture_utils
 from gmprocess.utils.misc import get_rawdir
-from gmprocess.utils import rupture_utils
 from gmprocess.utils.strec import STREC
-
 
 TIMEFMT2 = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -122,7 +121,7 @@ def assemble(event_id, event, config, directory, gmprocess_version, label):
     if strec:
         workspace.add_strec(strec, event_id)
     if rupture:
-        workspace.add_rupture(rupture, event_id, label=label)
+        workspace.add_rupture(rupture, event, event_id, label=label)
     logging.debug("workspace.dataset.events:")
     logging.debug(workspace.dataset.events)
     workspace.add_gmprocess_version(gmprocess_version)

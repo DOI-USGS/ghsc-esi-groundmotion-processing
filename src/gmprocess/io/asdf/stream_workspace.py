@@ -1,9 +1,9 @@
 """Module for interacting with the workspace HDF file."""
 
 import copy
-import json
 import importlib.metadata
 import io
+import json
 import logging
 import re
 import warnings
@@ -12,21 +12,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pyasdf
-from h5py.h5py_warnings import H5pyDeprecationWarning
-from obspy.core.utcdatetime import UTCDateTime
-from ruamel.yaml import YAML
-
+from gmprocess.core import provenance
+from gmprocess.core.scalar_event import ScalarEvent
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.core.streamarray import StreamArray
 from gmprocess.core.streamcollection import StreamCollection
-
-from gmprocess.core import provenance
-from gmprocess.core.scalar_event import ScalarEvent
-from gmprocess.utils import constants
-from gmprocess.utils.config import get_config, update_dict
-from gmprocess.utils.config_versioning import get_config_version, config_from_v1
-
 from gmprocess.io.asdf import workspace_constants as wc
 from gmprocess.io.asdf.path_utils import (
     get_stream_name,
@@ -34,6 +25,12 @@ from gmprocess.io.asdf.path_utils import (
     get_trace_name,
     get_trace_path,
 )
+from gmprocess.utils import constants
+from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils.config_versioning import config_from_v1, get_config_version
+from h5py.h5py_warnings import H5pyDeprecationWarning
+from obspy.core.utcdatetime import UTCDateTime
+from ruamel.yaml import YAML
 
 TIMEFMT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -137,7 +134,7 @@ class StreamWorkspace(object):
         """
         self.dataset.add_quakeml(event)
 
-    def add_rupture(self, rupture, event, label):
+    def add_rupture(self, rupture, event, event_id, label):
         """Inserts information from the rupture model into the workspace.
 
         Args:
