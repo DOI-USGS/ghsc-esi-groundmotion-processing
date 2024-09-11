@@ -112,7 +112,7 @@ class AssembleModule(base.SubcommandModule):
             else:
                 logging.info(f"Removing existing ASDF file: {str(workname)}")
                 workname.unlink()
-
+        logging.info(f"Calling assemble function for {event_id}...")
         workspace = assemble_utils.assemble(
             event_id=event_id,
             event=event,
@@ -121,6 +121,7 @@ class AssembleModule(base.SubcommandModule):
             gmprocess_version=version,
             label=label,
         )
+        logging.info(f"Done with assemble function for {event_id}...")
         if workspace:
             workspace.close()
         return workname
