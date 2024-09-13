@@ -103,10 +103,11 @@ class ComputeStationMetricsModule(base.SubcommandModule):
                     smc.stream_paths[i],
                     overwrite=self.gmrecords.args.overwrite,
                 )
-                logging.info(
-                    "Added station metrics to workspace files with tag '%s'.",
-                    self.gmrecords.args.label,
-                )
             continue
+
+        logging.info(
+            "Added station metrics to workspace files with tag '%s'.",
+            self.gmrecords.args.label,
+        )
 
         self.close_workspace()

@@ -26,7 +26,7 @@ def test_compute_waveform_metrics(script_runner):
         assert ret.success
 
         assert "Adding waveform metrics to workspace files with" in ret.stderr
-        assert "Calculating waveform metrics for CI.LRL..HNE" in ret.stderr
+        assert "Calculating waveform metrics for CI.LRL..HN" in ret.stderr
 
     except Exception as ex:
         raise ex
