@@ -63,7 +63,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             self.close_workspace()
             return
 
-        event_dir = self.gmrecords.data_path / event.id
+        event_dir = self.gmrecords.data_path / event_id
         rupture_filename = rupture_utils.get_rupture_filename(event_dir)
 
         if isinstance(rupture_filename, pathlib.Path):
@@ -71,7 +71,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
 
         # for station_id in station_list:
         streams = self.workspace.get_streams(
-            event.id,
+            event_id,
             labels=[self.gmrecords.args.label],
             config=config,
         )
