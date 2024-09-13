@@ -31,6 +31,8 @@ def test_compute_station_metrics(script_runner):
         assert "Added station metrics to workspace files with" in ret.stderr
         assert "Computing station metrics" in ret.stderr
 
+        # Check that a station that did not pass QA does not have station metrics
+
         # ret = script_runner.run("gmrecords", "-o", "compute_station_metrics")
         # assert ret.success
 

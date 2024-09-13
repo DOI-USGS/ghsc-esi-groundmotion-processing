@@ -85,17 +85,28 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             streams, event, config, rupture_file=rupture_filename
         )
         for i, sm in enumerate(smc.station_metrics):
-            station_xml = sta_xml.StationMetricsXML(sm)
-            xmlstr = station_xml.to_xml()
-            self.workspace.insert_aux(
-                xmlstr,
-                "StationMetrics",
-                smc.stream_paths[i],
-                overwrite=self.gmrecords.args.overwrite,
+
+            # check station stream passed QA check
+            names = smc.stream_paths[i].split("/")[1].split(".")
+            station_stream = streams.select(
+                network=names[0], station=names[1], instrument=names[3][0:2]
             )
-        logging.info(
-            "Added station metrics to workspace files with tag '%s'.",
-            self.gmrecords.args.label,
-        )
+            for st in station_stream:
+                if not st.passed:
+                    break
+            else:
+                station_xml = sta_xml.StationMetricsXML(sm)
+                xmlstr = station_xml.to_xml()
+                self.workspace.insert_aux(
+                    xmlstr,
+                    "StationMetrics",
+                    smc.stream_paths[i],
+                    overwrite=self.gmrecords.args.overwrite,
+                )
+                logging.info(
+                    "Added station metrics to workspace files with tag '%s'.",
+                    self.gmrecords.args.label,
+                )
+            continue
 
         self.close_workspace()
