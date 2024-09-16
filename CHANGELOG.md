@@ -1,14 +1,12 @@
 ## main
 
-- Bug fixes
-  - Fixed bug when running `compute_station_metrics` so that failed streams are not added to the workspace
-  - Fixed mismatch in stream workspace `add_rupture` call definition and it's use in assemble
-
-## 2.1.1 / 2024-06-11
+## 2.1.1 / 2024-09-16
 - Enhancements
   - Modified default frequencies for FAS metrics to be consistent with (Kottke AR, et al, 2021) 
   - Added FAS check to unit test for `export_metric_tables`
 - Bug fixes
+  - Fixed bug when running `compute_station_metrics` so that failed streams are not added to the workspace
+  - Fixed mismatch in stream workspace `add_rupture` call definition and it's use in assemble
   - Fix bug in FAS not being exported correctly when running `mtables`
   - Fixed missing vertical/horizontal orientation information in KNET reader.
 
