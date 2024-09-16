@@ -1,5 +1,9 @@
 ## main
 
+- Bug fixes
+  - Fixed bug when running `compute_station_metrics` so that failed streams are not added to the workspace
+  - Fixed mismatch in stream workspace `add_rupture` call definition and it's use in assemble
+
 ## 2.1.1 / 2024-06-11
 - Enhancements
   - Modified default frequencies for FAS metrics to be consistent with (Kottke AR, et al, 2021) 
