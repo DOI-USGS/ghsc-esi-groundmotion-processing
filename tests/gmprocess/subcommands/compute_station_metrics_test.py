@@ -1,5 +1,7 @@
 import io
 import shutil
+import numpy as np
+
 from gmprocess.utils import constants
 from gmprocess.io.asdf.flatfile import Flatfile
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -37,8 +39,26 @@ def test_compute_station_metrics(script_runner):
         test_ws = StreamWorkspace(dst)
         ff = Flatfile(test_ws)
         _, imc_tables, _ = ff.get_tables()
-        assert imc_tables["RotD(percentile=50.0)"].EpicentralDistance.iloc[0] == 33.03
-        assert imc_tables["RotD(percentile=50.0)"].RuptureDistance.iloc[0] == 26.25
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].EpicentralDistance.iloc[0],
+            33.03,
+            atol=1e-7,
+        )
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].RuptureDistance.iloc[0],
+            26.25,
+            atol=1e-7,
+        )
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].EpicentralDistance.iloc[2],
+            14.51,
+            atol=1e-7,
+        )
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].RuptureDistance.iloc[2],
+            11.22,
+            atol=1e-7,
+        )
 
         # ret = script_runner.run("gmrecords", "-o", "compute_station_metrics")
         # assert ret.success
