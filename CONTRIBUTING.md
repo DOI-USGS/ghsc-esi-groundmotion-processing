@@ -96,7 +96,6 @@ Common reasons to rebase include:
    - *Note that we cannot have a hyphen in the tag name.* 
    - Also, if we end the tag name with "dev" then it will be build and uploaded to pypi as a pre-release version, which means that it will never be pip installed unless the user specifies the exact version of the pre-release.
    - Maintainence note: the PYPI tokens are maintained in gitlab for the ESI group, under Settings then CI/CD, then Variables. These tokens are associated with the "pager_cicd" pypi service account.  
-   - Soon, pypi will require 2 factor authentication and could break this process.
 7. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
 8. Copy/paste the relevant part of the changelog into the "describe this release" section.
 
