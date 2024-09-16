@@ -1,6 +1,10 @@
 import io
 import shutil
+import numpy as np
+
 from gmprocess.utils import constants
+from gmprocess.io.asdf.flatfile import Flatfile
+from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 
 EVENTS = ["ci38457511", "ci38457511_rupt"]
 
@@ -30,6 +34,31 @@ def test_compute_station_metrics(script_runner):
         # No new files created, check stderr
         assert "Added station metrics to workspace files with" in ret.stderr
         assert "Computing station metrics" in ret.stderr
+
+        # Test that station metrics has computed the expected distances
+        test_ws = StreamWorkspace(dst)
+        ff = Flatfile(test_ws)
+        _, imc_tables, _ = ff.get_tables()
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].EpicentralDistance.iloc[0],
+            33.03,
+            atol=1e-7,
+        )
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].RuptureDistance.iloc[0],
+            26.25,
+            atol=1e-7,
+        )
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].EpicentralDistance.iloc[2],
+            14.51,
+            atol=1e-7,
+        )
+        np.testing.assert_allclose(
+            imc_tables["RotD(percentile=50.0)"].RuptureDistance.iloc[2],
+            11.22,
+            atol=1e-7,
+        )
 
         # ret = script_runner.run("gmrecords", "-o", "compute_station_metrics")
         # assert ret.success

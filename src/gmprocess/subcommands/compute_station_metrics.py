@@ -63,7 +63,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             self.close_workspace()
             return
 
-        event_dir = self.gmrecords.data_path / event.id
+        event_dir = self.gmrecords.data_path / event_id
         rupture_filename = rupture_utils.get_rupture_filename(event_dir)
 
         if isinstance(rupture_filename, pathlib.Path):
@@ -71,7 +71,7 @@ class ComputeStationMetricsModule(base.SubcommandModule):
 
         # for station_id in station_list:
         streams = self.workspace.get_streams(
-            event.id,
+            event_id,
             labels=[self.gmrecords.args.label],
             config=config,
         )
@@ -85,14 +85,26 @@ class ComputeStationMetricsModule(base.SubcommandModule):
             streams, event, config, rupture_file=rupture_filename
         )
         for i, sm in enumerate(smc.station_metrics):
-            station_xml = sta_xml.StationMetricsXML(sm)
-            xmlstr = station_xml.to_xml()
-            self.workspace.insert_aux(
-                xmlstr,
-                "StationMetrics",
-                smc.stream_paths[i],
-                overwrite=self.gmrecords.args.overwrite,
+
+            # check station stream passed QA check
+            names = smc.stream_paths[i].split("/")[1].split(".")
+            station_stream = streams.select(
+                network=names[0], station=names[1], instrument=names[3][0:2]
             )
+            for st in station_stream:
+                if not st.passed:
+                    break
+            else:
+                station_xml = sta_xml.StationMetricsXML(sm)
+                xmlstr = station_xml.to_xml()
+                self.workspace.insert_aux(
+                    xmlstr,
+                    "StationMetrics",
+                    smc.stream_paths[i],
+                    overwrite=self.gmrecords.args.overwrite,
+                )
+            continue
+
         logging.info(
             "Added station metrics to workspace files with tag '%s'.",
             self.gmrecords.args.label,
