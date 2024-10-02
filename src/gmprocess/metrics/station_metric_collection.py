@@ -3,7 +3,8 @@
 import logging
 
 import numpy as np
-import ps2ff
+import ps2ff.run
+import ps2ff.constants
 from obspy.geodetics.base import gps2dist_azimuth
 from openquake.hazardlib.geo import geodetic as oqgeo
 
