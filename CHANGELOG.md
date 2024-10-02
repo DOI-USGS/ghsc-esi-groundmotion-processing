@@ -1,4 +1,7 @@
 ## main
+- Bug fixes
+  - Resolve ps2ff imports
+
 
 ## 2.1.1 / 2024-09-16
 - Enhancements
