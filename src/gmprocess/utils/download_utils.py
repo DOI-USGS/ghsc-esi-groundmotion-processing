@@ -42,7 +42,7 @@ def download_comcat_event(event_id):
     event_url = EVENT_TEMPLATE.replace("[EVENT]", event_id)
     response = requests.get(event_url)
     if response.ok:
-        return response.json())
+        return response.json()
     else:
         logging.info(f"{event_id} not found in ComCat.")
         sys.exit(1)
