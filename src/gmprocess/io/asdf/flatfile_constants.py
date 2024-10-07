@@ -127,4 +127,4 @@ SNR_COLUMNS = {
     "StationElevation": "Station elevation (m)",
 }
 
-SNR_FREQ_COLUMNS = {"SNR(X)": "Signa-to-noise ratio at frequency X."}
+SNR_FREQ_COLUMNS = {"SNR(X)": "Signal-to-noise ratio at frequency X."}
