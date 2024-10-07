@@ -1,5 +1,6 @@
 """Module for GenerateReportModule class."""
 
+import sys
 import logging
 import shutil
 from concurrent.futures import ProcessPoolExecutor
@@ -43,9 +44,16 @@ class GenerateReportModule(base.SubcommandModule):
 
         for ievent, event_id in enumerate(event_ids):
             event_dir = self.gmrecords.data_path / event_id
-            event = scalar_event.ScalarEvent.from_workspace(
-                event_dir / constants.WORKSPACE_NAME
-            )
+            try:
+                event = scalar_event.ScalarEvent.from_workspace(
+                    event_dir / constants.WORKSPACE_NAME
+                )
+            except FileNotFoundError:
+                logging.info(
+                    f"No workspace.h5 file found for event {event_id}. Skipping..."
+                )
+                continue
+
             config = self._get_config()
             pstreams = self.generate_diagnostic_plots(event, config)
             if pstreams is None:

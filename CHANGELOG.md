@@ -1,4 +1,7 @@
 ## main
+- Enhancements
+  - More graceful exiting when bad eventid is inputted to `download`
+  - Allow `reports` to continue processing when an event directory is empty (no data)
 - Bug fixes
   - Resolve ps2ff imports
 

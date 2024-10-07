@@ -1,6 +1,7 @@
 """Module for download unility functions."""
 
 # stdlib imports
+import sys
 import json
 import logging
 import warnings
@@ -40,7 +41,11 @@ def download_comcat_event(event_id):
     """
     event_url = EVENT_TEMPLATE.replace("[EVENT]", event_id)
     response = requests.get(event_url)
-    return response.json()
+    if response.ok:
+        return response.json()
+    else:
+        logging.info(f"{event_id} not found in ComCat.")
+        sys.exit(1)
 
 
 def download_event_data(event, event_dir, config, plot_raw=False):
@@ -163,11 +168,7 @@ def download_rupture_file(event_id, event_dir):
         event_dir (pathlib.Path):
             Event directory.
     """
-    try:
-        data = download_comcat_event(event_id)
-    except BaseException:
-        logging.info(f"{event_id} not found in ComCat.")
-        return
+    data = download_comcat_event(event_id)
     try:
         shakemap_prod = data["properties"]["products"]["shakemap"][0]
         rupture_url = shakemap_prod["contents"]["download/rupture.json"]["url"]
