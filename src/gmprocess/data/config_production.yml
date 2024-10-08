@@ -91,9 +91,10 @@ fetchers:
             channel: "BH?,HH?,BN?,HN?"
             network: "*"
 
-            # SY is a network for synthetic data, others listed here are network codes
-            # known to be problematic.
-            exclude_networks: ['SY', 'ZY', 'YH', 'YG', 'AM', 'PB']
+            # SY is a network for synthetic data
+            # 'XO' is an assortment of temporary deployment networks for Alaska region
+            # Other networks listed here are network codes known to be problematic.
+            exclude_networks: ['SY', 'ZY', 'YH', 'YG', 'AM', 'PB', 'XO']
 
             # The minimum length of the data as a fraction of the requested time frame.
             # After a channel has been downloaded it will be checked that its total
