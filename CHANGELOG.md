@@ -4,7 +4,8 @@
   - Allow `reports` to continue processing when an event directory is empty (no data)
 - Bug fixes
   - Resolve ps2ff imports
-
+- Other
+  - Exclude 'XO' network as default in config ('XO' is an assortment of temporary deployment networks in the Alaska region)
 
 ## 2.1.1 / 2024-09-16
 - Enhancements
