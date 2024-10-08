@@ -22,6 +22,20 @@ If you wish to cite this software please cite:
 
 - Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey software release. [https://doi.org/10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ)
   
+# Journal Articles
+The list below is a subset of articles that made use of this software in their study. If you would like to have an article added to this list, please open an issue or email the developers.
+
+- Ahdi SK, Aagaard BT, Moschetti MP, Parker GA, Boyd OS, Stephenson WJ. Empirical ground-motion basin response in the California Great Valley, Reno, Nevada, and Portland, Oregon. Earthquake Spectra. 2024;40(2):1099-1131. https://doi.org/10.1177/87552930241237250
+
+- Boyd OS, Churchwell D, Moschetti MP, et al. Sediment thickness map of United States Atlantic and Gulf Coastal Plain Strata, and their influence on earthquake ground motions. Earthquake Spectra. 2024;40(1):89-112. https://doi.org/10.1177/87552930231204880
+
+- Ji C, Cabas A, Kottke A, Pilz M, Macedo J, Liu C. A DesignSafe earthquake ground motion database for California and surrounding regions. Earthquake Spectra 2023. 39 (1): 702–721. https://doi.org/10.1177/87552930221141108
+
+- Moschetti M, Thompson E, Rekoske J, Hearne M, Powers P, McNamara D, Tape C. Ground‐Motion Amplification in Cook Inlet Region, Alaska, from Intermediate‐Depth Earthquakes, Including the 2018  7.1 Anchorage Earthquake. Seismological Research Letters 2019. 91 (1): 142–152. https://doi.org/10.1785/0220190179
+
+- Parker G, Baltay A. Empirical Map‐Based Nonergodic Models of Site Response in the Greater Los Angeles Area. Bulletin of the Seismological Society of America 2022. 112 (3): 1607–1629. https://doi.org/10.1785/0120210175
+
+- Rekoske J, Thompson E, Moschetti M, Hearne M, Aagaard B, Parker G. The 2019 Ridgecrest, California, Earthquake Sequence Ground Motions: Processed Records and Derived Intensity Metrics. Seismological Research Letters 2020. 91 (4): 2010–2023. https://doi.org/10.1785/0220190292
 
 # Disclaimer
 
