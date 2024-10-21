@@ -18,6 +18,7 @@ from obspy.core.trace import Stats
 TEXT_HDR_ROWS = 64
 
 TIMEFMTS = (
+    "%Y%m%d_%H%M%S",  # 20190728_160919
     "%Y%m%d_%H%M%S.%f",  # 20190728_160919.870000
     "%Y-%m-%dT%H:%M:%S.%f",  # 2019-07-28T16:09:19.870000
     "%Y/%m/%d %H:%M:%S.%f",  # 2019/07/28 16:09:19.870000
