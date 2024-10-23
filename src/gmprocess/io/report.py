@@ -161,7 +161,6 @@ def build_report_latex(
 
     # Initialize report string with PREAMBLE
     report = PREAMBLE
-    timestr = event.time.strftime("%m/%d/%Y %H:%M:%S")
 
     # Does the map exist?
     map_file = directory / "stations_map.png"
@@ -187,15 +186,16 @@ def build_report_latex(
 
     for st in st_list:
         streamid = st.get_id()
+        repi = np.round(st[0].get_parameter("fit_spectra")["epi_dist"], 1)
         # Even on windows, latex needs the path to use linux-style forward slashs.
         plot_path = f"plots/{event_id}_{streamid}.png"
         st_block = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
         st_block = st_block.replace(
             "[EVENT]",
             f"{str_for_latex(event_id)} - M{event.magnitude}, "
-            f"depth: {event_depth} km - {timestr}",
+            f"depth: {event_depth} km",
         )
-        st_block = st_block.replace("[STATION]", st.get_id())
+        st_block = st_block.replace("[STATION]", f"{streamid}, " f"Repi: {repi} km")
         report += st_block
 
         try:
