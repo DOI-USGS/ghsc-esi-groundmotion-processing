@@ -134,14 +134,14 @@ class StreamWorkspace(object):
         """
         self.dataset.add_quakeml(event)
 
-    def add_rupture(self, rupture, event, event_id, label):
+    def add_rupture(self, rupture, event_id, label):
         """Inserts information from the rupture model into the workspace.
 
         Args:
             rupture (dict):
                 Rupture model.
-            event (Event):
-                Obspy event object.
+            event_id (str):
+                Event id.
             label (str):
                 Process label, user can input this from gmrecords assemble subcommand,
                 "default" if no input.
@@ -151,7 +151,7 @@ class StreamWorkspace(object):
         description = rupture.description
         reference = rupture.reference
 
-        rupture_path = event_id + "_" + label
+        rupture_path = f"{event_id}_{label}"
 
         self.dataset.add_auxiliary_data(
             cells,
@@ -174,12 +174,12 @@ class StreamWorkspace(object):
             reference, data_name="RuptureModels", path=rupture_path + "/Reference"
         )
 
-    def get_rupture(self, event, label="default"):
+    def get_rupture(self, event_id, label="default"):
         """Retrieves cells, vertices, description, and reference for a rupture.
 
         Args:
-            event (Event):
-                Obspy event object.
+            event_id (str):
+                Event id.
             label (str):
                 Process label, "default" if no input.
         Returns:
@@ -196,12 +196,12 @@ class StreamWorkspace(object):
         if "RuptureModels" not in aux_data:
             return None
 
-        dset_name = f"{event}_{label}"
+        dset_name = f"{event_id}_{label}"
         if dset_name in aux_data["RuptureModels"]:
             rupture_model = aux_data["RuptureModels"][dset_name]
         else:
             raise ValueError(
-                f"Could not find a rupture model with event id '{event}' "
+                f"Could not find a rupture model with event id '{event_id}' "
                 f"and label '{label}."
             )
 

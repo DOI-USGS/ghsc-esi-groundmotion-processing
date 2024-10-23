@@ -32,6 +32,10 @@ def test_assemble_event_list(script_runner):
         )
         assert ret.success
 
+        # Test the "--resume" argument
+        ret = script_runner.run("gmrecords", "--resume", "us10004fhj", "assemble")
+        assert ret.success
+
     except Exception as ex:
         raise ex
     finally:

@@ -336,6 +336,18 @@ class GMrecordsApp(object):
         )
 
         parser.add_argument(
+            "--resume",
+            type=str,
+            default=None,
+            metavar="event_id",
+            help=(
+                "Allows processing to start from a given event_id. "
+                "This can be useful when a list of event ids is provided using the text flag."
+                " Then this option can be used to resume processing at a specific event in the list."
+            ),
+        )
+
+        parser.add_argument(
             "-t",
             "--textfile",
             type=str,

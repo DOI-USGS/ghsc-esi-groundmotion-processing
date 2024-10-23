@@ -109,6 +109,19 @@ class SubcommandModule(ABC):
         event_ids = scalar_event.get_event_ids(
             ids=user_ids, file_ids=file_ids, data_dir=data_path
         )
+
+        if self.gmrecords.args.resume:
+            if self.gmrecords.args.resume not in event_ids:
+                print(
+                    f"{self.gmrecords.args.resume} not found in list of event_ids. Exiting."
+                )
+                sys.exit(1)
+            else:
+                event_idx = event_ids.index(self.gmrecords.args.resume)
+                event_ids = event_ids[event_idx:]
+                if events:
+                    events = events[event_idx:]
+
         return (event_ids, events)
 
     def append_file(self, tag, filename):
