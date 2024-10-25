@@ -1,7 +1,7 @@
 ## main
-- New features
-  - station distance (epicentral distance) added to the reports
 - Enhancements
+  - Station distance (epicentral distance) added to the reports
+  - Add support velocity and dispacement COSMOS and DMG files
   - More graceful exiting when bad eventid is inputted to `download`
   - Allow `reports` to continue processing when an event directory is empty (no data)
 - Bug fixes

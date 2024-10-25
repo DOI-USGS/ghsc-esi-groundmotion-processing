@@ -11,6 +11,8 @@ default:
     - bash miniconda.sh -f -b -p $HOME/miniconda
     - . $HOME/miniconda/etc/profile.d/conda.sh
     - conda install -c conda-forge -y tree make
+    - conda create -c conda-forge --name py312 python=3.12 tree make
+    - conda activate py312
 
 # repository rules
 .fork: &fork
@@ -84,6 +86,6 @@ pages:
     - pip install .[doc]
     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
     - cd docs
-    - conda activate base
+    - conda activate py312
     - bash makedocs.sh
   stage: docs
