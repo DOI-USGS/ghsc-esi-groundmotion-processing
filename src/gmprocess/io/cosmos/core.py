@@ -19,7 +19,7 @@ from gmprocess.io.cosmos.data_structures import (
     COSMOS_NETWORKS,
     COSMOS_ORIENTATIONS,
 )
-from gmprocess.io.seedname import get_channel_name, get_units_type
+from gmprocess.io.seedname import get_channel_name
 from gmprocess.io.utils import is_binary
 from gmprocess.utils.constants import UNIT_CONVERSIONS
 from obspy.core.trace import Stats
@@ -140,7 +140,7 @@ SENSOR_TYPES = {
 }
 
 
-def is_cosmos(filename, config=None):
+def is_cosmos(filename, config=None, v2=False):
     """Check to see if file is a COSMOS V0/V1 strong motion file.
 
     Args:
@@ -148,15 +148,25 @@ def is_cosmos(filename, config=None):
             Path to possible COSMOS V0/V1 data file.
         config (dict):
             Dictionary containing configuration.
+        v2 (bool):
+            Include v2 velocity and displacement traces.
 
     Returns:
         bool: True if COSMOS V0/V1, False otherwise.
     """
+    valid_markers = VALID_MARKERS.copy()
+    if v2:
+        valid_markers.extend(
+            [
+                "Velocity data",
+                "Displacement data",
+            ]
+        )
     if is_binary(filename):
         return False
     try:
         line = open(filename, "rt", encoding="utf-8").readline()
-        for marker in VALID_MARKERS:
+        for marker in valid_markers:
             if line.lower().find(marker.lower()) >= 0:
                 if line.lower().find("(format v") >= 0:
                     return True
@@ -165,7 +175,7 @@ def is_cosmos(filename, config=None):
     return False
 
 
-def read_cosmos(filename, config=None, **kwargs):
+def read_cosmos(filename, config=None, v2=False, **kwargs):
     """Read COSMOS V1/V2 strong motion file.
 
     There is one extra key in the Stats object for each Trace -
@@ -176,9 +186,11 @@ def read_cosmos(filename, config=None, **kwargs):
             Path to possible COSMOS V1/V2 data file.
         config (dict):
             Dictionary containing configuration.
+        v2 (bool):
+            Include v2 velocity and displacement traces.
         kwargs (ref):
             valid_station_types (list): List of valid station types. See table
-                6  in the COSMOS strong motion data format documentation for
+                6 in the COSMOS strong motion data format documentation for
                 station type codes.
             Other arguments will be ignored.
 
@@ -186,7 +198,7 @@ def read_cosmos(filename, config=None, **kwargs):
         list: List of StationStreams containing three channels of acceleration
         data (cm/s**2).
     """
-    if not is_cosmos(filename, config):
+    if not is_cosmos(filename, config, v2):
         raise Exception(f"{filename} is not a valid COSMOS strong motion data file.")
     # get list of valid stations
     valid_station_types = kwargs.get("valid_station_types", None)
@@ -280,14 +292,11 @@ def _read_channel(filename, line_offset, location="", config=None):
         if unit != "counts":
             raise ValueError(f"COSMOS: {unit} is not a supported unit.")
 
-    if hdr["standard"]["units_type"] != "acc":
-        raise ValueError("COSMOS: Only acceleration data accepted.")
-
     trace = StationTrace(data.copy(), Stats(hdr.copy()), config=config)
 
     # record that this data has been converted to g, if it has
     if hdr["standard"]["process_level"] != PROCESS_LEVELS["V0"]:
-        response = {"input_units": "counts", "output_units": "cm/s^2"}
+        response = {"input_units": "counts", "output_units": unit}
         trace.set_provenance("remove_response", response)
 
     # set new offset
@@ -583,7 +592,6 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
     hdr["coordinates"] = coordinates
 
     # standard metadata
-    standard["units_type"] = get_units_type(channel)
     standard["source"] = source
     standard["horizontal_orientation"] = horizontal_orientation
     standard["vertical_orientation"] = np.nan

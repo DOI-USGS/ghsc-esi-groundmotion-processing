@@ -380,37 +380,34 @@ def _read_volume_two(filename, line_offset, location="", units="acc"):
             traces += [acc_trace]
         skip_rows += int(acc_rows) + 1
 
-    # -------------------------------------------------------------------------
-    # NOTE: The way we were initially reading velocity and displacement data
-    # was not correct. I'm deleting it for now since we don't need it. If/when
-    # we revisit this we need to be more careful about how this is handled.
-    # -------------------------------------------------------------------------
+        # read velocity data
+        vel_hdr = hdr.copy()
+        vel_hdr["standard"]["units_type"] = "vel"
+        vel_hdr["npts"] = int_data[63]
+        if vel_hdr["npts"] > 0:
+            vel_rows, vel_fmt, unit = _get_data_format(
+                filename, skip_rows, vel_hdr["npts"]
+            )
+            vel_data = _read_lines(skip_rows + 1, vel_rows, vel_fmt, filename)
+            vel_data = vel_data[: vel_hdr["npts"]]
+            skip_rows += int(vel_rows) + 1
 
-    # read velocity data
-    vel_hdr = hdr.copy()
-    vel_hdr["standard"]["units_type"] = "vel"
-    vel_hdr["npts"] = int_data[63]
-    if vel_hdr["npts"] > 0:
-        vel_rows, vel_fmt, unit = _get_data_format(filename, skip_rows, vel_hdr["npts"])
-        vel_data = _read_lines(skip_rows + 1, vel_rows, vel_fmt, filename)
-        vel_data = vel_data[: vel_hdr["npts"]]
-        skip_rows += int(vel_rows) + 1
+        # read displacement data
+        disp_hdr = hdr.copy()
+        disp_hdr["standard"]["units_type"] = "disp"
+        disp_hdr["standard"]["units"] = "cm"
+        disp_hdr["npts"] = int_data[65]
+        if disp_hdr["npts"] > 0:
+            disp_rows, disp_fmt, unit = _get_data_format(
+                filename, skip_rows, disp_hdr["npts"]
+            )
+            disp_data = _read_lines(skip_rows + 1, disp_rows, disp_fmt, filename)
+            disp_data = disp_data[: disp_hdr["npts"]]
+            skip_rows += int(disp_rows) + 1
 
-    # read displacement data
-    disp_hdr = hdr.copy()
-    disp_hdr["standard"]["units_type"] = "disp"
-    disp_hdr["standard"]["units"] = "cm"
-    disp_hdr["npts"] = int_data[65]
-    if disp_hdr["npts"] > 0:
-        disp_rows, disp_fmt, unit = _get_data_format(
-            filename, skip_rows, disp_hdr["npts"]
-        )
-        disp_data = _read_lines(skip_rows + 1, disp_rows, disp_fmt, filename)
-        disp_data = disp_data[: disp_hdr["npts"]]
-        skip_rows += int(disp_rows) + 1
+        # there is an 'end of record' line after the data]
+        new_offset = skip_rows + 1
 
-    # there is an 'end of record' line after the data]
-    new_offset = skip_rows + 1
     return (traces, new_offset)
 
 
@@ -663,7 +660,7 @@ def _get_header_info(int_data, flt_data, lines, level, location=""):
         flt_data (ndarray): Array of float data
         lines (list): List of text headers (str)
         level (str): Process level code (V0, V1, V2, V3)
-        location (str): Location metadata. 
+        location (str): Location metadata.
 
     Returns:
         dictionary: Dictionary of header/metadata information
