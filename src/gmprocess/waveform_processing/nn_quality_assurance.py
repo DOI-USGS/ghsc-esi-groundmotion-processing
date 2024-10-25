@@ -3,7 +3,7 @@
 import csv
 import numpy as np
 import copy
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid
 import os
 import logging
 import pathlib
@@ -502,7 +502,7 @@ def get_husid(acceleration, time_vector):
         time_vector (np.array):
             Time vector in seconds
     """
-    husid = np.hstack([0.0, cumtrapz(acceleration**2.0, time_vector)])
+    husid = np.hstack([0.0, cumulative_trapezoid(acceleration**2.0, time_vector)])
     AI = husid / max(husid)
     return husid, AI
 

@@ -6,6 +6,8 @@
   - Allow `reports` to continue processing when an event directory is empty (no data)
 - Bug fixes
   - Resolve ps2ff imports
+- Dependencies
+  - Remove cap on scipy version, and resolve deprecated functions that were removed in v1.14.
 - Other
   - Exclude 'XO' network as default in config ('XO' is an assortment of temporary deployment networks in the Alaska region)
 
