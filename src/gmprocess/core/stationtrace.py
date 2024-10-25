@@ -1,4 +1,5 @@
 """Module for the StationTrace class that inherits from obspy's Trace class."""
+
 import inspect
 
 # stdlib imports
@@ -9,7 +10,7 @@ import re
 # third party imports
 import numpy as np
 from obspy.core.trace import Trace
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid
 
 # local imports
 from gmprocess.utils.config import get_config
@@ -467,7 +468,9 @@ class StationTrace(Trace):
         else:
             # integrating in time domain
             method = "time domain"
-            integral_result = cumtrapz(self.data, dx=self.stats.delta, initial=initial)
+            integral_result = cumulative_trapezoid(
+                self.data, dx=self.stats.delta, initial=initial
+            )
             self.data = integral_result
 
         input_units = self.stats.standard.units
