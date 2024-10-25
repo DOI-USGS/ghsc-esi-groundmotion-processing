@@ -6,6 +6,7 @@
   - Allow `reports` to continue processing when an event directory is empty (no data)
 - Bug fixes
   - Resolve ps2ff imports
+  - Distance to source in reports fixed for failed traces
 - Dependencies
   - Remove cap on scipy version, and resolve deprecated functions that were removed in v1.14.
 - Other

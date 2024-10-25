@@ -7,6 +7,7 @@ from pathlib import Path
 # third party imports
 import numpy as np
 import pandas as pd
+from obspy.geodetics import gps2dist_azimuth
 from esi_utils_io.cmd import get_command_output
 
 # local imports
@@ -186,7 +187,16 @@ def build_report_latex(
 
     for st in st_list:
         streamid = st.get_id()
-        repi = np.round(st[0].get_parameter("fit_spectra")["epi_dist"], 1)
+        repi = np.round(
+            gps2dist_azimuth(
+                st[0].stats.coordinates.latitude,
+                st[0].stats.coordinates.longitude,
+                event.latitude,
+                event.longitude,
+            )[0]
+            / 1000.0,
+            1,
+        )
         # Even on windows, latex needs the path to use linux-style forward slashs.
         plot_path = f"plots/{event_id}_{streamid}.png"
         st_block = STREAMBLOCK.replace("[PLOTPATH]", plot_path)
