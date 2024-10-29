@@ -4,6 +4,7 @@
   - Add support velocity and dispacement COSMOS and DMG files
   - More graceful exiting when bad eventid is inputted to `download`
   - Allow `reports` to continue processing when an event directory is empty (no data)
+  - Update default config to use the Ramos-Sepulveda et al. (2023) high-pass corner selection method, and increase the p-wave shift to -2 sec from -1 sec. 
 - Bug fixes
   - Resolve ps2ff imports
   - Distance to source in reports fixed for failed traces
