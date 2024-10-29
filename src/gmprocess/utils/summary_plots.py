@@ -351,6 +351,10 @@ class SummaryPlot:
 
         self.ax.autoscale(enable=True, axis="x", tight=True)
         self.xlim = self.ax.get_xlim()
+        ymin, ymax = self.ax.get_ylim()
+        if ymin < 1e-5 * ymax:
+            ymin = 1e-5 * ymax
+        self.ax.set_ylim([ymin, ymax])
 
     def plot_snr(self):
         if "corner_frequencies" in self.tr.get_parameter_keys():
