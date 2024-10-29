@@ -121,7 +121,7 @@ def assemble(event_id, event, config, directory, gmprocess_version, label):
     if strec:
         workspace.add_strec(strec, event_id)
     if rupture:
-        workspace.add_rupture(rupture, event, event_id, label=label)
+        workspace.add_rupture(rupture, event_id, label=label)
     logging.debug("workspace.dataset.events:")
     logging.debug(workspace.dataset.events)
     workspace.add_gmprocess_version(gmprocess_version)
