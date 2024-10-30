@@ -23,12 +23,12 @@ def test_adjust_highpass_corner(geonet_WTMC_uncorrected):
             )
 
         tmp_st = adjust_highpass_corner(
-            st, max_final_displacement=0.02, max_displacement_ratio=0.1
+            st, max_final_displacement=0.001, max_displacement_ratio=0.005
         )
         for tr in tmp_st:
             initial_corners = tr.get_parameter("corner_frequencies")
             output_fchp.append(initial_corners["highpass"])
 
-    target_fchp = np.array([0.129746337890625, 0.001, 0.001])
+    target_fchp = np.array([0.057665039062500006, 0.001, 0.001])
 
     np.testing.assert_allclose(output_fchp, target_fchp, atol=1e-7)

@@ -419,22 +419,24 @@ processing:
     - snr_check:
 
     - get_corner_frequencies:
+        method: snr
+        snr:
+            same_horiz: False
 
     - lowpass_max_frequency:
 
     - cut:
 
     - taper:
-       
+
+    - ridder_fchp:
+
     - highpass_filter:
 
     - lowpass_filter:
         
     - detrend:    
         detrending_method: pre
-
-    - detrend:
-        detrending_method: baseline_sixth_order
 
     - fit_spectra:
 
@@ -584,9 +586,9 @@ integration:
     # Assumption for the first value returned in the resulting trace.
     initial: 0.0
     # Remove the mean of the data prior to integration.
-    demean: False
+    demean: True
     # Taper the data prior to integration.
-    taper: False
+    taper: True
     taper_width: 0.05
     taper_type: hann
     taper_side: both
