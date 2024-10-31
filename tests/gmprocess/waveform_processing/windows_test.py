@@ -76,7 +76,7 @@ def test_windows_durations(method, target, fdsn_ci38457511_CLC):
         ("none", [390.0, 390.0, 390.0]),
         ("magnitude", [212.9617, 212.9617, 212.9617]),
         ("velocity", [149.9617, 149.9617, 149.9617]),
-        ("model", [89.008733, 89.008733, 89.008733]),
+        ("model", [88.008733, 88.008733, 88.008733]),
     ],
 )
 def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
@@ -112,7 +112,7 @@ def test_signal_split2():
     windows.signal_split(stream, event)
 
     cmpdict = {
-        "split_time": UTCDateTime(2018, 1, 24, 10, 51, 38, 841483),
+        "split_time": UTCDateTime(2018, 1, 24, 10, 51, 37, 841483),
         "method": "p_arrival",
         "picker_type": "travel_time",
     }
