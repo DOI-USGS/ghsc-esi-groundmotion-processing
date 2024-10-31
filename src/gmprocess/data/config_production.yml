@@ -607,7 +607,7 @@ pickers:
     # signal window, which in turn can degrade the SNR value.
     # this parameter gives the user the ability to shift the
     # calculated P-wave arrival times forwards or backwards in time.
-    p_arrival_shift: -1.0
+    p_arrival_shift: -2.0
 
     # Options for obspy.signal.trigger.ar_pick()
     ar:

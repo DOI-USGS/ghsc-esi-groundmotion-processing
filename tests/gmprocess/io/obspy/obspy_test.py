@@ -160,7 +160,7 @@ def test_weird_sensitivity():
     sc = StreamCollection(streams)
     psc = process_streams(sc, event)
     channel = psc[0].select(component="E")[0]
-    np.testing.assert_allclose(channel.data.max(), 6.332368e-05)
+    np.testing.assert_allclose(channel.data.max(), 6.332352e-05)
 
 
 def test():
