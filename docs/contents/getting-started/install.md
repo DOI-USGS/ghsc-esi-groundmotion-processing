@@ -18,7 +18,7 @@ In either case, it is a good idea to review the [changelog](../developer/changel
 If desired, create a virtual environment that runs a supported Python version. Supported Python versions can be found on the PyPi or Conda-Forge pages for gmprocess, or alternatively, by looking at `pyproject.toml`. To create an environment for gmprocess with `conda`, execute the following command in your terminal, answering `y` or `yes`, if prompted.
 
 ```
-conda create --name gmprocess python=3.10
+conda create --name gmprocess python=3.12
 ```
 
 We'll then need to activate the virtual environment to proceed.
@@ -42,44 +42,12 @@ For these platforms, we recommend installing with `conda` because it can provide
 ### From Conda-Forge
 
 ```
-conda create --name gmprocess python=3.10
+conda create --name gmprocess python=3.12
 conda activate gmprocess
 conda install -c conda-forge gmprocess
 ```
 
 ## Installing from Source
-
-:::{admonition} Prerequisites
-:class: note
-
-```{tab} Linux
-- Bash shell, git, pip.
-
-Most Linux distributions include these tools in the default installation.
-```
-
-```{tab} macOS
-- Bash shell, git, pip.
-
-The easiest way to install these tools is to install the XCode Command Line Tools.
-Simply run `git`, and instructions for installing the Command Line Tools will be displayed if it is not installed.
-
-Some PyPi wheels are not yet available for the macOS arm64 architecture.
-As a result, some dependencies will be built from source when installing via `pip`.
-Building the `fiona` package from source requires `GDAL`, which is a C++ library that can be installed manually or using conda.
-```
-
-```{tab} Windows
-- [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers) 
-  (recommended) or [anaconda](https://www.anaconda.com/products/distribution).
-- Git and some kind of console.
-
-There is one dependency ([fiona](https://pypi.org/project/Fiona/)) that we have not been able to install with pip on Windows systems. So we rely on conda for this.
-Start a conda session and run `conda init powershell`.
-Then open a new powershell terminal and run `conda create --name gmprocess python=3.9 pip fiona` and `conda activate gmprocess`.
-```
-
-:::
 
 First clone this repository and go into the root directory with
 
@@ -107,6 +75,8 @@ For developers, it is also convenient to install the code in "editable" mode by 
 ```
 pip install -e .[test,dev,doc,build]
 ```
+
+If you get an error message from pip that it can't install pyproj, we recommend installing pyproj with conda in a virtual environment and then installing gmprocess as described above within that environment.
 
 ## Tests
 
