@@ -1,9 +1,6 @@
 import numpy as np
-
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
-from gmprocess.metrics.waveform_metric_collection import (
-    WaveformMetricCollection,
-)
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils import constants
 
 
@@ -64,3 +61,7 @@ def test_waveform_metric_collection():
                 )[0]
                 test_sa = np.array(mdict["values"])[idx][0]
                 np.testing.assert_allclose(test_sa, 53.133845)
+
+
+if __name__ == "__main__":
+    test_waveform_metric_collection()

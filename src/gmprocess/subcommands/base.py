@@ -1,8 +1,8 @@
 """Module for SubcommandModule base class."""
 
+import logging
 import sys
 from abc import ABC, abstractmethod
-import logging
 from pathlib import Path
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
@@ -155,7 +155,7 @@ class SubcommandModule(ABC):
 
     def _get_labels(self):
         labels = self.workspace.get_labels()
-        if len(labels):
+        if len(labels) and "unprocessed" in labels:
             labels.remove("unprocessed")
         if not len(labels):
             logging.info(

@@ -5,25 +5,25 @@ import logging
 
 # third party imports
 import numpy as np
-from obspy.core.stream import Stream
-from obspy.core.utcdatetime import UTCDateTime
-from obspy.core.inventory import (
-    Inventory,
-    Network,
-    Station,
-    Channel,
-    Site,
-    Equipment,
-    Comment,
-    Response,
-    InstrumentSensitivity,
-)
+from gmprocess.utils import constants
 
 # local imports
 from gmprocess.utils.config import get_config
-from gmprocess.utils import constants
-from .stationtrace import StationTrace
+from obspy.core.inventory import (
+    Channel,
+    Comment,
+    Equipment,
+    InstrumentSensitivity,
+    Inventory,
+    Network,
+    Response,
+    Site,
+    Station,
+)
+from obspy.core.stream import Stream
+from obspy.core.utcdatetime import UTCDateTime
 
+from .stationtrace import StationTrace
 
 # Number of samples for Landzos interpolation.
 N_LANCZOS = 20
@@ -38,6 +38,8 @@ UNUSED_STANDARD_PARAMS = [
     "source_file",
     "source_format",
 ]
+
+TIME_TOL = 1e-6
 
 
 class StationStream(Stream):
@@ -78,7 +80,11 @@ class StationStream(Stream):
             ets = [e.timestamp for e in ends]
 
             # Do we need to try to fix the start/end times?
-            times_match = len(set(sts)) == 1 and len(set(ets)) == 1
+            times_match = True
+            if len(sts) > 1:
+                sdiff = np.abs(np.diff(sts)).max()
+                ediff = np.abs(np.diff(ets)).max()
+                times_match = (sdiff < TIME_TOL) and (ediff < TIME_TOL)
             if not times_match:
                 newstart = max(starts)
                 newend = min(ends)
@@ -148,7 +154,12 @@ class StationStream(Stream):
                                 },
                             )
             else:
+                # start/end times may be different but within tolerance
+                # to prevent further issues downstream, setting these
+                # to be all the same.
+                start_time = traces[0].stats.starttime
                 for trace in traces:
+                    trace.stats.starttime = start_time
                     if inventory is None:
                         if not isinstance(trace, StationTrace):
                             raise ValueError(
