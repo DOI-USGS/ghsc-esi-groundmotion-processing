@@ -2,7 +2,7 @@
     {
         "name": "groundmotion-processing",
         "description": "Read and process ground motion waveform data",
-        "version": "v2.1.1",
+        "version": "v2.1.1a0",
         "status": "Production",
         "organization": "U.S. Geological Survey",
         "vcs": "git",
