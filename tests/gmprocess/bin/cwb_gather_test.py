@@ -1,9 +1,10 @@
+import pathlib
 import shutil
 import tempfile
-import pathlib
 
 from esi_utils_io.cmd import get_command_output
 from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.utils.tests_utils import vcr
 
 PROJ_STR = """project = pytest
 [projects]
@@ -14,6 +15,7 @@ data_path = [datadir]
 PROJ_PATH = pathlib.Path(".") / ".gmprocess"
 
 
+@vcr.use_cassette()
 def test_cwa_gather():
     eqid = "us6000hyun"
     mseedfile = TEST_DATA_DIR / "cwa_gather" / "test_cwbsn_data.mseed"

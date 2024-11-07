@@ -12,6 +12,8 @@
   - Remove cap on scipy version, and resolve deprecated functions that were removed in v1.14.
 - Other
   - Exclude 'XO' network as default in config ('XO' is an assortment of temporary deployment networks in the Alaska region)
+  - Added a fetch_orfeus script to bin that allows users to create gmprocess-compliant workspace files
+    from data downloaded from the European ORFEUS Engineering Strong Motion (ESM) web-service.
 
 ## 2.1.1 / 2024-09-16
 - Enhancements

@@ -1,9 +1,10 @@
-from gmprocess.io.obspy.core import read_obspy
-from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.config import get_config
 import numpy as np
+from gmprocess.core.streamcollection import StreamCollection
+from gmprocess.io.obspy.core import read_obspy
+from gmprocess.utils.config import get_config
+from gmprocess.utils.tests_utils import read_data_dir
+from gmprocess.waveform_processing.processing import process_streams
+
 from obspy import read
 
 
@@ -187,3 +188,7 @@ def test():
     # get all channel names
     channels = sorted([st[0].stats.channel for st in streams])
     assert channels == ["HN2", "HN3", "HNZ"]
+
+
+if __name__ == "__main__":
+    test_channel_exclusion()

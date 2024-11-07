@@ -1,16 +1,15 @@
 """Module for storing and organizing waveform metrics"""
 
+import logging
 import re
 from io import BytesIO
-import logging
 
-from obspy import read_inventory
-
+from gmprocess.io.asdf.path_utils import get_stream_path
+from gmprocess.io.asdf.stream_workspace import array_to_str
 from gmprocess.io.asdf.waveform_metrics_xml import WaveformMetricsXML
 from gmprocess.metrics.metric_collection_base import MetricCollection
 from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
-from gmprocess.io.asdf.path_utils import get_stream_path
-from gmprocess.io.asdf.stream_workspace import array_to_str
+from obspy import read_inventory
 
 
 class WaveformMetricCollection(MetricCollection):
@@ -146,7 +145,7 @@ class WaveformMetricCollection(MetricCollection):
                 self.stream_paths.append(get_stream_path(stream, tag, config))
 
     def get_stream_metadata_from_workspace(self, workspace):
-        """Lightweght summary info of streams.
+        """Lightweight summary info of streams.
 
         Args:
             workspace (StreamWorkspace):

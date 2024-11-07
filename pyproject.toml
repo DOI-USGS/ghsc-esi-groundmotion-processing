@@ -92,6 +92,7 @@ gmprocess_config = "gmprocess.bin.gmprocess_config:main"
 list_metrics = "gmprocess.bin.list_metrics:main"
 cwa_gather = "gmprocess.bin.cwa_gather:main"
 fix_inventory = "gmprocess.bin.fix_inventory:main"
+fetch_orfeus = "gmprocess.bin.fetch_orfeus:cli"
 
 [build-system]
 requires = [
