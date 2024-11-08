@@ -208,7 +208,7 @@ class GMrecordsApp(object):
 
     def _load_config(self, require_config=True):
         self.projects_conf = None
-        if (not self.projects_file.is_file()) and self.use_projects:
+        if self.use_projects and not self.projects_file.is_file():
             if not require_config:
                 return
 
