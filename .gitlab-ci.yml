@@ -1,8 +1,8 @@
 default:
   image: code.usgs.gov:5001/devops/images/usgs/python:3.12-build
   tags:
+#    - build
     - shakecast-dev
-    - build
   before_script:
     - python --version
     - export PATH="/home/usgs-user/.local/bin:$PATH"
