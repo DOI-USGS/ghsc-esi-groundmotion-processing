@@ -13,7 +13,7 @@ default:
     $CI_PROJECT_PATH != 'ghsc/esi/groundmotion-processing'
     && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   variables:
-    ENVIRONMENT: development
+    ENVIRONMENT: shakecast-dev
 
 .upstream: &upstream
   if: >
