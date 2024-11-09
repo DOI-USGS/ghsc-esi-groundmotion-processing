@@ -1,2 +1,5 @@
 [report]
     precision=2
+    omit=
+        src/gmprocess/gui/gui_ucla/*
+        */__init__.py
