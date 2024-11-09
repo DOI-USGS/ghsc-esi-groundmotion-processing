@@ -1,5 +1,8 @@
 [report]
     precision=2
     omit=
+        # No way to test GUI
         src/gmprocess/gui/gui_ucla/*
         */__init__.py
+        # This is just a helper script that is only useful for USGS staff
+        src/gmprocess/bin/bundle_datarelease.py

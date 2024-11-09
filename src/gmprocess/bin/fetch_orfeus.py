@@ -14,7 +14,7 @@ from gmprocess.core.provenance import LabelProvenance
 
 
 class App:
-    """Download processed waveforms from the ORFEUS Engineering Strong Motion data center as ASDF files.
+    """Download from the ORFEUS Engineering Strong Motion data center as ASDF files.
 
     The resulting ASDF files contain data that can be used to compute station and
     waveform metrics. A user does not run the gmprocess subcommands 'download',
