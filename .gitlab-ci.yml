@@ -1,8 +1,8 @@
 default:
   image: code.usgs.gov:5001/devops/images/usgs/python:3.12-build
   tags:
-#    - build
-    - shakecast-dev
+    - build
+#    - shakecast-dev
   before_script:
     - python --version
     - export PATH="/home/usgs-user/.local/bin:$PATH"
@@ -14,7 +14,7 @@ default:
     $CI_PROJECT_PATH != 'ghsc/esi/groundmotion-processing'
     && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   variables:
-    ENVIRONMENT: shakecast-dev
+    ENVIRONMENT: development
 
 .upstream: &upstream
   if: >
@@ -65,6 +65,7 @@ run upload pypi:
         echo "check-wheel-contents failed, wheel will not be uploaded to PyPi ..."
       fi
   stage: build
+
 pages:
   artifacts:
     paths:
@@ -82,59 +83,3 @@ pages:
     - cd docs
     - bash makedocs.sh
   stage: docs
-
-# .shakecast-dev:
-#   tags:
-#     - shakecast-dev
-
-# # BUILD TESTS
-# shakecast-dev-test:
-#   stage: test
-#   extends:
-#     - .shakecast-dev
-#   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
-#   artifacts:
-#     reports:
-#       coverage_report:
-#         coverage_format: cobertura
-#         path: coverage.xml
-#       junit: junit.xml
-#   script:
-#     - pip install -e .[test]
-#     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
-#     - mkdir /home/usgs-user/slabs
-#     - cp tests/data/slab_data/*.grd /home/usgs-user/slabs/.
-#     - pytest -x --cov=src/gmprocess/ --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
-#     - coverage xml
-
-# shakecast-dev-build:
-#   stage: build
-#   extends:
-#     - .shakecast-dev
-#   script:
-#     - pip install .[build]
-#     - python -m build
-#     - python -m zipfile --list dist/*whl
-#     - check-wheel-contents --package src/gmprocess/ --package-omit src/gmprocess/data/asdf dist/
-#     - |
-#       if [ $? -eq 0 ]; then
-#         echo "check-wheel-contents has passed, uploading to PyPi ..."
-#         # python -m twine upload dist/*
-#       else
-#         echo "check-wheel-contents failed, wheel will not be uploaded to PyPi ..."
-#       fi
-
-# shakecast-dev-docs:
-#   artifacts:
-#     paths:
-#       # The folder that contains the files to be exposed at the Page URL
-#       - public
-#   extends:
-#     - .shakecast-dev
-#   stage: docs
-#   script:
-#     - pip install .[doc]
-#     - strec_cfg update --datafolder /home/usgs-user/ --gcmt
-#     - cd docs
-#     - bash makedocs.sh
-
