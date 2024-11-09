@@ -14,10 +14,12 @@ def test_autoshakemap(script_runner):
         "CI.TOW2",
     )
 
+    cdir = constants.CONFIG_PATH_TEST
+    ddir = constants.TEST_DATA_DIR / "demo"
+    event_dir = ddir / EVENT_ID
+    filename = event_dir / f"{EVENT_ID}_groundmotion_packet.json"
     try:
         # Need to create profile first.
-        cdir = constants.CONFIG_PATH_TEST
-        ddir = constants.TEST_DATA_DIR / "demo"
         setup_inputs = io.StringIO(
             f"test\n{str(cdir)}\n{str(ddir)}\nname\ntest@email.com\n"
         )
@@ -30,9 +32,6 @@ def test_autoshakemap(script_runner):
         )
         assert ret.success
 
-        event_dir = ddir / EVENT_ID
-
-        filename = event_dir / f"{EVENT_ID}_groundmotion_packet.json"
         with open(filename, encoding="utf-8") as fin:
             data = json.load(fin)
             assert len(data["features"]) == len(STATION_IDS)
@@ -41,10 +40,10 @@ def test_autoshakemap(script_runner):
                 assert (
                     f"{fprops['network_code']}.{fprops['station_code']}" == station_id
                 )
-
     except Exception as ex:
         raise ex
     finally:
+        filename.unlink(missing_ok=True)
         shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
         pattern = ["workspace.h5", ".png", ".csv", "_dat.json", "_metrics.json"]
