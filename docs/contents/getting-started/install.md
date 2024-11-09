@@ -88,4 +88,4 @@ pytest .
 This will be followed by a lot of terminal output.
 Warnings are expected to occur and do not indicate a problem.
 Errors indicate that something has gone wrong and you will want to troubleshoot.
-You can create an issue in [Gitlab](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) if you are not able to resolve the problem.
+If you are not able to resolve the problem, you can create an issue in [GitHub](https://github.com/DOI-USGS/ghsc-esi-groundmotion-processing) or [Gitlab](https://code.usgs.gov/ghsc/esi/groundmotion-processing/issues) or email the developers at [gmprocess@usgs.gov](mailto:gmprocess@usgs.gov).
