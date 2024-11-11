@@ -21,7 +21,7 @@ def test_gmprocess_config_test(tmp_path, script_runner):
         "gmprocess_config",
         "--workspace",
         str(dst_ws_file),
-        "--save",
+        "--outfile",
         str(dst_config_file),
     )
     assert ret.success
@@ -48,7 +48,7 @@ def test_gmprocess_config_test(tmp_path, script_runner):
         "gmprocess_config",
         "--workspace",
         dst_ws_file,
-        "--update",
+        "--infile",
         dst_config_file,
     )
     assert ret.success

@@ -40,7 +40,13 @@ def update_config(ws, in_file):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Help to fix confs in workspace files.",
+        description="""Help to update and review configs in the workspace files.
+        
+There are two main uses for this command:
+- Update the config content that is in a workspace file (use the `--infile` flag).
+- Save the config that is in a workspace file to an external text file (use the 
+  `--outfile` flag).
+""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -51,21 +57,21 @@ def main():
     )
     io_group = parser.add_mutually_exclusive_group(required=True)
     io_group.add_argument(
-        "--save",
-        help="Path to file to save contents of workspace config file.",
+        "--outfile",
+        help="File to save the contents of the workspace config file to.",
         type=str,
     )
     io_group.add_argument(
-        "--update",
-        help="Path to config file to overwrite in workspace.",
+        "--infile",
+        help="Path to a config file to overwrite the config in the workspace file.",
         type=str,
     )
     args = parser.parse_args()
     ws = StreamWorkspace.open(args.workspace)
-    if args.save is not None:
-        save_config(ws, args.save)
-    if args.update is not None:
-        update_config(ws, args.update)
+    if args.outfile is not None:
+        save_config(ws, args.outfile)
+    if args.infile is not None:
+        update_config(ws, args.infile)
     ws.close()
 
 
