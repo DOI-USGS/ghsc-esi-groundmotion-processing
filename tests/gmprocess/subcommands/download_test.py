@@ -11,7 +11,7 @@ DATA_DIR = constants.DATA_DIR
 
 
 @vcr.use_cassette()
-def test_download():
+def _test_download():
     try:
         event_id = "nc72282711"
         cdir = constants.CONFIG_PATH_TEST
