@@ -18,7 +18,102 @@ from gmprocess.utils import download_utils
 from gmprocess.core.scalar_event import ScalarEvent
 
 
-def main():
+class App:
+    """App to facilitate getting CWA data into gmprocess."""
+
+    @staticmethod
+    def main(event_id, datafile, metadata):
+        """Application driver method.
+
+        Args:
+            event_id (str):
+                Event id.
+            datafile (str):
+                The <eventid>_*_data.mseed file that you downloaded.
+            metadata (str):
+                StationXML file that you downloaded.
+        """
+
+        if "CALLED_FROM_PYTEST" in os.environ:
+            CONF_PATH = pathlib.Path(".") / ".gmprocess"
+        else:
+            CONF_PATH = pathlib.Path.home() / ".gmprocess"
+        PROJECTS_FILE = CONF_PATH / "projects.conf"
+        projects_conf = configobj.ConfigObj(str(PROJECTS_FILE), encoding="utf-8")
+        project = projects_conf["project"]
+        current_project = projects_conf["projects"][project]
+        data_parts = pathlib.PurePath(current_project["data_path"]).parts
+        data_path = CONF_PATH.joinpath(*data_parts).resolve()
+        event_path = data_path / event_id
+        raw_path = event_path / "raw"
+        if not event_path.exists():
+            event_path.mkdir()
+            raw_path.mkdir()
+        raw_stream = read(datafile)
+        # some of these files are returned from CWB web site in time chunks
+        # using this merge method joins up all of the traces with the same
+        # NSCL. Thanks Obspy!
+        stream = raw_stream.merge()
+        trace_count = 0
+        for trace in stream:
+            if isinstance(trace.data, np.ma.core.MaskedArray):
+                continue
+            network = trace.stats.network
+            station = trace.stats.station
+            channel = trace.stats.channel
+            location = trace.stats.location
+            starttime_str = trace.stats.starttime.strftime("%Y%m%dT%H%M%SZ")
+            endtime_str = trace.stats.endtime.strftime("%Y%m%dT%H%M%SZ")
+            fname = (
+                f"{network}.{station}.{location}.{channel}__"
+                f"{starttime_str}__{endtime_str}.mseed"
+            )
+            filename = raw_path / fname
+            trace.write(str(filename), format="MSEED")
+            trace_count += 1
+        print(f"{len(stream)} channels written to {raw_path}.")
+
+        inventory = read_inventory(metadata)
+        network = inventory.networks[0]
+        netcode = network.code
+        for station in network.stations:
+            stacode = station.code
+            xml_name = f"{netcode}.{stacode}.xml"
+            sta_inv = inventory.select(netcode, stacode)
+            # Correct HL channel codes to be HN
+            for net in sta_inv.networks:
+                for sta in net.stations:
+                    for chan in sta.channels:
+                        if chan.code.startswith("HL"):
+                            chan.code = chan.code[0] + "N" + chan.code[2]
+            sta_inv.write(raw_path / xml_name, "STATIONXML")
+        print(f"{len(network.stations)} StationXML files written to {raw_path}.")
+
+        event_info = download_utils.download_comcat_event(event_id)
+        scalar_event.write_geojson(event_info, event_path)
+        event_file = event_path / constants.EVENT_FILE
+        msg = f"Created event file at {event_file}."
+        if not event_file.is_file():
+            msg = f"Error: Failed to create {event_file}."
+        print(msg)
+        download_utils.download_rupture_file(event_id, event_path)
+        rupture_file = event_path / "rupture.json"
+        msg = f"Created rupture file at {rupture_file}."
+        if not rupture_file.is_file():
+            msg = f"Warning: Failed to create {rupture_file}."
+        print(msg)
+
+        event = ScalarEvent.from_json(event_file)
+        download_utils.get_strec_results(event, event_path)
+        msg = "Downloaded STREC results."
+        strec_file = event_path / "strec_results.json"
+        if not strec_file.is_file():
+            msg = "Failed to download STREC results."
+        print(msg)
+
+def cli():
+    """Command line interface to the cwa_gather application."""
+
     desc = """Convert CWA data from web site into form ingestible by gmprocess.
 
     To obtain CWA strong motion data, create an account on the CWA:
@@ -106,6 +201,7 @@ def main():
     You will need to run the cwa_gather command twice, once for each pair of XML and
     tgz files for the CWBSN and TSMIP networks.
     """
+
     parser = argparse.ArgumentParser(
         description=desc,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -126,85 +222,11 @@ def main():
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
+
     args = parser.parse_args()
 
-    if "CALLED_FROM_PYTEST" in os.environ:
-        CONF_PATH = pathlib.Path(".") / ".gmprocess"
-    else:
-        CONF_PATH = pathlib.Path.home() / ".gmprocess"
-    PROJECTS_FILE = CONF_PATH / "projects.conf"
-    projects_conf = configobj.ConfigObj(str(PROJECTS_FILE), encoding="utf-8")
-    project = projects_conf["project"]
-    current_project = projects_conf["projects"][project]
-    data_parts = pathlib.PurePath(current_project["data_path"]).parts
-    data_path = CONF_PATH.joinpath(*data_parts).resolve()
-    event_path = data_path / args.event_id
-    raw_path = event_path / "raw"
-    if not event_path.exists():
-        event_path.mkdir()
-        raw_path.mkdir()
-    raw_stream = read(args.datafile)
-    # some of these files are returned from CWB web site in time chunks
-    # using this merge method joins up all of the traces with the same
-    # NSCL. Thanks Obspy!
-    stream = raw_stream.merge()
-    trace_count = 0
-    for trace in stream:
-        if isinstance(trace.data, np.ma.core.MaskedArray):
-            continue
-        network = trace.stats.network
-        station = trace.stats.station
-        channel = trace.stats.channel
-        location = trace.stats.location
-        starttime_str = trace.stats.starttime.strftime("%Y%m%dT%H%M%SZ")
-        endtime_str = trace.stats.endtime.strftime("%Y%m%dT%H%M%SZ")
-        fname = (
-            f"{network}.{station}.{location}.{channel}__"
-            f"{starttime_str}__{endtime_str}.mseed"
-        )
-        filename = raw_path / fname
-        trace.write(str(filename), format="MSEED")
-        trace_count += 1
-    print(f"{len(stream)} channels written to {raw_path}.")
-
-    inventory = read_inventory(args.metadata)
-    network = inventory.networks[0]
-    netcode = network.code
-    for station in network.stations:
-        stacode = station.code
-        xml_name = f"{netcode}.{stacode}.xml"
-        sta_inv = inventory.select(netcode, stacode)
-        # Correct HL channel codes to be HN
-        for net in sta_inv.networks:
-            for sta in net.stations:
-                for chan in sta.channels:
-                    if chan.code.startswith("HL"):
-                        chan.code = chan.code[0] + "N" + chan.code[2]
-        sta_inv.write(raw_path / xml_name, "STATIONXML")
-    print(f"{len(network.stations)} StationXML files written to {raw_path}.")
-
-    event_info = download_utils.download_comcat_event(args.event_id)
-    scalar_event.write_geojson(event_info, event_path)
-    event_file = event_path / constants.EVENT_FILE
-    msg = f"Created event file at {event_file}."
-    if not event_file.is_file():
-        msg = f"Error: Failed to create {event_file}."
-    print(msg)
-    download_utils.download_rupture_file(args.event_id, event_path)
-    rupture_file = event_path / "rupture.json"
-    msg = f"Created rupture file at {rupture_file}."
-    if not rupture_file.is_file():
-        msg = f"Error: Failed to create {rupture_file}."
-    print(msg)
-
-    event = ScalarEvent.from_json(event_file)
-    download_utils.get_strec_results(event, event_path)
-    msg = "Downloaded STREC results."
-    strec_file = event_path / "strec_results.json"
-    if not strec_file.is_file():
-        msg = "Failed to download STREC results."
-    print(msg)
-
+    app = App()
+    app.main(args.event_id, args.datafile, args.metadata)
 
 if __name__ == "__main__":
-    main()
+    cli()

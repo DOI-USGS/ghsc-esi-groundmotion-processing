@@ -1,19 +1,21 @@
+import copy
+
 import numpy as np
 from obspy import UTCDateTime
 
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils.config import update_dict
 from gmprocess.utils import constants
 from gmprocess.core import scalar_event
 
 
-def test_zero_crossings():
+def test_zero_crossings(config):
+    conf = copy.deepcopy(config)
+
     datadir = constants.TEST_DATA_DIR / "zero_crossings"
     sc = StreamCollection.from_directory(str(datadir))
     sc.describe()
-
-    conf = get_config()
 
     update = {
         "processing": [
@@ -21,7 +23,7 @@ def test_zero_crossings():
             {"check_zero_crossings": {"min_crossings": 1}},
         ]
     }
-    update_dict(conf, update)
+    update_dict(config, update)
 
     edict = {
         "id": "ak20419010",
@@ -32,7 +34,7 @@ def test_zero_crossings():
         "magnitude": 7.1,
     }
     event = scalar_event.ScalarEvent.from_params(**edict)
-    test = process_streams(sc, event, conf)
+    test = process_streams(sc, event, config)
     for st in test:
         for tr in st:
             assert tr.has_parameter("ZeroCrossingRate")

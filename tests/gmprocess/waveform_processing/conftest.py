@@ -1,32 +1,17 @@
+import copy
+
 import pytest
 
 from gmprocess.io.read import read_data
 from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.utils.config import get_config
 from gmprocess.core.stationstream import StationStream
 from gmprocess.core.streamcollection import StreamCollection
-
 from gmprocess.waveform_processing.windows import (
     signal_split,
     signal_end,
     window_checks,
 )
 from gmprocess.waveform_processing.snr import compute_snr, snr_check
-
-"""
-    Fixtures for dealing with Geonet data
-"""
-
-
-@pytest.fixture(scope="module")
-def geonet_waveforms_us1000778i():
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V*")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
-
-    yield streams, event
 
 
 @pytest.fixture(scope="module")
@@ -38,44 +23,6 @@ def geonet_waveforms_nz2018p115908():
         streams += read_data(f)
 
     yield streams, event
-
-
-@pytest.fixture(scope="module")
-def geonet_WTMC_uncorrected():
-    data_files, event = read_data_dir("geonet", "us1000778i", "*WTMC*.V1A")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
-
-    yield streams, event
-
-
-@pytest.fixture(scope="module")
-def geonet_uncorrected_waveforms():
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
-
-    yield streams, event
-
-
-@pytest.fixture(scope="module")
-def geonet_corrected_waveforms():
-    data_files, event = read_data_dir("geonet", "us1000778i", "*.V2A")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
-
-    yield streams, event
-
-
-"""
-    Fixtures for dealing with FDSN data
-"""
 
 
 @pytest.fixture(scope="module")
@@ -105,11 +52,6 @@ def fdsn_ci38457511_CLC():
     yield streams, event
 
 
-"""
-    Fixtures for dealing with KiK-net data
-"""
-
-
 @pytest.fixture(scope="module")
 def kiknet_usp000hzq8():
     data_files, event = read_data_dir("kiknet", "usp000hzq8")
@@ -122,36 +64,14 @@ def kiknet_usp000hzq8():
 
 
 @pytest.fixture(scope="module")
-def kiknet_us2000cnnl():
-    data_files, event = read_data_dir("kiknet", "usp000hzq8")
-    data_files.sort()
-    streams = []
-    for f in data_files:
-        streams += read_data(f)
+def setup_corner_freq_test(load_data_us1000778i, config):
+    conf = copy.deepcopy(config)
+    streams, event = load_data_us1000778i
+    streams = streams.copy()
 
-    yield streams, event
+    window_conf = conf["windows"]
 
-
-"""
-    Test-specific setup fixtures
-"""
-
-
-@pytest.fixture(scope="module")
-def setup_corner_freq_test(geonet_uncorrected_waveforms):
-    # Default config has 'constant' corner frequency method, so the need
-    # here is to force the 'magnitude' method.
-    streams, event = geonet_uncorrected_waveforms
-
-    # Select only the V1A files from geonet test data
-    # streams = streams[::2]
-    sc = StreamCollection(streams)
-
-    config = get_config()
-
-    window_conf = config["windows"]
-
-    processed_streams = sc.copy()
+    processed_streams = streams.copy()
     for st in processed_streams:
         if st.passed:
             # Estimate noise/signal split time
@@ -185,7 +105,9 @@ def setup_corner_freq_test(geonet_uncorrected_waveforms):
 
 
 @pytest.fixture(scope="module")
-def setup_corner_freq_mag_test(geonet_waveforms_nz2018p115908):
+def setup_corner_freq_mag_test(geonet_waveforms_nz2018p115908, config):
+    conf = copy.deepcopy(config)
+
     # Default config has 'constant' corner frequency method, so the need
     # here is to force the 'magnitude' method.
     streams, event = geonet_waveforms_nz2018p115908
@@ -194,9 +116,7 @@ def setup_corner_freq_mag_test(geonet_waveforms_nz2018p115908):
     # streams = streams[::2]
     sc = StreamCollection(streams)
 
-    config = get_config()
-
-    window_conf = config["windows"]
+    window_conf = conf["windows"]
 
     processed_streams = sc.copy()
     for st in processed_streams:

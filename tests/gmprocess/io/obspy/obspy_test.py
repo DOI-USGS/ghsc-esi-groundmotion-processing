@@ -1,14 +1,17 @@
+import copy
+
 import numpy as np
+
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.io.obspy.core import read_obspy
-from gmprocess.utils.config import get_config
 from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.waveform_processing.processing import process_streams
 
 from obspy import read
 
 
-def test_sac_conversion():
+def test_sac_conversion(config):
+    conf = copy.deepcopy(config)
     # The "sac_conversion_factor" is specified in the "read" section of the config.
     # It is a multiplicative factor to convert from whatever units the data is in to
     # cm/s/s. This test is for how that conversion factor is applied.
@@ -24,25 +27,24 @@ def test_sac_conversion():
 
     # Read in with gmprocess, which applies the conversion factor, specifying the
     # conversion factor
-    config = get_config()
-    config["read"]["sac_conversion_factor"] = 980.665
-    tr_gmprocess = read_obspy(datafile, config=config)[0][0]
+    conf["read"]["sac_conversion_factor"] = 980.665
+    tr_gmprocess = read_obspy(datafile, config=conf)[0][0]
     pga_gmprocess = np.max(np.abs(tr_gmprocess))
     np.testing.assert_allclose(pga_gmprocess, pga_obspy * 980.665)
 
 
-def test_sac_csn():
+def test_sac_csn(config):
+    conf = copy.deepcopy(config)
     # This reads in example SAC data that does not have a separate metadata
     # file to meet the needs of the Community Seismic Network:
     # http://csn.caltech.edu/
-    config = get_config()
-    config["read"]["sac_conversion_factor"] = 980.665
+    conf["read"]["sac_conversion_factor"] = 980.665
 
     datafiles, _ = read_data_dir("csn", "ci38457511", "*.sac")
     datafiles.sort()
     traces = []
     for d in datafiles:
-        traces.append(read_obspy(d, config=config)[0][0])
+        traces.append(read_obspy(d, config=conf)[0][0])
 
     tr_amax = np.zeros(len(traces))
     for i, tr in enumerate(traces):

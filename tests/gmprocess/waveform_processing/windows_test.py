@@ -2,14 +2,7 @@ import pytest
 import numpy as np
 from obspy import UTCDateTime
 
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.io.read import read_data
-from gmprocess.utils.config import get_config
-from gmprocess.utils.tests_utils import read_data_dir
 from gmprocess.waveform_processing import windows
-
-
-PICKER_CONFIG = get_config()["pickers"]
 
 
 def test_windows_cut(fdsn_ci38457511_CLC):
@@ -101,18 +94,15 @@ def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
     np.testing.assert_allclose(durations, target)
 
 
-def test_signal_split2():
-    datafiles, event = read_data_dir("knet", "us2000cnnl", "AOM0011801241951*")
-    streams = []
-    for datafile in datafiles:
-        streams += read_data(datafile)
+def test_signal_split2(load_data_us1000778i):
+    streams, event = load_data_us1000778i
+    streams = streams.copy()
 
-    streams = StreamCollection(streams)
     stream = streams[0]
     windows.signal_split(stream, event)
 
     cmpdict = {
-        "split_time": UTCDateTime(2018, 1, 24, 10, 51, 37, 841483),
+        "split_time": UTCDateTime(2016, 11, 13, 11, 3, 0, 0),
         "method": "p_arrival",
         "picker_type": "travel_time",
     }

@@ -1,7 +1,7 @@
 import csv
+import copy
 
 import numpy as np
-
 from obspy.core.trace import Stats
 
 from gmprocess.core.stationstream import StationStream
@@ -9,7 +9,6 @@ from gmprocess.core.stationtrace import StationTrace
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils import constants
 from gmprocess.core import scalar_event
-from gmprocess.utils.config import get_config
 
 
 def read_at2(dfile, horient=0.0):
@@ -81,7 +80,9 @@ def read_at2(dfile, horient=0.0):
     return tr
 
 
-def test_high_freq_sa():
+def test_high_freq_sa(config):
+    conf = copy.deepcopy(config)
+
     # Dummy event
     event = scalar_event.ScalarEvent.from_params(
         id="",
@@ -108,11 +109,10 @@ def test_high_freq_sa():
 
     periods = [0.01]
 
-    config = get_config()
-    config["metrics"]["components_and_types"] = {"rotd": ["sa"]}
-    config["metrics"]["type_parameters"]["sa"]["periods"] = periods
-    config["metrics"]["component_parameters"]["rotd"]["percentiles"] = [50.0]
-    wmc = WaveformMetricCollection.from_streams([st], event, config)
+    conf["metrics"]["components_and_types"] = {"rotd": ["sa"]}
+    conf["metrics"]["type_parameters"]["sa"]["periods"] = periods
+    conf["metrics"]["component_parameters"]["rotd"]["percentiles"] = [50.0]
+    wmc = WaveformMetricCollection.from_streams([st], event, conf)
     metric_list = wmc.waveform_metrics[0]
     # convert to g from %g
     test_sa = [m.value("RotD(percentile=50.0)") / 100 for m in metric_list.metric_list]

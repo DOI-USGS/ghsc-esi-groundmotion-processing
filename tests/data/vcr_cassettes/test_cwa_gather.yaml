@@ -1,0 +1,403 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000hyun.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Expires:
+      - Sat, 09 Nov 2024 22:02:05 GMT
+      Last-Modified:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us6000hyun&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 f1f259972a1922859cce8cd3da009a44.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - zRJUDL66aamM_zGUIWVHxhac6VuzINYMTXET1RjDFIuuk3pOwJXBEQ==
+      X-Amz-Cf-Pop:
+      - MSP50-P2
+      X-Cache:
+      - Miss from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000hyun&format=geojson
+  response:
+    body:
+      string: '{"type":"Feature","properties":{"mag":4.2,"place":"61 km WSW of Yonakuni,
+        Japan","time":1656226986271,"updated":1662239001040,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000hyun","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":271,"net":"us","code":"6000hyun","ids":",us6000hyun,","sources":",us,","types":",origin,phase-data,","nst":30,"dmin":0.565,"rms":0.76,"gap":62,"magType":"mb","type":"earthquake","title":"M
+        4.2 - 61 km WSW of Yonakuni, Japan","products":{"origin":[{"indexid":"21576200","indexTime":1662239205000,"id":"urn:usgs-product:us:origin:us6000hyun:1662239001040","type":"origin","code":"us6000hyun","source":"us","updateTime":1662239001040,"status":"UPDATE","properties":{"azimuthal-gap":"62","depth":"70.28","depth-type":"from
+        location","error-ellipse-azimuth":"49","error-ellipse-intermediate":"7700","error-ellipse-major":"10600","error-ellipse-minor":"2400","error-ellipse-plunge":"63","error-ellipse-rotation":"101","evaluation-status":"reviewed","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000hyun/1662239070","eventsource":"us","eventsourcecode":"6000hyun","eventtime":"2022-06-26T07:03:06.271Z","eventtime-error":"1.54","horizontal-error":"4.1","latitude":"24.2618","latitude-error":"0.0432","longitude":"122.4332","longitude-error":"0.0365","magnitude":"4.2","magnitude-error":"0.159","magnitude-num-stations-used":"11","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.565","num-phases-used":"36","num-stations-used":"30","origin-source":"us","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000hyun/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000hyun","quakeml-publicid":"quakeml:us.anss.org/event/6000hyun","review-status":"reviewed","standard-error":"0.76","title":"61
+        km WSW of Yonakuni, Japan","vertical-error":"6.3"},"preferredWeight":158,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1662239202000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/us6000hyun/us/1662239001040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1662239001000,"length":3798,"url":"https://earthquake.usgs.gov/product/origin/us6000hyun/us/1662239001040/quakeml.xml","sha256":"07ZRYtEw1O6NAUlRTJJcQlggI+E4iWLAnS6aYzVxWeg="}}}],"phase-data":[{"indexid":"21576202","indexTime":1662239209894,"id":"urn:usgs-product:us:phase-data:us6000hyun:1662239001040","type":"phase-data","code":"us6000hyun","source":"us","updateTime":1662239001040,"status":"UPDATE","properties":{"azimuthal-gap":"62","depth":"70.28","depth-type":"from
+        location","error-ellipse-azimuth":"49","error-ellipse-intermediate":"7700","error-ellipse-major":"10600","error-ellipse-minor":"2400","error-ellipse-plunge":"63","error-ellipse-rotation":"101","evaluation-status":"reviewed","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000hyun/1662239070","eventsource":"us","eventsourcecode":"6000hyun","eventtime":"2022-06-26T07:03:06.271Z","eventtime-error":"1.54","horizontal-error":"4.1","latitude":"24.2618","latitude-error":"0.0432","longitude":"122.4332","longitude-error":"0.0365","magnitude":"4.2","magnitude-error":"0.159","magnitude-num-stations-used":"11","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.565","num-phases-used":"36","num-stations-used":"30","origin-source":"us","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000hyun/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000hyun","quakeml-publicid":"quakeml:us.anss.org/event/6000hyun","review-status":"reviewed","standard-error":"0.76","vertical-error":"6.3"},"preferredWeight":158,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1662239202000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/us6000hyun/us/1662239001040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1662239001000,"length":71952,"url":"https://earthquake.usgs.gov/product/phase-data/us6000hyun/us/1662239001040/quakeml.xml","sha256":"OvOxnNAmIMs2s1JiJDfP3VfhBFGCPptzyCd3UxDKReo="}}}]}},"geometry":{"type":"Point","coordinates":[122.4332,24.2618,70.28]},"id":"us6000hyun"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1179'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Expires:
+      - Sat, 09 Nov 2024 22:02:05 GMT
+      Last-Modified:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 ba64d7f8b80e139e3a1517d2805a94e2.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - fo0EBI6MWPW40_7qr1LK67spUafUVFWSK2MNBj_q8kypvDCZYbdHJw==
+      X-Amz-Cf-Pop:
+      - MSP50-P2
+      X-Cache:
+      - Miss from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000hyun.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '1'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Expires:
+      - Sat, 09 Nov 2024 22:02:05 GMT
+      Last-Modified:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us6000hyun&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 f1f259972a1922859cce8cd3da009a44.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - SzHWgJQe3qtSD3HKXNK7HKpUUgFCs4Dom8wbPlkPmL_0GT-JCHIyjw==
+      X-Amz-Cf-Pop:
+      - MSP50-P2
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000hyun&format=geojson
+  response:
+    body:
+      string: '{"type":"Feature","properties":{"mag":4.2,"place":"61 km WSW of Yonakuni,
+        Japan","time":1656226986271,"updated":1662239001040,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000hyun","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":271,"net":"us","code":"6000hyun","ids":",us6000hyun,","sources":",us,","types":",origin,phase-data,","nst":30,"dmin":0.565,"rms":0.76,"gap":62,"magType":"mb","type":"earthquake","title":"M
+        4.2 - 61 km WSW of Yonakuni, Japan","products":{"origin":[{"indexid":"21576200","indexTime":1662239205000,"id":"urn:usgs-product:us:origin:us6000hyun:1662239001040","type":"origin","code":"us6000hyun","source":"us","updateTime":1662239001040,"status":"UPDATE","properties":{"azimuthal-gap":"62","depth":"70.28","depth-type":"from
+        location","error-ellipse-azimuth":"49","error-ellipse-intermediate":"7700","error-ellipse-major":"10600","error-ellipse-minor":"2400","error-ellipse-plunge":"63","error-ellipse-rotation":"101","evaluation-status":"reviewed","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000hyun/1662239070","eventsource":"us","eventsourcecode":"6000hyun","eventtime":"2022-06-26T07:03:06.271Z","eventtime-error":"1.54","horizontal-error":"4.1","latitude":"24.2618","latitude-error":"0.0432","longitude":"122.4332","longitude-error":"0.0365","magnitude":"4.2","magnitude-error":"0.159","magnitude-num-stations-used":"11","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.565","num-phases-used":"36","num-stations-used":"30","origin-source":"us","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000hyun/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000hyun","quakeml-publicid":"quakeml:us.anss.org/event/6000hyun","review-status":"reviewed","standard-error":"0.76","title":"61
+        km WSW of Yonakuni, Japan","vertical-error":"6.3"},"preferredWeight":158,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1662239202000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/us6000hyun/us/1662239001040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1662239001000,"length":3798,"url":"https://earthquake.usgs.gov/product/origin/us6000hyun/us/1662239001040/quakeml.xml","sha256":"07ZRYtEw1O6NAUlRTJJcQlggI+E4iWLAnS6aYzVxWeg="}}}],"phase-data":[{"indexid":"21576202","indexTime":1662239209894,"id":"urn:usgs-product:us:phase-data:us6000hyun:1662239001040","type":"phase-data","code":"us6000hyun","source":"us","updateTime":1662239001040,"status":"UPDATE","properties":{"azimuthal-gap":"62","depth":"70.28","depth-type":"from
+        location","error-ellipse-azimuth":"49","error-ellipse-intermediate":"7700","error-ellipse-major":"10600","error-ellipse-minor":"2400","error-ellipse-plunge":"63","error-ellipse-rotation":"101","evaluation-status":"reviewed","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000hyun/1662239070","eventsource":"us","eventsourcecode":"6000hyun","eventtime":"2022-06-26T07:03:06.271Z","eventtime-error":"1.54","horizontal-error":"4.1","latitude":"24.2618","latitude-error":"0.0432","longitude":"122.4332","longitude-error":"0.0365","magnitude":"4.2","magnitude-error":"0.159","magnitude-num-stations-used":"11","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.565","num-phases-used":"36","num-stations-used":"30","origin-source":"us","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000hyun/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000hyun","quakeml-publicid":"quakeml:us.anss.org/event/6000hyun","review-status":"reviewed","standard-error":"0.76","vertical-error":"6.3"},"preferredWeight":158,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1662239202000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/us6000hyun/us/1662239001040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1662239001000,"length":71952,"url":"https://earthquake.usgs.gov/product/phase-data/us6000hyun/us/1662239001040/quakeml.xml","sha256":"OvOxnNAmIMs2s1JiJDfP3VfhBFGCPptzyCd3UxDKReo="}}}]}},"geometry":{"type":"Point","coordinates":[122.4332,24.2618,70.28]},"id":"us6000hyun"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '1'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1179'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Expires:
+      - Sat, 09 Nov 2024 22:02:05 GMT
+      Last-Modified:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 a5e934660f9817baef055c1ec689c0b6.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - OK6MaqJh2CkZ4Go6k09gJjE4pJ-hNKnvEf2Hqb9wEeuNqWgssBFBvA==
+      X-Amz-Cf-Pop:
+      - MSP50-P2
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000hyun.geojson
+  response:
+    body:
+      string: ''
+    headers:
+      Access-Control-Allow-Headers:
+      - accept,origin,authorization,content-type
+      Access-Control-Allow-Methods:
+      - '*'
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '1'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Expires:
+      - Sat, 09 Nov 2024 22:02:05 GMT
+      Last-Modified:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Location:
+      - /fdsnws/event/1/query?eventid=us6000hyun&format=geojson
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=31536000
+      Via:
+      - 1.1 ba64d7f8b80e139e3a1517d2805a94e2.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - C3DVwTwvSaKy3SclfRCGKq7VWC5KOzqz8UJmA6133tSx-Qoi4usbkg==
+      X-Amz-Cf-Pop:
+      - MSP50-P2
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '1'
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000hyun&format=geojson
+  response:
+    body:
+      string: '{"type":"Feature","properties":{"mag":4.2,"place":"61 km WSW of Yonakuni,
+        Japan","time":1656226986271,"updated":1662239001040,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000hyun","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":271,"net":"us","code":"6000hyun","ids":",us6000hyun,","sources":",us,","types":",origin,phase-data,","nst":30,"dmin":0.565,"rms":0.76,"gap":62,"magType":"mb","type":"earthquake","title":"M
+        4.2 - 61 km WSW of Yonakuni, Japan","products":{"origin":[{"indexid":"21576200","indexTime":1662239205000,"id":"urn:usgs-product:us:origin:us6000hyun:1662239001040","type":"origin","code":"us6000hyun","source":"us","updateTime":1662239001040,"status":"UPDATE","properties":{"azimuthal-gap":"62","depth":"70.28","depth-type":"from
+        location","error-ellipse-azimuth":"49","error-ellipse-intermediate":"7700","error-ellipse-major":"10600","error-ellipse-minor":"2400","error-ellipse-plunge":"63","error-ellipse-rotation":"101","evaluation-status":"reviewed","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000hyun/1662239070","eventsource":"us","eventsourcecode":"6000hyun","eventtime":"2022-06-26T07:03:06.271Z","eventtime-error":"1.54","horizontal-error":"4.1","latitude":"24.2618","latitude-error":"0.0432","longitude":"122.4332","longitude-error":"0.0365","magnitude":"4.2","magnitude-error":"0.159","magnitude-num-stations-used":"11","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.565","num-phases-used":"36","num-stations-used":"30","origin-source":"us","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000hyun/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000hyun","quakeml-publicid":"quakeml:us.anss.org/event/6000hyun","review-status":"reviewed","standard-error":"0.76","title":"61
+        km WSW of Yonakuni, Japan","vertical-error":"6.3"},"preferredWeight":158,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1662239202000,"length":195,"url":"https://earthquake.usgs.gov/product/origin/us6000hyun/us/1662239001040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1662239001000,"length":3798,"url":"https://earthquake.usgs.gov/product/origin/us6000hyun/us/1662239001040/quakeml.xml","sha256":"07ZRYtEw1O6NAUlRTJJcQlggI+E4iWLAnS6aYzVxWeg="}}}],"phase-data":[{"indexid":"21576202","indexTime":1662239209894,"id":"urn:usgs-product:us:phase-data:us6000hyun:1662239001040","type":"phase-data","code":"us6000hyun","source":"us","updateTime":1662239001040,"status":"UPDATE","properties":{"azimuthal-gap":"62","depth":"70.28","depth-type":"from
+        location","error-ellipse-azimuth":"49","error-ellipse-intermediate":"7700","error-ellipse-major":"10600","error-ellipse-minor":"2400","error-ellipse-plunge":"63","error-ellipse-rotation":"101","evaluation-status":"reviewed","event-type":"earthquake","eventParametersPublicID":"quakeml:us.anss.org/eventparameters/6000hyun/1662239070","eventsource":"us","eventsourcecode":"6000hyun","eventtime":"2022-06-26T07:03:06.271Z","eventtime-error":"1.54","horizontal-error":"4.1","latitude":"24.2618","latitude-error":"0.0432","longitude":"122.4332","longitude-error":"0.0365","magnitude":"4.2","magnitude-error":"0.159","magnitude-num-stations-used":"11","magnitude-source":"us","magnitude-type":"mb","minimum-distance":"0.565","num-phases-used":"36","num-stations-used":"30","origin-source":"us","pdl-client-version":"Version
+        2.7.10 2021-06-21","quakeml-magnitude-publicid":"quakeml:us.anss.org/magnitude/6000hyun/mb","quakeml-origin-publicid":"quakeml:us.anss.org/origin/6000hyun","quakeml-publicid":"quakeml:us.anss.org/event/6000hyun","review-status":"reviewed","standard-error":"0.76","vertical-error":"6.3"},"preferredWeight":158,"contents":{"contents.xml":{"contentType":"application/xml","lastModified":1662239202000,"length":195,"url":"https://earthquake.usgs.gov/product/phase-data/us6000hyun/us/1662239001040/contents.xml","sha256":"ABhLiaqdYWmIak24eD/csBAWouBShhatD9bUzLNEZFk="},"quakeml.xml":{"contentType":"application/xml","lastModified":1662239001000,"length":71952,"url":"https://earthquake.usgs.gov/product/phase-data/us6000hyun/us/1662239001040/quakeml.xml","sha256":"OvOxnNAmIMs2s1JiJDfP3VfhBFGCPptzyCd3UxDKReo="}}}]}},"geometry":{"type":"Point","coordinates":[122.4332,24.2618,70.28]},"id":"us6000hyun"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - '*'
+      Access-Control-Allow-Methods:
+      - GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '86400'
+      Age:
+      - '1'
+      Cache-Control:
+      - public, max-age=60
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1179'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Expires:
+      - Sat, 09 Nov 2024 22:02:05 GMT
+      Last-Modified:
+      - Sat, 09 Nov 2024 22:01:05 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 181794033b99fbc23a8ca5ae650b4d86.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - hRovTFDjQpt2MfoYvdMgtnW9TLVQhu4M3PhtAzXkAcBNB2Bb0vjmbA==
+      X-Amz-Cf-Pop:
+      - MSP50-P2
+      X-Cache:
+      - Hit from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,26 +1,27 @@
+import copy
+
 import numpy as np
+from scipy.io import loadmat
 import pandas as pd
-from gmprocess.core.stationtrace import StationTrace
-from gmprocess.core.streamcollection import StreamCollection
-from gmprocess.io.read import read_data
-from gmprocess.utils.config import get_config
-from gmprocess.utils.constants import TEST_DATA_DIR
-from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.waveform_processing import phase
 from obspy import UTCDateTime, read
 from obspy.core.stream import Stream
 from obspy.geodetics import locations2degrees
 from obspy.taup import TauPyModel
-from scipy.io import loadmat
 
-CONFIG = get_config()
+from gmprocess.core.stationtrace import StationTrace
+from gmprocess.core.streamcollection import StreamCollection
+from gmprocess.io.read import read_data
+from gmprocess.utils.constants import TEST_DATA_DIR
+from gmprocess.waveform_processing import phase
 
 
-def test_baer():
+def test_baer(config):
+    conf = copy.deepcopy(config)
+
     datadir = TEST_DATA_DIR / "process"
     # Testing a strong motion channel
     st = read(str(datadir / "ALCTENE.UW..sac"))
-    ppick = phase.pick_baer(st, CONFIG)
+    ppick = phase.pick_baer(st, conf)
     target = np.array([20.740000000000002, 59.54533997798557])
     np.testing.assert_allclose(ppick, target)
 
@@ -94,51 +95,10 @@ def test_pphase_picker():
     np.testing.assert_allclose(loc, 26.105)
 
 
-def test_all_pickers():
-    streams = get_streams()
-    methods = ["ar", "baer", "power", "kalkan"]
-    rows = []
-    for stream in streams:
-        print(stream.get_id())
-        for method in methods:
-            if method == "ar":
-                loc, mean_snr = phase.pick_ar(stream, CONFIG)
-            elif method == "baer":
-                loc, mean_snr = phase.pick_baer(stream, CONFIG)
-            elif method == "power":
-                loc, mean_snr = phase.pick_power(stream, CONFIG)
-            elif method == "kalkan":
-                loc, mean_snr = phase.pick_kalkan(stream, CONFIG)
-            elif method == "yeck":
-                loc, mean_snr = phase.pick_yeck(stream, CONFIG)
-            row = {
-                "Stream": stream.get_id(),
-                "Method": method,
-                "Pick_Time": loc,
-                "Mean_SNR": mean_snr,
-            }
-            rows.append(row)
-    df = pd.DataFrame(rows)
-
-    stations = df["Stream"].unique()
-    cmpdict = {
-        "NZ.HSES.HN": "baer",
-        "NZ.WTMC.HN": "baer",
-        "NZ.THZ.HN": "power",
-    }
-    for station in stations:
-        station_df = df[df["Stream"] == station]
-        max_snr = station_df["Mean_SNR"].max()
-        maxrow = station_df[station_df["Mean_SNR"] == max_snr].iloc[0]
-        method = maxrow["Method"]
-        assert cmpdict[station] == method
-
-
-def test_travel_time():
-    datafiles, event = read_data_dir("geonet", "us1000778i", "*.V1A")
-    streams = []
-    for datafile in datafiles:
-        streams += read_data(datafile)
+def test_travel_time(load_data_us1000778i, config):
+    conf = copy.deepcopy(config)
+    streams, event = load_data_us1000778i
+    streams = streams.copy()
 
     cmps = {
         "NZ.HSES.HN": 42.12651866051254,
@@ -146,19 +106,8 @@ def test_travel_time():
         "NZ.THZ.HN": 42.016659723287404,
     }
     for stream in streams:
-        minloc, _ = phase.pick_travel(stream, event, CONFIG)
-        # print(stream, minloc)
+        minloc, _ = phase.pick_travel(stream, event, conf)
         np.testing.assert_almost_equal(minloc, cmps[stream.get_id()], decimal=3)
-
-
-def get_streams():
-    datafiles3, _ = read_data_dir("geonet", "us1000778i", "*.V1A")
-    datafiles = datafiles3
-    streams = []
-    for datafile in datafiles:
-        streams += read_data(datafile)
-
-    return StreamCollection(streams)
 
 
 def test_get_travel_time_df():

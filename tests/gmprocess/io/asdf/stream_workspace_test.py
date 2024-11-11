@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import pytest
 
@@ -98,19 +100,20 @@ def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_pat
 
 
 def test_stream_workspace(load_data_usb000syza, tmp_path, config):
-    config["metrics"]["output_imcs"] = ["channels"]
-    raw_streams, event, strec = load_data_usb000syza
-    config = update_config(constants.TEST_DATA_DIR / "config_min_freq_0p2.yml", config)
-    newconfig = config.copy()
-    newconfig["processing"].append(
+    raw_streams, event, _ = load_data_usb000syza
+    conf = copy.deepcopy(config)
+
+    conf["metrics"]["output_imcs"] = ["channels"]
+    conf = update_config(constants.TEST_DATA_DIR / "config_min_freq_0p2.yml", conf)
+    conf["processing"].append(
         {"nnet_qa": {"acceptance_threshold": 0.5, "model_name": "CantWell"}}
     )
-    processed_streams = process_streams(raw_streams.copy(), event, config=newconfig)
+    processed_streams = process_streams(raw_streams.copy(), event, config=conf)
 
     try:
         tfile = tmp_path / "test.hdf"
         workspace = StreamWorkspace(tfile)
-        workspace.add_config(config=config)
+        workspace.add_config(config=conf)
         workspace.add_event(event)
         workspace.add_streams(event, raw_streams, label="raw")
         workspace.add_streams(event, processed_streams, label="processed")

@@ -1,34 +1,31 @@
 import numpy as np
 
-from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.adjust_highpass import adjust_highpass_corner
 
 
-def test_adjust_highpass_corner(geonet_WTMC_uncorrected):
-    # Use just the stream for the WTMC station V1A file
-    streams, _ = geonet_WTMC_uncorrected
+def test_adjust_highpass_corner(load_data_us1000778i):
+    streams, _ = load_data_us1000778i
+    streams = streams.copy()
 
     # Shorten window for testing
     for tr in streams[0]:
-        tr.data = tr.data[7000:18000]
+        tr.data = tr.data[6000:20000]
 
-    sc = StreamCollection(streams)
     output_fchp = []
 
-    for st in sc:
+    for st in streams:
         for tr in st:
             tr.set_parameter(
                 "corner_frequencies",
-                {"type": "constant", "highpass": 0.001, "lowpass": 20},
+                {"type": "constant", "highpass": 0.01, "lowpass": 20},
             )
 
         tmp_st = adjust_highpass_corner(
-            st, max_final_displacement=0.001, max_displacement_ratio=0.005
+            st, max_final_displacement=0.0001, max_displacement_ratio=0.001
         )
         for tr in tmp_st:
             initial_corners = tr.get_parameter("corner_frequencies")
             output_fchp.append(initial_corners["highpass"])
-
-    target_fchp = np.array([0.057665039062500006, 0.001, 0.001])
+    target_fchp = np.array([0.25628906250000005, 0.0759375, 0.050625])
 
     np.testing.assert_allclose(output_fchp, target_fchp, atol=1e-7)

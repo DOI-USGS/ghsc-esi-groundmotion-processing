@@ -1,14 +1,12 @@
-import pytest
 import os
+import copy
+
+import pytest
 from datetime import datetime
 import tempfile
 import shutil
 
-from gmprocess.utils.config import get_config
-from gmprocess.utils.logging import setup_logger
 from gmprocess.io.obspy.fdsn_fetcher import FDSNFetcher
-
-setup_logger()
 
 
 @pytest.fixture(scope="session")
@@ -19,12 +17,12 @@ def vcr_config():
 
 
 @pytest.mark.vcr
-def skip_test_fetcher():
-    # nc72282711
+def skip_test_fetcher(config):
+    conf = copy.deepcopy(config)
+
     rawdir = tempfile.mkdtemp()
     try:
-        config = get_config()
-        config["fetchers"]["FDSNFetcher"]["domain"]["circular"]["maxradius"] = 0.1
+        conf["fetchers"]["FDSNFetcher"]["domain"]["circular"]["maxradius"] = 0.1
         # 2014-08-24 10:20:44
         utime = datetime(2014, 8, 24, 10, 20, 44)
         eqlat = 38.215
@@ -38,7 +36,7 @@ def skip_test_fetcher():
             eqdepth,
             eqmag,
             rawdir=rawdir,
-            config=config,
+            config=conf,
             stream_collection=False,
         )
         fetcher.retrieve_data()
