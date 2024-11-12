@@ -94,7 +94,7 @@ gmrecords --eventid nc73291880 download
 We have cached the results of running `gmrecords download --eventid nc73291880` in the `tests/data/tutorials` directory.
 Consequently, we simply copy the data from `tests/data/tutorials/nc73291880` to `data/cli/nc73291880`.
 
-:::{command-output} cp -r ../../../tests/data/tutorials/nc73291880/BK.BRIB.01.HN* data/cli/
+:::{command-output} cp -r ../../../tests/data/tutorials/nc73291880/raw/BK.BRIB.01.HN* data/cli/
 ---
 cwd: .
 ---
