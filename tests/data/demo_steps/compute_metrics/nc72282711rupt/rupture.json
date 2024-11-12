@@ -1,0 +1,60 @@
+{
+    "type": "FeatureCollection",
+    "metadata": {
+        "reference": "Source: Jack Boatwright's interpolation of Doug Dreger's finite fault",
+        "id": "nc72282711rupt",
+        "network": "California Integrated Seismic Network: Northern California Seismic System (UC Berkeley, USGS Menlo Park, and Partners)",
+        "netid": "nc",
+        "productcode": "nc72282711rupt",
+        "time": "2014-08-24T10:20:44.000000Z",
+        "lat": 38.2152,
+        "lon": -122.3123,
+        "depth": 11.1,
+        "mag": 6.0,
+        "locstring": "South Napa",
+        "mech": "ALL",
+        "rake": 0.0
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "rupture type": "rupture extent"
+            },
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
+                        [
+                            [
+                                -122.313,
+                                38.22,
+                                2.0
+                            ],
+                            [
+                                -122.333,
+                                38.31,
+                                2.0
+                            ],
+                            [
+                                -122.333,
+                                38.31,
+                                11.0
+                            ],
+                            [
+                                -122.313,
+                                38.22,
+                                11.0
+                            ],
+                            [
+                                -122.313,
+                                38.22,
+                                2.0
+                            ]
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}

@@ -1,19 +1,21 @@
+import copy
+
 import numpy as np
 from obspy import UTCDateTime
 
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.config import get_config, update_dict
+from gmprocess.utils.config import update_dict
 from gmprocess.core import scalar_event
 from gmprocess.utils import constants
 
 
-def test_lowpass_max():
+def test_lowpass_max(config):
+    conf = copy.deepcopy(config)
+
     datadir = constants.TEST_DATA_DIR / "lowpass_max"
     sc = StreamCollection.from_directory(datadir)
-    sc.describe()
 
-    conf = get_config()
     update = {
         "processing": [
             {"detrend": {"detrending_method": "demean"}},

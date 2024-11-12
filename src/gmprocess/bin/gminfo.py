@@ -45,6 +45,57 @@ REV_PROCESS_LEVELS = {
 }
 
 
+
+class App:
+    """App for getting info about ground motion data."""
+
+    @staticmethod
+    def main(dir, concise=False, outfile=None, quiet_errors=False):
+        """Driver method for gminfo.
+        
+        Args:
+            dir (str):
+                Directory to inspect.
+            concise (bool):
+                Concise format?
+            outfile (str):
+                File to save result.
+            quiet_errors:
+                Print error log containing files that could not be parsed.
+        """
+
+
+        logger = logging.getLogger()
+        logger.setLevel(logging.CRITICAL)
+        warnings.filterwarnings("ignore")
+        pd.set_option("display.max_columns", 10000)
+        pd.set_option("display.max_colwidth", 10000)
+        pd.set_option("display.expand_frame_repr", False)
+
+        do_save = outfile is not None
+
+        # Does the directory exist?
+        if not Path(dir).is_dir():
+            raise OSError(f"Directory '{dir}' does not exist.")
+        
+        df, errors = render_dir(dir, concise=concise, save=do_save)
+        if outfile is not None and concise:
+            save_path = Path(outfile)
+            fbase = save_path.parent / save_path.stem
+            fext = save_path.suffix
+            errfile = str(fbase) + "_errors" + fext
+            print(f"Catalog written to {outfile}.")
+            print(f"Errors written to {errfile}.")
+            if fext == ".xlsx":
+                df.to_excel(outfile, index=False)
+                errors.to_excel(errfile, index=False)
+            else:
+                df.to_csv(outfile, index=False)
+                errors.to_csv(errfile, index=False)
+        if not outfile and not quiet_errors:
+            print(errors.to_string(index=False))
+
+
 def get_dataframe(filename, stream):
     rows = []
     for trace in stream:
@@ -163,17 +214,19 @@ def render_verbose(files):
     return errors
 
 
-def main():
+def cli():
+    """Command line interface for gminfo"""
+
     description = """Display summary information about a file, multiple files,
     or directories of files containing strong motion data in the supported
     formats.
     Use the -p option to print errors for files that could not be read.
-    Use the -s option to save summary data AND errors to Excel/CSV format.
-    ."""
+    Use the -s option to save summary data AND errors to Excel/CSV format."""
+
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument(
-        "files_or_dir", nargs="+", help="Files or directory to inspect.", type=str
-    )
+
+    parser.add_argument("dir", help="Directory to inspect.", type=str)
+
     chelp = """Print out results in concise CSV form. Columns are:
     Filename
     Format
@@ -190,20 +243,25 @@ def main():
     Longitude
     """
     parser.add_argument("-c", "--concise", action="store_true", help=chelp)
+
     shelp = """Save concise results to CSV/Excel file
     (format determined by extension (.xlsx for Excel, anything else for CSV.))
     """
     parser.add_argument("-s", "--save", metavar="OUTFILE", help=shelp)
+
     phelp = "Print error log containing files that could not be parsed."
     parser.add_argument("--quiet-errors", action="store_true", help=phelp)
+
     # Shared arguments
     parser = argmod.add_shared_args(parser)
+
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    args = parser.parse_args()
 
-    if not args.concise and args.save:
+    pargs = parser.parse_args()
+
+    if not pargs.concise and pargs.save:
         msg = """
         ****************************************************************
         Saving verbose output is not supported. Use -c and -s
@@ -215,51 +273,11 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    logger = logging.getLogger()
-    logger.setLevel(logging.CRITICAL)
-    warnings.filterwarnings("ignore")
-    pd.set_option("display.max_columns", 10000)
-    pd.set_option("display.max_colwidth", 10000)
-    pd.set_option("display.expand_frame_repr", False)
 
-    files = args.files_or_dir
-    do_save = args.save is not None
-    if len(files) == 1:
-        # is this a file or a directory?
-        if Path(files[0]).is_dir():
-            df, errors = render_dir(files[0], concise=args.concise, save=do_save)
-            if args.save is not None and args.concise:
-                save_path = Path(args.save)
-                fbase = save_path.parent / save_path.stem
-                fext = save_path.suffix
-                errfile = str(fbase) + "_errors" + fext
-                print(f"Catalog written to {args.save}.")
-                print(f"Errors written to {errfile}.")
-                if fext == ".xlsx":
-                    df.to_excel(args.save, index=False)
-                    errors.to_excel(errfile, index=False)
-                else:
-                    df.to_csv(args.save, index=False)
-                    errors.to_csv(errfile, index=False)
-            if not args.save and not args.quiet_errors:
-                print(errors.to_string(index=False))
-            sys.exit(0)
-    if args.concise:
-        df, errors = render_concise(files, save=do_save)
-        if args.save is not None:
-            save_path = Path(args.save)
-            fbase = save_path.parent / save_path.stem
-            fext = save_path.suffix
-            if fext == ".xlsx":
-                df.to_excel(args.save, index=False)
-            else:
-                df.to_csv(args.save, index=False)
+    app = App()
 
-    else:
-        errors = render_verbose(files)
-    if not args.quiet_errors and not args.save and len(errors):
-        print(errors.to_string(index=False))
+    app.main(pargs.dir, pargs.concise, pargs.save, pargs.quiet_errors)
 
 
 if __name__ == "__main__":
-    main()
+    cli()

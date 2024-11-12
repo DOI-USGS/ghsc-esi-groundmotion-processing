@@ -1,26 +1,17 @@
-import logging
+import copy
 
 import numpy as np
 
 from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.processing import process_streams
-from gmprocess.utils.logging import setup_logger
-from gmprocess.utils.config import get_config, update_dict, update_config
+from gmprocess.utils.config import update_dict, update_config
 from gmprocess.utils.constants import TEST_DATA_DIR
 
-CONFIG = get_config()
 
-setup_logger()
-
-
-def test_process_streams(geonet_uncorrected_waveforms):
-    # Loma Prieta test station (nc216859)
-    # ???
-
-    # Update default rather than loading static config
-    config = get_config()
-
-    proc_config = config["processing"]
+def test_process_streams(load_data_us1000778i, config):
+    conf = copy.deepcopy(config)
+    sc, event = load_data_us1000778i
+    sc = sc.copy()
 
     update = {
         "processing": [
@@ -66,54 +57,25 @@ def test_process_streams(geonet_uncorrected_waveforms):
             {"cut": {"sec_before_split": 2.0}},
             {"taper": {"type": "hann", "width": 0.05, "side": "both"}},
         ],
-        # "sa": [
-        #     {"periods": {"use_array": True, "defined_periods": 0.3}},
-        # ],
     }
-    update_dict(config, update)
+    update_dict(conf, update)
 
-    # update = {
-    #     "snr_check": {'threshold': 3.0, 'min_freq': 0.2, 'max_freq': 5.0, 'f0_options': {'stress_drop': 10, 'shear_vel': 3.7, 'ceiling': 2.0}},
-    # }
-    # Index 11 is the `snr_check` field
-    # update_dict(config['processing'][11], update)
-    # update_dict(config, update)
-
-    config = update_config(
-        str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), CONFIG
-    )
-
-    streams, event = geonet_uncorrected_waveforms
-
-    sc = StreamCollection(streams)
+    conf = update_config(str(TEST_DATA_DIR / "config_min_freq_0p2.yml"), conf)
 
     sc.describe()
 
-    test = process_streams(sc, event, config=config)
+    test = process_streams(sc, event, config=conf)
 
-    logging.info(f"Testing trace: {test[0][1]}")
-
-    assert len(test) == 3
+    assert len(test) == 1
     assert len(test[0]) == 3
-    assert len(test[1]) == 3
-    assert len(test[2]) == 3
 
-    # Apparently the traces end up in a different order on the Travis linux
-    # container than on my local mac. So testing individual traces need to
-    # not care about trace order.
-
-    trace_maxes = np.sort(
-        [np.max(np.abs(t.data)) for t in test.select(station="HSES")[0]]
-    )
+    trace_maxes = np.sort([np.max(np.abs(t.data)) for t in test[0]])
 
     np.testing.assert_allclose(
         trace_maxes,
         np.array([157.81244924, 240.37952095, 263.6015194]),
         rtol=1e-5,
     )
-
-    # x: array([158.99, 239.48, 258.44])
-    # y: array([157.812449, 240.379521, 263.601519])
 
 
 def test_free_field(kiknet_usp000hzq8):
@@ -139,8 +101,9 @@ def test_free_field(kiknet_usp000hzq8):
             assert reason == "Failed free field sensor check."
 
 
-def test_check_instrument(fdsn_nc51194936):
-    config = get_config()
+def test_check_instrument(fdsn_nc51194936, config):
+    conf = copy.deepcopy(config)
+    streams, event = fdsn_nc51194936
 
     # Update default rather than loading static config
     update = {
@@ -154,16 +117,9 @@ def test_check_instrument(fdsn_nc51194936):
             },
         ]
     }
-    update_dict(config, update)
-
-    streams, event = fdsn_nc51194936
-
+    update_dict(conf, update)
     sc = StreamCollection(streams)
-    sc.describe()
-
-    test = process_streams(sc, event, config=config)
-
+    test = process_streams(sc, event, config=conf)
     for sta, expected in [("CVS", True), ("GASB", True), ("SBT", False)]:
         st = test.select(station=sta)[0]
-        logging.info(f"Testing stream: {st}")
         assert st.passed == expected

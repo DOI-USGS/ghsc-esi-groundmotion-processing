@@ -14,6 +14,7 @@ PROJECTS_PATH = (pathlib.Path("~").expanduser() / PROJ_CONF_DIR).resolve()
 CONFIG_PATH_TEST = (pathlib.Path("~").expanduser() / "gmptest").resolve()
 CONFIG_FILE_PRODUCTION = "config_production.yml"
 CONFIG_FILE_TEST = "config_test.yml"
+CONFIG_FILE_TEST_DOWNLOAD = "config_test_download.yml"
 PICKER_FILE = "picker.yml"
 MODULE_FILE = "modules.yml"
 EVENT_FILE = "event.json"

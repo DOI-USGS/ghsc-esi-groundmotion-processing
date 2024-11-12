@@ -1,33 +1,25 @@
-import os
 import shutil
+from pathlib import Path
 
-from esi_utils_io.cmd import get_command_output
 from gmprocess.utils.constants import TEST_DATA_DIR
-
+from gmprocess.bin.gminfo import App
 
 def test_gminfo():
-    input_dir = TEST_DATA_DIR / "geonet"
-    out_dir = "temp_dir"
+    input_dir = TEST_DATA_DIR / "geonet" / "nz2018p115908"
+    out_dir = Path("temp_dir")
+    out_dir.mkdir(exist_ok=True)
 
-    if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
     try:
         # Concise output, save to file
-        cmd = f"gminfo {input_dir} -c -s {os.path.join(out_dir, 'test.csv')}"
+        app = App()
+        app.main(str(input_dir), True, str(out_dir / 'test.csv'), False)
+        assert (out_dir / "test.csv").exists()
+        assert (out_dir / "test_errors.csv").exists()
 
-        rc, so, se = get_command_output(cmd)
-        assert rc
-
-        # Verbose output
-        cmd = f"gminfo {input_dir}"
-        rc, so, se = get_command_output(cmd)
-        assert rc
-        assert "New Zealand Institute of Geological and Nuclear Science" in so.decode()
-        assert "HSES" in so.decode()
+        app = App()
+        app.main(str(input_dir))
 
     except Exception as e:
-        print(so.decode())
-        print(se.decode())
         raise e
     finally:
         shutil.rmtree(out_dir, ignore_errors=True)

@@ -1,5 +1,6 @@
 # stdlib imports
 import os
+import copy
 
 # third party imports
 import h5py
@@ -18,38 +19,41 @@ from gmprocess.waveform_processing.processing import process_streams
 @pytest.fixture
 def generate_workspace(config, load_data_us1000778i, tmp_path, configure_strec):
     """Generate simple HDF5 with ASDF layout for testing."""
+    conf = copy.deepcopy(config)
+    existing_config_data = configure_strec
+    streams, event = load_data_us1000778i
+    streams = streams.copy()
+
     EVENTID = "us1000778i"
     LABEL = "ptest"
-    streams, event = load_data_us1000778i
 
     tfilename = tmp_path / "workspace.h5"
 
-    existing_config_data = configure_strec
     try:
         write_asdf(tfilename, streams, event, label="unprocessed")
 
         # Simplify for tests
-        config["metrics"]["type_parameters"]["sa"]["periods"] = [1.0, 2.0, 3.0]
-        config["metrics"]["type_parameters"]["fas"]["frequencies"] = {
+        conf["metrics"]["type_parameters"]["sa"]["periods"] = [1.0, 2.0, 3.0]
+        conf["metrics"]["type_parameters"]["fas"]["frequencies"] = {
             "start": 0.1,
             "stop": 1.0,
             "num": 11,
         }
         workspace = StreamWorkspace.open(tfilename)
         raw_streams = workspace.get_streams(
-            EVENTID, labels=["unprocessed"], config=config
+            EVENTID, labels=["unprocessed"], config=conf
         )
-        pstreams = process_streams(raw_streams, event, config=config)
+        pstreams = process_streams(raw_streams, event, config=conf)
         workspace.add_streams(event, pstreams, label=LABEL)
-        workspace.add_config(config)
+        workspace.add_config(conf)
 
-        wmc = WaveformMetricCollection.from_streams(pstreams, event, config, LABEL)
+        wmc = WaveformMetricCollection.from_streams(pstreams, event, conf, LABEL)
         for wm, sp in zip(wmc.waveform_metrics, wmc.stream_paths):
             wxml = WaveformMetricsXML(wm.metric_list)
             xmlstr = wxml.to_xml()
             workspace.insert_aux(xmlstr, "WaveFormMetrics", sp)
 
-        smc = StationMetricCollection.from_streams(pstreams, event, config)
+        smc = StationMetricCollection.from_streams(pstreams, event, conf)
         for sm, sp in zip(smc.station_metrics, smc.stream_paths):
             sxml = StationMetricsXML(sm)
             xmlstr = sxml.to_xml()

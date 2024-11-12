@@ -2,8 +2,8 @@ import pathlib
 import shutil
 import tempfile
 
-from esi_utils_io.cmd import get_command_output
 from gmprocess.utils.tests_utils import vcr
+from gmprocess.bin.fetch_orfeus import App
 
 PROJ_STR = """project = pytest
 [projects]
@@ -18,6 +18,7 @@ PROJ_PATH = pathlib.Path(".") / ".gmprocess"
 def test_fetch_orfeus():
     eqid = "us10005c3r"
     tmp_dir = pathlib.Path(tempfile.mkdtemp())
+    out_dir = "data-waveforms"
     try:
         conf_dir = tmp_dir / "conf"
         data_dir = tmp_dir / "data"
@@ -31,15 +32,18 @@ def test_fetch_orfeus():
             f.write(proj_str)
         with open(proj_conf, "r", encoding="utf-8") as f:
             print(f.read())
-        cmd = (
-            f"fetch_orfeus --event-ids={eqid} "
-            "--fetch-waveforms "
-            "--processing-type MP "
-            "--to-gmprocess"
+
+        app = App()
+        app.initialize(
+            catalog="USGS",
+            event_ids=[eqid],
+            processing_label="MP",
+            data_dir=out_dir,
         )
-        rc, so, se = get_command_output(cmd)
-        assert rc
+        app.main(fetch_waveforms=True, to_gmprocess=True)
+        assert app.catalog == "USGS"
+        assert (app.data_dir / eqid / "workspace.h5").exists()
     finally:
         shutil.rmtree(PROJ_PATH, ignore_errors=True)
         shutil.rmtree(tmp_dir, ignore_errors=True)
-        shutil.rmtree("data-waveforms", ignore_errors=True)
+        shutil.rmtree(out_dir, ignore_errors=True)

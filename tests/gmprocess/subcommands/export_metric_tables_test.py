@@ -1,31 +1,28 @@
 import io
 import os
 import shutil
+import copy
 
 import numpy as np
 import pandas as pd
 
 from gmprocess.utils import constants
-from gmprocess.utils.config import get_config
 
 
-def test_export_metric_tables(script_runner):
+def test_export_metric_tables(script_runner, config):
+    conf = copy.deepcopy(config)
+
     try:
         # Need to create profile first.
         cdir = str(constants.CONFIG_PATH_TEST)
         ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "exports")
 
-        setup_inputs = io.StringIO(
-            f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n"
-        )
-        ret = script_runner.run(
-            "gmrecords", "projects", "-c", stdin=setup_inputs
-        )
+        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
+        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
         setup_inputs.close()
         assert ret.success
 
-        config = get_config()
-        config["metrics"]["components_and_types"]["quadratic_mean"] = "fas"
+        conf["metrics"]["components_and_types"]["quadratic_mean"] = "fas"
 
         ret = script_runner.run("gmrecords", "mtables")
         assert ret.success
@@ -40,9 +37,7 @@ def test_export_metric_tables(script_runner):
         assert count == 12
         # Check contents of one file
         h1df = pd.read_csv(
-            os.path.join(
-                ddir, "test_default_metrics_channels(component=h1).csv"
-            )
+            os.path.join(ddir, "test_default_metrics_channels(component=h1).csv")
         )
         for i in range(h1df.shape[0]):
             assert h1df["EarthquakeId"][i] == "ci38457511"
@@ -61,11 +56,8 @@ def test_export_metric_tables(script_runner):
             h1df["EarthquakeDepth"], np.full_like(h1df["EarthquakeDepth"], 8.0)
         )
 
-        config["metrics"]["components_and_types"][
-            "channels"
-        ] = ""  # Turn off default metrics
-        assert ret.success
-
+        # Turn off default metrics
+        conf["metrics"]["components_and_types"]["channels"] = ""
         ret = script_runner.run("gmrecords", "mtables")
         assert ret.success
 

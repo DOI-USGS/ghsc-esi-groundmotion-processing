@@ -1,12 +1,9 @@
+import copy
+
 import numpy as np
 
-from gmprocess.io.geonet.core import read_geonet
 from gmprocess.metrics.waveform_metric_calculator import WaveformMetricCalculator
 from gmprocess.metrics.utils import component_to_channel
-from gmprocess.utils.config import get_config
-from gmprocess.utils.constants import TEST_DATA_DIR
-
-config = get_config()
 
 
 def test_get_channel_dict():
@@ -51,8 +48,11 @@ def test_get_channel_dict():
     assert sorted(cdict.keys()) == ["Z"]
 
 
-def test_metric_calculator():
-    config = get_config()
+def test_metric_calculator(load_data_us1000778i, config):
+    streams, _ = load_data_us1000778i
+    streams = streams.copy()
+    conf = copy.deepcopy(config)
+
     metric_config = {
         "components_and_types": {
             "channels": ["pga", "pgv", "sa", "arias", "cav", "duration"],
@@ -86,33 +86,33 @@ def test_metric_calculator():
             }
         },
     }
-    config["metrics"] = metric_config
-    datafile = TEST_DATA_DIR / "geonet" / "us1000778i/20161113_110259_WTMC_20.V2A"
-    stream = read_geonet(datafile)[0]
+    conf["metrics"] = metric_config
 
-    wm_calc = WaveformMetricCalculator(stream, config)
+    stream = streams[0]
+
+    wm_calc = WaveformMetricCalculator(stream, conf)
     wml = wm_calc.calculate()
 
     pga = wml.select("PGA")[0].values
-    np.testing.assert_allclose(pga["Channels(component=H1)"], 99.24999872535474)
-    np.testing.assert_allclose(pga["Channels(component=H2)"], 81.23467239067368)
-    np.testing.assert_allclose(pga["Channels(component=Z)"], 183.7722361866693)
-    np.testing.assert_allclose(pga["RotD(percentile=50.0)"], 91.40178541935455)
-    np.testing.assert_allclose(pga["RotD(percentile=100.0)"], 100.73875535385548)
+    np.testing.assert_allclose(pga["Channels(component=H1)"], 24.420163868395427)
+    np.testing.assert_allclose(pga["Channels(component=H2)"], 26.353545808201577)
+    np.testing.assert_allclose(pga["Channels(component=Z)"], 16.212468070136083)
+    np.testing.assert_allclose(pga["RotD(percentile=50.0)"], 26.13784399742242)
+    np.testing.assert_allclose(pga["RotD(percentile=100.0)"], 27.490172337334727)
 
     pgv = wml.select("PGV")[0].values
-    np.testing.assert_allclose(pgv["Channels(component=H1)"], 101.685117)
-    np.testing.assert_allclose(pgv["Channels(component=H2)"], 68.6545070345289)
-    np.testing.assert_allclose(pgv["Channels(component=Z)"], 39.51545299211966)
-    np.testing.assert_allclose(pgv["RotD(percentile=50.0)"], 82.32464889631234)
-    np.testing.assert_allclose(pgv["RotD(percentile=100.0)"], 114.80404091109193)
+    np.testing.assert_allclose(pgv["Channels(component=H1)"], 32.01422425132747)
+    np.testing.assert_allclose(pgv["Channels(component=H2)"], 33.217128830523485)
+    np.testing.assert_allclose(pgv["Channels(component=Z)"], 13.668950711224722)
+    np.testing.assert_allclose(pgv["RotD(percentile=50.0)"], 31.479009225758396)
+    np.testing.assert_allclose(pgv["RotD(percentile=100.0)"], 33.315065646041774)
 
     sa1 = wml.select("SA", period=1.0, damping=0.05)[0].values
-    np.testing.assert_allclose(sa1["Channels(component=H1)"], 136.25041187387063)
-    np.testing.assert_allclose(sa1["Channels(component=H2)"], 84.69296738413021)
-    np.testing.assert_allclose(sa1["Channels(component=Z)"], 27.74118995438756)
-    np.testing.assert_allclose(sa1["RotD(percentile=50.0)"], 106.03202302692158)
-    np.testing.assert_allclose(sa1["RotD(percentile=100.0)"], 146.9023350124098)
+    np.testing.assert_allclose(sa1["Channels(component=H1)"], 42.135839214645564)
+    np.testing.assert_allclose(sa1["Channels(component=H2)"], 41.891393940234074)
+    np.testing.assert_allclose(sa1["Channels(component=Z)"], 12.789046181803089)
+    np.testing.assert_allclose(sa1["RotD(percentile=50.0)"], 42.13583921464555)
+    np.testing.assert_allclose(sa1["RotD(percentile=100.0)"], 47.910999673071736)
 
     fas = wml.select("FAS")[0].values
     fas_qm = fas["QuadraticMean()"]
@@ -120,6 +120,6 @@ def test_metric_calculator():
         fas_qm.frequency[:2], np.array([0.001, 0.0010292005271944286])
     )
     np.testing.assert_allclose(fas_qm.fourier_spectra[0], np.nan)
-    np.testing.assert_allclose(fas_qm.fourier_spectra[60], 0.054067101860127975)
-    np.testing.assert_allclose(fas_qm.fourier_spectra[120], 0.056931415028755865)
-    np.testing.assert_allclose(fas_qm.fourier_spectra[240], 229.7757904681393)
+    np.testing.assert_allclose(fas_qm.fourier_spectra[60], 0.9514159216822253)
+    np.testing.assert_allclose(fas_qm.fourier_spectra[120], 5.121837741197534)
+    np.testing.assert_allclose(fas_qm.fourier_spectra[240], 152.82217339085008)

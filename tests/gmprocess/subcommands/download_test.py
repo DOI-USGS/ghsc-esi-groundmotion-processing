@@ -3,23 +3,50 @@ import os
 import shutil
 from pathlib import Path
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
-from gmprocess.utils import tests_utils
+from gmprocess.utils.tests_utils import vcr
+
+DATA_DIR = constants.DATA_DIR
 
 
-@tests_utils.vcr.use_cassette()
-def _test_download(script_runner):
+@vcr.use_cassette()
+def _test_download():
     try:
-        # Need to create profile first.
+        event_id = "nc72282711"
         cdir = constants.CONFIG_PATH_TEST
-        ddir = str(cdir / "data")
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        cdir.mkdir(exist_ok=True)
+        ddir = cdir / "data"
+        ddir.mkdir(exist_ok=True)
+        src_conf = DATA_DIR / constants.CONFIG_FILE_TEST_DOWNLOAD
+        dst_conf = cdir / constants.CONFIG_FILE_TEST_DOWNLOAD
+        shutil.copy(src_conf, dst_conf)
+        app = GMrecordsApp()
+        app.load_subcommands()
+        step = "download"
+        args = {
+            "event_id": event_id,
+            "datadir": str(ddir),
+            "confdir": str(cdir),
+            "debug": False,
+            "quiet": False,
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "resume": None,
+        }
+        step_args = {
+            "subcommand": step,
+            "func": app.classes[step]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
-        ret = script_runner.run("gmrecords", "-e", "us10008dkr", "download")
-        assert ret.success
+        rdir = ddir / event_id / "raw"
+        dfiles = list(rdir.glob("*"))
+        assert len(dfiles) == 8
 
     except Exception as ex:
         raise ex
@@ -27,7 +54,7 @@ def _test_download(script_runner):
         shutil.rmtree(constants.CONFIG_PATH_TEST)
 
 
-@tests_utils.vcr.use_cassette()
+@vcr.use_cassette()
 def _test_download_single_provider(script_runner):
     # This test is to specify a single provider and it's URL
     try:
@@ -63,7 +90,7 @@ def _test_download_single_provider(script_runner):
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
 
 
-@tests_utils.vcr.use_cassette()
+@vcr.use_cassette()
 def _test_download_provider_url(script_runner):
     # This test is to specify a single provider and it's URL
     try:
@@ -100,7 +127,7 @@ def _test_download_provider_url(script_runner):
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
 
 
-@tests_utils.vcr.use_cassette()
+@vcr.use_cassette()
 def _test_download_provider_url_bounds(script_runner):
     # This test is to specify a single provider and it's URL
     try:

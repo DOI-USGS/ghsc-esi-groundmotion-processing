@@ -82,15 +82,14 @@ build = [
 ]
 
 
-
 [project.scripts]
 gmconvert = "gmprocess.bin.gmconvert:main"
-gminfo = "gmprocess.bin.gminfo:main"
+gminfo = "gmprocess.bin.gminfo:cli"
 gmrecords = "gmprocess.bin.gmrecords:main"
 gmworkspace = "gmprocess.bin.gmworkspace:main"
 gmprocess_config = "gmprocess.bin.gmprocess_config:main"
 list_metrics = "gmprocess.bin.list_metrics:main"
-cwa_gather = "gmprocess.bin.cwa_gather:main"
+cwa_gather = "gmprocess.bin.cwa_gather:cli"
 fix_inventory = "gmprocess.bin.fix_inventory:main"
 fetch_orfeus = "gmprocess.bin.fetch_orfeus:cli"
 

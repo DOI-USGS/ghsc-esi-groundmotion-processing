@@ -4,7 +4,9 @@ from gmprocess.utils import constants
 
 def test_asdf(load_data_us1000778i, configure_strec, tmp_path):
     raw_streams, event = load_data_us1000778i
+    raw_streams = raw_streams.copy()
     existing_config_data = configure_strec
+
     try:
         tfile = tmp_path / "test.hdf"
         try:

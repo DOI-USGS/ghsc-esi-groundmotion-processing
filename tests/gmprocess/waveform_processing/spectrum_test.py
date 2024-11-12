@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 
 from gmprocess.waveform_processing import spectrum
@@ -5,19 +7,19 @@ from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.windows import signal_split, signal_end
 from gmprocess.waveform_processing.snr import compute_snr
 from gmprocess.waveform_processing.corner_frequencies import get_corner_frequencies
-from gmprocess.utils.config import get_config
 from gmprocess.utils import constants
 from gmprocess.core import scalar_event
 
 
-def test_fit_spectra():
-    config = get_config()
+def test_fit_spectra(config):
+    conf = copy.deepcopy(config)
+
     event_dir = constants.TEST_DATA_DIR / "demo" / "ci38457511"
     event = scalar_event.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
     sc = StreamCollection.from_directory(event_dir / "raw")
     for st in sc:
         st = signal_split(st, event)
-        end_conf = config["windows"]["signal_end"]
+        end_conf = conf["windows"]["signal_end"]
         st = signal_end(
             st,
             event_time=event.time,
