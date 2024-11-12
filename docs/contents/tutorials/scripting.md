@@ -62,7 +62,7 @@ We have cached a snippet of the results of running `gmrecords download --eventid
 Consequently, we simply copy the data from `tests/data/tutorials/nc73291880` to `data/scripting/nc73291880`.
 
 ```{code-cell} ipython3
-!cp -r ../../../tests/data/tutorials/nc73291880/BK.BRIB.01.HN* data/scripting/
+!cp -r ../../../tests/data/tutorials/nc73291880/raw/BK.BRIB.01.HN* data/scripting/
 ```
 
 ### List Data
