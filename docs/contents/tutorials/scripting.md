@@ -107,6 +107,10 @@ args = {
     'overwrite': False,
     'num_processes': 0,
     'label': None,
+    'datadir': None,
+    'confdir': None,
+    'textfile': None,
+    'resume': None,
 }
 
 # Loop through the subcommands.
