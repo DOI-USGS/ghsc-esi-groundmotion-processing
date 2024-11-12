@@ -70,6 +70,3 @@
 ```{eval-rst}
 .. autofunction:: gmprocess.waveform_processing.taper.taper
 ```
-```{eval-rst}
-.. autofunction:: gmprocess.waveform_processing.windows.trim_multiple_events
-```

@@ -47,6 +47,7 @@ project = "gmprocess"
 copyright = "Unlicense"
 
 
+nb_execution_timeout = 180
 nb_execution_mode = "force"
 execution_mode = "force"
 
