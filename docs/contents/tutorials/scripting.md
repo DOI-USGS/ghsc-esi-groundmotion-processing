@@ -75,30 +75,19 @@ We now have earthquake rupture information and raw waveforms in the `data/script
 
 ## Python Script
 
-```{code-cell} ipython3
-:tags: [hide-output]
+First we need to import the GMrecordsApp application and initial it
 
-# Import the application
+```{code-cell} ipython3
 from gmprocess.apps.gmrecords import GMrecordsApp
 
-# Create a list of subcommands we will run.
-STEPS = (
-    'assemble',
-    'process_waveforms',
-    'compute_station_metrics',
-    'compute_waveform_metrics',
-    'export_metric_tables',
-    'generate_report',
-    'generate_station_maps',
-)
-
-# Initialize the application
 app = GMrecordsApp()
 app.load_subcommands()
+```
 
-# Create a dictionary with the arguments common to all subcommands.
-# We must include arguments that normally are given default values by
-# the command line argument parser.
+Now, we need to create a dictionary with the arguments common to all subcommands.
+We must include arguments that normally are given default values by the command line argument parser.
+
+```{code-cell} ipython3
 args = {
     'debug': False,
     'quiet': False,
@@ -112,30 +101,61 @@ args = {
     'textfile': None,
     'resume': None,
 }
+```
 
-# Loop through the subcommands.
-for step in STEPS:
-    print(f"Running '{step}'...")
+And let's make a convenience function to make calling the individual subcommands (i.e., "steps") easier
 
-    # Update the arguments dictionary with subcommand specific information.
-    # Each step has its own log file with the name $STEP.log.
+```{code-cell} ipython3
+def call_gmprocess_subcommand(subcommand):
     step_args = {
-        'subcommand': step,
-        'func': app.classes[step]['class'],
+        'subcommand': subcommand,
+        'func': app.classes[subcommand]['class'],
         'log': None,
     }
     args.update(step_args)
-
-    # Run the current subcommand
     app.main(**args)
 ```
 
-Running the script will produce CSV files with the waveform metrics in the `data/scripting` directory and reports in the `data/scripting/nc73291880` directory.
+Now we can easily call each subcommand
+
+```{code-cell} ipython3
+:tags: [hide-output]
+call_gmprocess_subcommand("assemble")
+```
+
+```{code-cell} ipython3
+:tags: [hide-output]
+call_gmprocess_subcommand("process_waveforms")
+```
+
+```{code-cell} ipython3
+:tags: [hide-output]
+call_gmprocess_subcommand("compute_station_metrics")
+```
+
+```{code-cell} ipython3
+:tags: [hide-output]
+call_gmprocess_subcommand("compute_waveform_metrics")
+```
+
+```{code-cell} ipython3
+:tags: [hide-output]
+call_gmprocess_subcommand("export_metric_tables")
+```
+
+```{code-cell} ipython3
+:tags: [hide-output]
+call_gmprocess_subcommand("generate_station_maps")
+```
+
+This will produce CSV files with the waveform metrics in the `data/scripting` directory.
 
 ```{code-cell} ipython3
 !ls -1 data/scripting/*.csv
 ```
 
+The station map will be in the `data/scripting/nc73291880` directory.
+
 ```{code-cell} ipython3
-!ls -1 data/scripting/nc73291880/*.pdf data/scripting/nc73291880/*.html
+!ls -1 data/scripting/nc73291880/*.html
 ```
