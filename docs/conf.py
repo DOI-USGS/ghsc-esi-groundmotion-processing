@@ -47,8 +47,9 @@ project = "gmprocess"
 copyright = "Unlicense"
 
 
-nb_execution_timeout = 180
+nb_execution_timeout = 300
 nb_execution_mode = "force"
+nb_merge_streams = True
 execution_mode = "force"
 
 # -- General configuration ---------------------------------------------------

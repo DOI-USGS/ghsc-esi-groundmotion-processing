@@ -10,7 +10,7 @@ kernelspec:
   language: python
   name: python3
 mystnb:
-  execution_timeout: 120
+  execution_timeout: 300
 ---
 # Scripting
 
@@ -46,10 +46,6 @@ Third, we create the directory to hold the data.
 We include the directory with the processing parameters for the project in the source code.
 :::
 
-```{code-cell} ipython3
-!mkdir -p data/scripting
-```
-
 At this point we have an empty `data/scripting` directory.
 The `conf/scripting` directory has two files: `fetchers/yml` and `user.yml`.
 These configuration files hold parameters that override default values provided with the source code.
@@ -62,8 +58,10 @@ We have cached a snippet of the results of running `gmrecords download --eventid
 Consequently, we simply copy the data from `tests/data/tutorials/nc73291880` to `data/scripting/nc73291880`.
 
 ```{code-cell} ipython3
-!cp -r ../../../tests/data/tutorials/nc73291880/raw/BK.BRIB.01.HN* data/scripting/
+!mkdir -p data/scripting/.
+!cp -r ../../../tests/data/tutorials/nc73291880 data/scripting/.
 ```
+
 
 ### List Data
 

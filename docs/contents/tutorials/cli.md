@@ -91,10 +91,10 @@ gmrecords --eventid nc73291880 download
 :::
 
 ```{tab} Use cached data
-We have cached the results of running `gmrecords download --eventid nc73291880` in the `tests/data/tutorials` directory.
+We have cached a subset of the results of running `gmrecords download --eventid nc73291880` in the `tests/data/tutorials` directory.
 Consequently, we simply copy the data from `tests/data/tutorials/nc73291880` to `data/cli/nc73291880`.
 
-:::{command-output} cp -r ../../../tests/data/tutorials/nc73291880/raw/BK.BRIB.01.HN* data/cli/
+:::{command-output} cp -r ../../../tests/data/tutorials/nc73291880 data/cli/.
 ---
 cwd: .
 ---
@@ -112,7 +112,7 @@ cwd: .
 ---
 :::
 
-**Note** the 'tree' command may not be available and this part can be skipped.
+**Note** the `tree` command may not be available on your system and this part can be skipped.
 From the directory tree above, you can see how `gmrecords` organizes the data directory:
 
 - within the root data directory there are subdirectories for each event named
