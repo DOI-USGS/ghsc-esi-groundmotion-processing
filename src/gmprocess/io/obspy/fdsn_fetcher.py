@@ -284,8 +284,7 @@ class FDSNFetcher(DataFetcher):
             for handler in root.handlers:
                 if hasattr(handler, "baseFilename"):
                     log_file = getattr(handler, "baseFilename")
-            if "log_file" in vars() or "log_file" in globals():
-                sys.stdout = open(log_file, "a")
+
             # Pass off the initalized clients to the Mass Downloader
             if debug:
                 mdl = MassDownloader(providers=client_list, debug=True)
@@ -306,8 +305,6 @@ class FDSNFetcher(DataFetcher):
                 mseed_storage=str(rawdir),
                 stationxml_storage=str(rawdir),
             )
-            if "log_file" in vars() or "log_file" in globals():
-                sys.stdout.close()
 
             if self.stream_collection:
                 seed_files = rawdir.glob("*.mseed")
