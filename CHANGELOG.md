@@ -1,4 +1,7 @@
 ## main
+
+
+## 2.1.2 / 2024-11-14
 - Enhancements
   - Station distance (epicentral distance) added to the reports
   - Add support velocity and dispacement COSMOS and DMG files
