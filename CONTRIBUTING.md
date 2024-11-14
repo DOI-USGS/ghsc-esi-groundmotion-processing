@@ -82,12 +82,12 @@ Common reasons to rebase include:
    ```
 3. Update `CHANGELOG.md` to include the changes for this version. The goal is for the changelog to be kept up to date with each merge request, so this step should largely consist of creating a new section for this release and moving content into it from "main". 
 4. Commit changes to the `v1.2.1.rc0` branch.
-5. Merge the release candidate back into main. 
+5. Push the branch to your origin.
    ```
    git push origin v1.2.1.rc0
    ```
-   Then create a merge request in to upstream main.
-6. Create an annotated tag **from main** and push the tag upstream
+6. Create a merge request in to upstream main, merge it, and rebase locally.
+7. Create an annotated tag **from main** and push the tag upstream
    ```
    git tag -a v1.2.1 -m "Version 1.2.1"
    git push upstream v1.2.1
@@ -96,8 +96,8 @@ Common reasons to rebase include:
    - *Note that we cannot have a hyphen in the tag name.* 
    - Also, if we end the tag name with "dev" then it will be build and uploaded to pypi as a pre-release version, which means that it will never be pip installed unless the user specifies the exact version of the pre-release.
    - Maintainence note: the PYPI tokens are maintained in gitlab for the ESI group, under Settings then CI/CD, then Variables. These tokens are associated with the "pager_cicd" pypi service account.  
-7. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
-8. Copy/paste the relevant part of the changelog into the "describe this release" section.
+8. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
+9. Copy/paste the relevant part of the changelog into the "describe this release" section.
 
 
 ## Build Documentation
