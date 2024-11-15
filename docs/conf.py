@@ -102,7 +102,7 @@ base_url = "https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/raw/main/do
 
 announcement_html = """
     <a href='https://www.usgs.gov/' style='text-decoration: none'>
-        <img id="announcement_left_img" valign="middle" src="%s_static/usgs.png"/></a>
+        <img id="announcement_left_img" valign="middle" src="%s_static/usgs-logo.svg"/></a>
     Ground-Motion Processing Software
     <a href='https://code.usgs.gov/ghsc/esi/groundmotion-processing' style='text-decoration: none'>
         <img id="announcement_right_img" valign="middle"
