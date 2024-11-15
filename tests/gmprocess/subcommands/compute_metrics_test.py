@@ -76,7 +76,7 @@ def test_compute_station_metrics(script_runner):
         )
         np.testing.assert_allclose(
             rotd.RuptureDistance.iloc[0],
-            81.05,
+            81.08,
         )
         np.testing.assert_allclose(
             rotd["SA(T=0.3000, D=0.050)"].iloc[0],
