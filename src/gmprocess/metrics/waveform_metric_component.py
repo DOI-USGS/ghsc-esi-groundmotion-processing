@@ -106,7 +106,16 @@ class Channels(WaveformMetricComponent):
         """
         super().__init__()
         self._type = self.__class__.__name__
-        self.supported_metric_types = ["sa", "pga", "pgv", "duration", "arias", "cav"]
+        self.supported_metric_types = [
+            "sa",
+            "sv",
+            "sd",
+            "pga",
+            "pgv",
+            "duration",
+            "arias",
+            "cav",
+        ]
         self.component_attributes["channel"] = channel
         self.component_attributes["component_string"] = component_string
         self._gmpacket_channel_code = component_string
@@ -162,5 +171,5 @@ class RotD(WaveformMetricComponent):
         super().__init__()
         self._type = self.__class__.__name__
         self.component_attributes["percentile"] = percentile
-        self.supported_metric_types = ["sa", "pga", "pgv"]
+        self.supported_metric_types = ["sa", "sv", "sd", "pga", "pgv"]
         self._gmpacket_channel_code = f"rotd{int(percentile)}"

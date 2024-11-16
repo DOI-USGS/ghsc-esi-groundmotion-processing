@@ -116,7 +116,7 @@ class WaveformMetricList(object):
         for imt in imtlist:
             temp_df = dataframe.loc[dataframe["IMT"] == imt]
             imt = imt.lower()
-            if imt.startswith("sa"):
+            if imt.startswith("s"):
                 metric_attributes = {
                     "period": float(re.search(FLOAT_MATCH, imt).group()),
                     "damping": SA_DEFAULT_DAMPING,

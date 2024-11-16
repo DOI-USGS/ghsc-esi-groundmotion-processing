@@ -1,5 +1,6 @@
 ## main
-
+-New features
+  - Added support for SV and SD metrics (for cosmos writer V3)
 
 ## 2.1.2 / 2024-11-14
 - Enhancements
