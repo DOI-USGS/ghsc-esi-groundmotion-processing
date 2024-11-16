@@ -1,5 +1,5 @@
 default:
-  image: code.usgs.gov:5001/devops/images/usgs/python:3.12-build
+  image: code.usgs.gov:5001/devops/images/usgs/python:$PYVER
   tags:
     - build
 #    - shakecast-dev
@@ -22,6 +22,12 @@ default:
     && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
     ENVIRONMENT: staging
+
+.parallel:
+  parallel:
+    matrix:
+      - PYVER: [3.10-build, 3.11-build, 3.12-build]
+        DIST: [linux]
 
 stages:
   - test
@@ -47,6 +53,8 @@ run tests and coverage:
     - pytest -x --cov=src/gmprocess/ --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
     - coverage xml
   stage: test
+  parallel: !reference [.parallel,parallel]
+
 
 run upload pypi:
   rules:
