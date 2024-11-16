@@ -128,7 +128,6 @@ def test_metric_calculator(load_data_us1000778i, config):
     np.testing.assert_allclose(sv1["Channels(component=Z)"], 20.49380808)
 
     sd1 = wml.select("SD", period=1.0, damping=0.05)[0].values
-    breakpoint()
     np.testing.assert_allclose(sd1["Channels(component=H1)"], 10.42514)
     np.testing.assert_allclose(sd1["Channels(component=H2)"], 10.35811174)
     np.testing.assert_allclose(sd1["Channels(component=Z)"], 3.15898147)
