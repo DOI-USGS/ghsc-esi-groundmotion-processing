@@ -55,14 +55,22 @@ def test_metric_calculator(load_data_us1000778i, config):
 
     metric_config = {
         "components_and_types": {
-            "channels": ["pga", "pgv", "sa", "arias", "cav", "duration"],
+            "channels": ["pga", "pgv", "sa", "sv", "sd", "arias", "cav", "duration"],
             "arithmetic_mean": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "geometric_mean": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "quadratic_mean": ["fas"],
-            "rotd": ["pga", "pgv", "sa"],
+            "rotd": ["pga", "pgv", "sa", "sv", "sd"],
         },
         "type_parameters": {
             "sa": {
+                "damping": [0.05, 0.1],
+                "periods": [0.3, 1.0, 2.0],
+            },
+            "sv": {
+                "damping": [0.05, 0.1],
+                "periods": [0.3, 1.0, 2.0],
+            },
+            "sd": {
                 "damping": [0.05, 0.1],
                 "periods": [0.3, 1.0, 2.0],
             },
@@ -113,6 +121,17 @@ def test_metric_calculator(load_data_us1000778i, config):
     np.testing.assert_allclose(sa1["Channels(component=Z)"], 12.789046181803089)
     np.testing.assert_allclose(sa1["RotD(percentile=50.0)"], 42.13583921464555)
     np.testing.assert_allclose(sa1["RotD(percentile=100.0)"], 47.910999673071736)
+
+    sv1 = wml.select("SV", period=1.0, damping=0.05)[0].values
+    np.testing.assert_allclose(sv1["Channels(component=H1)"], 63.02799719)
+    np.testing.assert_allclose(sv1["Channels(component=H2)"], 62.15551237)
+    np.testing.assert_allclose(sv1["Channels(component=Z)"], 20.49380808)
+
+    sd1 = wml.select("SD", period=1.0, damping=0.05)[0].values
+    breakpoint()
+    np.testing.assert_allclose(sd1["Channels(component=H1)"], 10.42514)
+    np.testing.assert_allclose(sd1["Channels(component=H2)"], 10.35811174)
+    np.testing.assert_allclose(sd1["Channels(component=Z)"], 3.15898147)
 
     fas = wml.select("FAS")[0].values
     fas_qm = fas["QuadraticMean()"]

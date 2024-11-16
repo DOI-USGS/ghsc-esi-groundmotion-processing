@@ -68,7 +68,9 @@ class WaveformMetricCalculator:
     all_steps = {
         "channels-pga": [reduce.TraceMax],
         "channels-pgv": [transform.Integrate, reduce.TraceMax],
-        "channels-sa": [transform.TraceOscillator, reduce.OscillatorMax],
+        "channels-sa": [transform.TraceOscillatorSA, reduce.OscillatorMaxSA],
+        "channels-sv": [transform.TraceOscillatorSV, reduce.OscillatorMaxSV],
+        "channels-sd": [transform.TraceOscillatorSD, reduce.OscillatorMaxSD],
         "channels-arias": [transform.Arias, reduce.TraceMax],
         "channels-duration": [transform.Arias, reduce.Duration],
         "channels-cav": [reduce.CAV],
@@ -79,8 +81,8 @@ class WaveformMetricCalculator:
             combine.ArithmeticMean,
         ],
         "arithmetic_mean-sa": [
-            transform.TraceOscillator,
-            reduce.OscillatorMax,
+            transform.TraceOscillatorSA,
+            reduce.OscillatorMaxSA,
             combine.ArithmeticMean,
         ],
         "arithmetic_mean-arias": [
@@ -104,8 +106,8 @@ class WaveformMetricCalculator:
             combine.GeometricMean,
         ],
         "geometric_mean-sa": [
-            transform.TraceOscillator,
-            reduce.OscillatorMax,
+            transform.TraceOscillatorSA,
+            reduce.OscillatorMaxSA,
             combine.GeometricMean,
         ],
         "geometric_mean-arias": [
@@ -140,8 +142,20 @@ class WaveformMetricCalculator:
         ],
         "rotd-sa": [
             rotate.RotD,
-            transform.RotDOscillator,
-            reduce.RotDOscMax,
+            transform.RotDOscillatorSA,
+            reduce.RotDOscMaxSA,
+            reduce.RotDPercentile,
+        ],
+        "rotd-sv": [
+            rotate.RotD,
+            transform.RotDOscillatorSV,
+            reduce.RotDOscMaxSV,
+            reduce.RotDPercentile,
+        ],
+        "rotd-sd": [
+            rotate.RotD,
+            transform.RotDOscillatorSD,
+            reduce.RotDOscMaxSD,
             reduce.RotDPercentile,
         ],
     }

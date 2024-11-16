@@ -208,6 +208,88 @@ class SA(WaveformMetricType):
         return f"SA(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
 
 
+class SV(WaveformMetricType):
+    """WaveformMetricType subclass for SV, spectral velocity."""
+
+    def __init__(
+        self, values, components, period, damping=5.0, component_to_channel=None
+    ):
+        """Construct a SV metric object.
+
+        Args:
+            values (list):
+                List of SV values.
+            components (list):
+                List of the components that map to the SV values.
+            period (float):
+                Oscillator period for this SV (in seconds).
+            damping (float):
+                Percentage of critical damping.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "pgm"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {
+            "period": period,
+            "damping": damping,
+        }
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        attrs = self.metric_attributes
+        return f"SV(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
+
+
+class SD(WaveformMetricType):
+    """WaveformMetricType subclass for SD, spectral displacement."""
+
+    def __init__(
+        self, values, components, period, damping=5.0, component_to_channel=None
+    ):
+        """Construct a SD metric object.
+
+        Args:
+            values (list):
+                List of SD values.
+            components (list):
+                List of the components that map to the SA values.
+            period (float):
+                Oscillator period for this SA (in seconds).
+            damping (float):
+                Percentage of critical damping.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "pgm"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {
+            "period": period,
+            "damping": damping,
+        }
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        attrs = self.metric_attributes
+        return f"SD(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
+
+
 class FAS(WaveformMetricType):
     """WaveformMetricType subclass for FAS, Fourier amplitude spectra."""
 

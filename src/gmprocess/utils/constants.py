@@ -31,12 +31,14 @@ WORKSPACE_NAME = "workspace.h5"
 WORKSPACE_NAME_OLD = "workspace.hdf"
 
 
-UNIT_TYPES = {"acc": "cm/s^2", "vel": "cm/s"}
+UNIT_TYPES = {"acc": "cm/s^2", "vel": "cm/s", "disp": "cm"}
 
 UNITS = {
     "pga": "%g",
     "pgv": "cm/s",
     "sa": "%g",
+    "sv": "cm/s",
+    "sd": "cm",
     "arias": "m/s",
     "cav": "g-s",
     "fas": "cm/s",

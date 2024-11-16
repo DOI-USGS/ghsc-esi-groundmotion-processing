@@ -137,11 +137,19 @@ CONF_SCHEMA = Schema(
         "metrics": {
             "components_and_types": dict,
             "type_parameters": {
-                "sa": {
+                Optional("sa"): {
                     "damping": list,
                     "periods": list,
                 },
-                "fas": {
+                Optional("sv"): {
+                    "damping": list,
+                    "periods": list,
+                },
+                Optional("sd"): {
+                    "damping": list,
+                    "periods": list,
+                },
+                Optional("fas"): {
                     "smoothing_method": str,
                     "smoothing_parameter": float,
                     "allow_nans": bool,
@@ -151,9 +159,9 @@ CONF_SCHEMA = Schema(
                         "num": int,
                     },
                 },
-                "duration": {"intervals": list},
+                Optional("duration"): {"intervals": list},
             },
-            "component_parameters": {"rotd": {"percentiles": list}},
+            Optional("component_parameters"): {"rotd": {"percentiles": list}},
         },
         "integration": {
             "frequency": bool,
