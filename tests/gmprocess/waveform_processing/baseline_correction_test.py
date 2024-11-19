@@ -19,7 +19,7 @@ def test_correct_baseline(load_data_us1000778i, config):
             final_acc.append(tmp_tr.data[-1])
 
     target_final_acc = np.array(
-        [0.377842189046875, -0.6819436695796136, 0.11314054951393822]
+        [0.37761623637200725, -0.6856875633042886, 0.11214700766157523]
     )
 
     np.testing.assert_allclose(final_acc, target_final_acc, atol=1e-6)

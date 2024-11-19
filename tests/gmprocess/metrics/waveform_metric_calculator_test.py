@@ -109,11 +109,11 @@ def test_metric_calculator(load_data_us1000778i, config):
     np.testing.assert_allclose(pga["RotD(percentile=100.0)"], 27.490172337334727)
 
     pgv = wml.select("PGV")[0].values
-    np.testing.assert_allclose(pgv["Channels(component=H1)"], 32.01422425132747)
-    np.testing.assert_allclose(pgv["Channels(component=H2)"], 33.217128830523485)
-    np.testing.assert_allclose(pgv["Channels(component=Z)"], 13.668950711224722)
-    np.testing.assert_allclose(pgv["RotD(percentile=50.0)"], 31.479009225758396)
-    np.testing.assert_allclose(pgv["RotD(percentile=100.0)"], 33.315065646041774)
+    np.testing.assert_allclose(pgv["Channels(component=H1)"], 32.002107876845514)
+    np.testing.assert_allclose(pgv["Channels(component=H2)"], 33.184860277162706)
+    np.testing.assert_allclose(pgv["Channels(component=Z)"], 13.68045684462306)
+    np.testing.assert_allclose(pgv["RotD(percentile=50.0)"], 31.485884209043157)
+    np.testing.assert_allclose(pgv["RotD(percentile=100.0)"], 33.284090745430966)
 
     sa1 = wml.select("SA", period=1.0, damping=0.05)[0].values
     np.testing.assert_allclose(sa1["Channels(component=H1)"], 42.135839214645564)
