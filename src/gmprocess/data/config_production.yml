@@ -586,9 +586,9 @@ integration:
     # Assumption for the first value returned in the resulting trace.
     initial: 0.0
     # Remove the mean of the data prior to integration.
-    demean: True
+    demean: False
     # Taper the data prior to integration.
-    taper: True
+    taper: False
     taper_width: 0.05
     taper_type: hann
     taper_side: both

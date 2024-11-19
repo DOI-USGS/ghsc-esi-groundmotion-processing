@@ -26,6 +26,6 @@ def test_adjust_highpass_corner(load_data_us1000778i):
         for tr in tmp_st:
             initial_corners = tr.get_parameter("corner_frequencies")
             output_fchp.append(initial_corners["highpass"])
-    target_fchp = np.array([0.25628906250000005, 0.0759375, 0.050625])
+    target_fchp = np.array([0.3844335937500001, 0.3844335937500001, 0.3844335937500001])
 
     np.testing.assert_allclose(output_fchp, target_fchp, atol=1e-7)
