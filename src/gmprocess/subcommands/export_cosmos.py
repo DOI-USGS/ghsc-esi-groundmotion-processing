@@ -18,6 +18,7 @@ VOLUMES = {
     "RAW": Volume.RAW,
     "CONVERTED": Volume.CONVERTED,
     "PROCESSED": Volume.PROCESSED,
+    "SPECTRA": Volume.SPECTRA,
 }
 
 
@@ -53,7 +54,7 @@ class ExportCosmosModule(base.SubcommandModule):
             "long_flag": "--process-level",
             "help": (
                 "Select the volume or processing level to output. "
-                "OPTIONS are [RAW,CONVERTED,PROCESSED] (V0,V1,V2 in Cosmos parlance)."
+                "OPTIONS are [RAW,CONVERTED,PROCESSED, SPECTRA] (V0,V1,V2,V3 in Cosmos parlance)."
             ),
             "default": "RAW",
         },
