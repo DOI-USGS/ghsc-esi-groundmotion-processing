@@ -18,10 +18,10 @@ from gmprocess.waveform_processing.integrate import get_disp, get_vel
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.io.cosmos.core import BUILDING_TYPES, MICRO_TO_VOLT, SENSOR_TYPES
 from gmprocess.utils.config import get_config
-from gmprocess.utils.constants import UNIT_TYPES
+from gmprocess.utils.constants import UNIT_TYPES, M_TO_CM
 from obspy.core.utcdatetime import UTCDateTime
 from obspy.geodetics.base import gps2dist_azimuth
-from gmprocess.metrics.utils import component_to_channel, constants
+from gmprocess.metrics.utils import component_to_channel
 
 COSMOS_FORMAT = 1.2
 UTC_TIME_FMT = "%m/%d/%Y, %H:%M:%S.%f"
@@ -760,7 +760,7 @@ class DataBlock(object):
                 self.trace.stats.standard.instrument_sensitivity
             )  # counts/m/s^2
             data /= instrument_sensitivity
-            data *= constants.M_TO_CM  # Convert from m to cm
+            data *= M_TO_CM  # Convert from m to cm
             data -= data.mean()
             # split_prov = self.trace.get_parameter("signal_split")
             # split_time = split_prov["split_time"]
