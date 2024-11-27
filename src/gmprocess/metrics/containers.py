@@ -89,7 +89,9 @@ class Oscillator:
 
     period: float
     damping: float
-    oscillators: list[np.ndarray]
+    acceleration: list[np.ndarray]
+    velocity: list[np.ndarray]
+    displacement: list[np.ndarray]
     oscillator_dt: float
     stats_list: list[dict]
 
@@ -98,7 +100,9 @@ class Oscillator:
             "containers.Oscillator(\n"
             f"  period={self.period},\n"
             f"  damping={self.damping},\n"
-            f"  oscillators=[nd.array, n={len(self.oscillators)}],\n"
+            f"  acceleration=[nd.array, n={len(self.acceleration)}],\n"
+            f"  velocity=[nd.array, n={len(self.velocity)}],\n"
+            f"  displacement=[nd.array, n={len(self.displacement)}],\n"
             f"  stats_list=[dict, n={len(self.stats_list)}],\n"
             ")"
         )
@@ -145,7 +149,9 @@ class RotDOscillator:
 
     period: float
     damping: float
-    matrix: np.ndarray
+    acceleration_matrix: np.ndarray
+    velocity_matrix: np.ndarray
+    displacement_matrix: np.ndarray
     oscillator_dt: float
     stats: dict
 
@@ -154,7 +160,9 @@ class RotDOscillator:
             "containers.RotDOscillator(\n"
             f"  period={self.period},\n"
             f"  damping={self.damping},\n"
-            f"  matrix=ndarray {self.matrix.shape}],\n"
+            f"  acceleration_matrix=ndarray {self.acceleration_matrix.shape}],\n"
+            f"  velocity_matrix=ndarray {self.velocity_matrix.shape}],\n"
+            f"  displacement_matrix=ndarray {self.displacement_matrix.shape}],\n"
             f"  oscillator_dt={self.oscillator_dt},\n"
             "  stats=dict,\n"
             ")"
@@ -169,6 +177,7 @@ class RotDMax:
     damping: float
     oscillator_maxes: np.ndarray
     stats: dict
+    type: str
 
     def __repr__(self):
         return (
@@ -177,6 +186,7 @@ class RotDMax:
             f"  damping={self.damping},\n"
             f"  oscillator_maxes=ndarray {self.oscillator_maxes.shape},\n"
             "  stats=dict,\n"
+            f"  type={self.type}\n"
             ")"
         )
 

@@ -41,6 +41,8 @@ class BaseComponent(ABC):
             # Note that self.output is a list of Component objects.
             # pylint:disable-next=no-member
             self.output = copy.copy(self.outputs[output_key])
+            # self.calculate()
+            # self.outputs[output_key] = self.output
         else:
             self.calculate()
             self.outputs[output_key] = self.output  # pylint:disable=no-member
