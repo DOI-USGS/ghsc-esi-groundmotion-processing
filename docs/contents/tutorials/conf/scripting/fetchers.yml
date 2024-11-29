@@ -1,4 +1,6 @@
 fetchers:
+    search_parameters:
+        enabled: False
     FDSNFetcher:
         domain:
             circular:

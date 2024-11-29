@@ -15,13 +15,13 @@ This is a base class for methods like transforms, reductions, rotations, combina
   dataclass in the "output" attribute.
 
 # InputDataComponent
-This is a special child of Component for holding the input data. It's "prior_step"
+This is a special child of Component for holding the input data. Its "prior_step"
 attribute is None.
 
 # WaveformMetricCalculator Details
 - Initially, "result" holds the InputDataComponent, which is handed off as output
   for the next processing step.
-- "metric_dicts" is a list of dictionaries that holds results for all completed steps.
+- "metric_dicts" is a dictionary that holds results for all completed steps, in which keys are unique hashes.
 - "metric_dicts" can be inspected by loooking at the prior_step/output attributes, e.g.
 
     metric_dicts["test1"]
@@ -50,6 +50,9 @@ attribute is None.
 import json
 import itertools
 
+
+from gmprocess.metrics.reduce import RotDPercentile
+
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 from gmprocess.metrics.waveform_metric_type import WaveformMetricType
 from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
@@ -68,9 +71,9 @@ class WaveformMetricCalculator:
     all_steps = {
         "channels-pga": [reduce.TraceMax],
         "channels-pgv": [transform.Integrate, reduce.TraceMax],
-        "channels-sa": [transform.TraceOscillatorSA, reduce.OscillatorMaxSA],
-        "channels-sv": [transform.TraceOscillatorSV, reduce.OscillatorMaxSV],
-        "channels-sd": [transform.TraceOscillatorSD, reduce.OscillatorMaxSD],
+        "channels-sa": [transform.TraceOscillator, reduce.OscillatorMaxAcceleration],
+        "channels-sv": [transform.TraceOscillator, reduce.OscillatorMaxVelocity],
+        "channels-sd": [transform.TraceOscillator, reduce.OscillatorMaxDisplacement],
         "channels-arias": [transform.Arias, reduce.TraceMax],
         "channels-duration": [transform.Arias, reduce.Duration],
         "channels-cav": [reduce.CAV],
@@ -81,8 +84,8 @@ class WaveformMetricCalculator:
             combine.ArithmeticMean,
         ],
         "arithmetic_mean-sa": [
-            transform.TraceOscillatorSA,
-            reduce.OscillatorMaxSA,
+            transform.TraceOscillator,
+            reduce.OscillatorMaxAcceleration,
             combine.ArithmeticMean,
         ],
         "arithmetic_mean-arias": [
@@ -106,8 +109,8 @@ class WaveformMetricCalculator:
             combine.GeometricMean,
         ],
         "geometric_mean-sa": [
-            transform.TraceOscillatorSA,
-            reduce.OscillatorMaxSA,
+            transform.TraceOscillator,
+            reduce.OscillatorMaxAcceleration,
             combine.GeometricMean,
         ],
         "geometric_mean-arias": [
@@ -142,21 +145,21 @@ class WaveformMetricCalculator:
         ],
         "rotd-sa": [
             rotate.RotD,
-            transform.RotDOscillatorSA,
-            reduce.RotDOscMaxSA,
-            reduce.RotDPercentile,
+            transform.RotDOscillator,
+            reduce.RotDOscMaxAcceleration,
+            reduce.RotDPercentileAcceleration,
         ],
         "rotd-sv": [
             rotate.RotD,
-            transform.RotDOscillatorSV,
-            reduce.RotDOscMaxSV,
-            reduce.RotDPercentile,
+            transform.RotDOscillator,
+            reduce.RotDOscMaxVelocity,
+            reduce.RotDPercentileVelocity,
         ],
         "rotd-sd": [
             rotate.RotD,
-            transform.RotDOscillatorSD,
-            reduce.RotDOscMaxSD,
-            reduce.RotDPercentile,
+            transform.RotDOscillator,
+            reduce.RotDOscMaxDisplacement,
+            reduce.RotDPercentileDisplacement,
         ],
     }
 
@@ -194,7 +197,6 @@ class WaveformMetricCalculator:
         # we never think we're going to use it
         # self.metric_dicts = {}
         metric_dict = {}
-
         # metric is something like "channels-pga", i.e., an imc-imt
         # metric_steps is the list of operations that will produce the
         #   metric, such as "reduce.TraceMax"
@@ -212,6 +214,7 @@ class WaveformMetricCalculator:
                 for prior_step in metric_results:
                     for comp_params in comp_parameter_list:
                         for params in parameter_list:
+                            # this is where the metric_step calculation is done (if needed)
                             next_step.append(
                                 metric_step(prior_step, params, comp_params)
                             )

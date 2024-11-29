@@ -14,11 +14,14 @@ import scipy.constants as sp
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
+from gmprocess.waveform_processing.integrate import get_disp, get_vel
+from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.io.cosmos.core import BUILDING_TYPES, MICRO_TO_VOLT, SENSOR_TYPES
 from gmprocess.utils.config import get_config
-from gmprocess.utils.constants import UNIT_TYPES
+from gmprocess.utils.constants import UNIT_TYPES, M_TO_CM
 from obspy.core.utcdatetime import UTCDateTime
 from obspy.geodetics.base import gps2dist_azimuth
+from gmprocess.metrics.utils import component_to_channel
 
 COSMOS_FORMAT = 1.2
 UTC_TIME_FMT = "%m/%d/%Y, %H:%M:%S.%f"
@@ -31,6 +34,7 @@ class Volume(Enum):
     RAW = 0
     CONVERTED = 1
     PROCESSED = 2
+    SPECTRA = 3
 
 
 HEADER_LINES = 13
@@ -46,10 +50,11 @@ NUM_FLOAT_COLS = 5
 
 NUM_DATA_COLS = 8
 FLOAT_DATA_FMT = "%10.5f"
+SPECTRA_DATA_FMT = "%15.6E"
 INT_DATA_FMT = "%10d"
 
-TABLE1 = {"acc": 1, "vel": 2}
-TABLE2 = {"acc": 4, "vel": 5, "counts": 50}
+TABLE1 = {"acc": 1, "vel": 2, "disp": 3}
+TABLE2 = {"acc": 4, "vel": 5, "disp": 6, "counts": 50}
 TABLE7 = {
     "US": 2,
     "BK": 3,
@@ -268,20 +273,22 @@ class TextHeader(object):
         units = "counts"
         dmax = np.abs(trace.max())
         maxidx = np.where(np.abs(trace.data) == dmax)[0][0]
-
         if volume == Volume.CONVERTED:
-            level = "Corrected"
-            converted = trace.remove_response()
-            dmax = converted.max()  # max of absolute value
-            maxidx = np.where(converted.data == dmax)[0][0]
+            level = "Uncorrected"
             units = UNIT_TYPES[trace.stats.standard.units_type]
         elif volume == Volume.PROCESSED:
             level = "Corrected"
             units = UNIT_TYPES[trace.stats.standard.units_type]
+        elif volume == Volume.SPECTRA:
+            level = ""
+            quantity = "Response spectra"
         maxtime = trace.stats.delta * maxidx  # seconds since rec start
 
         # line 1
-        self.set_header_value("param_type", f"{level} {quantity}")
+        if volume == volume.RAW:
+            self.set_header_value("param_type", f"{level} {quantity} {units}")
+        else:
+            self.set_header_value("param_type", f"{level} {quantity}")
         self.set_header_value("cosmos_format", COSMOS_FORMAT)
         self.set_header_value("number_lines", HEADER_LINES)
         self.set_header_value("agency_reserved", AGENCY_RESERVED)
@@ -694,8 +701,12 @@ class DataBlock(object):
         tnow_str = datetime.utcnow().strftime("%Y/%m/%d %H:%M:%S.%f")
         scnl_str = f"{scnl} <AUTH> {tnow_str}"
         self.write_comment("SCNL", scnl_str, "non-standard")
-        pstr = f"Automatically processed using gmprocess version {gmprocess_version}"
-        self.write_comment("PROCESS", pstr, "non-standard")
+        if self.volume != Volume.RAW:
+            pstr = f"Automatically processed using gmprocess version {gmprocess_version}"
+            self.write_comment("PROCESS", pstr, "non-standard")
+        elif self.volume == Volume.RAW:
+            pstr = f"Created using gmprocess version {gmprocess_version}"
+            self.write_comment("PROCESS", pstr, "non-standard")
         self.write_comment(
             "eventURL",
             "For updated information about the earthquake visit the URL below:",
@@ -713,9 +724,14 @@ class DataBlock(object):
         self.header_line1 = (
             f'{ncomments:4d} Comment line(s) follow, each starting with a "|":'
         )
-        int_units = TABLE2[trace.stats.standard.units_type]
+        if volume == Volume.RAW or volume == Volume.CONVERTED:
+            int_units = TABLE2["counts"]
+        elif volume == Volume.PROCESSED:
+            int_units = TABLE2[trace.stats.standard.units_type]
+        elif volume == Volume.SPECTRA:
+            int_units = TABLE2["acc"] # Verify this makes sense
         self.header_line2 = (
-            f"{npts:8d} {quantity} pts, approx {itime} secs, "
+            f"{npts:8d} {quantity} pts, approx  {itime} secs, "
             f"units={units} ({int_units}),Format=({ffmt})"
         )
 
@@ -740,15 +756,26 @@ class DataBlock(object):
             fmt = [INT_DATA_FMT] * NUM_DATA_COLS
         data = self.trace.data
         if self.volume == Volume.CONVERTED:
-            data = self.trace.remove_response()
-        data, remainder = split_data(data, NUM_DATA_COLS)
-        np.savetxt(cosmos_file, data, fmt=fmt, delimiter="")
-        if self.volume != Volume.RAW:
-            fmt = [FLOAT_DATA_FMT] * len(remainder.T)
-        else:
-            fmt = [INT_DATA_FMT] * len(remainder.T)
-        if len(remainder[0]):
-            np.savetxt(cosmos_file, remainder, fmt=fmt, delimiter="")
+            instrument_sensitivity = (
+                self.trace.stats.standard.instrument_sensitivity
+            )  # counts/m/s^2
+            data /= instrument_sensitivity
+            data *= M_TO_CM  # Convert from m to cm
+            data -= data.mean()
+            # split_prov = self.trace.get_parameter("signal_split")
+            # split_time = split_prov["split_time"]
+            # noise = self.trace.copy().trim(endtime=split_time)
+            # noise_mean = np.mean(noise.data)
+
+        if self.volume != Volume.SPECTRA:
+            data, remainder = split_data(data, NUM_DATA_COLS)
+            np.savetxt(cosmos_file, data, fmt=fmt, delimiter="")
+            if self.volume != Volume.RAW:
+                fmt = [FLOAT_DATA_FMT] * len(remainder.T)
+            else:
+                fmt = [INT_DATA_FMT] * len(remainder.T)
+            if len(remainder[0]):
+                np.savetxt(cosmos_file, remainder, fmt=fmt, delimiter="")
 
 
 def split_data(data, ncols):
@@ -780,7 +807,6 @@ class CosmosWriter(object):
                     msg = f"'unprocessed' label not found in workspace {h5_filename}."
                     raise KeyError(msg)
                 label = "unprocessed"
-
             else:
                 labels.remove("unprocessed")
                 if len(labels) > 1:
@@ -816,6 +842,11 @@ class CosmosWriter(object):
                 extension = "V1"
             elif self._volume == Volume.PROCESSED:
                 extension = "V2"
+            elif self._volume == Volume.SPECTRA:
+                extension = "V3"
+                wmc = WaveformMetricCollection.from_workspace(
+                    self._workspace, "default"
+                )
             for station_id in station_list:
                 streams = self._workspace.get_streams(
                     eventid, stations=[station_id], labels=[self._label]
@@ -827,6 +858,7 @@ class CosmosWriter(object):
                     logging.info(f"Writing stream {stream.id}...")
                     nstreams += 1
                     cosmos_file = None
+
                     if self._concatenate_channels:
                         cosmos_file = io.StringIO()
                         net = stream[0].stats.network
@@ -839,12 +871,15 @@ class CosmosWriter(object):
                         cosmos_filename = self._cosmos_directory / fname
                         files.append(cosmos_filename)
                     ichannel = 1
-                    for trace in stream:
+                    if self._volume == Volume.SPECTRA:
+                        channels = [tr.stats.channel for tr in stream]
+                        _, reverse_dict = component_to_channel(channels)
+                    for trace_idx, trace in enumerate(stream):
                         net = trace.stats.network
                         sta = trace.stats.station
                         cha = trace.stats.channel
                         loc = trace.stats.location
-                        if trace.stats.standard.units_type != "acc":
+                        if trace.stats.standard.units_type != "acc": # not in ["acc", "vel"]:
                             msg = (
                                 "Only supporting acceleration data at this "
                                 f"time. Skipping channel {cha}."
@@ -854,32 +889,136 @@ class CosmosWriter(object):
                         has_data = True
                         ntraces += 1
                         stime = trace.stats.starttime.strftime("%Y%m%d%H%M%S")
-
                         if cosmos_file is None:
                             fname = (
                                 f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
                             )
+                            if self._volume == Volume.PROCESSED:
+                                fname += ".acc"
                             cosmos_filename = self._cosmos_directory / fname
                             files.append(cosmos_filename)
                             cosmos_file = open(cosmos_filename, "wt")
-                        self._write_data(
-                            cosmos_file,
-                            eventid,
-                            trace,
-                            scalar_event,
-                            stream,
-                            gmprocess_version,
-                        )
+                        if self._volume != Volume.SPECTRA:
+                            self._write_data(
+                                cosmos_file,
+                                eventid,
+                                trace,
+                                scalar_event,
+                                stream,
+                                gmprocess_version,
+                            )
+                        if self._volume == Volume.PROCESSED:
+                            config = get_config()
+                            vel = get_vel(trace.copy(), config=config)
+                            disp = get_disp(trace.copy(), config=config)
+                            if self._concatenate_channels:
+                                self._write_data(
+                                    cosmos_file,
+                                    eventid,
+                                    vel,
+                                    scalar_event,
+                                    stream,
+                                    gmprocess_version,
+                                )
+                                self._write_data(
+                                    cosmos_file,
+                                    eventid,
+                                    disp,
+                                    scalar_event,
+                                    stream,
+                                    gmprocess_version,
+                                )
+                            else:
+                                fname_vel = (
+                                    f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.vel"
+                                )
+                                fname_disp = (
+                                    f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.disp"
+                                )
+                                cosmos_file_vel = self._cosmos_directory / fname_vel
+                                cosmos_file_disp = self._cosmos_directory / fname_disp
+                                files.append(cosmos_file_vel)
+                                files.append(cosmos_file_disp)
+                                with (
+                                    open(cosmos_file_vel, "wt") as f_vel,
+                                    open(cosmos_file_disp, "wt") as f_disp,
+                                ):
+                                    self._write_data(
+                                        f_vel,
+                                        eventid,
+                                        vel,
+                                        scalar_event,
+                                        stream,
+                                        gmprocess_version,
+                                    )
+                                    self._write_data(
+                                        f_disp,
+                                        eventid,
+                                        disp,
+                                        scalar_event,
+                                        stream,
+                                        gmprocess_version,
+                                    )
+                                    end_record = f"End-of-data for Chan{cha}\n"
+                                    f_vel.write(end_record)
+                                    f_disp.write(end_record)
+
+                        elif self._volume == Volume.SPECTRA:
+
+                            # Sould we write out FAS? (regular array, so periods will not match)
+                            if trace_idx == 0:
+                                self._write_data(
+                                    cosmos_file,
+                                    eventid,
+                                    trace,
+                                    scalar_event,
+                                    stream,
+                                    gmprocess_version,
+                                )
+                                dv = self._workspace.config['metrics']['type_parameters']['sa']['damping']
+                                periods = self._workspace.config['metrics']['type_parameters']['sa']['periods']
+                                cosmos_file.write(
+                                    f"{len(dv)} damping values for which spectra are computed:{dv}\n"
+                                    f"{len(periods)} periods at which spectra computed, units= sec(01), Format=({FLOAT_DATA_FMT})\n"
+                                    "",
+                                )
+                                np.savetxt(
+                                    cosmos_file,
+                                    periods,
+                                    fmt=FLOAT_DATA_FMT,
+                                )
+                            channel = reverse_dict[cha].lower()
+                            for metric in ["SD", "SV", "SA"]:
+                                for damping in dv:
+                                    if metric == "SD":
+                                        units = "cm"
+                                    elif metric == "SV":
+                                        units = "cm/s"
+                                    elif metric == "SA":
+                                        units = "cm/s^2"
+                                    cosmos_file.write(
+                                        f"{len(periods)} values of {metric} for Damping={damping}, units={units},Format={FLOAT_DATA_FMT}\n"
+                                    )
+                                    tmp_df = (
+                                        wmc.waveform_metrics[0].select(f"{metric}").to_df()
+                                    )
+                                    tmp_df = tmp_df.loc[
+                                        tmp_df["IMC"] == f"Channels(component={channel})"
+                                    ]
+                                    np.savetxt(
+                                        cosmos_file,
+                                        tmp_df["Result"].to_numpy(),
+                                        fmt=SPECTRA_DATA_FMT,
+                                    )
+
                         end_record = f"End-of-data for Chan{cha}\n"
-                        # end_record = (
-                        #     "/&  ----------  End of data for channel  "
-                        #     f"{ichannel}  ----------\n"
-                        # )
                         cosmos_file.write(end_record)
+
                         ichannel += 1
                         if not self._concatenate_channels:
                             cosmos_file.close()
                             cosmos_file = None
+
                     if self._concatenate_channels:
                         if not has_data:
                             logging.info(

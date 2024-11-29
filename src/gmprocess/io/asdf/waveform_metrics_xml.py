@@ -160,6 +160,10 @@ def etag2type(etag):
     etag = etag.lower()
     if etag.startswith("sa"):
         etag_type = "sa"
+    elif etag.startswith("sv"):
+        etag_type = "sv"
+    elif etag.startswith("sd"):
+        etag_type = "sd"
     elif etag.startswith("fas"):
         etag_type = "fas"
     elif etag.startswith("duration"):

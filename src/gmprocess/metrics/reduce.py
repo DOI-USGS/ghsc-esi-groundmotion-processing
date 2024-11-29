@@ -94,68 +94,63 @@ class CAV(BaseComponent):
         return get_channel_outputs(self)
 
 
-def calculate_max_osc(osc_type, prior_step):
-    """_summary_
+class OscillatorMaxAcceleration(BaseComponent):
+    """Return the maximum absolute value for each oscillator."""
 
-    Args:
-        prior_step (_type_): _description_
-    """
+    outputs = {}
+    INPUT_CLASS = [containers.Oscillator]
 
-    # Loop over each record
-    max_list = []
-    for osc, stats in zip(prior_step.output.oscillators, prior_step.output.stats_list):
-        if osc_type == "SA":
+    def calculate(self):
+        max_list = []
+        for osc, stats in zip(
+            self.prior_step.output.acceleration, self.prior_step.output.stats_list
+        ):
             max_list.append(
                 containers.ReferenceValue(
                     value=GAL_TO_PCTG * np.max(np.abs(osc)), stats=stats
                 )
             )
-        elif osc_type == "SV":
-            max_list.append(
-                containers.ReferenceValue(value=np.max(np.abs(osc)), stats=stats)
-            )
-        elif osc_type == "SD":
-            max_list.append(
-                containers.ReferenceValue(value=np.max(np.abs(osc)), stats=stats)
-            )
-    output = containers.Scalar(max_list)
-    return output
-
-
-class OscillatorMaxSA(BaseComponent):
-    """Return the maximum absolute value for each oscillator."""
-
-    outputs = {}
-    INPUT_CLASS = [containers.Oscillator]
-
-    def calculate(self):
-        self.output = calculate_max_osc(osc_type="SA", prior_step=self.prior_step)
+        self.output = containers.Scalar(max_list)
 
     def get_component_results(self):
         return get_channel_outputs(self)
 
 
-class OscillatorMaxSV(BaseComponent):
+class OscillatorMaxVelocity(BaseComponent):
     """Return the maximum absolute value for each oscillator."""
 
     outputs = {}
     INPUT_CLASS = [containers.Oscillator]
 
     def calculate(self):
-        self.output = calculate_max_osc(osc_type="SV", prior_step=self.prior_step)
+        max_list = []
+        for osc, stats in zip(
+            self.prior_step.output.velocity, self.prior_step.output.stats_list
+        ):
+            max_list.append(
+                containers.ReferenceValue(value=np.max(np.abs(osc)), stats=stats)
+            )
+        self.output = containers.Scalar(max_list)
 
     def get_component_results(self):
         return get_channel_outputs(self)
 
 
-class OscillatorMaxSD(BaseComponent):
+class OscillatorMaxDisplacement(BaseComponent):
     """Return the maximum absolute value for each oscillator."""
 
     outputs = {}
     INPUT_CLASS = [containers.Oscillator]
 
     def calculate(self):
-        self.output = calculate_max_osc(osc_type="SD", prior_step=self.prior_step)
+        max_list = []
+        for osc, stats in zip(
+            self.prior_step.output.displacement, self.prior_step.output.stats_list
+        ):
+            max_list.append(
+                containers.ReferenceValue(value=np.max(np.abs(osc)), stats=stats)
+            )
+        self.output = containers.Scalar(max_list)
 
     def get_component_results(self):
         return get_channel_outputs(self)
@@ -178,62 +173,165 @@ class RotDTraceMax(BaseComponent):
             damping=None,
             oscillator_maxes=unit_factor * max_array,
             stats=self.prior_step.output.stats,
+            type=self.prior_step.output.stats["standard"]["units_type"],
         )
 
 
-def calculate_rotd_max_osc(osc_type, prior_step):
-    """Return the maximum absolute value of the traces."""
+class RotDOscMaxAcceleration(BaseComponent):
+    """Return the maximum absolute value of the oscillators."""
 
-    abs_matrix = np.abs(prior_step.output.matrix)
-    max_array = np.max(abs_matrix, axis=1)
-    unit_factor = 1.0
-    if osc_type == "SA":
-        prior_step.output.stats["standard"]["units_type"] == "acc"
+    outputs = {}
+    INPUT_CLASS = [containers.RotDOscillator]
+
+    def calculate(self):
+        abs_matrix = np.abs(self.prior_step.output.acceleration_matrix)
+        max_array = np.max(abs_matrix, axis=1)
+        self.prior_step.output.stats["standard"]["units_type"] == "acc"
         unit_factor = GAL_TO_PCTG
-    elif osc_type == "SV":
-        prior_step.output.stats["standard"]["units_type"] == "vel"
-    elif osc_type == "SD":
-        prior_step.output.stats["standard"]["units_type"] == "disp"
-    output = containers.RotDMax(
-        period=None,
-        damping=None,
-        oscillator_maxes=unit_factor * max_array,
-        stats=prior_step.output.stats,
-    )
-    return output
+        self.output = containers.RotDMax(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            oscillator_maxes=unit_factor * max_array,
+            stats=self.prior_step.output.stats,
+            type="oscillator acceleration",
+        )
 
 
-class RotDOscMaxSA(BaseComponent):
+class RotDOscMaxVelocity(BaseComponent):
     """Return the maximum absolute value of the oscillators."""
 
     outputs = {}
     INPUT_CLASS = [containers.RotDOscillator]
 
     def calculate(self):
-        self.output = calculate_rotd_max_osc(osc_type="SA", prior_step=self.prior_step)
+        abs_matrix = np.abs(self.prior_step.output.velocity_matrix)
+        max_array = np.max(abs_matrix, axis=1)
+        self.prior_step.output.stats["standard"]["units_type"] == "vel"
+        self.output = containers.RotDMax(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            oscillator_maxes=max_array,
+            stats=self.prior_step.output.stats,
+            type="oscillator velocity",
+        )
 
 
-class RotDOscMaxSV(BaseComponent):
+class RotDOscMaxDisplacement(BaseComponent):
     """Return the maximum absolute value of the oscillators."""
 
     outputs = {}
     INPUT_CLASS = [containers.RotDOscillator]
 
     def calculate(self):
-        self.output = calculate_rotd_max_osc(osc_type="SV", prior_step=self.prior_step)
-
-
-class RotDOscMaxSD(BaseComponent):
-    """Return the maximum absolute value of the oscillators."""
-
-    outputs = {}
-    INPUT_CLASS = [containers.RotDOscillator]
-
-    def calculate(self):
-        self.output = calculate_rotd_max_osc(osc_type="SD", prior_step=self.prior_step)
+        abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
+        max_array = np.max(abs_matrix, axis=1)
+        self.prior_step.output.stats["standard"]["units_type"] == "disp"
+        self.output = containers.RotDMax(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            oscillator_maxes=max_array,
+            stats=self.prior_step.output.stats,
+            type="oscillator displacement",
+        )
 
 
 class RotDPercentile(BaseComponent):
+    """Return the percentile of the oscillator maxes."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.RotDMax]
+
+    def calculate(self):
+        percentile = self.imc_parameters["percentiles"]
+        result = np.percentile(self.prior_step.output.oscillator_maxes, percentile)
+        self.output = containers.RotD(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            percentile=percentile,
+            value=containers.ReferenceValue(result, stats=self.prior_step.output.stats),
+            # value=result,
+            # stats=self.prior_step.output.stats,
+            # type=self.prior_step.output.type,
+        )
+
+    def get_component_results(self):
+        return (
+            [self.output.value.value],
+            [str(wm_comp.RotD(self.imc_parameters["percentiles"]))],
+        )
+
+    @staticmethod
+    def get_component_parameters(config):
+        return {
+            "percentiles": config["metrics"]["component_parameters"]["rotd"][
+                "percentiles"
+            ],
+        }
+
+
+class RotDPercentileAcceleration(BaseComponent):
+    """Return the percentile of the oscillator maxes."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.RotDMax]
+
+    def calculate(self):
+        percentile = self.imc_parameters["percentiles"]
+        result = np.percentile(self.prior_step.output.oscillator_maxes, percentile)
+        self.output = containers.RotD(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            percentile=percentile,
+            value=containers.ReferenceValue(result, stats=self.prior_step.output.stats),
+        )
+
+    def get_component_results(self):
+        return (
+            [self.output.value.value],
+            [str(wm_comp.RotD(self.imc_parameters["percentiles"]))],
+        )
+
+    @staticmethod
+    def get_component_parameters(config):
+        return {
+            "percentiles": config["metrics"]["component_parameters"]["rotd"][
+                "percentiles"
+            ],
+        }
+
+
+class RotDPercentileVelocity(BaseComponent):
+    """Return the percentile of the oscillator maxes."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.RotDMax]
+
+    def calculate(self):
+        percentile = self.imc_parameters["percentiles"]
+        result = np.percentile(self.prior_step.output.oscillator_maxes, percentile)
+        self.output = containers.RotD(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            percentile=percentile,
+            value=containers.ReferenceValue(result, stats=self.prior_step.output.stats),
+        )
+
+    def get_component_results(self):
+        return (
+            [self.output.value.value],
+            [str(wm_comp.RotD(self.imc_parameters["percentiles"]))],
+        )
+
+    @staticmethod
+    def get_component_parameters(config):
+        return {
+            "percentiles": config["metrics"]["component_parameters"]["rotd"][
+                "percentiles"
+            ],
+        }
+
+
+class RotDPercentileDisplacement(BaseComponent):
     """Return the percentile of the oscillator maxes."""
 
     outputs = {}

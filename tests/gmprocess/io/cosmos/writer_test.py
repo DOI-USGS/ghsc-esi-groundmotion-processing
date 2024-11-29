@@ -58,7 +58,7 @@ SAMPLE_FLOAT_HDR = """
 """
 
 SAMPLE_RAW_TEXT_HEADER = """
-Raw acceleration          (Format v01.20 with 13 text lines) ASDF Converted
+Raw acceleration counts   (Format v01.20 with 13 text lines) ASDF Converted
 Record of nc71126864      Earthquake of Mon Dec 20, 2021 20:13 UTC
 Hypocenter: 40.350   -124.899   H= 20km(NCSN) M=4.8
 Origin: 12/20/2021, 20:13:40.7 UTC (NCSN)
@@ -97,7 +97,7 @@ SAMPLE_DATA_BLOCK = """
 |<PROCESS>Automatically processed using gmprocess version 1.1.11
 |<eventURL>For updated information about the earthquake visit the URL below:
 |<eventURL>https://earthquake.usgs.gov/earthquakes/eventpage/nc71126864
-   12091 acceleration pts, approx 120 secs, units=cm/s^2 (4),Format=(8F10.5)
+   12091 acceleration pts, approx  120 secs, units=cm/s^2 (4),Format=(8F10.5)
   -0.00003  -0.00004  -0.00004  -0.00004  -0.00004  -0.00004  -0.00004  -0.00004
   -0.00004  -0.00004  -0.00003  -0.00003  -0.00003  -0.00003  -0.00003  -0.00003
   -0.00002  -0.00002  -0.00002  -0.00002  -0.00003  -0.00003  -0.00002  -0.00002
@@ -117,10 +117,10 @@ INT_SAMPLE_DATA_BLOCK = """
 | Sensor: Kinemetrics_Episensor
 | RcrdId: NC.71126864.CE.79435.HNE.10
 |<SCNL>79435.HNE.CE.10 <AUTH> 2024/06/03 20:07:55.027759
-|<PROCESS>Automatically processed using gmprocess version 1.1.11
+|<PROCESS>Created using gmprocess version 1.1.11
 |<eventURL>For updated information about the earthquake visit the URL below:
 |<eventURL>https://earthquake.usgs.gov/earthquakes/eventpage/nc71126864
-   45000 acceleration pts, approx 449 secs, units=counts (4),Format=(8I10)
+   45000 acceleration pts, approx  449 secs, units=counts (50),Format=(8I10)
     -11547    -11307    -11515    -11419    -11404    -11576    -11343    -11397
     -11540    -11411    -11405    -11408    -11462    -11476    -11376    -11507
     -11479    -11403    -11414    -11405    -11531    -11386    -11422    -11531
@@ -156,9 +156,7 @@ def get_sample_data(volume):
     else:
         labels.remove("unprocessed")
     plabel = labels[0]
-    streams = workspace.get_streams(
-        eventid, stations=[station], labels=[plabel]
-    )
+    streams = workspace.get_streams(eventid, stations=[station], labels=[plabel])
     gmprocess_version = workspace.get_gmprocess_version()
     idx = gmprocess_version.find(".dev")
     gmprocess_version = gmprocess_version[0:idx]
@@ -172,9 +170,7 @@ def test_text_header():
     # get some data
     volume = Volume.PROCESSED
     trace, _, scalar_event, stream, gmprocess_version = get_sample_data(volume)
-    text_header = TextHeader(
-        trace, scalar_event, stream, volume, gmprocess_version
-    )
+    text_header = TextHeader(trace, scalar_event, stream, volume, gmprocess_version)
     cosmos_file = StringIO()
     text_header.write(cosmos_file)
     output = cosmos_file.getvalue()
@@ -186,9 +182,7 @@ def test_text_header():
     # get some data
     volume = Volume.RAW
     trace, _, scalar_event, stream, gmprocess_version = get_sample_data(volume)
-    text_header = TextHeader(
-        trace, scalar_event, stream, volume, gmprocess_version
-    )
+    text_header = TextHeader(trace, scalar_event, stream, volume, gmprocess_version)
     cosmos_file = StringIO()
     text_header.write(cosmos_file)
     output = cosmos_file.getvalue()
@@ -201,9 +195,7 @@ def test_text_header():
 def test_int_header():
     volume = Volume.PROCESSED
     trace, _, scalar_event, stream, gmprocess_version = get_sample_data(volume)
-    int_header = IntHeader(
-        trace, scalar_event, stream, volume, gmprocess_version
-    )
+    int_header = IntHeader(trace, scalar_event, stream, volume, gmprocess_version)
     cosmos_file = StringIO()
     int_header.write(cosmos_file)
     output = cosmos_file.getvalue()
@@ -266,15 +258,13 @@ def test_data_block():
 def test_cosmos_writer(datafile=None):
     if datafile is None:
         # datafile = TEST_DATA_DIR / "asdf" / "nc71126864" / "workspace.h5"
-        datafile = (
-            TEST_DATA_DIR / "data" / "asdf" / "nc71126864" / "workspace.h5"
-        )
+        datafile = TEST_DATA_DIR / "data" / "asdf" / "nc71126864" / "workspace.h5"
     tempdir = None
     with tempfile.TemporaryDirectory() as tempdir:
         cosmos_writer = CosmosWriter(
             tempdir,
             datafile,
-            volume=Volume.PROCESSED,
+            volume=Volume.CONVERTED,
             label="default",
             concatenate_channels=True,
         )

@@ -1,5 +1,5 @@
 default:
-  image: code.usgs.gov:5001/devops/images/usgs/python:$PYVER
+  image: code.usgs.gov:5001/devops/images/usgs/python:3.12-build
   tags:
     - build
 #    - shakecast-dev
@@ -53,7 +53,7 @@ run tests and coverage:
     - pytest -x --cov=src/gmprocess/ --cov-report xml:coverage.xml --cov-report term --junitxml junit.xml
     - coverage xml
   stage: test
-  parallel: !reference [.parallel,parallel]
+#  parallel: !reference [.parallel,parallel]
 
 
 run upload pypi:

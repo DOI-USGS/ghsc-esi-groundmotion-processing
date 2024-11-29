@@ -56,7 +56,7 @@ class Arias(BaseComponent):
         self.output = containers.Trace(new_traces)
 
 
-def calculate_trace_oscillator(osc_type, parameters, prior_step):
+def calculate_trace_oscillator(parameters, prior_step):
     """_summary_
 
     Args:
@@ -64,32 +64,30 @@ def calculate_trace_oscillator(osc_type, parameters, prior_step):
     """
     per = parameters["periods"]
     damp = parameters["damping"]
-    oscillator_list = []
+    acceleration_list = []
+    velocity_list = []
+    displacement_list = []
     stats_list = []
     for trace in prior_step.output.traces:
-        sa_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
-        if osc_type == "SA":
-            osc = sa_results[0]
-        elif osc_type == "SV":
-            osc = sa_results[1]
-        elif osc_type == "SD":
-            osc = sa_results[2]
-        else:
-            raise ValueError(f"Unsupported value of osc_type: {osc_type}")
-        oscillator_list.append(osc)
+        osc_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
+        acceleration_list.append(osc_results[0])
+        velocity_list.append(osc_results[1])
+        displacement_list.append(osc_results[2])
         stats_list.append(dict(trace.stats))
 
     output = containers.Oscillator(
         period=per,
         damping=damp,
-        oscillator_dt=sa_results[4],
-        oscillators=oscillator_list,
+        oscillator_dt=osc_results[0][4],
+        acceleration=acceleration_list,
+        velocity=velocity_list,
+        displacement=displacement_list,
         stats_list=stats_list,
     )
     return output
 
 
-def calculate_rotd_oscillator(osc_type, parameters, prior_step):
+def calculate_rotd_oscillator(parameters, prior_step):
     """_summary_
 
     Args:
@@ -97,30 +95,29 @@ def calculate_rotd_oscillator(osc_type, parameters, prior_step):
     """
     per = parameters["periods"]
     damp = parameters["damping"]
-    oscillator_list = []
+    acceleration_list = []
+    velocity_list = []
+    displacement_list = []
     for trace_data in prior_step.output.matrix:
         temp_trace = Trace(trace_data, prior_step.output.stats)
-        sa_results = calculate_spectrals(temp_trace, period=per, damping=damp)
-        if osc_type == "SA":
-            osc = sa_results[0]
-        elif osc_type == "SV":
-            osc = sa_results[1]
-        elif osc_type == "SD":
-            osc = sa_results[2]
-        else:
-            raise ValueError(f"Unsupported value of osc_type: {osc_type}")
-        oscillator_list.append(osc)
+        osc_results = calculate_spectrals(temp_trace, period=per, damping=damp)
+        acceleration_list.append(osc_results[0])
+        velocity_list.append(osc_results[1])
+        displacement_list.append(osc_results[2])
+
     output = containers.RotDOscillator(
         period=per,
         damping=damp,
-        oscillator_dt=sa_results[4],
-        matrix=np.stack(oscillator_list),
+        oscillator_dt=osc_results[0][4],
+        acceleration_matrix=np.stack(acceleration_list),
+        velocity_matrix=np.stack(velocity_list),
+        displacement_matrix=np.stack(displacement_list),
         stats=prior_step.output.stats,
     )
     return output
 
 
-class TraceOscillatorSA(BaseComponent):
+class TraceOscillator(BaseComponent):
     """Return the oscillator response of the input traces.
 
     self.output: containers.Oscillator
@@ -131,7 +128,7 @@ class TraceOscillatorSA(BaseComponent):
 
     def calculate(self):
         self.output = calculate_trace_oscillator(
-            osc_type="SA", parameters=self.parameters, prior_step=self.prior_step
+            parameters=self.parameters, prior_step=self.prior_step
         )
 
     @staticmethod
@@ -142,51 +139,7 @@ class TraceOscillatorSA(BaseComponent):
         }
 
 
-class TraceOscillatorSV(BaseComponent):
-    """Return the oscillator response of the input traces.
-
-    self.output: containers.Oscillator
-    """
-
-    outputs = {}
-    INPUT_CLASS = [containers.Trace]
-
-    def calculate(self):
-        self.output = calculate_trace_oscillator(
-            osc_type="SV", parameters=self.parameters, prior_step=self.prior_step
-        )
-
-    @staticmethod
-    def get_type_parameters(config):
-        return {
-            "periods": config["metrics"]["type_parameters"]["sv"]["periods"],
-            "damping": config["metrics"]["type_parameters"]["sv"]["damping"],
-        }
-
-
-class TraceOscillatorSD(BaseComponent):
-    """Return the oscillator response of the input traces.
-
-    self.output: containers.Oscillator
-    """
-
-    outputs = {}
-    INPUT_CLASS = [containers.Trace]
-
-    def calculate(self):
-        self.output = calculate_trace_oscillator(
-            osc_type="SD", parameters=self.parameters, prior_step=self.prior_step
-        )
-
-    @staticmethod
-    def get_type_parameters(config):
-        return {
-            "periods": config["metrics"]["type_parameters"]["sd"]["periods"],
-            "damping": config["metrics"]["type_parameters"]["sd"]["damping"],
-        }
-
-
-class RotDOscillatorSA(BaseComponent):
+class RotDOscillator(BaseComponent):
     """Return the oscillator response of traces that have undergone a RotD rotation."""
 
     outputs = {}
@@ -194,7 +147,7 @@ class RotDOscillatorSA(BaseComponent):
 
     def calculate(self):
         self.output = calculate_rotd_oscillator(
-            osc_type="SA", parameters=self.parameters, prior_step=self.prior_step
+            parameters=self.parameters, prior_step=self.prior_step
         )
 
     @staticmethod
@@ -202,44 +155,6 @@ class RotDOscillatorSA(BaseComponent):
         return {
             "periods": config["metrics"]["type_parameters"]["sa"]["periods"],
             "damping": config["metrics"]["type_parameters"]["sa"]["damping"],
-        }
-
-
-class RotDOscillatorSV(BaseComponent):
-    """Return the oscillator response of traces that have undergone a RotD rotation."""
-
-    outputs = {}
-    INPUT_CLASS = [containers.RotDTrace]
-
-    def calculate(self):
-        self.output = calculate_rotd_oscillator(
-            osc_type="SV", parameters=self.parameters, prior_step=self.prior_step
-        )
-
-    @staticmethod
-    def get_type_parameters(config):
-        return {
-            "periods": config["metrics"]["type_parameters"]["sv"]["periods"],
-            "damping": config["metrics"]["type_parameters"]["sv"]["damping"],
-        }
-
-
-class RotDOscillatorSD(BaseComponent):
-    """Return the oscillator response of traces that have undergone a RotD rotation."""
-
-    outputs = {}
-    INPUT_CLASS = [containers.RotDTrace]
-
-    def calculate(self):
-        self.output = calculate_rotd_oscillator(
-            osc_type="SD", parameters=self.parameters, prior_step=self.prior_step
-        )
-
-    @staticmethod
-    def get_type_parameters(config):
-        return {
-            "periods": config["metrics"]["type_parameters"]["sd"]["periods"],
-            "damping": config["metrics"]["type_parameters"]["sd"]["damping"],
         }
 
 
