@@ -40,12 +40,12 @@ class BaseComponent(ABC):
         if output_key in self.outputs:  # pylint:disable=no-member
             # Note that self.output is a list of Component objects.
             # pylint:disable-next=no-member
-            self.output = copy.copy(self.outputs[output_key])
+            self.output = copy.copy(self.outputs[output_key].output)
             # self.calculate()
             # self.outputs[output_key] = self.output
         else:
             self.calculate()
-            self.outputs[output_key] = self.output  # pylint:disable=no-member
+            self.outputs[output_key] = self  # pylint:disable=no-member
 
     def _validate(self):
         if self.prior_step is not None:
