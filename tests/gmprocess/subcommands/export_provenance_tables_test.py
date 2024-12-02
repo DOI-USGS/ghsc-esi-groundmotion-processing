@@ -1,32 +1,47 @@
-import io
 import os
 import shutil
 
+import pandas as pd
+
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_export_provenance_tables(script_runner):
+def test_export_provenance_tables():
     try:
-        # Need to create profile first.
-        cdir = str(constants.CONFIG_PATH_TEST)
-        ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "exports")
+        cdir = constants.CONFIG_PATH_TEST
+        ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports"
 
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        ret = script_runner.run("gmrecords", "ptables")
-        assert ret.success
+        app = GMrecordsApp()
+        app.load_subcommands()
 
-        # Check that files were created
-        count = 0
-        pattern = "_provenance"
-        for root, _, files in os.walk(ddir):
-            for file in files:
-                if pattern in file:
-                    count += 1
-        assert count == 1
+        subcommand = "export_provenance_tables"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        pfile = ddir / "ci38457511" / "None_default_provenance.csv"
+        assert pfile.is_file()
+
+        ptable = pd.read_csv(pfile)
+        assert ptable.shape == (216, 4)
 
     except Exception as ex:
         raise ex

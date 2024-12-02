@@ -118,9 +118,6 @@ def test_metric_calculator(load_data_us1000778i, config):
 
     sa1 = wml.select("SA", period=1.0, damping=0.05)[0].values
 
-    # if sa1["RotD(percentile=50.0)"] < 42: # conditional breakpoint
-    #     breakpoint()
-
     np.testing.assert_allclose(sa1["Channels(component=H1)"], 42.135839)
     np.testing.assert_allclose(sa1["Channels(component=H2)"], 41.891393940234074)
     np.testing.assert_allclose(sa1["Channels(component=Z)"], 12.789046181803089)
@@ -129,9 +126,6 @@ def test_metric_calculator(load_data_us1000778i, config):
 
     sv1 = wml.select("SV", period=1.0, damping=0.05)[0].values
 
-    # if sv1["RotD(percentile=50.0)"] < 60: # conditional breakpoint
-    #     breakpoint()
-
     np.testing.assert_allclose(sv1["Channels(component=H1)"], 63.02799719)
     np.testing.assert_allclose(sv1["Channels(component=H2)"], 62.15551237)
     np.testing.assert_allclose(sv1["Channels(component=Z)"], 20.49380808)
@@ -139,9 +133,6 @@ def test_metric_calculator(load_data_us1000778i, config):
     np.testing.assert_allclose(sv1["RotD(percentile=100.0)"], 70.624906)
 
     sd1 = wml.select("SD", period=1.0, damping=0.05)[0].values
-
-    # if sd1["RotD(percentile=50.0)"] > 10.5: # conditional breakpoint
-    #     breakpoint()
 
     np.testing.assert_allclose(sd1["Channels(component=H1)"], 10.42514)
     np.testing.assert_allclose(sd1["Channels(component=H2)"], 10.35811174)

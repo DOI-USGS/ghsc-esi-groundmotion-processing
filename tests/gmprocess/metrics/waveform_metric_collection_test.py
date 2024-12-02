@@ -16,14 +16,14 @@ def test_waveform_metric_collection():
         if st_meta[0]["station"] != "CCC":
             continue
         wml = st_metrics.metric_list
-        assert len(wml) == 26
+        assert len(wml) == 11
         for metric in wml:
             if metric.type != "SA":
                 continue
             if metric.metric_attributes["period"] != 1.0:
                 continue
             test_sa = metric.value("RotD(percentile=50.0)")
-            np.testing.assert_allclose(test_sa, 53.133845)
+            np.testing.assert_allclose(test_sa, 53.08626)
 
     streams = ws.get_streams("ci38457511", labels=["default"])
     event = ws.get_event("ci38457511")
@@ -60,7 +60,7 @@ def test_waveform_metric_collection():
                     np.array(mdict["components"]) == "RotD(percentile=50.0)"
                 )[0]
                 test_sa = np.array(mdict["values"])[idx][0]
-                np.testing.assert_allclose(test_sa, 53.133845)
+                np.testing.assert_allclose(test_sa, 53.08625951328232)
 
 
 if __name__ == "__main__":

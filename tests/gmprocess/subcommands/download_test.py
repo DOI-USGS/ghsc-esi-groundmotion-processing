@@ -50,8 +50,6 @@ def _test_download():
 
     except Exception as ex:
         raise ex
-    finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
 
 
 @vcr.use_cassette()
@@ -85,7 +83,6 @@ def _test_download_single_provider(script_runner):
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         del os.environ["TEST_SPECIFIC_CONF"]
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
 
@@ -122,7 +119,6 @@ def _test_download_provider_url(script_runner):
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         del os.environ["TEST_SPECIFIC_CONF"]
         del os.environ["TEST_SPECIFIC_CONF_FILE"]
 
@@ -171,6 +167,5 @@ def _test_download_provider_url_bounds(script_runner):
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         del os.environ["TEST_SPECIFIC_CONF"]
         del os.environ["TEST_SPECIFIC_CONF_FILE"]

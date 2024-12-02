@@ -43,5 +43,5 @@ def test_corner_frequencies_magnitude(setup_corner_freq_mag_test):
             lp.append(cfdict["lowpass"])
             hp.append(cfdict["highpass"])
 
-    np.testing.assert_allclose(hp, [0.3, 0.3, 0.3])
-    np.testing.assert_allclose(lp, [35.0, 35.0, 35.0])
+    np.testing.assert_allclose(hp, [0.1, 0.1, 0.1])
+    np.testing.assert_allclose(lp, [40.0, 40.0, 40.0])

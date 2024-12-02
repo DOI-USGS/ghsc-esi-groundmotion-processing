@@ -19,5 +19,3 @@ def test_gmrecords(script_runner):
         assert ret.success
     except Exception as ex:
         raise ex
-    finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)

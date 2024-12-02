@@ -1,42 +1,53 @@
-import io
 import os
 import shutil
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_generate_station_maps(script_runner):
+def test_generate_station_maps():
     try:
-        # Need to create profile first.
-        cdir = str(constants.CONFIG_PATH_TEST)
-        ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "exports")
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        cdir = constants.CONFIG_PATH_TEST
+        ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports"
 
-        ret = script_runner.run("gmrecords", "-e", "ci38457511", "maps")
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        events = ["ci38457511"]
-        out_names = ["workspace.h5"]
-        for event in events:
-            for outname in out_names:
-                dfile = os.path.join(ddir, event, outname)
-                print(dfile)
-                assert os.path.isfile(dfile)
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "generate_station_maps"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        map_file = ddir / "ci38457511" / "stations_map.html"
+        assert map_file.is_file()
 
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
         pattern = [
             ".png",
             ".csv",
             ".html",
             "_dat.json",
-            "_metrics.json",
+            "_groundmotion_packet.json",
         ]
         for root, _, files in os.walk(ddir):
             for file in files:
