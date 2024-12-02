@@ -313,7 +313,7 @@ class FDSNFetcher(DataFetcher):
                         # For ObsPy<1.3.0 the configure_logging parameter doesn't exist
                         mdl = MassDownloader(providers=client_list)
 
-                logging.info("Downloading new MiniSEED files...")
+                logging.info(f"Downloading new MiniSEED files... (using {nthreads})")
                 # The data will be downloaded to the ``./waveforms/`` and
                 # ``./stations/`` folders with automatically chosen file names.
                 mdl.download(
