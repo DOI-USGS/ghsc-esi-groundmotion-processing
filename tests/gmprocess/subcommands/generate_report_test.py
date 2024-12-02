@@ -1,43 +1,65 @@
-import io
 import os
 import shutil
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_generate_station_maps(script_runner):
+def test_generate_station_maps():
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
         ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports"
+
         # backup the workspace file and put it back later
         workpsace_orig = str(ddir / "ci38457511" / "workspace.h5")
         workpsace_backup = str(ddir / "ci38457511" / ".workspace.h5_backup")
         shutil.copyfile(workpsace_orig, workpsace_backup)
-        setup_inputs = io.StringIO(
-            f"test\n{str(cdir)}\n{str(ddir)}\nname\ntest@email.com\n"
-        )
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
 
-        ret = script_runner.run("gmrecords", "-e", "ci38457511", "report")
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        ret = script_runner.run("gmrecords", "-e", "ci38457511", "clean", "--all")
-        assert ret.success
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "generate_report"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        subcommand = "clean"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+            "all": True,
+        }
+        args.update(step_args)
+        app.main(**args)
 
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)
         # Remove workspace and image files
         pattern = [
             ".png",
             ".csv",
             ".html",
             "_dat.json",
-            "_metrics.json",
+            "_groundmotion_packet.json",
         ]
         for root, _, files in os.walk(ddir):
             for file in files:

@@ -1,31 +1,42 @@
-import io
 import os
 import shutil
-import copy
 
 import numpy as np
 import pandas as pd
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_export_metric_tables(script_runner, config):
-    conf = copy.deepcopy(config)
-
+def test_export_metric_tables():
     try:
-        # Need to create profile first.
         cdir = str(constants.CONFIG_PATH_TEST)
         ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "exports")
 
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        conf["metrics"]["components_and_types"]["quadratic_mean"] = "fas"
+        app = GMrecordsApp()
+        app.load_subcommands()
 
-        ret = script_runner.run("gmrecords", "mtables")
-        assert ret.success
+        subcommand = "export_metric_tables"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         # Check that output tables were created
         count = 0
@@ -35,9 +46,9 @@ def test_export_metric_tables(script_runner, config):
                 if pattern in file:
                     count += 1
         assert count == 12
-        # Check contents of one file
+
         h1df = pd.read_csv(
-            os.path.join(ddir, "test_default_metrics_channels(component=h1).csv")
+            os.path.join(ddir, "None_default_metrics_channels(component=h1).csv")
         )
         for i in range(h1df.shape[0]):
             assert h1df["EarthquakeId"][i] == "ci38457511"
@@ -52,21 +63,15 @@ def test_export_metric_tables(script_runner, config):
         np.testing.assert_allclose(
             h1df["EarthquakeDepth"], np.full_like(h1df["EarthquakeDepth"], 8.0)
         )
-        np.testing.assert_allclose(
-            h1df["EarthquakeDepth"], np.full_like(h1df["EarthquakeDepth"], 8.0)
-        )
-
-        # Turn off default metrics
-        conf["metrics"]["components_and_types"]["channels"] = ""
-        ret = script_runner.run("gmrecords", "mtables")
-        assert ret.success
+        np.testing.assert_allclose(h1df[h1df["StationCode"] == "CCC"]["PGA"], 48.013271)
 
         qmdf = pd.read_csv(
-            os.path.join(ddir, "test_default_metrics_quadraticmean().csv")
+            os.path.join(ddir, "None_default_metrics_quadraticmean().csv")
         )
+
         np.testing.assert_allclose(
-            qmdf["FAS(f=5.62341325, B=20.0)"].iloc[0],
-            63.022771,
+            qmdf[qmdf["StationCode"] == "CCC"]["FAS(f=5.62341325, B=20.0)"],
+            62.856018,
         )
 
     except Exception as ex:

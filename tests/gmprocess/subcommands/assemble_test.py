@@ -1,45 +1,81 @@
 import io
 import os
-import shutil
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants, tests_utils
 
 
-def test_assemble_event_list(script_runner):
+def test_assemble_event_list():
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
-        ddir = constants.TEST_DATA_DIR / "demo"
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{str(ddir)}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        ddir = constants.TEST_DATA_DIR / "kiknet"
 
-        ret = script_runner.run("gmrecords", "assemble")
-        assert ret.success
+        EVENT_IDS = "usp000a1b0, usp000hzq8"
 
-        EVENT_IDS = "us10004ehj, us10004fhj"
-        ret = script_runner.run(
-            "gmrecords",
-            "-e",
-            EVENT_IDS,
-            "-o",
-            "--datadir",
-            ddir,
-            "--confdir",
-            cdir,
-            "assemble",
-        )
-        assert ret.success
+        ws_files = [
+            ddir / "usp000a1b0" / "workspace.h5",
+            ddir / "usp000hzq8" / "workspace.h5",
+        ]
+        for ws in ws_files:
+            assert not ws.is_file()
 
-        # Test the "--resume" argument
-        ret = script_runner.run("gmrecords", "--resume", "us10004fhj", "assemble")
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": EVENT_IDS,
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
+
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "assemble"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        for ws in ws_files:
+            assert ws.is_file()
+
+        ws_files[1].unlink()
+
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": EVENT_IDS,
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": "usp000hzq8",
+        }
+        subcommand = "assemble"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        for ws in ws_files:
+            assert ws.is_file()
 
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
         pattern = ["workspace.h5", ".png"]
         for root, _, files in os.walk(ddir):
@@ -48,7 +84,7 @@ def test_assemble_event_list(script_runner):
                     os.remove(os.path.join(root, file))
 
 
-def test_assemble(script_runner):
+def test_assemble():
     EVENT_ID = "ci38457511"
     WORKSPACE_ITEMS = (
         "AuxiliaryData",
@@ -114,28 +150,33 @@ def test_assemble(script_runner):
     )
 
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
         ddir = constants.TEST_DATA_DIR / "demo"
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{str(ddir)}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
 
-        ret = script_runner.run("gmrecords", "assemble")
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        # try with the --datadir and --confdir arguments
-        ret = script_runner.run(
-            "gmrecords",
-            "-o",
-            "--datadir",
-            ddir,
-            "--confdir",
-            cdir,
-            "assemble",
-        )
-        assert ret.success
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "assemble"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         ws_filename = ddir / EVENT_ID / constants.WORKSPACE_NAME
         tests_utils.check_workspace(ws_filename, WORKSPACE_ITEMS)
@@ -143,7 +184,6 @@ def test_assemble(script_runner):
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
         pattern = ["workspace.h5", ".png"]
         for root, _, files in os.walk(ddir):

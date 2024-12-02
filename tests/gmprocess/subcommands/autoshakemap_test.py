@@ -1,12 +1,11 @@
-import io
 import os
-import shutil
 import json
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_autoshakemap(script_runner):
+def test_autoshakemap():
     EVENT_ID = "ci38457511"
     STATION_IDS = (
         "CI.CCC",
@@ -19,18 +18,31 @@ def test_autoshakemap(script_runner):
     event_dir = ddir / EVENT_ID
     filename = event_dir / f"{EVENT_ID}_groundmotion_packet.json"
     try:
-        # Need to create profile first.
-        setup_inputs = io.StringIO(
-            f"test\n{str(cdir)}\n{str(ddir)}\nname\ntest@email.com\n"
-        )
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": EVENT_ID,
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        ret = script_runner.run(
-            "gmrecords", "-e", EVENT_ID, "autoshakemap", "--skip-download"
-        )
-        assert ret.success
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "autoshakemap"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+            "skip_download": True,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         with open(filename, encoding="utf-8") as fin:
             data = json.load(fin)
@@ -44,9 +56,14 @@ def test_autoshakemap(script_runner):
         raise ex
     finally:
         filename.unlink(missing_ok=True)
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
-        pattern = ["workspace.h5", ".png", ".csv", "_dat.json", "_metrics.json"]
+        pattern = [
+            "workspace.h5",
+            ".png",
+            ".csv",
+            "_dat.json",
+            "_groundmotion_packet.json",
+        ]
         for root, _, files in os.walk(ddir):
             for file in files:
                 if any(file.endswith(ext) for ext in pattern):

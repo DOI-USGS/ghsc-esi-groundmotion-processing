@@ -1,26 +1,37 @@
-import io
-import shutil
-
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_processing_steps(script_runner):
+def test_processing_steps():
     try:
-        # Need to create profile first.
-        cdir = str(constants.CONFIG_PATH_TEST)
-        ddir = str(constants.TEST_DATA_DIR / "demo")
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        cdir = constants.CONFIG_PATH_TEST
+        ddir = constants.TEST_DATA_DIR / "demo"
 
-        ret = script_runner.run(
-            "gmrecords",
-            "processing_steps",
-        )
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
+
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "processing_steps"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+            "path": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
     except Exception as ex:
         raise ex
-    finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)

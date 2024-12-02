@@ -96,7 +96,6 @@ args = {
     'label': None,
     'datadir': None,
     'confdir': None,
-    'textfile': None,
     'resume': None,
 }
 ```

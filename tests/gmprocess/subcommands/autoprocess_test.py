@@ -1,12 +1,11 @@
-import io
 import os
-import shutil
 
 from gmprocess.utils import constants
 from gmprocess.utils import tests_utils
+from gmprocess.apps.gmrecords import GMrecordsApp
 
 
-def test_autoprocess(script_runner):
+def test_autoprocess():
     EVENT_ID = "ci38457511"
     WORKSPACE_ITEMS = (
         "AuxiliaryData",
@@ -329,26 +328,36 @@ def test_autoprocess(script_runner):
     )
 
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
         ddir = constants.TEST_DATA_DIR / "demo"
-        setup_inputs = io.StringIO(
-            f"test\n{str(cdir)}\n{str(ddir)}\nname\ntest@email.com\n"
-        )
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
 
-        ret = script_runner.run(
-            "gmrecords",
-            "-e",
-            EVENT_ID,
-            "autoprocess",
-            "--no-download",
-            "--no-report",
-            "--no-maps",
-        )
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": EVENT_ID,
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
+
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "autoprocess"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+            "no_download": True,
+            "no_report": True,
+            "no_maps": True,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         ws_filename = ddir / EVENT_ID / constants.WORKSPACE_NAME
         tests_utils.check_workspace(ws_filename, WORKSPACE_ITEMS)
@@ -356,7 +365,6 @@ def test_autoprocess(script_runner):
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST)
         # Remove workspace and image files
         pattern = [
             "workspace.h5",
@@ -364,7 +372,7 @@ def test_autoprocess(script_runner):
             ".csv",
             ".html",
             "_dat.json",
-            "_metrics.json",
+            "_groundmotion_packet.json",
         ]
         for root, _, files in os.walk(ddir):
             for file in files:

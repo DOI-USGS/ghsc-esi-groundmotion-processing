@@ -1,26 +1,49 @@
-import io
 import os
 import shutil
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_export_regression_plot(script_runner):
+def test_export_regression_plot():
     try:
-        # Need to create profile first.
         cdir = str(constants.CONFIG_PATH_TEST)
         ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "exports")
 
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret1 = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret1.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        ret2 = script_runner.run("gmrecords", "export_metric_tables")
-        assert ret2.success
+        app = GMrecordsApp()
+        app.load_subcommands()
 
-        ret3 = script_runner.run("gmrecords", "regression")
-        assert ret3.success
+        subcommand = "export_metric_tables"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+            "skip_download": True,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        subcommand = "generate_regression_plot"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         # Check that files were created
         count = 0

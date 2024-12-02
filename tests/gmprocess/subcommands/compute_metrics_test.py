@@ -1,7 +1,7 @@
-import io
 import shutil
 import numpy as np
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 from gmprocess.io.asdf.flatfile import Flatfile
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -9,9 +9,8 @@ from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 EVENTS = ["nc72282711", "nc72282711rupt"]
 
 
-def test_compute_station_metrics(script_runner):
+def test_compute_station_metrics():
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
         ddir = constants.TEST_DATA_DIR / "demo_steps" / "compute_metrics"
 
@@ -21,18 +20,39 @@ def test_compute_station_metrics(script_runner):
             dst = str(ddir / event / "_workspace.h5")
             shutil.copyfile(src, dst)
 
-        setup_inputs = io.StringIO(
-            f"test\n{str(cdir)}\n{str(ddir)}\nname\ntest@email.com\n"
-        )
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        ret = script_runner.run("gmrecords", "compute_station_metrics")
-        assert ret.success
+        app = GMrecordsApp()
+        app.load_subcommands()
 
-        ret = script_runner.run("gmrecords", "compute_waveform_metrics")
-        assert ret.success
+        subcommand = "compute_station_metrics"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        subcommand = "compute_waveform_metrics"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         # Test resulting metrics with rupture file
         ws_file = str(ddir / EVENTS[1] / "workspace.h5")
@@ -58,7 +78,7 @@ def test_compute_station_metrics(script_runner):
             rotd_rupt["SA(T=0.3000, D=0.050)"].iloc[0],
             4.5235322,
         )
-    
+
         # Test resulting metrics without rupture file
         ws_file = str(ddir / EVENTS[0] / "workspace.h5")
         test_ws = StreamWorkspace(ws_file)
@@ -83,11 +103,9 @@ def test_compute_station_metrics(script_runner):
             4.5235322,
         )
 
-
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)
         # Move the hdf files back
         for event in EVENTS:
             dst = str(ddir / event / "workspace.h5")

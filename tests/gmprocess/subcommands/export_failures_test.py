@@ -1,25 +1,39 @@
-import io
 import os
 import shutil
 
+from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants
 
 
-def test_export_failures(script_runner):
+def test_export_failures():
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
         ddir = constants.TEST_DATA_DIR / "demo_steps" / "exports"
 
-        setup_inputs = io.StringIO(
-            f"test\n{str(cdir)}\n{str(ddir)}\nname\ntest@email.com\n"
-        )
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        ret = script_runner.run("gmrecords", "ftables")
-        assert ret.success
+        app = GMrecordsApp()
+        app.load_subcommands()
+
+        subcommand = "export_failure_tables"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
 
         # Check that files were created
         count = 0

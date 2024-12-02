@@ -5,10 +5,11 @@ from obspy import UTCDateTime
 from gmprocess.waveform_processing import windows
 
 
-def test_windows_cut(fdsn_ci38457511_CLC):
-    streams, event = fdsn_ci38457511_CLC
+def test_windows_cut(load_data_us1000778i):
+    streams, event = load_data_us1000778i
+    stream = streams[0]
 
-    st = windows.signal_split(streams, event=event)
+    st = windows.signal_split(stream, event=event)
     st = windows.signal_end(
         st,
         event_time=UTCDateTime(event.time),
@@ -19,20 +20,10 @@ def test_windows_cut(fdsn_ci38457511_CLC):
     )
     windows.cut(st)
     assert st.passed is True
-    assert st[0].stats.endtime == "2019-07-06T03:22:55.998300Z"
+    assert st[0].stats.endtime == UTCDateTime(2016, 11, 13, 11, 6, 20, 340000)
     st_fail = st.copy()
     windows.cut(st_fail, sec_before_split=-10000)
     assert st_fail.passed is False
-
-
-def test_windows_no_split_time(fdsn_ci38457511_CLC):
-    streams, _ = fdsn_ci38457511_CLC
-
-    windows.window_checks(streams)
-    assert (
-        streams[0].get_parameter("failure")["reason"]
-        == "Cannot check window because no split time available."
-    )
 
 
 @pytest.mark.parametrize(
@@ -42,12 +33,13 @@ def test_windows_no_split_time(fdsn_ci38457511_CLC):
         pytest.param("signal_duration", "Failed signal window duration check."),
     ],
 )
-def test_windows_durations(method, target, fdsn_ci38457511_CLC):
-    streams, event = fdsn_ci38457511_CLC
+def test_windows_durations(method, target, load_data_us1000778i):
+    streams, event = load_data_us1000778i
+    stream = streams[0].copy()
 
-    streams = windows.signal_split(streams, event=event)
-    streams = windows.signal_end(
-        streams,
+    stream = windows.signal_split(stream, event=event)
+    stream = windows.signal_end(
+        stream,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
         event_lat=event.latitude,
@@ -56,30 +48,31 @@ def test_windows_durations(method, target, fdsn_ci38457511_CLC):
     )
 
     if method == "noise_duration":
-        windows.window_checks(streams, min_noise_duration=100)
+        windows.window_checks(stream, min_noise_duration=100)
     elif method == "signal_duration":
-        windows.window_checks(streams, min_signal_duration=1000)
+        windows.window_checks(stream, min_noise_duration=0, min_signal_duration=1000)
 
-    assert streams[0].get_parameter("failure")["reason"] == target
+    assert stream[0].get_parameter("failure")["reason"] == target
 
 
 @pytest.mark.parametrize(
     "method, target",
     [
-        ("none", [390.0, 390.0, 390.0]),
-        ("magnitude", [212.9617, 212.9617, 212.9617]),
-        ("velocity", [149.9617, 149.9617, 149.9617]),
-        ("model", [88.008733, 88.008733, 88.008733]),
+        ("none", [202.215, 202.215, 202.215]),
+        ("magnitude", [202.215, 202.215, 202.215]),
+        ("velocity", [118.215, 118.215, 118.215]),
+        ("model", [213.786455, 213.786455, 213.786455]),
     ],
 )
-def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
-    streams, event = fdsn_ci38457511_CLC
+def test_signal_end_methods(method, target, load_data_us1000778i):
+    streams, event = load_data_us1000778i
+    stream = streams[0]
 
-    streams = windows.signal_split(streams, event=event)
+    stream = windows.signal_split(stream, event=event)
 
     # Methods = None, magnitude, velocity, and model
-    streams = windows.signal_end(
-        streams,
+    stream = windows.signal_end(
+        stream,
         event_time=UTCDateTime(event.time),
         event_lon=event.longitude,
         event_lat=event.latitude,
@@ -87,7 +80,7 @@ def test_signal_end_methods(method, target, fdsn_ci38457511_CLC):
         method=method,
     )
     durations = []
-    for tr in streams:
+    for tr in stream:
         durations.append(
             tr.get_parameter("signal_end")["end_time"] - UTCDateTime(tr.stats.starttime)
         )

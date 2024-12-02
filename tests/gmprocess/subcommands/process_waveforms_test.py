@@ -1,46 +1,65 @@
-import io
 import os
 import shutil
+
+from gmprocess.apps.gmrecords import GMrecordsApp
+from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 
 from gmprocess.utils import constants
 
 
-def test_process_waveforms(script_runner):
+def test_process_waveforms():
     try:
-        # Need to create profile first.
         cdir = constants.CONFIG_PATH_TEST
-        ddir = str(constants.TEST_DATA_DIR / "demo_steps" / "process_waveforms")
+        ddir = constants.TEST_DATA_DIR / "demo_steps" / "process_waveforms"
 
         # Make a copy of the hdf files
         events = ["ci38457511"]
         for event in events:
-            src = os.path.join(ddir, event, "workspace.h5")
-            dst = os.path.join(ddir, event, "_workspace.h5")
+            src = ddir / event / "workspace.h5"
+            dst = ddir / event / "_workspace.h5"
             shutil.copyfile(src, dst)
 
-        setup_inputs = io.StringIO(f"test\n{cdir}\n{ddir}\nname\ntest@email.com\n")
-        ret = script_runner.run("gmrecords", "projects", "-c", stdin=setup_inputs)
-        setup_inputs.close()
-        assert ret.success
+        ws = StreamWorkspace(src)
+        labels = ws.get_labels()
+        assert len(labels) == 1
+        assert labels[0] == "unprocessed"
+        del ws
 
-        ret = script_runner.run("gmrecords", "process_waveforms")
-        assert ret.success
+        args = {
+            "debug": False,
+            "quiet": False,
+            "event_id": "",
+            "textfile": None,
+            "overwrite": False,
+            "num_processes": 0,
+            "label": None,
+            "datadir": ddir,
+            "confdir": cdir,
+            "resume": None,
+        }
 
-        # No new files created, check stderr
-        assert "Finished processing streams." in ret.stderr
-        assert "Adding waveforms for station CI.CCC" in ret.stderr
-        assert "Adding waveforms for station CI.CLC" in ret.stderr
-        assert "Adding waveforms for station CI.TOW2" in ret.stderr
+        app = GMrecordsApp()
+        app.load_subcommands()
 
-        ret = script_runner.run(
-            "gmrecords", "-n", "2", "-l", "dasktest", "process_waveforms"
-        )
-        assert ret.success
+        subcommand = "process_waveforms"
+        step_args = {
+            "subcommand": subcommand,
+            "func": app.classes[subcommand]["class"],
+            "log": None,
+        }
+        args.update(step_args)
+        app.main(**args)
+
+        # Read in HDF file and check that processing tag exists
+        ws = StreamWorkspace(src)
+        labels = ws.get_labels()
+        assert len(labels) == 2
+        assert "default" in labels
+        del ws
 
     except Exception as ex:
         raise ex
     finally:
-        shutil.rmtree(constants.CONFIG_PATH_TEST, ignore_errors=True)
         # Move the hdf files back
         events = ["ci38457511"]
         for event in events:
