@@ -263,6 +263,7 @@ fetchers:
                 - 74.7
                 - -35.5
                 - 60.4
+                threads: 1
                 url: http://service.scedc.caltech.edu
             - TEXNET:
                 bounds:

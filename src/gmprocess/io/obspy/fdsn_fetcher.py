@@ -31,6 +31,8 @@ GEONET_REALTIME_URL = "http://service-nrt.geonet.org.nz"
 
 BAD_PROVIDERS = ["IRISPH5", "UIB-NORSAR"]
 
+DEFAULT_NTHREADS = 3
+
 
 class FDSNFetcher(DataFetcher):
     BOUNDS = [-180, 180, -90, 90]
@@ -193,7 +195,10 @@ class FDSNFetcher(DataFetcher):
                 provider_name = key_list[0]
                 selected_provider_dict = {}
                 selected_provider_dict["name"] = provider_name
-
+                nthreads = DEFAULT_NTHREADS
+                if "threads" in providers_dict[provider_name]:
+                    nthreads = providers_dict[provider_name]["threads"]
+                selected_provider_dict["threads"] = nthreads
                 if providers_dict[provider_name] is None:
                     # User has not provided a conf dict for this provider, thus the
                     # provider must be in obspy's list of providers
@@ -230,7 +235,7 @@ class FDSNFetcher(DataFetcher):
         # in the config. If we do, initialize the client with the username and password.
         # Otherwise, use default initalization.
 
-        client_list = []
+        client_groups = {}
         for provider_dict in selected_providers:
             if provider_dict["name"] == GEO_NET_ARCHIVE_KEY:
                 dt = UTCDateTime.utcnow() - UTCDateTime(self.time)
@@ -275,36 +280,49 @@ class FDSNFetcher(DataFetcher):
                     password=fdsn_password,
                     debug=debug,
                 )
-                client_list.append(client)
+                nthreads = provider_dict["threads"]
+                if nthreads in client_groups:
+                    client_groups[nthreads].append(client)
+                else:
+                    client_groups[nthreads] = [client]
             except FDSNException:
                 # If the FDSN service is down, then an FDSNException is raised
                 logging.warning(f"Unable to initalize client {provider_dict['name']}")
 
-        if len(client_list):
+        if len(client_groups):
             for handler in root.handlers:
                 if hasattr(handler, "baseFilename"):
                     log_file = getattr(handler, "baseFilename")
 
-            # Pass off the initalized clients to the Mass Downloader
-            if debug:
-                mdl = MassDownloader(providers=client_list, debug=True)
-            else:
-                try:
-                    # Need to turn off built in logging for ObsPy>=1.3.0
-                    mdl = MassDownloader(providers=client_list, configure_logging=False)
-                except TypeError:
-                    # For ObsPy<1.3.0 the configure_logging parameter doesn't exist
-                    mdl = MassDownloader(providers=client_list)
+            # break the client list into groups by number of threads specified
+            # each FDSN provider can have the number of threads configured
+            # default is three if not specified
 
-            logging.info("Downloading new MiniSEED files...")
-            # The data will be downloaded to the ``./waveforms/`` and
-            # ``./stations/`` folders with automatically chosen file names.
-            mdl.download(
-                domain,
-                restrictions,
-                mseed_storage=str(rawdir),
-                stationxml_storage=str(rawdir),
-            )
+            for nthreads, client_list in client_groups.items():
+
+                # Pass off the initalized clients to the Mass Downloader
+                if debug:
+                    mdl = MassDownloader(providers=client_list, debug=True)
+                else:
+                    try:
+                        # Need to turn off built in logging for ObsPy>=1.3.0
+                        mdl = MassDownloader(
+                            providers=client_list, configure_logging=False
+                        )
+                    except TypeError:
+                        # For ObsPy<1.3.0 the configure_logging parameter doesn't exist
+                        mdl = MassDownloader(providers=client_list)
+
+                logging.info("Downloading new MiniSEED files...")
+                # The data will be downloaded to the ``./waveforms/`` and
+                # ``./stations/`` folders with automatically chosen file names.
+                mdl.download(
+                    domain,
+                    restrictions,
+                    mseed_storage=str(rawdir),
+                    stationxml_storage=str(rawdir),
+                    threads_per_client=nthreads,
+                )
 
             if self.stream_collection:
                 seed_files = rawdir.glob("*.mseed")
