@@ -186,7 +186,7 @@ class RotDOscMaxAcceleration(BaseComponent):
     def calculate(self):
         abs_matrix = np.abs(self.prior_step.output.acceleration_matrix)
         max_array = np.max(abs_matrix, axis=1)
-        self.prior_step.output.stats["standard"]["units_type"] == "acc"
+        self.prior_step.output.stats["standard"]["units_type"] = "acc"
         unit_factor = GAL_TO_PCTG
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
@@ -206,7 +206,7 @@ class RotDOscMaxVelocity(BaseComponent):
     def calculate(self):
         abs_matrix = np.abs(self.prior_step.output.velocity_matrix)
         max_array = np.max(abs_matrix, axis=1)
-        self.prior_step.output.stats["standard"]["units_type"] == "vel"
+        self.prior_step.output.stats["standard"]["units_type"] = "vel"
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
             damping=self.prior_step.output.damping,
@@ -225,7 +225,7 @@ class RotDOscMaxDisplacement(BaseComponent):
     def calculate(self):
         abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
         max_array = np.max(abs_matrix, axis=1)
-        self.prior_step.output.stats["standard"]["units_type"] == "disp"
+        self.prior_step.output.stats["standard"]["units_type"] = "disp"
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
             damping=self.prior_step.output.damping,
