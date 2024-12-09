@@ -227,7 +227,7 @@ def read_obspy(filename, config=None, **kwargs):
             if location in codes:
                 sdict = codes[location]
                 if sdict["free_field"]:
-                    trace.stats.standard.structure_type = "free_field"
+                    trace.stats.standard.structure_type = "Freefield, Unspecified"
                 else:
                     trace.stats.standard.structure_type = sdict["description"]
         head, tail = os.path.split(filename)
