@@ -702,7 +702,9 @@ class DataBlock(object):
         scnl_str = f"{scnl} <AUTH> {tnow_str}"
         self.write_comment("SCNL", scnl_str, "non-standard")
         if self.volume != Volume.RAW:
-            pstr = f"Automatically processed using gmprocess version {gmprocess_version}"
+            pstr = (
+                f"Automatically processed using gmprocess version {gmprocess_version}"
+            )
             self.write_comment("PROCESS", pstr, "non-standard")
         elif self.volume == Volume.RAW:
             pstr = f"Created using gmprocess version {gmprocess_version}"
@@ -729,7 +731,7 @@ class DataBlock(object):
         elif volume == Volume.PROCESSED:
             int_units = TABLE2[trace.stats.standard.units_type]
         elif volume == Volume.SPECTRA:
-            int_units = TABLE2["acc"] # Verify this makes sense
+            int_units = TABLE2["acc"]  # Verify this makes sense
         self.header_line2 = (
             f"{npts:8d} {quantity} pts, approx  {itime} secs, "
             f"units={units} ({int_units}),Format=({ffmt})"
@@ -879,7 +881,7 @@ class CosmosWriter(object):
                         sta = trace.stats.station
                         cha = trace.stats.channel
                         loc = trace.stats.location
-                        if trace.stats.standard.units_type != "acc": # not in ["acc", "vel"]:
+                        if trace.stats.standard.units_type != "acc":
                             msg = (
                                 "Only supporting acceleration data at this "
                                 f"time. Skipping channel {cha}."
@@ -975,8 +977,12 @@ class CosmosWriter(object):
                                     stream,
                                     gmprocess_version,
                                 )
-                                dv = self._workspace.config['metrics']['type_parameters']['sa']['damping']
-                                periods = self._workspace.config['metrics']['type_parameters']['sa']['periods']
+                                dv = self._workspace.config["metrics"][
+                                    "type_parameters"
+                                ]["sa"]["damping"]
+                                periods = self._workspace.config["metrics"][
+                                    "type_parameters"
+                                ]["sa"]["periods"]
                                 cosmos_file.write(
                                     f"{len(dv)} damping values for which spectra are computed:{dv}\n"
                                     f"{len(periods)} periods at which spectra computed, units= sec(01), Format=({FLOAT_DATA_FMT})\n"
@@ -1000,10 +1006,13 @@ class CosmosWriter(object):
                                         f"{len(periods)} values of {metric} for Damping={damping}, units={units},Format={FLOAT_DATA_FMT}\n"
                                     )
                                     tmp_df = (
-                                        wmc.waveform_metrics[0].select(f"{metric}").to_df()
+                                        wmc.waveform_metrics[0]
+                                        .select(f"{metric}")
+                                        .to_df()
                                     )
                                     tmp_df = tmp_df.loc[
-                                        tmp_df["IMC"] == f"Channels(component={channel})"
+                                        tmp_df["IMC"]
+                                        == f"Channels(component={channel})"
                                     ]
                                     np.savetxt(
                                         cosmos_file,
