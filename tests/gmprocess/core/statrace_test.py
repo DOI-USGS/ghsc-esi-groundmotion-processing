@@ -33,3 +33,7 @@ def test_trace():
 
     prov = invtrace.provenance.get_prov_series()
     assert prov.iloc[0] == "demean"
+
+    pad_inv_trace = invtrace.copy()
+    pad_inv_trace.zero_pad(length=10)
+    assert pad_inv_trace.stats.npts == 1020

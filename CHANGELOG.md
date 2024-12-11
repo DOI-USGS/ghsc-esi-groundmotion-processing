@@ -3,6 +3,10 @@
   - Added support for SV and SD metrics (for cosmos writer V3)
   - Added support for V2 (processed acc, vel, disp) and V3 COSMOS writer
   - Added number of threads configuration of FDSN clients to more reliably retrieve data from FDSN servers that may restrict the number of simultaneous downloads.
+  - StationTrace methods:
+    - Override the Trace taper method so that the provenance is set when this activity is performed.
+    - Ditto for detrend.
+    - Add a zero_pad method as a helper for zero padding.
 - Other
   - When trying to read the config file, allow for yaml read error to be raised rather than returning None. 
 
