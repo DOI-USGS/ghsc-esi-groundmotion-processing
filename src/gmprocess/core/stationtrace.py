@@ -388,6 +388,89 @@ class StationTrace(Trace):
         )
         return self
 
+    def zero_pad(self, length):
+        """Zero pad trace and add entry to provenance.
+
+        Zero pads are added at the beginning and end of the trace, EACH of which has
+        duration of `length` (in sec).
+
+        Args:
+            length (float):
+                The length (in sec) to padd with zeros before and after the trace.
+        """
+        start_time = self.stats.starttime - length
+        end_time = self.stats.endtime + length
+        self.trim(starttime=start_time, endtime=end_time, pad=True, fill_value=0.0)
+
+        self.set_provenance(
+            "pad",
+            {
+                "fill_value": 0.0,
+                "new_start_time": start_time,
+                "new_end_time": end_time,
+                "input_units": self.stats.standard.units,
+                "output_units": self.stats.standard.units,
+            },
+        )
+        return self
+
+    def taper(self, max_percentage, type="hann", max_length=None, side="both"):
+        """Taper trace and add entry to provenance.
+
+        This just overrides the ObsPy Trace method to append to the provenance for
+        tracking this operation.
+
+        Args:
+            max_percentage (float):
+                 Decimal percentage of taper at one end (ranging from 0. to 0.5).
+            type (str):
+                Type of taper to use for detrending.
+            max_length (float):
+                Length of taper at one end in seconds.
+            side (str):
+                Specify if both sides should be tapered (default, “both”) or if only the
+                left half (“left”) or right half (“right”) should be tapered.
+        """
+
+        self.set_provenance(
+            "taper",
+            {
+                "max_percentage": max_percentage,
+                "type": type,
+                "side": side,
+                "max_length": max_length,
+                "input_units": self.stats.standard.units,
+                "output_units": self.stats.standard.units,
+            },
+        )
+        return super().taper(
+            max_percentage=max_percentage,
+            type=type,
+            side=side,
+            max_length=max_length,
+        )
+
+    def detrend(self, type="simple"):
+        """Detrend trace and add entry to provenance.
+
+        This just overrides the ObsPy Trace method to append to the provenance for
+        tracking this operation.
+
+        Args:
+            type (str):
+                 Method to use for detrending.
+        """
+
+        self.set_provenance(
+            "detrend",
+            {
+                "detrending_method": type,
+                "input_units": self.stats.standard.units,
+                "output_units": self.stats.standard.units,
+            },
+        )
+        return super().detrend(type=type)
+
     def integrate(
         self,
         frequency=True,
@@ -422,27 +505,10 @@ class StationTrace(Trace):
         """
 
         if demean:
-            self.data -= np.mean(self.data)
-            self.set_provenance(
-                "detrend",
-                {
-                    "input_units": self.stats.standard.units,
-                    "output_units": self.stats.standard.units,
-                },
-            )
+            self.detrend(type="demean")
 
         if taper:
             self.taper(max_percentage=taper_width, type=taper_type, side=taper_side)
-            self.set_provenance(
-                "taper",
-                {
-                    "max_percentage": taper_width,
-                    "type": taper_type,
-                    "side": taper_side,
-                    "input_units": self.stats.standard.units,
-                    "output_units": self.stats.standard.units,
-                },
-            )
 
         if frequency:
             # integrating in frequency domain
