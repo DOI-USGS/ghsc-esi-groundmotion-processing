@@ -1,9 +1,10 @@
 ## main
--New features
+- Enhancements
   - Added support for SV and SD metrics (for cosmos writer V3)
   - Added support for V2 (processed acc, vel, disp) and V3 COSMOS writer
-  - Added number of threads configuration of FDSN clients to more reliably retrieve data from 
-    FDSN servers that may restrict the number of simultaneous downloads.
+  - Added number of threads configuration of FDSN clients to more reliably retrieve data from FDSN servers that may restrict the number of simultaneous downloads.
+- Other
+  - When trying to read the config file, allow for yaml read error to be raised rather than returning None. 
 
 ## 2.1.2 / 2024-11-14
 - Enhancements

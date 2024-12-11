@@ -335,14 +335,11 @@ def update_config(custom_cfg_file, default_cfg):
 
     if not os.path.isfile(custom_cfg_file):
         return default_cfg
-    try:
-        with open(custom_cfg_file, "rt", encoding="utf-8") as f:
-            yaml = YAML()
-            yaml.preserve_quotes = True
-            custom_cfg = yaml.load(f)
-            update_dict(default_cfg, custom_cfg)
-    except YAMLError:
-        return None
+    with open(custom_cfg_file, "rt", encoding="utf-8") as f:
+        yaml = YAML()
+        yaml.preserve_quotes = True
+        custom_cfg = yaml.load(f)
+        update_dict(default_cfg, custom_cfg)
 
     return default_cfg
 
