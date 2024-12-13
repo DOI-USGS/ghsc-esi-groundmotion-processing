@@ -87,13 +87,7 @@ def cut(st, sec_before_split=2.0, config=None):
                     "and end times."
                 )
             logging.debug(f"After cut start time: {tr.stats.starttime}")
-        tr.set_provenance(
-            "cut",
-            {
-                "new_start_time": tr.stats.starttime,
-                "new_end_time": tr.stats.endtime,
-            },
-        )
+
     return st
 
 

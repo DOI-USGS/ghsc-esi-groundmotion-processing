@@ -7,6 +7,8 @@
     - Override the Trace taper method so that the provenance is set when this activity is performed.
     - Ditto for detrend.
     - Add a zero_pad method as a helper for zero padding.
+  - Add zero pad processing step.
+  - Add trim method to StationTrace to include provenance entry.
 - Other
   - When trying to read the config file, allow for yaml read error to be raised rather than returning None. 
 

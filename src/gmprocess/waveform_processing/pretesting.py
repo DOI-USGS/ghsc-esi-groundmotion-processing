@@ -1,6 +1,4 @@
-"""
-Pretesting methods.
-"""
+"""Module for 'pretesting' processing steps."""
 
 import logging
 from obspy.signal.trigger import classic_sta_lta

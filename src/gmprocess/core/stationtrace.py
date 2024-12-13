@@ -408,8 +408,6 @@ class StationTrace(Trace):
                 "fill_value": 0.0,
                 "new_start_time": start_time,
                 "new_end_time": end_time,
-                "input_units": self.stats.standard.units,
-                "output_units": self.stats.standard.units,
             },
         )
         return self
@@ -439,8 +437,6 @@ class StationTrace(Trace):
                 "type": type,
                 "side": side,
                 "max_length": max_length,
-                "input_units": self.stats.standard.units,
-                "output_units": self.stats.standard.units,
             },
         )
         return super().taper(
@@ -465,11 +461,43 @@ class StationTrace(Trace):
             "detrend",
             {
                 "detrending_method": type,
-                "input_units": self.stats.standard.units,
-                "output_units": self.stats.standard.units,
             },
         )
         return super().detrend(type=type)
+
+    def trim(
+        self,
+        starttime=None,
+        endtime=None,
+        pad=False,
+        nearest_sample=True,
+        fill_value=None,
+    ):
+        """Trim trace and add entry to provenance.
+
+        This just overrides the ObsPy Trace method to append to the provenance for
+        tracking this operation.
+
+        Args:
+            starttime (UTCDateTime):
+                Start time.
+            endtime (UTCDateTime):
+                End time.
+            pad (bool):
+                Trim at time points outside the time frame of the original trace?
+            nearest_sample (bool):
+                See obspy docs.
+            fill_value (int, float):
+                Fill value for gaps.
+        """
+        self.set_provenance(
+            "cut",
+            {
+                "new_start_time": starttime,
+                "new_end_time": endtime,
+            },
+        )
+        return super().trim(starttime, endtime, pad, nearest_sample, fill_value)
 
     def integrate(
         self,

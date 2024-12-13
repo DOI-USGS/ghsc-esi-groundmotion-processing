@@ -1,4 +1,4 @@
-"""Module for resampling."""
+"""Module for resampling processing steps."""
 
 from gmprocess.waveform_processing.processing_step import processing_step
 
