@@ -23,7 +23,7 @@ def highpass_filter(
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: With highpass filter applied.
+        StationStream: Stream with highpass filter applied.
     """
     if not st.passed:
         return st
@@ -57,7 +57,7 @@ def highpass_filter_trace(
             Dictionary containing configuration.
 
     Returns:
-        StationTrace: With highpass filter applied.
+        StationTrace: Stream with highpass filter applied.
     """
     if number_of_passes == 1:
         zerophase = False

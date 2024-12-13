@@ -1,5 +1,6 @@
 ## main
 - Enhancements
+  - Add the PRISM/Jones et al. (doi: 10.1785/0220160200) adaptive baseline correction step.
   - Added support for SV and SD metrics (for cosmos writer V3)
   - Added support for V2 (processed acc, vel, disp) and V3 COSMOS writer
   - Added number of threads configuration of FDSN clients to more reliably retrieve data from FDSN servers that may restrict the number of simultaneous downloads.

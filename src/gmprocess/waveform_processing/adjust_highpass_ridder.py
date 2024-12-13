@@ -41,7 +41,7 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: With the highpass corner adjusted using Ridder's method.
+        StationStream: Stream with the highpass corner adjusted using Ridder's method.
     """
     if not st.passed:
         return st

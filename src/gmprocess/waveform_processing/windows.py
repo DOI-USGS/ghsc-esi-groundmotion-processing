@@ -18,7 +18,6 @@ from gmprocess.waveform_processing.phase import (
     pick_travel,
 )
 from gmprocess.utils.config import get_config
-from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.utils.ground_motion_models import load_model
 from gmprocess.waveform_processing.processing_step import processing_step
 
