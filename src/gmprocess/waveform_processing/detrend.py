@@ -1,4 +1,4 @@
-"""Module for detrending functions."""
+"""Module for detrending processing step."""
 
 import numpy as np
 
@@ -41,8 +41,6 @@ def detrend(st, detrending_method=None, config=None):
                 tr = _detrend_pre_event_mean(tr, config)
             else:
                 tr = tr.detrend(detrending_method)
-
-            tr.set_provenance("detrend", {"detrending_method": detrending_method})
 
     return st
 

@@ -2,27 +2,6 @@
 
 from gmprocess.waveform_processing.processing_step import processing_step
 
-TAPER_TYPES = {
-    "cosine": "Cosine",
-    "barthann": "Bartlett-Hann",
-    "bartlett": "Bartlett",
-    "blackman": "Blackman",
-    "blackmanharris": "Blackman-Harris",
-    "bohman": "Bohman",
-    "boxcar": "Boxcar",
-    "chebwin": "Dolph-Chebyshev",
-    "flattop": "Flat top",
-    "gaussian": "Gaussian",
-    "general_gaussian": "Generalized Gaussian",
-    "hamming": "Hamming",
-    "hann": "Hann",
-    "kaiser": "Kaiser",
-    "nuttall": "Blackman-Harris according to Nuttall",
-    "parzen": "Parzen",
-    "slepian": "Slepian",
-    "triang": "Triangular",
-}
-
 
 @processing_step
 def taper(st, type="hann", width=0.05, side="both", config=None):
@@ -49,9 +28,4 @@ def taper(st, type="hann", width=0.05, side="both", config=None):
     for tr in st:
         if tr.passed:
             tr.taper(max_percentage=width, type=type, side=side)
-            window_type = TAPER_TYPES[type]
-            tr.set_provenance(
-                "taper",
-                {"window_type": window_type, "taper_width": width, "side": side},
-            )
     return st

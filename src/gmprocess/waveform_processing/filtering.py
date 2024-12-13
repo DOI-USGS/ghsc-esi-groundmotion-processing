@@ -1,4 +1,4 @@
-"""Module for filtering functions."""
+"""Module for filtering processing steps."""
 
 from gmprocess.waveform_processing.processing_step import processing_step
 
