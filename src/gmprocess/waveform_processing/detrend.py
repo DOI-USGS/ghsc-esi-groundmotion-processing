@@ -27,7 +27,7 @@ def detrend(st, detrending_method=None, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: With that has been detrended.
+        StationStream: Stream with that has been detrended.
     """
 
     if not st.passed:

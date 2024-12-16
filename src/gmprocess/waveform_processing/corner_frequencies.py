@@ -49,7 +49,7 @@ def get_corner_frequencies(
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: With selected corner frequencies added.
+        StationStream: Stream with selected corner frequencies added.
     """
 
     logging.debug("Setting corner frequencies...")
@@ -122,7 +122,7 @@ def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: With lowpass frequency adjustment applied.
+        StationStream: Stream with lowpass frequency adjustment applied.
     """
 
     def _cap_lowpass(fc):
@@ -164,7 +164,7 @@ def from_constant(st, highpass=0.08, lowpass=20.0):
             Lowpass corner frequency (Hz).
 
     Returns:
-        stream: stream with selected corner frequencies appended to records.
+        StationStream: Stream with selected corner frequencies appended to records.
     """
     for tr in st:
         tr.set_parameter(
@@ -194,7 +194,7 @@ def from_magnitude(
             Lowpass corner frequency (Hz).
 
     Returns:
-        stream: stream with selected corner frequencies appended to records.
+        StationStream: Stream with selected corner frequencies appended to records.
     """
     mag = event.magnitude
     max_idx = np.max(np.where(mag > np.array(minmag))[0])
@@ -221,7 +221,7 @@ def from_snr(st, event, same_horiz=True, smoothing_parameter=20):
             Konno-Omachi smoothing bandwidth parameter.
 
     Returns:
-        stream: stream with selected corner frequencies appended to records.
+        StationStream: Stream with selected corner frequencies appended to records.
     """
     for tr in st:
         # Check for prior calculation of 'snr'

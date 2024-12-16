@@ -58,7 +58,7 @@ def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: With instrument criteria applied.
+        StationStream: Stream with instrument criteria applied.
     """
     if not st.passed:
         return st
@@ -99,7 +99,7 @@ def check_free_field(st, reject_non_free_field=True, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: That has been checked for free field status.
+        StationStream: Stream that has been checked for free field status.
     """
     if not st.passed:
         return st
@@ -130,7 +130,7 @@ def check_sta_lta(st, sta_length=1.0, lta_length=20.0, threshold=5.0, config=Non
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: That has been checked for sta/lta requirements.
+        StationStream: Stream that has been checked for sta/lta requirements.
     """
     if not st.passed:
         return st
@@ -174,7 +174,7 @@ def check_max_amplitude(st, min=5, max=2e6, config=None):
             Configuration dictionary (or None). See get_config().
 
     Returns:
-        StationStream: That has been checked for maximum amplitude criteria.
+        StationStream: Stream that has been checked for maximum amplitude criteria.
     """
     if not st.passed:
         return st

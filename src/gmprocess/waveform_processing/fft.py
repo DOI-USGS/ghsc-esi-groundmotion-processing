@@ -32,7 +32,7 @@ def compute_and_smooth_spectrum(
             is used.
 
     Returns:
-        StationTrace with signal spectrum dictionaries added as trace
+        StationTrace: Trace with signal spectrum dictionaries added as trace
         parameters.
 
     """
