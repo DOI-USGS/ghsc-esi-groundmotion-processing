@@ -241,6 +241,7 @@ class ScalarEvent(Event):
             "magnitude": self.magnitude,
             "magnitude_type": self.magnitude_type,
         }
+        logging.info(f"Creating event file: {filename}")
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f)
 
@@ -348,5 +349,6 @@ def write_geojson(data, event_dir):
             Event directory.
     """
     filename = event_dir / constants.EVENT_FILE
+    logging.info(f"Creating event file: {filename}")
     with open(filename, "w", encoding="utf-8") as fout:
         json.dump(data, fout)
