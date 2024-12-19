@@ -8,7 +8,6 @@ import numpy as np
 
 from gmprocess.core.stationtrace import PROCESS_LEVELS
 from gmprocess.waveform_processing.processing_step import processing_step
-from gmprocess.utils.stderr import OutputGrabber
 from gmprocess.utils import constants
 
 ABBREV_UNITS = {"ACC": "cm/s^2", "VEL": "cm/s", "DISP": "cm"}
@@ -18,6 +17,7 @@ OUTPUT = "ACC"
 @processing_step
 def remove_response(
     st,
+    sensitivity_threshold=10.0,
     pre_filt=True,
     f1=0.001,
     f2=0.005,
@@ -39,6 +39,10 @@ def remove_response(
     Args:
         st (StationStream):
             Stream of data.
+        sensitivity_threshold (float):
+            Traces will be failed if the overall reported sensitivity differs by more
+            than this threshold (units are percent) when compared to the sensitivty as
+            computed by combining the reported gains of each response stage.
         pre_filt (bool):
             Apply a bandpass filter in frequency domain to the data before
             deconvolution?
@@ -60,7 +64,9 @@ def remove_response(
     Returns:
         StationStream: With instrument response correction applied.
     """
-    resp = RemoveResponse(st, pre_filt, f1, f2, f3, f4, water_level, inv, config)
+    resp = RemoveResponse(
+        st, sensitivity_threshold, pre_filt, f1, f2, f3, f4, water_level, inv, config
+    )
     return resp.stream
 
 
@@ -70,6 +76,7 @@ class RemoveResponse(object):
     def __init__(
         self,
         st,
+        sensitivity_threshold=10.0,
         pre_filt=True,
         f1=0.001,
         f2=0.005,
@@ -80,6 +87,7 @@ class RemoveResponse(object):
         config=None,
     ):
         self.stream = st
+        self.sensitivity_threshold = sensitivity_threshold
         self.pre_filt = pre_filt
         self.f1 = f1
         self.f2 = f2
@@ -156,8 +164,9 @@ class RemoveResponse(object):
                 output_units = "VEL"
             else:
                 output_units = "ACC"
-            if "JPY_PARENT_PID" in os.environ:
-                # Cannot capture sys.stderr if this is called from a jupyter notebook.
+            # ** add check on gain/overall sensitivity here.
+            self._check_sensitivity()
+            if self.sensitivity_check_passed:
                 self.trace.remove_response(
                     inventory=self.inv,
                     output=output_units,
@@ -165,33 +174,23 @@ class RemoveResponse(object):
                     pre_filt=self.pre_filt,
                     zero_mean=True,
                     taper=False,
+                )
+                self.trace.set_provenance(
+                    "remove_response",
+                    {
+                        "method": "remove_response",
+                        "input_units": "counts",
+                        "output_units": ABBREV_UNITS[output_units],
+                        "water_level": self.water_level,
+                        "pre_filt_freqs": str(self.pre_filt),
+                    },
                 )
             else:
-                out = OutputGrabber(sys.stderr)
-                out.start()
-                self.trace.remove_response(
-                    inventory=self.inv,
-                    output=output_units,
-                    water_level=self.water_level,
-                    pre_filt=self.pre_filt,
-                    zero_mean=True,
-                    taper=False,
-                )
-                out.stop()
-                match_str = "computed and reported sensitivities differ"
-                if match_str in out.capturedtext:
-                    self.trace.warning("Computed and reported sensitivities differ.")
-
-            self.trace.set_provenance(
-                "remove_response",
-                {
-                    "method": "remove_response",
-                    "input_units": "counts",
-                    "output_units": ABBREV_UNITS[output_units],
-                    "water_level": self.water_level,
-                    "pre_filt_freqs": str(self.pre_filt),
-                },
-            )
+                if self.instrument_code == "N":
+                    self._remove_sensitivity()
+                else:
+                    reason = "Stage gains are inconsistent with overall sensitivity."
+                    self.trace.fail(reason)
 
             # Differentiate if this is a seismometer
             if self.instrument_code == "H":
@@ -231,3 +230,26 @@ class RemoveResponse(object):
         self.trace.stats.standard.units = ABBREV_UNITS[OUTPUT]
         self.trace.stats.standard.units_type = OUTPUT.lower()
         self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
+
+    def _check_sensitivity(self):
+        inventory = self.inv.select(
+            network=self.trace.stats.network,
+            station=self.trace.stats.station,
+            channel=self.trace.stats.channel,
+        )
+        response = inventory[0][0][0].response
+        overall_sensitivity = response.instrument_sensitivity.value
+        stages = response.response_stages
+        combined_stage_sensitivity = 1.0
+        for stage in stages:
+            combined_stage_sensitivity *= stage.stage_gain
+        # Percent difference relative to mean value
+        pct_diff = (
+            200.0
+            * np.abs(overall_sensitivity - combined_stage_sensitivity)
+            / (overall_sensitivity + combined_stage_sensitivity)
+        )
+        if pct_diff > self.sensitivity_threshold:
+            self.sensitivity_check_passed = False
+        else:
+            self.sensitivity_check_passed = True
