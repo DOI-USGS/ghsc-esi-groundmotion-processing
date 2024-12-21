@@ -1,5 +1,3 @@
-import copy
-
 import numpy as np
 from obspy import UTCDateTime
 
@@ -11,7 +9,6 @@ from gmprocess.core import scalar_event
 
 
 def test_zero_crossings(config):
-    conf = copy.deepcopy(config)
 
     datadir = constants.TEST_DATA_DIR / "zero_crossings"
     sc = StreamCollection.from_directory(str(datadir))

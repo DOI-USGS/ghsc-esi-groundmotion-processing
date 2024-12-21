@@ -210,7 +210,7 @@ def draw_stations_map(pstreams, event, event_dir):
 
     event_tooltip = folium.Tooltip("<b>EVENT ID:</b> {}".format(event.id))
     event_icon = folium.DivIcon(
-        html=f""" 
+        html=""" 
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke="black" stroke-linecap="square" fill=\""""
         + EVENT_COLOR

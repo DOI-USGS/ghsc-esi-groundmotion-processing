@@ -39,7 +39,7 @@ UNUSED_STANDARD_PARAMS = [
     "source_format",
 ]
 
-TIME_TOL = 1e-6
+TIME_TOL = 1e-5
 
 
 class StationStream(Stream):

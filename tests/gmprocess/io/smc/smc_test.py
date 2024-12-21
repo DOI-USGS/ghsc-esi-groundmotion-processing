@@ -65,7 +65,7 @@ def test_bad():
     tfile = "np01002r_4225a_u.smc"
     dfile = datadir / tfile
     try:
-        streams = read_smc(str(dfile))
+        read_smc(str(dfile))
     except Exception as e:
         msg = str(e)
         if "nonsensical" not in msg:

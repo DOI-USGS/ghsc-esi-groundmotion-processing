@@ -348,10 +348,6 @@ class TextHeader(object):
         self.set_header_value("record_start", stime)
         # we don't know time quality, set to blank value
         self.set_header_value("time_quality", "")
-        record_id = (
-            f"{trace.stats.network}.{trace.stats.station}."
-            f"{trace.stats.channel}.{trace.stats.location}"
-        )
         self.set_header_value("record_id", "(see comment)")
 
         # line 9
@@ -486,20 +482,6 @@ class IntHeader(object):
         self.header[1][8] = REV_BUILDING_TYPES[stype]
 
         self.header[2][2] = len(stream)
-
-        # Earthquake Parameters
-        iris_network = table4.get_matching_network(
-            scalar_event.id.replace("smi:local/", "")
-        ).upper()
-        if iris_network in TABLE7:
-            source_code = TABLE7[iris_network]
-        else:
-            source_code = 200
-
-        # self.header[2][4] = source_code
-        # self.header[2][5] = source_code
-        # self.header[2][6] = source_code
-        # self.header[2][7] = source_code
 
         # Record Parameters
         self.header[3][0] = SOLID_STATE_RECORDING_MEDIUM

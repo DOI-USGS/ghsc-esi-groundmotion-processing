@@ -1,4 +1,3 @@
-import io
 import os
 
 from gmprocess.apps.gmrecords import GMrecordsApp

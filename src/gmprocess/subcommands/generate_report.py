@@ -1,6 +1,5 @@
 """Module for GenerateReportModule class."""
 
-import sys
 import logging
 import shutil
 from concurrent.futures import ProcessPoolExecutor

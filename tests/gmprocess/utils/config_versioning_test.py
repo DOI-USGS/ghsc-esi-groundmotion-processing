@@ -10,7 +10,7 @@ def test_config_from_v1():
         yaml = YAML()
         yaml.preserve_quotes = True
         conf_v1 = yaml.load(f)
-    new_config = config_from_v1(conf_v1)
+    config_from_v1(conf_v1)
 
 
 def test_get_config_version():

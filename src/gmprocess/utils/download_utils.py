@@ -4,14 +4,9 @@
 import sys
 import json
 import logging
-import warnings
 
 # third party imports
-import matplotlib.pyplot as plt
-import numpy as np
 import requests
-from obspy.geodetics.base import locations2degrees
-from obspy.taup import TauPyModel
 
 # local imports
 from gmprocess.utils import constants

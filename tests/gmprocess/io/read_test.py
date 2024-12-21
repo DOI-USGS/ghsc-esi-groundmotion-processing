@@ -35,7 +35,7 @@ def test_read(config):
     for file_format, file_name in file_dict.items():
         try:
             stream = read_data(file_name, conf, file_format)[0]
-        except Exception as e:
+        except Exception:
             pass
         assert stream[0].stats.standard["source_format"] == file_format
         stream = read_data(file_name)[0]

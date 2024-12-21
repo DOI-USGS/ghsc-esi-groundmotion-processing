@@ -1,7 +1,4 @@
 import io
-import shutil
-
-from gmprocess.utils import constants
 
 
 def test_projects(script_runner):

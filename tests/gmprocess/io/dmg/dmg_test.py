@@ -182,7 +182,7 @@ def test_dmg():
         read_dmg(file3)[0]
     except Exception:
         success = False
-    assert success == False
+    assert not success
 
     # Test for bad date in header warning
     try:
@@ -191,7 +191,7 @@ def test_dmg():
         read_dmg(file4)[0]
     except BaseException:
         success = False
-    assert success == False
+    assert not success
     # Test alternate defaults
     no_stream = """RESPONSE AND FOURIER AMPLITUDE SPECTRA
     CORRECTED ACCELEROGRAM

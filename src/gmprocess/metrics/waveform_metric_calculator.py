@@ -51,7 +51,6 @@ import json
 import itertools
 
 
-from gmprocess.metrics.reduce import RotDPercentile
 
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 from gmprocess.metrics.waveform_metric_type import WaveformMetricType

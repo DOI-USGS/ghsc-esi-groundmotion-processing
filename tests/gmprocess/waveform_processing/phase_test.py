@@ -2,7 +2,6 @@ import copy
 
 import numpy as np
 from scipy.io import loadmat
-import pandas as pd
 from obspy import UTCDateTime, read
 from obspy.core.stream import Stream
 from obspy.geodetics import locations2degrees

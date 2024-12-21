@@ -4,8 +4,6 @@ import pytest
 
 from gmprocess.io.read import read_data
 from gmprocess.utils.tests_utils import read_data_dir
-from gmprocess.core.stationstream import StationStream
-from gmprocess.core.streamcollection import StreamCollection
 from gmprocess.waveform_processing.windows import (
     signal_split,
     signal_end,

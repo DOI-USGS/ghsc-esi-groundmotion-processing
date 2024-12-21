@@ -1,6 +1,5 @@
 # stdlib imports
 import logging
-import sys
 import tempfile
 
 # third party imports
@@ -290,9 +289,6 @@ class FDSNFetcher(DataFetcher):
                 logging.warning(f"Unable to initalize client {provider_dict['name']}")
 
         if len(client_groups):
-            for handler in root.handlers:
-                if hasattr(handler, "baseFilename"):
-                    log_file = getattr(handler, "baseFilename")
 
             # break the client list into groups by number of threads specified
             # each FDSN provider can have the number of threads configured

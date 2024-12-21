@@ -94,7 +94,7 @@ conda activate $VENV
 
 # Do mac-specific conda installs
 if [ "$unamestr" == 'FreeBSD' ] || [ "$unamestr" == 'Darwin' ]; then
-    # This is motivated by the mysterios pyproj/rasterio error and incorrect results
+    # This is motivated by the mysterious pyproj/rasterio error and incorrect results
     # that only happen on ARM macs. 
     # https://github.com/conda-forge/pyproj-feedstock/issues/156
     conda install -c conda-forge -y libgdal-netcdf
