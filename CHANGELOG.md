@@ -12,8 +12,11 @@
     - Add a zero_pad method as a helper for zero padding.
   - Add zero pad processing step.
   - Add trim method to StationTrace to include provenance entry.
+- Bug fixes
+  - Ensure that the FFT is taken for the length record as is used for normalizing the SNR.
 - Other
   - When trying to read the config file, allow for yaml read error to be raised rather than returning None. 
+  - Increase tolerance for misaligned traces to be resampled.
 
 ## 2.1.2 / 2024-11-14
 - Enhancements

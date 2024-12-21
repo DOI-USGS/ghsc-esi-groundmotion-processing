@@ -1,4 +1,5 @@
 """Module for adding rupture to ASDF file."""
+
 import json
 
 from esi_utils_rupture.point_rupture import PointRupture
@@ -71,7 +72,7 @@ class Rupture(object):
                 try:
                     coordinate = coordinate[0]
                     coordinate = find_point_coordinate(coordinate)
-                except:
+                except BaseException:
                     raise Exception(
                         "Could not identify a list of [x, y, z] for point rupture coordinate in rupture.json"
                     )

@@ -159,14 +159,26 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
             {"times": preevent_noise.times(), "data": preevent_noise.data},
         )
 
+        # Need to ensure consistency of the assumed duration for normalizing the SNR
+        # with the actual windowed duration of the event window.
+        dur_shaking = duration_from_magnitude(event_magnitude)
+        tr.set_parameter("signal_spectrum", {"duration": dur_shaking})
+        dur_event = event.stats.endtime - event.stats.starttime
+        if dur_shaking < dur_event:
+            event.trim(endtime=event.stats.starttime + dur_shaking)
+            dur_event = dur_shaking
+        else:
+            dur_shaking = dur_event
+
+        # Detrend
         preevent_noise.detrend("demean")
         event.detrend("demean")
 
         # Taper both windows
-        preevent_noise.taper(
-            max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE
-        )
-        event.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
+        # preevent_noise.taper(
+        #     max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE
+        # )
+        # event.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
 
         # Check that there are a minimum number of points in the noise window
         if preevent_noise.stats.npts < MIN_POINTS_IN_WINDOW:
@@ -201,8 +213,6 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
         #   also scale as sqrt(duration); ground motion is not stationary, so we'll use
         #   the duration estimated from the earthquake magnitude.
         dur_preevent = preevent_noise.stats.endtime - preevent_noise.stats.starttime
-        dur_event = event.stats.endtime - event.stats.starttime
-        dur_shaking = duration_from_magnitude(event_magnitude)
 
         # Compute noise and signal spectra.
         preevent_noise_spectrum = tr.get_cached("noise_spectrum")["spec"]
@@ -225,7 +235,6 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
                 "freq": tr.get_cached("event_spectrum")["freq"],
             },
         )
-        tr.set_parameter("signal_spectrum", {"duration": dur_shaking})
 
         # Compute smooth noise and signal.
         smooth_preevent_noise_spectrum = tr.get_cached("smooth_noise_spectrum")["spec"]

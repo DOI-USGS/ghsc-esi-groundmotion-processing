@@ -1,7 +1,5 @@
 """Methods for handling instrument response."""
 
-import os
-import sys
 import logging
 
 import numpy as np

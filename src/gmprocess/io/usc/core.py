@@ -60,13 +60,11 @@ def is_usc(filename, config=None, **kwargs):
         f = open(filename, "rt")
         first_line = f.readline()
         if first_line.find("OF UNCORRECTED ACCELEROGRAM DATA OF") >= 0:
-            volume = "V1"
             start = 1
             stop = 12
             alternate_start = start + 2
             alternate_stop = stop - 2
         elif first_line.find("CORRECTED ACCELEROGRAM") >= 0:
-            volume = "V2"
             start = 2
             stop = 12
             alternate_start = start + 2
@@ -452,9 +450,9 @@ def _get_header_info(int_data, flt_data, lines, volume, location=""):
         standard["structure_type"] = ""
         standard["process_level"] = PROCESS_LEVELS["V1"]
         standard["corner_frequency"] = np.nan
-        standard[
-            "source"
-        ] = "Los Angeles Basin Seismic Network, University of Southern California"
+        standard["source"] = (
+            "Los Angeles Basin Seismic Network, University of Southern California"
+        )
         standard["source_format"] = "usc"
 
         # these fields can be used for instrument correction

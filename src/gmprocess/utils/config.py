@@ -4,7 +4,6 @@ import logging
 import os
 
 from ruamel.yaml import YAML
-from ruamel.yaml.error import YAMLError
 from schema import Optional, Or, Schema
 
 from gmprocess.utils import constants

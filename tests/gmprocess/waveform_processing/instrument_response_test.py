@@ -13,4 +13,4 @@ def test_differing_sensitivity():
     trace_warnings = stream[0].get_parameter("warnings")
     assert trace_warnings == []
 
-    stream2 = remove_response(stream)
+    remove_response(stream)

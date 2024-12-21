@@ -48,7 +48,6 @@ def test_stream_workspace_methods(load_data_usb000syza, configure_strec, tmp_pat
             ws.add_config()
             ws.add_event(event)
             ws.add_strec(strec, event_id)
-            outevent = ws.get_event(event_id)
             strec_params = ws.get_strec(event_id)
             cmp_params = {
                 "CompositeVariability": np.nan,

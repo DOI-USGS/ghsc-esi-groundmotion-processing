@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from gmprocess.apps.gmrecords import GMrecordsApp
 from gmprocess.utils import constants

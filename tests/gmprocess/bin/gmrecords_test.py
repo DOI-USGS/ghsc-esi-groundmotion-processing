@@ -1,7 +1,5 @@
 import io
-import shutil
 
-from gmprocess.utils import constants
 
 
 def test_gmrecords(script_runner):

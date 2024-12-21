@@ -46,7 +46,7 @@ def generate_workspace():
     tfilename = os.path.join(tdir, "workspace.h5")
     h5 = h5py.File(tfilename, "w")
 
-    quake_ml = h5.create_dataset("QuakeML", data=np.ones((512,), dtype="uint8"))
+    h5.create_dataset("QuakeML", data=np.ones((512,), dtype="uint8"))
 
     waveforms = h5.create_group("Waveforms")
     st00 = waveforms.create_group("NET.ST00")

@@ -52,7 +52,7 @@ class BaseComponent(ABC):
             # Need to use `type` and not `isinstance` because isinstance treats all
             # child classes as equal.
             # pylint:disable-next=unidiomatic-typecheck, no-member
-            if not type(self.prior_step.output) in self.INPUT_CLASS:
+            if type(self.prior_step.output) not in self.INPUT_CLASS:
                 raise TypeError(
                     f"Incorrect INPUT_CLASS {type(self.prior_step.output)} for "
                     f"{type(self)}"

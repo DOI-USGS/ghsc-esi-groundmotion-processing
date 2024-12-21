@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Utility script for bundling workspace files for archiving a data release as a special project at CESMD."""
 
-GMPROCESS_ASDF_URL = "https://gmprocess.readthedocs.io/en/latest/contents/manual/workspace.html"
 
 import pathlib
 import shutil
@@ -11,7 +10,12 @@ import io
 import h5py
 import obspy
 
-class HtmlIndex():
+GMPROCESS_ASDF_URL = (
+    "https://gmprocess.readthedocs.io/en/latest/contents/manual/workspace.html"
+)
+
+
+class HtmlIndex:
 
     def __init__(self, project_name):
         self.project_name = project_name
@@ -66,11 +70,11 @@ class HtmlIndex():
         lines = (
             """<p>Earthquake are ordered by origin time.</p>""",
             """<table style = "width: 30%">""",
-        	"""\t<tr>""",
-		    """\t\t<th style = "width: 20%">Filename</th>""",
-		    """\t\t<th style = "width: 12.5%">Event ID</th>""",
-		    """\t\t<th style = "width: 12.5%">Filesize</th>""",
-	        """\t</tr>""",
+            """\t<tr>""",
+            """\t\t<th style = "width: 20%">Filename</th>""",
+            """\t\t<th style = "width: 12.5%">Event ID</th>""",
+            """\t\t<th style = "width: 12.5%">Filesize</th>""",
+            """\t</tr>""",
         )
         for eq_id, file_size in event_info:
             lines += (
@@ -84,8 +88,8 @@ class HtmlIndex():
             self.fout.write(line + "\n")
 
 
-class DataReleaseApp():
-    
+class DataReleaseApp:
+
     def main(self, project_name: str, project_title: str, data_dir: pathlib.Path):
         self.project_name = project_name
         self.project_title = project_title
@@ -136,9 +140,9 @@ class DataReleaseApp():
         filename = self.data_dir / event_id / "workspace.h5"
         nbytes = os.path.getsize(filename)
         if nbytes >= 2**30:
-            size = f"{nbytes / 2**30:.2f} GB" 
+            size = f"{nbytes / 2**30:.2f} GB"
         elif nbytes >= 2**20:
-            size = f"{nbytes / 2**20:.2f} MB" 
+            size = f"{nbytes / 2**20:.2f} MB"
         else:
             size = f"{nbytes // 2**10:.2f} KB"
         return size
@@ -150,10 +154,26 @@ def cli():
 
     import argparse
 
-    parser = argparse.ArgumentParser(description=DESCRIPTION, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--project", action="store", dest="project", required=True, help="CESMD project identifier")
-    parser.add_argument("--title", action="store", dest="title", required=True, help="Title of project")
-    parser.add_argument("--data-dir", action="store", dest="data_dir", required=True, help="Data directory containing events.")
+    parser = argparse.ArgumentParser(
+        description=DESCRIPTION, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "--project",
+        action="store",
+        dest="project",
+        required=True,
+        help="CESMD project identifier",
+    )
+    parser.add_argument(
+        "--title", action="store", dest="title", required=True, help="Title of project"
+    )
+    parser.add_argument(
+        "--data-dir",
+        action="store",
+        dest="data_dir",
+        required=True,
+        help="Data directory containing events.",
+    )
     args = parser.parse_args()
 
     app = DataReleaseApp()
@@ -162,8 +182,8 @@ def cli():
         "project_title": args.title,
         "data_dir": pathlib.Path(args.data_dir).expanduser(),
     }
-    import pdb; pdb.set_trace()
     app.main(**kwds)
+
 
 if __name__ == "__main__":
     cli()
