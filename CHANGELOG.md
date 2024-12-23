@@ -1,4 +1,6 @@
 ## main
+
+## 2.2.0 / 2024-12-23
 - Enhancements
   - Add the PRISM/Jones et al. (doi: 10.1785/0220160200) adaptive baseline correction step.
   - Add support for SV and SD metrics (for cosmos writer V3)
