@@ -4,6 +4,8 @@ import logging
 import shutil
 from concurrent.futures import ProcessPoolExecutor
 
+from tqdm import tqdm
+
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
 
@@ -110,7 +112,7 @@ class GenerateReportModule(base.SubcommandModule):
 
         results = []
         pstreams = []
-        for station_id in station_list:
+        for station_id in tqdm(station_list):
             streams = self.workspace.get_streams(
                 event.id,
                 stations=[station_id],

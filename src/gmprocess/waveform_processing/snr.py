@@ -175,10 +175,10 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
         event.detrend("demean")
 
         # Taper both windows
-        # preevent_noise.taper(
-        #     max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE
-        # )
-        # event.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
+        preevent_noise.taper(
+            max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE
+        )
+        event.taper(max_percentage=TAPER_WIDTH, type=TAPER_TYPE, side=TAPER_SIDE)
 
         # Check that there are a minimum number of points in the noise window
         if preevent_noise.stats.npts < MIN_POINTS_IN_WINDOW:

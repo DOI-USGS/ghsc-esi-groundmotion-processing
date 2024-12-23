@@ -5,13 +5,15 @@
   - Add support for V2 (processed acc, vel, disp) and V3 COSMOS writer
   - Add number of threads configuration of FDSN clients to more reliably retrieve data from FDSN servers that may restrict the number of simultaneous downloads.
   - Add QA check comparing the combined stage gains to the overall instrument sensitivity.
+  - Add QA step to check that the data type of miniseed raw data are integers.
   - Add options for downloading origin/strec/rupture/waveform data individually to the download subcommand.
   - StationTrace methods:
     - Override the Trace taper method so that the provenance is set when this activity is performed.
     - Ditto for detrend.
+    - Ditto for trim.
     - Add a zero_pad method as a helper for zero padding.
   - Add zero pad processing step.
-  - Add trim method to StationTrace to include provenance entry.
+  - Add progress bar while creating diagnostic plots.
 - Bug fixes
   - Ensure that the FFT is taken for the length record as is used for normalizing the SNR.
 - Other

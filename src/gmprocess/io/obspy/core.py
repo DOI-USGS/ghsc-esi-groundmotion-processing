@@ -6,16 +6,14 @@ import logging
 import os
 import re
 
-from gmprocess.core.stationstream import StationStream
+import numpy as np
+from obspy import read_inventory
+from obspy.core.stream import read
 
-# local imports
+from gmprocess.core.stationstream import StationStream
 from gmprocess.core.stationtrace import StationTrace
 from gmprocess.utils.config import get_config
 
-from obspy import read_inventory
-
-# third party
-from obspy.core.stream import read
 
 IGNORE_FORMATS = ["KNET"]
 EXCLUDE_PATTERNS = ["*.*.??.LN?"]
@@ -180,6 +178,8 @@ def read_obspy(filename, config=None, **kwargs):
         trace = StationTrace(
             data=ttrace.data, header=ttrace.stats, inventory=inventory, config=config
         )
+        if not np.issubdtype(trace.data.dtype, np.integer):
+            trace.fail("Raw data type is not integer.")
         network = ttrace.stats.network
         station = ttrace.stats.station
         channel = ttrace.stats.channel
