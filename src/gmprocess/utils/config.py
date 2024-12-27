@@ -18,6 +18,22 @@ CONF_SCHEMA = Schema(
                 "duration": {
                     "c0": float,
                     "c1": float,
+                    Optional("Stable"): {
+                        "c0": float,
+                        "c1": float,
+                    },
+                    Optional("Active"): {
+                        "c0": float,
+                        "c1": float,
+                    },
+                    Optional("Volcanic"): {
+                        "c0": float,
+                        "c1": float,
+                    },
+                    Optional("Subduction"): {
+                        "c0": float,
+                        "c1": float,
+                    },
                 },
                 "distance": {"pga": float, "max_distance": float},
             },
@@ -100,11 +116,64 @@ CONF_SCHEMA = Schema(
         "windows": {
             "no_noise": bool,
             "signal_end": {
-                "method": Or("model", "velocity", "magnitude", "none"),
-                "vmin": float,
-                "floor": float,
+                "method": Or("model", "source_path", "velocity", "magnitude", "none"),
                 "model": str,
                 "epsilon": float,
+                "vmin": float,
+                "floor": float,
+                Optional("stress_drop", default=10.0): float,
+                Optional("dur0", default=150.0): float,
+                Optional("dur1", default=0.6): float,
+                Optional("Regions"): {
+                    Optional("Stable"): {
+                        "method": Or(
+                            "model", "source_path", "velocity", "magnitude", "none"
+                        ),
+                        "model": str,
+                        "epsilon": float,
+                        "vmin": float,
+                        "floor": float,
+                        "stress_drop": float,
+                        "dur0": float,
+                        "dur1": float,
+                    },
+                    Optional("Active"): {
+                        "method": Or(
+                            "model", "source_path", "velocity", "magnitude", "none"
+                        ),
+                        "model": str,
+                        "epsilon": float,
+                        "vmin": float,
+                        "floor": float,
+                        "stress_drop": float,
+                        "dur0": float,
+                        "dur1": float,
+                    },
+                    Optional("Volcanic"): {
+                        "method": Or(
+                            "model", "source_path", "velocity", "magnitude", "none"
+                        ),
+                        "model": str,
+                        "epsilon": float,
+                        "vmin": float,
+                        "floor": float,
+                        "stress_drop": float,
+                        "dur0": float,
+                        "dur1": float,
+                    },
+                    Optional("Subduction"): {
+                        "method": Or(
+                            "model", "source_path", "velocity", "magnitude", "none"
+                        ),
+                        "model": str,
+                        "epsilon": float,
+                        "vmin": float,
+                        "floor": float,
+                        "stress_drop": float,
+                        "dur0": float,
+                        "dur1": float,
+                    },
+                },
             },
             "window_checks": {
                 "enabled": bool,

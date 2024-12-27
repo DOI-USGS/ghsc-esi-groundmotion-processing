@@ -1,4 +1,13 @@
 ## main
+- Enhancements
+  - Allow for user to set a different query window duration for different tectonic envirnments.
+  - Increase default query window duraiton.
+  - Add a new "source_path" method to compute the signal end that uses 1/fc as the source duration, which is then added to a path duration that is parameterized with coefficients for an intercept and distance term.
+  - Exclude network 7D, which is for ocean bottom stations.
+  - Apply clipping check to strong motion instruments. In the past, we thought it was safe to assume strong motion instruments did not clip but we have found exceptions to this. 
+  - Update summary plots so that the time axis is the same across raw, accel, vel, and disp plots.
+  - Update report to plot stations in order of epicentral distance.
+  - Update setup_env.sh to use miniforge rather than miniconda and renamed to install.sh to be consistent with other repos.
 
 ## 2.2.0 / 2024-12-23
 - Enhancements

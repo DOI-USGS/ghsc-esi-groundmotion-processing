@@ -26,7 +26,7 @@ REQ_EVENT = [
 ]
 
 
-def process_streams(streams, event, config=None, old_streams=None):
+def process_streams(streams, event, config=None, old_streams=None, strec=None):
     """Run processing steps from the config file.
 
     This method looks in the 'processing' config section and loops over those
@@ -45,6 +45,8 @@ def process_streams(streams, event, config=None, old_streams=None):
         old_streams (StreamCollection):
             A StreamCollection object of previously processed streams that contain
             manually reviewed information. None if not reprocessing.
+        strec (dict):
+            Dictionary with STREC results.
 
     Returns:
         A StreamCollection object.
@@ -71,14 +73,26 @@ def process_streams(streams, event, config=None, old_streams=None):
     window_conf = config["windows"]
     model = TauPyModel(config["pickers"]["travel_time"]["model"])
 
+    # Estimate end of signal
+    end_conf = window_conf["signal_end"].copy()
+
+    # Get tectonic region from STREC
+    if strec is not None:
+        tect_reg = strec["TectonicRegion"]
+        if tect_reg in end_conf["Regions"]:
+            end_conf = end_conf["Regions"][tect_reg]
+    if "Regions" in end_conf:
+        end_conf.pop("Regions")
+
+    event_mag = event.magnitude
+
+    wcheck_conf = window_conf["window_checks"]
+
     for st in streams:
         logging.debug(f"Checking stream {st.get_id()}...")
         # Estimate noise/signal split time
         st = signal_split(st, event, model, config=config)
 
-        # Estimate end of signal
-        end_conf = window_conf["signal_end"]
-        event_mag = event.magnitude
         st = signal_end(
             st,
             event_time=event_time,
@@ -87,7 +101,7 @@ def process_streams(streams, event, config=None, old_streams=None):
             event_mag=event_mag,
             **end_conf,
         )
-        wcheck_conf = window_conf["window_checks"]
+
         if wcheck_conf["enabled"]:
             st = window_checks(
                 st,

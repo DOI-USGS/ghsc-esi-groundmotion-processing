@@ -36,7 +36,6 @@ def is_cwb(filename, config=None):
     Returns:
         bool: True if CWB, False otherwise.
     """
-    logging.debug("Checking if format is cwb.")
     if is_binary(filename):
         return False
     try:

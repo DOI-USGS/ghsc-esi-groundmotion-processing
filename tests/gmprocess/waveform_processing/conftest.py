@@ -51,7 +51,8 @@ def setup_corner_freq_test(load_data_us1000778i, config):
             st = signal_split(st, event)
 
             # Estimate end of signal
-            end_conf = window_conf["signal_end"]
+            end_conf = window_conf["signal_end"].copy()
+            end_conf.pop("Regions")
             event_mag = event.magnitude
             print(st)
             st = signal_end(
@@ -88,13 +89,14 @@ def setup_corner_freq_mag_test(load_data_us1000778i, config):
     window_conf = conf["windows"]
 
     processed_streams = streams.copy()
+    # Estimate end of signal
+    end_conf = window_conf["signal_end"]
+    end_conf.pop("Regions")
     for st in processed_streams:
         if st.passed:
             # Estimate noise/signal split time
             st = signal_split(st, event)
 
-            # Estimate end of signal
-            end_conf = window_conf["signal_end"]
             event_mag = event.magnitude
             print(st)
             st = signal_end(

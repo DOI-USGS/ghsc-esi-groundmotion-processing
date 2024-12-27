@@ -1,5 +1,6 @@
 """Module for computing dynamic search parameters for an earthquake."""
 
+import copy
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -43,8 +44,8 @@ class SearchParameters(object):
                 A STREC object.
         """
         self.magnitude = magnitude
-        self.config = config
-        self.strec = strec
+        self.config = copy.deepcopy(config)
+        self.strec = copy.deepcopy(strec)
         self.duration = None
         self._compute_duration()
         self.distance = None
@@ -53,6 +54,12 @@ class SearchParameters(object):
     def _compute_duration(self):
         dpars = self.config["fetchers"]["search_parameters"]["duration"]
         self.duration = dpars["c0"] + dpars["c1"] * self.magnitude
+        if self.strec is None:
+            return
+        tect_reg = self.strec.results["TectonicRegion"]
+        if tect_reg not in dpars:
+            return
+        self.duration = dpars[tect_reg]["c0"] + dpars[tect_reg]["c1"] * self.magnitude
 
     def _compute_distance(self):
         dpars = self.config["fetchers"]["search_parameters"]["distance"]

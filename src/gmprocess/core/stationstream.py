@@ -184,8 +184,6 @@ class StationStream(Stream):
 
     def validate(self):
         """Validation checks for Traces within a StationStream."""
-        logging.debug(self)
-
         # Check that channel codes are unique_npts
         self.__check_channels()
 
@@ -520,7 +518,6 @@ def _channel_from_stats(stats):
         response = Response(instrument_sensitivity=sensitivity)
 
     comments = Comment(stats.standard.comments)
-    logging.debug("channel: %s", stats.channel)
     channel = Channel(
         stats.channel,
         stats.location,

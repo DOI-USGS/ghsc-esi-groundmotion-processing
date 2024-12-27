@@ -5,8 +5,12 @@ fetchers:
         enabled: True
         duration:
             # Duration is computed as c0 + c1 * magnitude, in minutes.
-            c0: 0.0
+            c0: 4.5
             c1: 0.5
+            # Optionally, adjust values based on tectonic environment
+            Stable:
+                c0: 5.5
+                c1: 0.5
         distance:
             # The search radius uses a ground motion model, as specified in the 
             # 'gmm_selection' section. If STREC is enabled, it will select the model
@@ -94,7 +98,7 @@ fetchers:
             # SY is a network for synthetic data
             # 'XO' is an assortment of temporary deployment networks for Alaska region
             # Other networks listed here are network codes known to be problematic.
-            exclude_networks: ['SY', 'ZY', 'YH', 'YG', 'AM', 'PB', 'XO']
+            exclude_networks: ['SY', 'ZY', 'YH', 'YG', 'AM', 'PB', 'XO', '7D']
 
             # The minimum length of the data as a fraction of the requested time frame.
             # After a channel has been downloaded it will be checked that its total
@@ -348,25 +352,48 @@ windows:
     signal_end:
         # Options for setting the end of the signal window. Options are set with the key
         # "method":
-        #    - "velocity": Set the end of the signal can be set using a phase velocity;
-        #      this option makes use of the keys "vmin" and "floor".
         #    - "model": Set the end of the signal window using a shaking duration model;
-        #      this options makes use of the keys "model" and "epsilon"
+        #      this options makes use of the keys "model" and "epsilon". Duration is 
+        #      relative to split time.
+        #    - "source_path": Compute the end of the signal using
+        #      d0 + source_duration + epi_dist
+        #      Duration is relative to split time.
         #    - "magnitude": Use the magnitude-based signal end as defined by CISN, which
-        #      is magnitude/2 (units of minutes).
+        #      is magnitude/2 (units of minutes). Duration is relative to origin time.
+        #    - "velocity": Set the end of the signal can be set using a phase velocity;
+        #      this option makes use of the keys "vmin" and "floor". Duration is 
+        #      relative to origin time.
         #    - "none": Use the full available record; this is useful if the records
         #      have already been trimmed to a resonable level and you do not wish to
         #      further reduce trace duration.
 
-        method: model
-        vmin: 1.0
-        # Minimum duration in sec for use with 'vmin' option.
-        floor: 120.0
+        method: source_path
+
         # Duration model
         model: AS16
         # Number of standard deviations; if epsilon is 1.0, then the signal
         # window duration is the mean Ds + 1 standard deviation.
         epsilon: 3.0
+
+        # "velocity" method
+        vmin: 1.0
+        floor: 120.0
+
+        # Source-path model; stress_drop (bars) for source duration.
+        stress_drop: 10.0
+        dur0: 150.0
+        dur1: 0.6
+
+        Regions:
+            Stable:
+                method: source_path
+                model: AS16
+                epsilon: 3.0
+                vmin: 1.0
+                floor: 120.0
+                stress_drop: 100.0
+                dur0: 150.0
+                dur1: 0.6
 
     window_checks:
         # Minimum noise duration; can be zero but this will allow for errors
