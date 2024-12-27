@@ -34,10 +34,6 @@ def check_clipping(st, event, threshold=0.2, config=None):
         StationStream: With clipping check applied.
 
     """
-    # Don't bother with test for strong motion instruments
-    chan_code = st[0].stats.channel
-    if chan_code[1] == "N":
-        return st
 
     # Don't bother with test if it has already failed
     if not st.passed:

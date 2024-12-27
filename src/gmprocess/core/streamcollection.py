@@ -90,7 +90,6 @@ class StreamCollection(StreamArray):
             if not isinstance(st, StationStream):
                 raise TypeError("streams must be a list of StationStream objects.")
 
-            logging.debug(st.get_id())
             st.id = st.get_id()
             st.use_array = False
 
@@ -98,7 +97,7 @@ class StreamCollection(StreamArray):
                 if st[0].free_field:
                     newstreams.append(st)
                 else:
-                    logging.debug(
+                    logging.info(
                         "Omitting station trace %s from stream collection "
                         "because it is not free field.",
                         st[0].id,

@@ -185,18 +185,27 @@ def build_report_latex(
     event_id = event.id.replace("smi:local/", "")
     event_depth = np.round(event.depth_km, 1)
 
+    epi_dists = []
     for st in st_list:
         streamid = st.get_id()
-        repi = np.round(
+        tmp_repi = (
             gps2dist_azimuth(
                 st[0].stats.coordinates.latitude,
                 st[0].stats.coordinates.longitude,
                 event.latitude,
                 event.longitude,
             )[0]
-            / 1000.0,
-            1,
+            / 1000.0
         )
+        epi_dists.append(np.round(tmp_repi, 1))
+
+    sort_idx = np.argsort(epi_dists)
+
+    for idx in sort_idx:
+        st = st_list[idx]
+        streamid = st.get_id()
+        repi = epi_dists[idx]
+
         # Even on windows, latex needs the path to use linux-style forward slashs.
         plot_path = f"plots/{event_id}_{streamid}.png"
         st_block = STREAMBLOCK.replace("[PLOTPATH]", plot_path)

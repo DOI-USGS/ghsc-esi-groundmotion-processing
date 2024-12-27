@@ -20,6 +20,7 @@ from gmprocess.waveform_processing.phase import (
 from gmprocess.utils.config import get_config
 from gmprocess.utils.ground_motion_models import load_model
 from gmprocess.waveform_processing.processing_step import processing_step
+from gmprocess.waveform_processing.spectrum import brune_f0, moment_from_magnitude
 
 M_TO_KM = 1.0 / 1000
 
@@ -70,14 +71,11 @@ def cut(st, sec_before_split=2.0, config=None):
         # Note that for consistency, we should clip all stream traces to the same
         # window and so, unlike other similar processing step loops, there should NOT
         # be an `if tr.passed` here.
-        logging.debug(f"Before cut end time: {tr.stats.endtime}")
         etime = tr.get_parameter("signal_end")["end_time"]
         tr.trim(endtime=etime)
-        logging.debug(f"After cut end time: {tr.stats.endtime}")
         if sec_before_split is not None:
             split_time = tr.get_parameter("signal_split")["split_time"]
             stime = split_time - sec_before_split
-            logging.debug(f"Before cut start time: {tr.stats.starttime}")
             if stime < etime:
                 tr.trim(starttime=stime)
             else:
@@ -85,7 +83,6 @@ def cut(st, sec_before_split=2.0, config=None):
                     "The 'cut' processing step resulting in incompatible start "
                     "and end times."
                 )
-            logging.debug(f"After cut start time: {tr.stats.starttime}")
 
     return st
 
@@ -237,10 +234,13 @@ def signal_end(
     event_lat,
     event_mag,
     method="model",
-    vmin=1.0,
-    floor=120.0,
     model="AS16",
     epsilon=3.0,
+    stress_drop=10.0,
+    dur0=150.0,
+    dur1=0.6,
+    vmin=1.0,
+    floor=120.0,
 ):
     """
     Estimate end of signal by using a model of the 5-95% significant
@@ -263,18 +263,25 @@ def signal_end(
         method (str):
             Method for estimating signal end time. Can be 'velocity', 'model',
             'magnitude', or 'none'.
-        vmin (float):
-            Velocity (km/s) for estimating end of signal. Only used if
-            method="velocity".
-        floor (float):
-            Minimum duration (sec) applied along with vmin.
         model (str):
             Short name of duration model to use. Must be defined in the
-            gmprocess/data/modules.yml file.
+            gmprocess/data/modules.yml file. Used with "model" method.
         epsilon (float):
             Number of standard deviations; if epsilon is 1.0, then the signal
             window duration is the mean Ds + 1 standard deviation. Only used
-            for method="model".
+            for method="model". Used with "model" method.
+        stress_drop (float):
+            Stress drop (bars) for estimating source duration. Used with "source_path"
+            method.
+        dur0 (float):
+            Path duration at zero distance (sec). Used with "source_path" method.
+        dur1 (float):
+            Path duration coefficient for distance term. Used with "source_path" method.
+        vmin (float):
+            Velocity (km/s) for estimating end of signal. Only used if
+            method="velocity". Used with "velocity" method.
+        floor (float):
+            Minimum duration (sec) applied along with vmin. Used with "velocity" method.
 
     Returns:
         trace with stats dict updated to include a
@@ -285,11 +292,9 @@ def signal_end(
         if not tr.has_parameter("signal_split"):
             logging.warning("No signal split in trace, cannot set signal end.")
             continue
+        # Get split time
+        split_time = tr.get_parameter("signal_split")["split_time"]
         if method == "velocity":
-            if vmin is None:
-                raise ValueError('Must specify vmin if method is "velocity".')
-            if floor is None:
-                raise ValueError('Must specify floor if method is "velocity".')
             epi_dist = (
                 gps2dist_azimuth(
                     lat1=event_lat,
@@ -300,6 +305,20 @@ def signal_end(
                 / 1000.0
             )
             end_time = event_time + max(floor, epi_dist / vmin)
+        elif method == "source_path":
+            moment = moment_from_magnitude(event_mag)
+            fc = brune_f0(moment, stress_drop)
+            source_duration = 1 / fc
+            epi_dist = (
+                gps2dist_azimuth(
+                    lat1=event_lat,
+                    lon1=event_lon,
+                    lat2=tr.stats["coordinates"]["latitude"],
+                    lon2=tr.stats["coordinates"]["longitude"],
+                )[0]
+                / 1000.0
+            )
+            end_time = split_time + source_duration + dur0 + dur1 * epi_dist
         elif method == "model":
             if model is None:
                 raise ValueError('Must specify model if method is "model".')
@@ -332,8 +351,6 @@ def signal_end(
 
             duration = np.exp(lnmu + epsilon * lnstd)
 
-            # Get split time
-            split_time = tr.get_parameter("signal_split")["split_time"]
             end_time = split_time + float(duration)
         elif method == "magnitude":
             end_time = event_time + duration_from_magnitude(event_mag)
@@ -342,7 +359,8 @@ def signal_end(
             end_time = tr.stats.endtime
         else:
             raise ValueError(
-                'method must be one of: "velocity", "model", "magnitude", or "none".'
+                'method must be one of: "source_path", "velocity", "model", '
+                '"magnitude", or "none".'
             )
         # Update trace params
         end_params = {

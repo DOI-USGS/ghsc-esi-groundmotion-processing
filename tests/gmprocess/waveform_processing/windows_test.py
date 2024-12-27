@@ -62,6 +62,7 @@ def test_windows_durations(method, target, load_data_us1000778i):
         ("magnitude", [202.215, 202.215, 202.215]),
         ("velocity", [118.215, 118.215, 118.215]),
         ("model", [213.786455, 213.786455, 213.786455]),
+        ("source_path", [215.48169, 215.48169, 215.48169]),
     ],
 )
 def test_signal_end_methods(method, target, load_data_us1000778i):

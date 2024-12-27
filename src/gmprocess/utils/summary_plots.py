@@ -65,6 +65,8 @@ class SummaryPlot:
     def plot(self):
         "Make the figure"
         self.setup_figure()
+        self.reftime = self.st_raw[0].stats.starttime
+        self.endtime = self.st_raw[0].stats.endtime - self.reftime
 
         for i, idx in enumerate(self.channelidx):
             # i is the plot column index
@@ -204,32 +206,35 @@ class SummaryPlot:
         else:
             self.ax.set_title(trace_title, color="red")
 
-        dtimes = self.tr_raw.times(type="relative")
+        dtimes = self.tr_raw.times(reftime=self.reftime)
         self.ax.plot(dtimes, self.tr_raw.data, "k", linewidth=0.5)
         self.ax.tick_params(axis="both", which="major", labelsize=5)
+        self.ax.set_xlim([0, self.endtime])
 
     def plot_acceleration(self):
         pga = np.max(np.abs(self.tr.data)) / constants.UNIT_CONVERSIONS["g"]
-        dtimes = self.tr.times(type="relative")
+        dtimes = self.tr.times(reftime=self.reftime)
         self.ax.plot(dtimes, self.tr.data, "k", linewidth=0.5)
         self.ax.tick_params(axis="both", which="major", labelsize=5)
 
         self.label_peak("PGA", pga, "g")
         self.draw_split_time()
+        self.ax.set_xlim([0, self.endtime])
 
     def plot_velocity(self):
         pgv = np.max(np.abs(self.tr_vel.data))
-        dtimes = self.tr_vel.times(type="relative")
+        dtimes = self.tr_vel.times(reftime=self.reftime)
         self.ax.plot(dtimes, self.tr_vel.data, "k", linewidth=0.5)
         self.ax.tick_params(axis="both", which="major", labelsize=5)
 
         self.label_peak("PGV", pgv, "cm/s")
         self.draw_split_time()
         self.draw_tail_check(self.tr_vel, type="vel")
+        self.ax.set_xlim([0, self.endtime])
 
     def plot_displacement(self):
         pgd = np.max(np.abs(self.tr_dis.data))
-        dtimes = self.tr_dis.times(type="relative")
+        dtimes = self.tr_dis.times(reftime=self.reftime)
         self.ax.plot(dtimes, self.tr_dis.data, "k", linewidth=0.5)
         self.ax.tick_params(axis="both", which="major", labelsize=5)
 
@@ -237,6 +242,7 @@ class SummaryPlot:
         self.draw_split_time()
         self.ax.set_xlabel("Time (s)")
         self.draw_tail_check(self.tr_dis, type="dis")
+        self.ax.set_xlim([0, self.endtime])
 
     def label_peak(self, name, value, units):
         self.ax.text(
@@ -253,7 +259,7 @@ class SummaryPlot:
         if self.tr.has_parameter("signal_split"):
             split_dict = self.tr.get_parameter("signal_split")
             sptime = UTCDateTime(split_dict["split_time"])
-            dsec = sptime - self.tr.stats.starttime
+            dsec = sptime - self.reftime
             self.ax.axvline(dsec, color="red", linestyle="dashed")
 
     def draw_tail_check(self, tr, type="vel"):

@@ -174,8 +174,6 @@ def get_metadata(
     if response.status_code != 200:
         fmt = 'Could not retrieve data from url "%s": Server response %i'
         raise ConnectionError(fmt % (request.url, response.status_code))
-    logging.debug("CESMD search url: %s", str(request.url))
-    logging.debug("CESMD search response code: %s", response.status_code)
     metadata = response.json()
 
     return metadata

@@ -5,7 +5,6 @@ from concurrent.futures import ProcessPoolExecutor
 
 from gmprocess.subcommands.lazy_loader import LazyLoader
 
-
 base = LazyLoader("base", globals(), "gmprocess.subcommands.base")
 constants = LazyLoader("constants", globals(), "gmprocess.utils.constants")
 scalar_event = LazyLoader("scalar_event", globals(), "gmprocess.core.scalar_event")
@@ -67,6 +66,7 @@ class ProcessWaveformsModule(base.SubcommandModule):
         ds = self.workspace.dataset
         station_list = ds.waveforms.list()
         event = self.workspace.get_event(event_id)
+        strec = self.workspace.get_strec(event_id)
 
         processed_streams = []
         if self.gmrecords.args.num_processes:
@@ -115,12 +115,13 @@ class ProcessWaveformsModule(base.SubcommandModule):
                         event,
                         config,
                         old_streams,
+                        strec,
                     )
                     futures.append(future)
                 else:
                     processed_streams.append(
                         processing.process_streams(
-                            raw_streams, event, config, old_streams
+                            raw_streams, event, config, old_streams, strec
                         )
                     )
 

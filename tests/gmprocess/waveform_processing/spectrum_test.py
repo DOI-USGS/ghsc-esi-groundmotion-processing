@@ -17,9 +17,10 @@ def test_fit_spectra(config):
     event_dir = constants.TEST_DATA_DIR / "demo" / "ci38457511"
     event = scalar_event.ScalarEvent.from_json(event_dir / constants.EVENT_FILE)
     sc = StreamCollection.from_directory(event_dir / "raw")
+    end_conf = conf["windows"]["signal_end"].copy()
+    end_conf.pop("Regions")
     for st in sc:
         st = signal_split(st, event)
-        end_conf = conf["windows"]["signal_end"]
         st = signal_end(
             st,
             event_time=event.time,
