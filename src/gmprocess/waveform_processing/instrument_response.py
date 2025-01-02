@@ -3,13 +3,41 @@
 import logging
 
 import numpy as np
-
 from gmprocess.core.stationtrace import PROCESS_LEVELS
-from gmprocess.waveform_processing.processing_step import processing_step
 from gmprocess.utils import constants
+from gmprocess.waveform_processing.processing_step import processing_step
+from pint import UnitRegistry
 
 ABBREV_UNITS = {"ACC": "cm/s^2", "VEL": "cm/s", "DISP": "cm"}
 OUTPUT = "ACC"
+
+unit_registry = UnitRegistry()
+
+# lower case all input units before checking
+STAGE_UNITS = {
+    "none.specified": None,
+    # linear measures
+    "m": unit_registry.meter,
+    "cm": unit_registry.centimeter,
+    "mm": unit_registry.nanometer,
+    "nm": unit_registry.nanometer,
+    "v": unit_registry.volt,
+    # volts/counts
+    "volt": unit_registry.volt,
+    "volts": unit_registry.volt,
+    "count": unit_registry.count,
+    "counts": unit_registry.count,
+    # rates
+    "m/s": unit_registry.meter / unit_registry.second,
+    "cm/s": unit_registry.centimeter / unit_registry.second,
+    "mm/s": unit_registry.millimeter / unit_registry.second,
+    "nm/s": unit_registry.nanometer / unit_registry.second,
+    # accelerations
+    "m/s**2": unit_registry.meter / unit_registry.second**2,
+    "cm/s**2": unit_registry.centimeter / unit_registry.second**2,
+    "mm/s**2": unit_registry.millimeter / unit_registry.second**2,
+    "nm/s**2": unit_registry.nanometer / unit_registry.second**2,
+}
 
 
 @processing_step
@@ -84,6 +112,7 @@ class RemoveResponse(object):
         inv=None,
         config=None,
     ):
+        self.unit_registry = UnitRegistry()
         self.stream = st
         self.sensitivity_threshold = sensitivity_threshold
         self.pre_filt = pre_filt
@@ -230,24 +259,69 @@ class RemoveResponse(object):
         self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
 
     def _check_sensitivity(self):
+        network = self.trace.stats.network
+        station = self.trace.stats.station
+        channel = self.trace.stats.channel
         inventory = self.inv.select(
-            network=self.trace.stats.network,
-            station=self.trace.stats.station,
-            channel=self.trace.stats.channel,
+            network=network,
+            station=station,
+            channel=channel,
         )
         response = inventory[0][0][0].response
         overall_sensitivity = response.instrument_sensitivity.value
+        sensivity_input_units = STAGE_UNITS.get(
+            response.instrument_sensitivity.input_units, None
+        )
+        sensivity_output_units = STAGE_UNITS.get(
+            response.instrument_sensitivity.output_units, None
+        )
+        if sensivity_input_units is None or sensivity_output_units is None:
+            logging.warning(
+                f"{network}.{station}.{channel} instrument sensitivity is missing units"
+            )
+            overall_sensitivity *= unit_registry.dimensionless
+        else:
+            overall_sensitivity *= sensivity_input_units / sensivity_output_units
         stages = response.response_stages
-        combined_stage_sensitivity = 1.0
+        combined_stage_sensitivity = 1.0 * unit_registry.dimensionless
         for stage in stages:
-            combined_stage_sensitivity *= stage.stage_gain
+            stagenum = stage.stage_sequence_number
+            input_units = STAGE_UNITS.get(
+                stage.input_units, unit_registry.dimensionless
+            )
+            output_units = STAGE_UNITS.get(
+                stage.output_units, unit_registry.dimensionless
+            )
+            if (
+                input_units == unit_registry.dimensionless
+                or output_units == unit_registry.dimensionless
+            ):
+                logging.warning(
+                    f"{network}.{station}.{channel} Stage {stagenum} missing units"
+                )
+
+            combined_stage_sensitivity *= stage.stage_gain * (
+                input_units / output_units
+            )
         # Percent difference relative to mean value
         pct_diff = (
             200.0
-            * np.abs(overall_sensitivity - combined_stage_sensitivity)
-            / (overall_sensitivity + combined_stage_sensitivity)
+            * np.abs(
+                overall_sensitivity.magnitude - combined_stage_sensitivity.magnitude
+            )
+            / (overall_sensitivity.magnitude + combined_stage_sensitivity.magnitude)
         )
         if pct_diff > self.sensitivity_threshold:
             self.sensitivity_check_passed = False
         else:
             self.sensitivity_check_passed = True
+        self.units_check_passed = True
+        dimensionless = (
+            overall_sensitivity.dimensionless
+            or combined_stage_sensitivity.dimensionless
+        )
+        if (
+            overall_sensitivity.units != combined_stage_sensitivity.units
+            or dimensionless
+        ):
+            self.units_check_passed = False
