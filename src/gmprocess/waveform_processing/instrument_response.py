@@ -37,7 +37,14 @@ STAGE_UNITS = {
     "cm/s**2": unit_registry.centimeter / unit_registry.second**2,
     "mm/s**2": unit_registry.millimeter / unit_registry.second**2,
     "nm/s**2": unit_registry.nanometer / unit_registry.second**2,
+    "m/s/s": unit_registry.meter / unit_registry.second**2,
+    "cm/s/s": unit_registry.centimeter / unit_registry.second**2,
+    "mm/s/s": unit_registry.millimeter / unit_registry.second**2,
+    "nm/s/s": unit_registry.nanometer / unit_registry.second**2,
 }
+
+# Taper width for tapering velocity before differentiating
+TAPER_WIDTH = 0.05
 
 
 @processing_step
@@ -222,6 +229,7 @@ class RemoveResponse(object):
             # Differentiate if this is a seismometer
             if self.instrument_code == "H":
                 diff_conf = self.config["differentiation"]
+                self.trace.taper(TAPER_WIDTH)
                 self.trace.differentiate(frequency=diff_conf["frequency"])
 
             self.trace.data *= constants.M_TO_CM  # Convert from m to cm
@@ -270,10 +278,10 @@ class RemoveResponse(object):
         response = inventory[0][0][0].response
         overall_sensitivity = response.instrument_sensitivity.value
         sensivity_input_units = STAGE_UNITS.get(
-            response.instrument_sensitivity.input_units, None
+            response.instrument_sensitivity.input_units.lower(), None
         )
         sensivity_output_units = STAGE_UNITS.get(
-            response.instrument_sensitivity.output_units, None
+            response.instrument_sensitivity.output_units.lower(), None
         )
         if sensivity_input_units is None or sensivity_output_units is None:
             logging.warning(
@@ -287,10 +295,10 @@ class RemoveResponse(object):
         for stage in stages:
             stagenum = stage.stage_sequence_number
             input_units = STAGE_UNITS.get(
-                stage.input_units, unit_registry.dimensionless
+                stage.input_units.lower(), unit_registry.dimensionless
             )
             output_units = STAGE_UNITS.get(
-                stage.output_units, unit_registry.dimensionless
+                stage.output_units.lower(), unit_registry.dimensionless
             )
             if (
                 input_units == unit_registry.dimensionless

@@ -8,6 +8,7 @@
   - Update summary plots so that the time axis is the same across raw, accel, vel, and disp plots.
   - Update report to plot stations in order of epicentral distance.
   - Update setup_env.sh to use miniforge rather than miniconda and renamed to install.sh to be consistent with other repos.
+  - Add taper before differentiation for velocity instruments.
 
 ## 2.2.0 / 2024-12-23
 - Enhancements

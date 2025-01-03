@@ -13,11 +13,11 @@ from obspy.core.trace import Trace
 from scipy.integrate import cumulative_trapezoid
 
 # local imports
-from gmprocess.utils.config import get_config
-from gmprocess.utils import constants
+from gmprocess.core.provenance import TraceProvenance
 from gmprocess.io.cosmos.data_structures import BUILDING_TYPES
 from gmprocess.io.seedname import get_units_type
-from gmprocess.core.provenance import TraceProvenance
+from gmprocess.utils.config import get_config
+from gmprocess.utils import constants
 
 
 PROCESS_LEVELS = {
