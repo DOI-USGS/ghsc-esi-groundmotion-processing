@@ -9,6 +9,9 @@
   - Update report to plot stations in order of epicentral distance.
   - Update setup_env.sh to use miniforge rather than miniconda and renamed to install.sh to be consistent with other repos.
   - Add taper before differentiation for velocity instruments.
+  - Expand instrument response QA to include consistency of units with instrument type. 
+  - Set unit registry to treat "counts" as having a unique dimension, rather than being dimensionless. 
+  - Simplify SNR failure message.
 
 ## 2.2.0 / 2024-12-23
 - Enhancements

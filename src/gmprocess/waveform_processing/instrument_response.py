@@ -13,6 +13,10 @@ OUTPUT = "ACC"
 
 unit_registry = UnitRegistry()
 
+# Tell the registry to treat the units of "count" as having dimensions of "count"
+# rather than being dimensionless (which is the default).
+unit_registry.define("count = [count] = _ = _")
+
 # lower case all input units before checking
 STAGE_UNITS = {
     "none.specified": None,
@@ -196,34 +200,69 @@ class RemoveResponse(object):
             # it to 'VEL" and then differentiating.
             if self.instrument_code == "H":
                 output_units = "VEL"
-            else:
+            elif self.instrument_code == "N":
                 output_units = "ACC"
-            # ** add check on gain/overall sensitivity here.
-            self._check_sensitivity()
-            if self.sensitivity_check_passed:
-                self.trace.remove_response(
-                    inventory=self.inv,
-                    output=output_units,
-                    water_level=self.water_level,
-                    pre_filt=self.pre_filt,
-                    zero_mean=True,
-                    taper=False,
-                )
-                self.trace.set_provenance(
-                    "remove_response",
-                    {
-                        "method": "remove_response",
-                        "input_units": "counts",
-                        "output_units": ABBREV_UNITS[output_units],
-                        "water_level": self.water_level,
-                        "pre_filt_freqs": str(self.pre_filt),
-                    },
-                )
             else:
-                if self.instrument_code == "N":
-                    self._remove_sensitivity()
+                raise ValueError("Unsupported instrument code.")
+
+            self._check_sensitivity_and_units()
+
+            if self.total_units_match and self.stage_units_match:
+                if self.sensitivity_check_passed:
+                    self.trace.remove_response(
+                        inventory=self.inv,
+                        output=output_units,
+                        water_level=self.water_level,
+                        pre_filt=self.pre_filt,
+                        zero_mean=True,
+                        taper=False,
+                    )
+                    self.trace.set_provenance(
+                        "remove_response",
+                        {
+                            "method": "remove_response",
+                            "input_units": "counts",
+                            "output_units": ABBREV_UNITS[output_units],
+                            "water_level": self.water_level,
+                            "pre_filt_freqs": str(self.pre_filt),
+                        },
+                    )
                 else:
-                    reason = "Stage gains are inconsistent with overall sensitivity."
+                    if self.instrument_code == "N":
+                        self._remove_sensitivity()
+                    else:
+                        reason = "Stage gains are inconsistent with total sensitivity."
+                        self.trace.fail(reason)
+            else:
+                if self.total_units_match:
+                    if self.instrument_code == "N":
+                        self._remove_sensitivity()
+                    else:
+                        # To get here, stage_units_match must be False.
+                        reason = "Stage units inconsistent with instrument."
+                        self.trace.fail(reason)
+                elif self.stage_units_match:
+                    # stage units match, so trust full instrument response.
+                    self.trace.remove_response(
+                        inventory=self.inv,
+                        output=output_units,
+                        water_level=self.water_level,
+                        pre_filt=self.pre_filt,
+                        zero_mean=True,
+                        taper=False,
+                    )
+                    self.trace.set_provenance(
+                        "remove_response",
+                        {
+                            "method": "remove_response",
+                            "input_units": "counts",
+                            "output_units": ABBREV_UNITS[output_units],
+                            "water_level": self.water_level,
+                            "pre_filt_freqs": str(self.pre_filt),
+                        },
+                    )
+                else:
+                    reason = "Total and stage units are inconsistent with instrument."
                     self.trace.fail(reason)
 
             # Differentiate if this is a seismometer
@@ -266,7 +305,7 @@ class RemoveResponse(object):
         self.trace.stats.standard.units_type = OUTPUT.lower()
         self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
 
-    def _check_sensitivity(self):
+    def _check_sensitivity_and_units(self):
         network = self.trace.stats.network
         station = self.trace.stats.station
         channel = self.trace.stats.channel
@@ -276,7 +315,7 @@ class RemoveResponse(object):
             channel=channel,
         )
         response = inventory[0][0][0].response
-        overall_sensitivity = response.instrument_sensitivity.value
+        total_sensitivity = response.instrument_sensitivity.value
         sensivity_input_units = STAGE_UNITS.get(
             response.instrument_sensitivity.input_units.lower(), None
         )
@@ -287,11 +326,11 @@ class RemoveResponse(object):
             logging.warning(
                 f"{network}.{station}.{channel} instrument sensitivity is missing units"
             )
-            overall_sensitivity *= unit_registry.dimensionless
+            total_sensitivity *= unit_registry.dimensionless
         else:
-            overall_sensitivity *= sensivity_input_units / sensivity_output_units
+            total_sensitivity *= sensivity_input_units / sensivity_output_units
         stages = response.response_stages
-        combined_stage_sensitivity = 1.0 * unit_registry.dimensionless
+        stage_sensitivity = 1.0 * unit_registry.dimensionless
         for stage in stages:
             stagenum = stage.stage_sequence_number
             input_units = STAGE_UNITS.get(
@@ -308,28 +347,41 @@ class RemoveResponse(object):
                     f"{network}.{station}.{channel} Stage {stagenum} missing units"
                 )
 
-            combined_stage_sensitivity *= stage.stage_gain * (
-                input_units / output_units
+            stage_sensitivity *= stage.stage_gain * (input_units / output_units)
+
+        if self.instrument_code == "N":
+            TARGET_SENSITIVITY_UNITS = (
+                unit_registry.meter / unit_registry.second**2 / unit_registry.count
             )
+        elif self.instrument_code == "H":
+            TARGET_SENSITIVITY_UNITS = (
+                unit_registry.meter / unit_registry.second / unit_registry.count
+            )
+        else:
+            raise ValueError(
+                "This instrument type is not supported. The instrument code must be "
+                "either H (high gain seismometer) or N (accelerometer)."
+            )
+
+        # Is total sensitivity compatible with instrument? If so, convert.
+        if total_sensitivity.is_compatible_with(TARGET_SENSITIVITY_UNITS):
+            self.total_units_match = True
+            total_sensitivity.ito(TARGET_SENSITIVITY_UNITS)
+        else:
+            self.total_units_match = False
+
+        # Is stage sensitivity compatible with instrument? If so, convert.
+        if stage_sensitivity.is_compatible_with(TARGET_SENSITIVITY_UNITS):
+            self.stage_units_match = True
+            stage_sensitivity.ito(TARGET_SENSITIVITY_UNITS)
+        else:
+            self.stage_units_match = False
+
         # Percent difference relative to mean value
-        pct_diff = (
-            200.0
-            * np.abs(
-                overall_sensitivity.magnitude - combined_stage_sensitivity.magnitude
-            )
-            / (overall_sensitivity.magnitude + combined_stage_sensitivity.magnitude)
-        )
+        osen = total_sensitivity.magnitude
+        ssen = stage_sensitivity.magnitude
+        pct_diff = 200.0 * np.abs(osen - ssen) / (osen + ssen)
         if pct_diff > self.sensitivity_threshold:
             self.sensitivity_check_passed = False
         else:
             self.sensitivity_check_passed = True
-        self.units_check_passed = True
-        dimensionless = (
-            overall_sensitivity.dimensionless
-            or combined_stage_sensitivity.dimensionless
-        )
-        if (
-            overall_sensitivity.units != combined_stage_sensitivity.units
-            or dimensionless
-        ):
-            self.units_check_passed = False

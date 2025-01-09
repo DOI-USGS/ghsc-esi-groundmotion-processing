@@ -1,7 +1,5 @@
 """Module for signal-to-noise-ratio calculations."""
 
-import logging
-
 import numpy as np
 from obspy.signal.util import next_pow_2
 
@@ -103,10 +101,7 @@ def snr_check(
                 min_snr = 0
 
             if min_snr < threshold:
-                logging.debug(
-                    f"{tr.id} failed SNR check {min_snr:.2f} < {threshold:.2f}."
-                )
-                tr.fail(f"SNR check: SNR {min_snr:.2f} < {threshold:.2f}")
+                tr.fail("Failed SNR check.")
         snr_conf = {"threshold": threshold, "min_freq": min_freq, "max_freq": max_freq}
         tr.set_parameter("snr_conf", snr_conf)
     return st

@@ -96,7 +96,7 @@ def test_free_field(kiknet_usp000hzq8):
                 reason = trace.get_parameter("failure")["reason"]
                 break
         if is_free:
-            assert reason.startswith("SNR check")
+            assert reason == "Failed SNR check."
         else:
             assert reason == "Failed free field sensor check."
 
