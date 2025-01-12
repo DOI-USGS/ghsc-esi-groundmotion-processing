@@ -52,7 +52,6 @@ def get_corner_frequencies(
         StationStream: Stream with selected corner frequencies added.
     """
 
-    logging.debug("Setting corner frequencies...")
     if method == "constant":
         st = from_constant(st, **constant)
     elif method == "magnitude":
@@ -87,6 +86,10 @@ def get_corner_frequencies(
 
     # Replace corners set in manual review
     for tr in st:
+        if tr.stats.standard.units_type != "acc":
+            tr.fail("Unit type must be set corner frequencies.")
+            continue
+
         if tr.has_parameter("review"):
             review_dict = tr.get_parameter("review")
             if "corner_frequencies" in review_dict:

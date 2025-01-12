@@ -39,7 +39,6 @@ def is_knet(filename, config=None):
     Returns:
         bool: True if NIED/KNET, False otherwise.
     """
-    logging.debug("Checking if format is knet.")
     if is_binary(filename):
         return False
     if not os.path.isfile(filename):
@@ -73,7 +72,6 @@ def read_knet(filename, config=None, **kwargs):
         Stream: Obspy Stream containing three channels of acceleration data
             (cm/s**2).
     """
-    logging.debug("Starting read_knet.")
     if not is_knet(filename, config):
         raise Exception(f"{filename} is not a valid KNET file")
 
@@ -86,7 +84,6 @@ def read_knet(filename, config=None, **kwargs):
     standard = {}
     hdr["network"] = "BO"
     hdr["station"] = lines[5].split()[2]
-    logging.debug(f"station: {hdr['station']}")
     standard["station_name"] = ""
 
     # according to the powers that defined the Network.Station.Channel.Location
@@ -126,7 +123,6 @@ def read_knet(filename, config=None, **kwargs):
     else:
         raise Exception(f"KNET: Could not parse direction {lines[12].split()[1]}")
 
-    logging.debug(f"channel: {hdr['channel']}")
     scalestr = lines[13].split()[2]
     parts = scalestr.split("/")
     num = float(parts[0].replace("(gal)", ""))

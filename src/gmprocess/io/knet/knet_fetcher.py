@@ -250,8 +250,6 @@ class KNETFetcher(DataFetcher):
         url = SEARCH_URL.replace("YEAR", jpyear)
         url = url.replace("QUARTER", jpquarter)
         req = requests.get(url)
-        logging.debug("KNET search url: %s", str(url))
-        logging.debug("KNET search response code: %s", req.status_code)
         data = req.text
         soup = BeautifulSoup(data, features="lxml")
         select = soup.find("select")
@@ -361,8 +359,6 @@ class KNETFetcher(DataFetcher):
         }
         logging.info(f"Downloading Japanese data into {localfile}...")
         req = requests.get(url, params=payload, auth=(self.user, self.password))
-        logging.debug("KNET download url: %s", str(url))
-        logging.debug("KNET download response code: %s", req.status_code)
 
         if req.status_code != URL_ERROR_CODE:
             raise urllib.error.HTTPError(req.text)

@@ -9,13 +9,13 @@ from esi_core.gmprocess.waveform_processing.smoothing.konno_ohmachi import (
 
 
 def compute_and_smooth_spectrum(
-    tr, smoothing_parameter, section, window=None, nfft=None
+    trace, smoothing_parameter, section, window=None, nfft=None
 ):
     """
     Compute raw and smoothed signal spectrum for a given trace.
 
     Args:
-        tr (StationTrace):
+        trace (StationTrace):
            Trace of data. This is the trace where the Cache values will be set.
         smoothing_parameter (float):
            Konno-Omachi smoothing bandwidth parameter.
@@ -37,10 +37,10 @@ def compute_and_smooth_spectrum(
 
     """
     if nfft is None:
-        nfft = next_pow_2(tr.stats.npts)
+        nfft = next_pow_2(trace.stats.npts)
     if window is None:
-        window = tr
-    lowest_usable_freq = 1 / tr.stats.delta / tr.stats.npts
+        window = trace
+    lowest_usable_freq = 1 / trace.stats.delta / trace.stats.npts
     spec_raw, freqs_raw = compute_fft(window, nfft)
     spec_raw[freqs_raw < lowest_usable_freq] = np.nan
     spec_smooth, freqs_smooth = smooth_spectrum(
@@ -51,10 +51,10 @@ def compute_and_smooth_spectrum(
     raw_dict = {"spec": spec_raw, "freq": freqs_raw}
     smooth_dict = {"spec": spec_smooth, "freq": freqs_smooth}
 
-    tr.set_cached(f"{section}_spectrum", raw_dict)
-    tr.set_cached(f"smooth_{section}_spectrum", smooth_dict)
+    trace.set_cached(f"{section}_spectrum", raw_dict)
+    trace.set_cached(f"smooth_{section}_spectrum", smooth_dict)
 
-    return tr
+    return trace
 
 
 def compute_fft(trace, nfft):

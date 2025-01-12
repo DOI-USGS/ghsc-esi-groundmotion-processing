@@ -386,6 +386,7 @@ class StationTrace(Trace):
                 "output_units": output_units,
             },
         )
+
         return self
 
     def zero_pad(self, length):
@@ -398,9 +399,17 @@ class StationTrace(Trace):
             length (float):
                 The length (in sec) to padd with zeros before and after the trace.
         """
+        old_start_time = self.stats.starttime
+        old_end_time = self.stats.endtime
         start_time = self.stats.starttime - length
         end_time = self.stats.endtime + length
-        self.trim(starttime=start_time, endtime=end_time, pad=True, fill_value=0.0)
+        self.trim(
+            starttime=start_time,
+            endtime=end_time,
+            pad=True,
+            fill_value=0.0,
+            suppress_provenance=True,
+        )
 
         self.set_provenance(
             "pad",
@@ -408,6 +417,8 @@ class StationTrace(Trace):
                 "fill_value": 0.0,
                 "new_start_time": start_time,
                 "new_end_time": end_time,
+                "old_start_time": old_start_time,
+                "old_end_time": old_end_time,
             },
         )
         return self
@@ -472,6 +483,7 @@ class StationTrace(Trace):
         pad=False,
         nearest_sample=True,
         fill_value=None,
+        suppress_provenance=False,
     ):
         """Trim trace and add entry to provenance.
 
@@ -489,14 +501,15 @@ class StationTrace(Trace):
                 See obspy docs.
             fill_value (int, float):
                 Fill value for gaps.
+            suppress_provenance (bool):
+                Do not put a provenance entry. Useful becasue we need a custom
+                provenance entry for zero padding, which calls this method.
         """
-        self.set_provenance(
-            "cut",
-            {
-                "new_start_time": starttime,
-                "new_end_time": endtime,
-            },
-        )
+        if not suppress_provenance:
+            prov_dict = {"new_start_time": starttime, "new_end_time": endtime}
+            if pad:
+                prov_dict["fill_value"] = fill_value
+            self.set_provenance("cut", prov_dict)
         return super().trim(starttime, endtime, pad, nearest_sample, fill_value)
 
     def integrate(

@@ -48,7 +48,6 @@ def is_usc(filename, config=None, **kwargs):
     Returns:
         bool: True if USC, False otherwise.
     """
-    logging.debug("Checking if format is usc.")
     if is_binary(filename):
         return False
     # USC requires unique integer values
@@ -123,7 +122,6 @@ def read_usc(filename, config=None, **kwargs):
         Stream: Obspy Stream containing three channels of acceleration data
         (cm/s**2).
     """
-    logging.debug("Starting read_usc.")
     valid, alternate = is_usc(filename, config, return_alternate=True)
     if not valid:
         raise Exception(f"{filename} is not a valid USC file")
@@ -256,12 +254,10 @@ def _read_channel(filename, line_offset, volume, location="", alternate=False):
     frac = hdr["format_specific"]["fractional_unit"]
     if frac > 0:
         data *= UNIT_CONVERSIONS["g"] * frac
-        logging.debug(f"Data converted from g * {frac} to cm/s/s")
     else:
         unit = _get_units(lines[11])
         if unit in UNIT_CONVERSIONS:
             data *= UNIT_CONVERSIONS[unit]
-            logging.debug(f"Data converted from {unit} to cm/s/s")
         else:
             raise ValueError(f"USC: {unit} is not a supported unit.")
 
@@ -340,9 +336,7 @@ def _get_header_info(int_data, flt_data, lines, volume, location=""):
         # Get required parameter number
         hdr["network"] = "LA"
         hdr["station"] = str(int_data[8])
-        logging.debug(f"station: {hdr['station']}")
         horizontal_angle = int_data[26]
-        logging.debug(f"horizontal: {horizontal_angle}")
         if horizontal_angle in USC_ORIENTATIONS or (
             horizontal_angle >= 0 and horizontal_angle <= 360
         ):
@@ -376,7 +370,6 @@ def _get_header_info(int_data, flt_data, lines, volume, location=""):
                 )
             horizontal_orientation = horizontal_angle
             hdr["channel"] = channel
-            logging.debug(f"channel: {hdr['channel']}")
         else:
             errstr = (
                 "USC: Not enough information to distinguish horizontal "

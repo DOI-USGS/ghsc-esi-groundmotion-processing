@@ -120,7 +120,6 @@ def is_smc(filename, config=None):
     Returns:
         bool: True if SMC, False otherwise.
     """
-    logging.debug("Checking if format is smc.")
     if is_binary(filename):
         return False
     try:
@@ -169,7 +168,6 @@ def read_smc(filename, config=None, **kwargs):
         Stream: Obspy Stream containing one channel of acceleration data
         (cm/s**2).
     """
-    logging.debug("Starting read_smc.")
     any_structure = kwargs.get("any_structure", False)
     accept_flagged = kwargs.get("accept_flagged", False)
     location = kwargs.get("location", "")
@@ -284,14 +282,12 @@ def _get_header_info(filename, any_structure=False, accept_flagged=False, locati
         ascheader = [next(f).strip() for x in range(ASCII_HEADER_LINES)]
 
     standard["process_level"] = PROCESS_LEVELS[VALID_HEADERS[ascheader[0]]]
-    logging.debug(f"process_level: {standard['process_level']}")
 
     # station code is in the third line
     stats["station"] = ""
     if len(ascheader[2]) >= 4:
         stats["station"] = ascheader[2][0:4].strip()
         stats["station"] = stats["station"].strip("\x00")
-    logging.debug(f"station: {stats['station']}")
 
     standard["process_time"] = ""
     standard["station_name"] = ascheader[5][10:40].strip()
@@ -523,7 +519,6 @@ def _get_header_info(filename, any_structure=False, accept_flagged=False, locati
                 is_north=False,
             )
 
-    logging.debug(f"channel: {stats['channel']}")
     sensor_frequency = floatheader[4, 1]
     standard["instrument_period"] = 1 / sensor_frequency
     standard["instrument_damping"] = floatheader[4, 2]

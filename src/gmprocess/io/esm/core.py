@@ -45,7 +45,6 @@ def is_esm(filename, config=None):
     Returns:
         bool: True if ESM, False otherwise.
     """
-    logging.debug("Checking if format is esm.")
     if is_binary(filename):
         return False
 
@@ -80,7 +79,6 @@ def read_esm(filename, config=None, **kwargs):
         Stream: Obspy Stream containing one channels of acceleration data
             (cm/s**2).
     """
-    logging.debug("Starting read_esm.")
     if not is_esm(filename, config):
         raise Exception(f"{filename} is not a valid ESM file")
 

@@ -29,6 +29,10 @@ def highpass_filter(
         return st
 
     for tr in st:
+        if tr.stats.standard.units_type != "acc":
+            tr.fail("Unit type must be acc to apply highpass filter.")
+            continue
+
         if tr.passed:
             tr = highpass_filter_trace(
                 tr, frequency_domain, filter_order, number_of_passes, config
@@ -109,6 +113,10 @@ def lowpass_filter(
         return st
 
     for tr in st:
+        if tr.stats.standard.units_type != "acc":
+            tr.fail("Unit type must be acc to apply lowpass filter.")
+            continue
+
         if tr.passed:
             tr = lowpass_filter_trace(
                 tr, frequency_domain, filter_order, number_of_passes, config

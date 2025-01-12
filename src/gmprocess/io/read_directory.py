@@ -55,7 +55,6 @@ def directory_to_streams(directory, config=None):
             file_ext = file_path.suffix.lower()
             if file_ext not in EXT_IGNORE:
                 try:
-                    logging.debug(f"Attempting to read: {file_path}")
                     streams += read_data(file_path, config=config)
                 except BaseException as ex:
                     logging.info(f"Failed to read file: {file_name}")

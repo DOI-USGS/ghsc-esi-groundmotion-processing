@@ -66,15 +66,12 @@ def check_instrument(st, n_max=3, n_min=2, require_two_horiz=True, config=None):
     if config is None:
         config = get_config()
 
-    logging.debug("Starting check_instrument")
-    logging.debug(f"len(st) = {len(st)}")
-
     for failed_test, message in [
         (len(st) > n_max, f"More than {n_max} traces in stream."),
         (len(st) < n_min, f"Less than {n_min} traces in stream."),
         (
             require_two_horiz and (st.num_horizontal != 2),
-            "Not two horizontal components",
+            "Stream requires two horizontal components.",
         ),
     ]:
         if failed_test:
@@ -217,8 +214,6 @@ def max_traces(st, n_max=3, config=None):
     if not st.passed:
         return st
 
-    logging.debug("Starting max_traces")
-    logging.debug(f"len(st) = {len(st)}")
     if len(st) > n_max:
         for tr in st:
             tr.fail(f"More than {n_max} traces in stream.")

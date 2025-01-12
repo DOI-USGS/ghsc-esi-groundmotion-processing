@@ -58,6 +58,10 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
         filter_code = 0
 
     for tr in st:
+        if tr.stats.standard.units_type != "acc":
+            tr.fail("Unit type must be acc to apply Ridder fchp method.")
+            continue
+
         if not tr.passed:
             continue
         initial_corners = tr.get_parameter("corner_frequencies")

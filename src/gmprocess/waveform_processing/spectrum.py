@@ -65,6 +65,10 @@ def fit_spectra(
         StationStream with fitted spectra parameters.
     """
     for tr in st:
+        if tr.stats.standard.units_type != "acc":
+            tr.fail("Unit type must be acc to fit spectra.")
+            continue
+
         # Only do this for horizontal channels for which the smoothed spectra
         # has been computed.
         if tr.has_cached("smooth_signal_spectrum") and tr.has_parameter(
