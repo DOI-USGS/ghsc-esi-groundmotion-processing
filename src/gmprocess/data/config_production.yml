@@ -435,21 +435,15 @@ processing:
         min_crossings: 0.1
 
     - remove_response:
+        output_as_acceleration: False
 
-    - detrend:
-        detrending_method: linear
-
-    - detrend:
-        detrending_method: demean
+    - convert_to_acceleration:
 
     - compute_snr:
 
     - snr_check:
 
     - get_corner_frequencies:
-        method: snr
-        snr:
-            same_horiz: False
 
     - lowpass_max_frequency:
 
@@ -459,16 +453,17 @@ processing:
 
     - ridder_fchp:
 
+    # - zero_pad:
+
     - highpass_filter:
 
     - lowpass_filter:
-        
+
     - detrend:    
         detrending_method: pre
 
     - fit_spectra:
 
-    - check_tail:
 
 colocated:
     # Enable the colocation algorithm?

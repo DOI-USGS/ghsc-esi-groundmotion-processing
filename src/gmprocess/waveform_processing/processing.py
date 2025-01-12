@@ -89,7 +89,6 @@ def process_streams(streams, event, config=None, old_streams=None, strec=None):
     wcheck_conf = window_conf["window_checks"]
 
     for st in streams:
-        logging.debug(f"Checking stream {st.get_id()}...")
         # Estimate noise/signal split time
         st = signal_split(st, event, model, config=config)
 
@@ -137,8 +136,6 @@ def process_streams(streams, event, config=None, old_streams=None, strec=None):
                 raise ValueError("Each processing step must contain exactly one key.")
             step_name = key_list[0]
 
-            logging.debug(f"Processing step: {step_name}")
-
             if step_name not in all_processing_steps:
                 raise ValueError(f"Processing step {step_name} is not valid.")
 
@@ -177,7 +174,6 @@ def process_streams(streams, event, config=None, old_streams=None, strec=None):
         for tr in st:
             tr.stats.standard.process_level = PROCESS_LEVELS["V2"]
 
-    logging.info("Finished processing streams.")
     return streams
 
 

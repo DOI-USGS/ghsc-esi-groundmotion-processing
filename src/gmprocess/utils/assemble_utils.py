@@ -86,7 +86,6 @@ def assemble(event_id, event, config, directory, gmprocess_version, label):
 
     # Get raw directory
     raw_dir = get_rawdir(event_dir)
-    logging.debug(f"raw_dir: {raw_dir}")
     streams, unprocessed_files, unprocessed_file_errors = directory_to_streams(
         raw_dir, config=config
     )
@@ -99,9 +98,6 @@ def assemble(event_id, event, config, directory, gmprocess_version, label):
             writer.writerow(colnames)
             for ufile, uerror in zip(unprocessed_files, unprocessed_file_errors):
                 writer.writerow([ufile, uerror])
-
-    logging.debug("streams:")
-    logging.debug(streams)
 
     if config["read"]["use_streamcollection"]:
         stream_array = StreamCollection(streams, **config["duplicate"], config=config)
@@ -122,8 +118,6 @@ def assemble(event_id, event, config, directory, gmprocess_version, label):
         workspace.add_strec(strec, event_id)
     if rupture:
         workspace.add_rupture(rupture, event_id, label=label)
-    logging.debug("workspace.dataset.events:")
-    logging.debug(workspace.dataset.events)
     workspace.add_gmprocess_version(gmprocess_version)
     workspace.add_streams(
         event,
@@ -131,8 +125,5 @@ def assemble(event_id, event, config, directory, gmprocess_version, label):
         label="unprocessed",
         gmprocess_version=gmprocess_version,
     )
-    logging.debug("workspace.dataset.waveforms.list():")
-    logging.debug(workspace.dataset.waveforms.list())
-    logging.debug("workspace.dataset.config")
 
     return workspace

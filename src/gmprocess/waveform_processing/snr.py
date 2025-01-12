@@ -34,6 +34,11 @@ def compute_snr(st, event, smoothing_parameter=20.0, config=None):
         StationStream: With SNR dictionaries added as trace parameters.
     """
     for tr in st:
+        # Require that units are accel
+        if tr.stats.standard.units_type != "acc":
+            tr.fail("Unit type must be acc to compute SNR.")
+            continue
+
         # Do we have estimates of the signal split time?
         compute_snr_trace(tr, event.magnitude, smoothing_parameter)
     return st
@@ -186,19 +191,23 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
             compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
             return tr
 
+        nfft = max(
+            next_pow_2(event.stats.npts),
+            next_pow_2(preevent_noise.stats.npts),
+        )
+
         # Check that there are a minimum number of points in the event window
         if event.stats.npts < MIN_POINTS_IN_WINDOW:
             # Fail the trace, but still compute the event spectra
             if tr.passed:
                 tr.fail("SNR check; Not enough points in event window")
-            compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
+            compute_and_smooth_spectrum(tr, smoothing_parameter, "event", nfft=nfft)
             return tr
 
-        nfft = max(next_pow_2(event.stats.npts), next_pow_2(preevent_noise.stats.npts))
         compute_and_smooth_spectrum(
-            tr, smoothing_parameter, "noise", preevent_noise, nfft
+            tr, smoothing_parameter, "noise", preevent_noise, nfft=nfft
         )
-        compute_and_smooth_spectrum(tr, smoothing_parameter, "event", event, nfft)
+        compute_and_smooth_spectrum(tr, smoothing_parameter, "event", event, nfft=nfft)
 
         # Noise, event, and signal durations.
         #

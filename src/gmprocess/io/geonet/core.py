@@ -44,7 +44,6 @@ def is_geonet(filename, config=None):
     Returns:
         bool: True if GNS V1/V2, False otherwise.
     """
-    logging.debug("Checking if format is geonet.")
     if is_binary(filename):
         return False
     try:
@@ -78,7 +77,6 @@ def read_geonet(filename, config=None, **kwargs):
         Stream: Obspy Stream containing three channels of acceleration data
         (cm/s**2).
     """
-    logging.debug("Starting read_geonet.")
     if not is_geonet(filename, config):
         raise Exception(f"{filename} is not a valid GEONET strong motion data file.")
     trace1, offset1, _ = _read_channel(filename, 0)
@@ -144,7 +142,6 @@ def _read_channel(filename, line_offset):
     # parse out the station code, name, and component string
     # from text header
     station = lines[1].split()[1]
-    logging.debug(f"station: {station}")
     name = lines[2].replace(" ", "_").strip()
     component = lines[12].split()[1]
 
@@ -302,7 +299,6 @@ def _read_header(
     standard["units_type"] = "acc"
     standard["units"] = "cm/s/s"
     standard["source"] = "New Zealand Institute of Geological and Nuclear Science"
-    logging.debug(f"component: {component}")
     standard["vertical_orientation"] = np.nan
     if component.lower() in ["up", "down"]:
         standard["horizontal_orientation"] = np.nan
@@ -311,7 +307,6 @@ def _read_header(
         )
     else:
         angle = _get_channel(component)
-        logging.debug(f"angle: {angle}")
         standard["horizontal_orientation"] = float(angle)
         if (angle > 315 or angle < 45) or (angle > 135 and angle < 225):
             hdr["channel"] = get_channel_name(
@@ -322,7 +317,6 @@ def _read_header(
                 hdr["delta"], is_acceleration=True, is_vertical=False, is_north=False
             )
 
-    logging.debug(f"channel: {hdr['channel']}")
     hdr["location"] = "--"
 
     # figure out the start time
@@ -354,7 +348,6 @@ def _read_header(
     standard["instrument_damping"] = hdr_data[4, 1]
     standard["process_time"] = ""
     standard["process_level"] = PROCESS_LEVELS[data_format]
-    logging.debug(f"process_level: {data_format}")
     standard["sensor_serial_number"] = ""
     standard["instrument"] = instrument
     standard["comments"] = ""

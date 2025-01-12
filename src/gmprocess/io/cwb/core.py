@@ -64,7 +64,6 @@ def read_cwb(filename, config=None, **kwargs):
         Stream: Obspy Stream containing three channels of acceleration
         data (cm/s**2).
     """
-    logging.debug("Starting read_cwb.")
     if not is_cwb(filename, config):
         raise Exception(f"{filename} is not a valid CWB strong motion data file.")
     f = open(filename, "rt", encoding="utf-8")
@@ -176,10 +175,8 @@ def _get_header_info(file, data):
         line = file.readline()
         if line.startswith("#StationCode"):
             hdr["station"] = line.split(":")[1].strip()
-            logging.debug(f"station: {hdr['station']}")
         if line.startswith("#StationName"):
             standard["station_name"] = line.split(":")[1].strip()
-            logging.debug(f"station_name: {standard['station_name']}")
         if line.startswith("#StationLongitude"):
             coordinates["longitude"] = float(line.split(":")[1].strip())
         if line.startswith("#StationLatitude"):

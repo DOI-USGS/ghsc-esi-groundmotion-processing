@@ -9,9 +9,8 @@ from gmprocess.waveform_processing.processing_step import processing_step
 from pint import UnitRegistry
 
 ABBREV_UNITS = {"ACC": "cm/s^2", "VEL": "cm/s", "DISP": "cm"}
-OUTPUT = "ACC"
 
-unit_registry = UnitRegistry()
+unit_registry = UnitRegistry(on_redefinition="ignore")
 
 # Tell the registry to treat the units of "count" as having dimensions of "count"
 # rather than being dimensionless (which is the default).
@@ -55,6 +54,7 @@ TAPER_WIDTH = 0.05
 def remove_response(
     st,
     sensitivity_threshold=10.0,
+    output_as_acceleration=True,
     pre_filt=True,
     f1=0.001,
     f2=0.005,
@@ -80,6 +80,9 @@ def remove_response(
             Traces will be failed if the overall reported sensitivity differs by more
             than this threshold (units are percent) when compared to the sensitivty as
             computed by combining the reported gains of each response stage.
+        output_as_acceleration (bool):
+            For velocity intruments, differentiate the waveform after the instrument
+            response is removed to convert the units to acceleration.
         pre_filt (bool):
             Apply a bandpass filter in frequency domain to the data before
             deconvolution?
@@ -102,7 +105,17 @@ def remove_response(
         StationStream: With instrument response correction applied.
     """
     resp = RemoveResponse(
-        st, sensitivity_threshold, pre_filt, f1, f2, f3, f4, water_level, inv, config
+        st,
+        sensitivity_threshold,
+        output_as_acceleration,
+        pre_filt,
+        f1,
+        f2,
+        f3,
+        f4,
+        water_level,
+        inv,
+        config,
     )
     return resp.stream
 
@@ -114,6 +127,7 @@ class RemoveResponse(object):
         self,
         st,
         sensitivity_threshold=10.0,
+        output_as_acceleration=True,
         pre_filt=True,
         f1=0.001,
         f2=0.005,
@@ -126,6 +140,7 @@ class RemoveResponse(object):
         self.unit_registry = UnitRegistry()
         self.stream = st
         self.sensitivity_threshold = sensitivity_threshold
+        self.output_as_acceleration = output_as_acceleration
         self.pre_filt = pre_filt
         self.f1 = f1
         self.f2 = f2
@@ -199,9 +214,9 @@ class RemoveResponse(object):
             # Note: rater than set OUTPUT to 'ACC' for seismometers, we are are setting
             # it to 'VEL" and then differentiating.
             if self.instrument_code == "H":
-                output_units = "VEL"
+                self.output_units = "VEL"
             elif self.instrument_code == "N":
-                output_units = "ACC"
+                self.output_units = "ACC"
             else:
                 raise ValueError("Unsupported instrument code.")
 
@@ -211,7 +226,7 @@ class RemoveResponse(object):
                 if self.sensitivity_check_passed:
                     self.trace.remove_response(
                         inventory=self.inv,
-                        output=output_units,
+                        output=self.output_units,
                         water_level=self.water_level,
                         pre_filt=self.pre_filt,
                         zero_mean=True,
@@ -222,7 +237,7 @@ class RemoveResponse(object):
                         {
                             "method": "remove_response",
                             "input_units": "counts",
-                            "output_units": ABBREV_UNITS[output_units],
+                            "output_units": ABBREV_UNITS[self.output_units],
                             "water_level": self.water_level,
                             "pre_filt_freqs": str(self.pre_filt),
                         },
@@ -245,7 +260,7 @@ class RemoveResponse(object):
                     # stage units match, so trust full instrument response.
                     self.trace.remove_response(
                         inventory=self.inv,
-                        output=output_units,
+                        output=self.output_units,
                         water_level=self.water_level,
                         pre_filt=self.pre_filt,
                         zero_mean=True,
@@ -256,7 +271,7 @@ class RemoveResponse(object):
                         {
                             "method": "remove_response",
                             "input_units": "counts",
-                            "output_units": ABBREV_UNITS[output_units],
+                            "output_units": ABBREV_UNITS[self.output_units],
                             "water_level": self.water_level,
                             "pre_filt_freqs": str(self.pre_filt),
                         },
@@ -265,24 +280,24 @@ class RemoveResponse(object):
                     reason = "Total and stage units are inconsistent with instrument."
                     self.trace.fail(reason)
 
+            # Convert from m to cm
+            self.trace.data *= constants.M_TO_CM
+
+            # Converted to physical units, so this is V1 processing level
+            self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
+
+            # Set units
+            self.trace.stats.standard.units = ABBREV_UNITS[self.output_units]
+            self.trace.stats.standard.units_type = self.output_units.lower()
+
             # Differentiate if this is a seismometer
-            if self.instrument_code == "H":
+            if (self.instrument_code == "H") and self.output_as_acceleration:
                 diff_conf = self.config["differentiation"]
                 self.trace.taper(TAPER_WIDTH)
                 self.trace.differentiate(frequency=diff_conf["frequency"])
 
-            self.trace.data *= constants.M_TO_CM  # Convert from m to cm
-            self.trace.stats.standard.units = ABBREV_UNITS[OUTPUT]
-            self.trace.stats.standard.units_type = OUTPUT.lower()
-            self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
         except BaseException as e:
             raise e
-            reason = (
-                "Encountered an error when attempting to remove instrument response: "
-                f"{str(e)}"
-            )
-            self.trace.fail(reason)
-            return
 
         # Response removal can also result in NaN values due to bad metadata, so check
         # that data contains no NaN or inf values
@@ -298,11 +313,11 @@ class RemoveResponse(object):
             {
                 "method": "remove_sensitivity",
                 "input_units": "counts",
-                "output_units": ABBREV_UNITS[OUTPUT],
+                "output_units": ABBREV_UNITS[self.output_units],
             },
         )
-        self.trace.stats.standard.units = ABBREV_UNITS[OUTPUT]
-        self.trace.stats.standard.units_type = OUTPUT.lower()
+        self.trace.stats.standard.units = ABBREV_UNITS[self.output_units]
+        self.trace.stats.standard.units_type = self.output_units.lower()
         self.trace.stats.standard.process_level = PROCESS_LEVELS["V1"]
 
     def _check_sensitivity_and_units(self):
@@ -378,9 +393,9 @@ class RemoveResponse(object):
             self.stage_units_match = False
 
         # Percent difference relative to mean value
-        osen = total_sensitivity.magnitude
+        tsen = total_sensitivity.magnitude
         ssen = stage_sensitivity.magnitude
-        pct_diff = 200.0 * np.abs(osen - ssen) / (osen + ssen)
+        pct_diff = 200.0 * np.abs(tsen - ssen) / (tsen + ssen)
         if pct_diff > self.sensitivity_threshold:
             self.sensitivity_check_passed = False
         else:

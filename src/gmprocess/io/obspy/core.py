@@ -111,7 +111,6 @@ def is_obspy(filename, config=None):
     Returns:
         bool: True if obspy supported, otherwise False.
     """
-    logging.debug("Checking if format is supported by obspy.")
     if config is None:
         config = get_config()
     metadir = config["read"]["metadata_directory"]
@@ -146,7 +145,6 @@ def read_obspy(filename, config=None, **kwargs):
     Returns:
         Stream: StationStream object.
     """
-    logging.debug("Starting read_obspy.")
     if config is None:
         config = get_config()
     if not is_obspy(filename, config):

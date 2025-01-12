@@ -684,7 +684,6 @@ def get_classification_metrics(tr, p_pick, delta_t):
         tail_ratio = np.sqrt(tail_ratio1 * tail_ratio2)
         tailnoise_ratio = tail_ratio / PN_average
     else:
-        logging.debug("PGA1 or PGA2 is 0")
         tail_ratio1 = 1.0
         tail_ratio2 = 1.0
         tail_ratio = 1.0
@@ -699,7 +698,6 @@ def get_classification_metrics(tr, p_pick, delta_t):
         mtail_ratio = np.sqrt(mtail_ratio1 * mtail_ratio2)
         mtailnoise_ratio = mtail_ratio / PN
     else:
-        logging.debug("PGA1 or PGA2 is 0")
         mtail_ratio1 = 1.0
         mtail_ratio2 = 1.0
         mtail_ratio = 1.0
@@ -713,7 +711,6 @@ def get_classification_metrics(tr, p_pick, delta_t):
         head_ratio2 = head_average2 / PGA2
         head_ratio = np.sqrt(head_ratio1 * head_ratio2)
     else:
-        logging.debug("PGA1 or PGA2 is 0")
         head_ratio1 = 1.0
         head_ratio2 = 1.0
         head_ratio = 1.0

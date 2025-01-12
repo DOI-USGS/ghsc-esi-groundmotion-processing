@@ -417,7 +417,6 @@ class StreamWorkspace(object):
             label_prov.to_provenance_document(), name=label
         )
 
-        logging.debug(streams)
         for stream in streams:
             logging.info("Adding waveforms for station %s", stream.get_id())
             # is this a raw file? Check the trace for provenance info.
@@ -584,7 +583,6 @@ class StreamWorkspace(object):
             self.dataset.q.station == sta_codes,
             self.dataset.q.tag == tag,
         ):
-            logging.debug(waveform)
             tags = waveform.get_waveform_tags()
             for tag in tags:
                 tstream = waveform[tag]
