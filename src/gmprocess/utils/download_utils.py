@@ -49,7 +49,13 @@ def download_rupture_file(event_id, event_dir):
         event_dir (pathlib.Path):
             Event directory.
     """
-    data = download_comcat_event(event_id)
+    try:
+        data = download_comcat_event(event_id)
+    except:
+        logging.info(
+            f"{event_id} is not in Comcat and so we cannot get a rupture.json file."
+        )
+        return
     try:
         shakemap_prod = data["properties"]["products"]["shakemap"][0]
         rupture_url = shakemap_prod["contents"]["download/rupture.json"]["url"]

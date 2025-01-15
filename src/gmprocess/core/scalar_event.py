@@ -276,7 +276,7 @@ def get_events_from_file(filename=None):
                 fields = line.split(",")
                 if len(fields) != 7:
                     raise IOError(
-                        f"Expected 6 columns in events file '{filename}'. Error parsing line '{line}'."
+                        f"Expected 7 columns in events file '{filename}'. Error parsing line '{line}'."
                     )
                 event_values = {
                     "id": fields[0].strip(),
