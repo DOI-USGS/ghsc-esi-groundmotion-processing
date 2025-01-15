@@ -12,6 +12,12 @@
   - Expand instrument response QA to include consistency of units with instrument type. 
   - Set unit registry to treat "counts" as having a unique dimension, rather than being dimensionless. 
   - Simplify SNR failure message.
+  - Allow water_level to be specified as "None" for the instrument response in config file. 
+- Documentation
+  - Fix the description of the --textfile option for gmrecords.
+- Bugfix
+  - Do not exit when event id not found in comcat while looking for a rupture file.
+
 
 ## 2.2.0 / 2024-12-23
 - Enhancements

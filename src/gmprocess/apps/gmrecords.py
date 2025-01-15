@@ -358,7 +358,8 @@ class GMrecordsApp(object):
                 "(2) six columns in which those columns are: "
                 "event_id (string, no spaces), time (any ISO standard for date/time), "
                 "latitutde (float, decimal degrees), longitude (float, decimal "
-                "degrees), depth (float, km), magnitude (float)."
+                "degrees), depth (float, km), magnitude (float), and magnitude type "
+                "(string)."
             ),
         )
 

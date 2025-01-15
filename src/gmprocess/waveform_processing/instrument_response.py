@@ -104,6 +104,11 @@ def remove_response(
     Returns:
         StationStream: With instrument response correction applied.
     """
+
+    # Allow users to specify "None" in the config file.
+    if water_level == "None":
+        water_level = None
+
     resp = RemoveResponse(
         st,
         sensitivity_threshold,
