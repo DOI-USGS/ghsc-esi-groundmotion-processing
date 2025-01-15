@@ -152,11 +152,20 @@ class RemoveResponse(object):
         self.f3 = f3
         self.f4 = f4
         self.water_level = water_level
-        self.inv = inv
-        if self.inv is None:
-            self.inv = self.stream.get_inventory()
+        self.inventory = inv
+        if self.inventory is None:
+            self.inventory = self.stream.get_inventory()
         self.config = config
         for self.trace in self.stream:
+            # Select the inventory for this trace
+            self.selected_inventory = self.inventory.select(
+                network=self.trace.stats.network,
+                station=self.trace.stats.station,
+                channel=self.trace.stats.channel,
+                location=self.trace.stats.location,
+                time=self.trace.stats.starttime,
+            )
+
             if "remove_response" in self.trace.provenance.ids:
                 continue
             self._set_pre_filt()
@@ -175,7 +184,9 @@ class RemoveResponse(object):
             self.pre_filt = None
 
     def _set_poles_and_zeros(self):
-        self.resp = self.inv.get_response(self.trace.id, self.trace.stats.starttime)
+        self.resp = self.selected_inventory.get_response(
+            self.trace.id, self.trace.stats.starttime
+        )
         try:
             self.paz = self.resp.get_paz()
             self.has_paz = not (len(self.paz.poles) == 0 and len(self.paz.zeros) == 0)
@@ -190,6 +201,12 @@ class RemoveResponse(object):
                 "This instrument type is not supported. The instrument code must be "
                 "either H (high gain seismometer) or N (accelerometer)."
             )
+            self.trace.fail(reason)
+            return
+
+        trace_sps = self.trace.stats.sampling_rate
+        if self.selected_inventory[0][0][0].sample_rate != trace_sps:
+            reason = "Sample rate is not consistent betwen data and metadata"
             self.trace.fail(reason)
             return
 
@@ -230,7 +247,7 @@ class RemoveResponse(object):
             if self.total_units_match and self.stage_units_match:
                 if self.sensitivity_check_passed:
                     self.trace.remove_response(
-                        inventory=self.inv,
+                        inventory=self.selected_inventory,
                         output=self.output_units,
                         water_level=self.water_level,
                         pre_filt=self.pre_filt,
@@ -264,7 +281,7 @@ class RemoveResponse(object):
                 elif self.stage_units_match:
                     # stage units match, so trust full instrument response.
                     self.trace.remove_response(
-                        inventory=self.inv,
+                        inventory=self.selected_inventory,
                         output=self.output_units,
                         water_level=self.water_level,
                         pre_filt=self.pre_filt,
@@ -311,7 +328,7 @@ class RemoveResponse(object):
             self.trace.fail(reason)
 
     def _remove_sensitivity(self):
-        self.trace.remove_sensitivity(inventory=self.inv)
+        self.trace.remove_sensitivity(inventory=self.selected_inventory)
         self.trace.data *= constants.M_TO_CM  # Convert from m to cm
         self.trace.set_provenance(
             "remove_response",
@@ -329,11 +346,7 @@ class RemoveResponse(object):
         network = self.trace.stats.network
         station = self.trace.stats.station
         channel = self.trace.stats.channel
-        inventory = self.inv.select(
-            network=network,
-            station=station,
-            channel=channel,
-        )
+        inventory = self.selected_inventory
         response = inventory[0][0][0].response
         total_sensitivity = response.instrument_sensitivity.value
         sensivity_input_units = STAGE_UNITS.get(

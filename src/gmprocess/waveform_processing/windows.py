@@ -41,7 +41,7 @@ def duration_from_magnitude(event_magnitude):
 
 
 @processing_step
-def cut(st, sec_before_split=2.0, config=None):
+def cut(st, sec_before_split=5.0, config=None):
     """Cut/trim the record.
 
     This method minimally requires that the windows.signal_end method has been

@@ -173,14 +173,32 @@ def read_obspy(filename, config=None, **kwargs):
     traces = []
 
     for ttrace in tstream:
-        trace = StationTrace(
-            data=ttrace.data, header=ttrace.stats, inventory=inventory, config=config
-        )
-        if not np.issubdtype(trace.data.dtype, np.integer):
-            trace.fail("Raw data type is not integer.")
         network = ttrace.stats.network
         station = ttrace.stats.station
         channel = ttrace.stats.channel
+        nsc = f"{network}.{station}.{channel}"
+
+        if inventory:
+            tinventory = inventory.select(
+                network=ttrace.stats.network,
+                station=ttrace.stats.station,
+                channel=ttrace.stats.channel,
+                location=ttrace.stats.location,
+                time=ttrace.stats.starttime,
+            )
+            if tinventory[0][0][0].sample_rate != ttrace.stats.sampling_rate:
+                raise ValueError(
+                    f"Sample rate is not consistent betwen data and metadata ({nsc})"
+                )
+        else:
+            tinventory = None
+
+        trace = StationTrace(
+            data=ttrace.data, header=ttrace.stats, inventory=tinventory, config=config
+        )
+
+        if not np.issubdtype(trace.data.dtype, np.integer):
+            trace.fail("Raw data type is not integer.")
 
         if ttrace.stats.location == "":
             ttrace.stats.location = "--"
