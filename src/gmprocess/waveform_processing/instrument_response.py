@@ -265,20 +265,26 @@ class RemoveResponse(object):
                         },
                     )
                 else:
+                    self.warning("Total and stage sensitivities do not match.")
                     if self.instrument_code == "N":
                         self._remove_sensitivity()
                     else:
-                        reason = "Stage gains are inconsistent with total sensitivity."
+                        reason = "Total and stage sensitivity mismatch."
                         self.trace.fail(reason)
             else:
                 if self.total_units_match:
+                    self.warning("Stage units mismatch instrument type.")
                     if self.instrument_code == "N":
+                        self.warning("Total and stage sensitivities do not match.")
                         self._remove_sensitivity()
                     else:
                         # To get here, stage_units_match must be False.
-                        reason = "Stage units inconsistent with instrument."
+                        reason = "Total and stage sensitivity mismatch."
                         self.trace.fail(reason)
                 elif self.stage_units_match:
+                    self.warning("Total units mismatch instrument type.")
+                    if not self.sensitivity_check_passed:
+                        self.warning("Total and stage sensitivities do not match.")
                     # stage units match, so trust full instrument response.
                     self.trace.remove_response(
                         inventory=self.selected_inventory,
@@ -299,7 +305,7 @@ class RemoveResponse(object):
                         },
                     )
                 else:
-                    reason = "Total and stage units are inconsistent with instrument."
+                    reason = "Total and stage units mismatch instrument type."
                     self.trace.fail(reason)
 
             # Convert from m to cm

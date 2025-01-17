@@ -230,13 +230,3 @@ This would allow the provenance information to track updates to a finite-source 
 Additionally, the earthquake rupture model is an important descriptive feature for scenario (hypothetical) earthquakes. 
 Not only is it useful to have the finite-source description for computing station metrics, etc, but we often usually also have multiple realizations that differ in ways that are not easily described by basic parameters such as magnitude and hypocenter. 
 Examples include variations in rupture speed and spatial variation in slip.
-
-% Indices and tables
-
-% ==================
-
-% * :ref:`genindex`
-
-% * :ref:`modindex`
-
-% * :ref:`search`
