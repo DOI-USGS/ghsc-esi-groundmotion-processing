@@ -227,11 +227,15 @@ class SmoothSpectra(BaseComponent):
     """Return the smoothed Fourier amplitude spectra of the input spectra."""
 
     outputs = {}
-    INPUT_CLASS = [containers.CombinedSpectra]
+    INPUT_CLASS = [containers.CombinedSpectra, containers.FourierSpectra]
 
     def calculate(self):
+        if isinstance(self.prior_step.output, containers.FourierSpectra):
+            temp_spec = self.prior_step.output.fourier_spectra[0]
+        else:
+            temp_spec = self.prior_step.output.fourier_spectra
         ko_spec, ko_freq = self._smooth_spectrum(
-            self.prior_step.output.fourier_spectra,
+            temp_spec,
             self.prior_step.output.frequency,
         )
         self.output = containers.CombinedSpectra(

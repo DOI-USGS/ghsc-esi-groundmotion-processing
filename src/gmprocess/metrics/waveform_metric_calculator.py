@@ -80,6 +80,7 @@ class WaveformMetricCalculator:
         "channels-arias": [transform.Arias, reduce.TraceMax],
         "channels-duration": [transform.Arias, reduce.Duration],
         "channels-cav": [reduce.CAV],
+        "channels-fas": [transform.FourierAmplitudeSpectra, transform.SmoothSpectra],
         "arithmetic_mean-pga": [reduce.TraceMax, combine.ArithmeticMean],
         "arithmetic_mean-pgv": [
             transform.Integrate,
