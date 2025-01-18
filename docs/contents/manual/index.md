@@ -10,6 +10,7 @@ maxdepth: 1
    The gmrecords Program <gmrecords>
    Processing Steps <processing>
    UCLA Review GUI <ucla_gui>
+   Instrument Response <instrument_response>
 ```
 
 % Indices and tables

@@ -26,6 +26,9 @@
 .. autofunction:: gmprocess.waveform_processing.snr.compute_snr
 ```
 ```{eval-rst}
+.. autofunction:: gmprocess.waveform_processing.convert_units.convert_to_acceleration
+```
+```{eval-rst}
 .. autofunction:: gmprocess.waveform_processing.windows.cut
 ```
 ```{eval-rst}
@@ -56,6 +59,12 @@
 .. autofunction:: gmprocess.waveform_processing.nn_quality_assurance.nnet_qa
 ```
 ```{eval-rst}
+.. autofunction:: gmprocess.waveform_processing.prism_adaptive_baseline.prism_adaptive_baseline
+```
+```{eval-rst}
+.. autofunction:: gmprocess.waveform_processing.prism_adaptive_baseline.prism_quality_criteria
+```
+```{eval-rst}
 .. autofunction:: gmprocess.waveform_processing.instrument_response.remove_response
 ```
 ```{eval-rst}
@@ -68,5 +77,11 @@
 .. autofunction:: gmprocess.waveform_processing.snr.snr_check
 ```
 ```{eval-rst}
+.. autofunction:: gmprocess.waveform_processing.zero_pad.strip_zero_pad
+```
+```{eval-rst}
 .. autofunction:: gmprocess.waveform_processing.taper.taper
+```
+```{eval-rst}
+.. autofunction:: gmprocess.waveform_processing.zero_pad.zero_pad
 ```
