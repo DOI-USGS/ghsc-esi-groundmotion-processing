@@ -85,11 +85,6 @@ def strip_zero_pad(st, config=None):
         return st
 
     for tr in st:
-        pad_prov = tr.get_provenance("pad")
-        if len(pad_prov) > 1:
-            raise ValueError("More than one 'pad' entry in provenance.")
-        start_time = pad_prov[0]["prov_attributes"].get("old_start_time")
-        end_time = pad_prov[0]["prov_attributes"].get("old_end_time")
-        tr.trim(starttime=start_time, endtime=end_time)
+        tr.strip_zero_pad()
 
     return st

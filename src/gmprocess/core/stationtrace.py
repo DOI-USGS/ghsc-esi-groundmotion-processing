@@ -403,11 +403,12 @@ class StationTrace(Trace):
         old_end_time = self.stats.endtime
         start_time = self.stats.starttime - length
         end_time = self.stats.endtime + length
+        fill_value = np.array(0, dtype=self.data.dtype)
         self.trim(
             starttime=start_time,
             endtime=end_time,
             pad=True,
-            fill_value=0.0,
+            fill_value=fill_value,
             suppress_provenance=True,
         )
 
@@ -421,6 +422,18 @@ class StationTrace(Trace):
                 "old_end_time": old_end_time,
             },
         )
+        return self
+
+    def strip_zero_pad(self):
+        """Remove zero pads from trace."""
+
+        pad_prov = self.get_provenance("pad")
+        if len(pad_prov) > 1:
+            raise ValueError("More than one 'pad' entry in provenance.")
+        start_time = pad_prov[0]["prov_attributes"].get("old_start_time")
+        end_time = pad_prov[0]["prov_attributes"].get("old_end_time")
+        self.trim(starttime=start_time, endtime=end_time)
+
         return self
 
     def taper(self, max_percentage, type="hann", max_length=None, side="both"):

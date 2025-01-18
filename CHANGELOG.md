@@ -19,7 +19,7 @@
   - Fix the description of the --textfile option for gmrecords.
 - Bugfix
   - Do not exit when event id not found in comcat while looking for a rupture file.
-
+  - Ensure fill value matches the data type of the trace.
 
 ## 2.2.0 / 2024-12-23
 - Enhancements
