@@ -735,7 +735,6 @@ class StationTrace(Trace):
                 self.set_provenance(
                     "bandpass_filter",
                     {
-                        "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
                         "filter_type": "Butterworth ObsPy",
                         "filter_order": corners,
                         "number_of_passes": number_of_passes,
@@ -766,7 +765,6 @@ class StationTrace(Trace):
                 self.set_provenance(
                     "bandpass_filter",
                     {
-                        "bandpass_filter": {"code": "bp", "label": "Bandpass Filter"},
                         "filter_type": "Butterworth gmrocess",
                         "filter_order": corners,
                         "number_of_passes": number_of_passes,
@@ -779,7 +777,6 @@ class StationTrace(Trace):
                 self.set_provenance(
                     "bandstop_filter",
                     {
-                        "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
                         "filter_type": "Butterworth ObsPy",
                         "filter_order": corners,
                         "number_of_passes": number_of_passes,
@@ -812,7 +809,6 @@ class StationTrace(Trace):
                 self.set_provenance(
                     "bandstop_filter",
                     {
-                        "bandstop_filter": {"code": "bs", "label": "Bandstop Filter"},
                         "filter_type": "Butterworth gmprocess",
                         "filter_order": corners,
                         "number_of_passes": number_of_passes,

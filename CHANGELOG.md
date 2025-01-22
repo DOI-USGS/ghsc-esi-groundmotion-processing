@@ -1,5 +1,6 @@
 ## main
 - Enhancements
+  - Substantial changes to the default processing steps.
   - Allow for user to set a different query window duration for different tectonic envirnments.
   - Increase default query window duraiton.
   - Add a new "source_path" method to compute the signal end that uses 1/fc as the source duration, which is then added to a path duration that is parameterized with coefficients for an intercept and distance term.
@@ -15,11 +16,16 @@
   - Allow water_level to be specified as "None" for the instrument response in config file.
   - Add QA check for inconsistency in sample rate reported in data and metadata.
   - Increase `sec_before_split` default value for trimming the record.
+  - Add config options to allow for using a Butterworth filter for filtering prior to instrument response removal, rather than the default options that ObsPy uses with their `remove_response` method. 
+  - Add `bandpass` processing step.
 - Documentation
   - Fix the description of the --textfile option for gmrecords.
 - Bugfix
   - Do not exit when event id not found in comcat while looking for a rupture file.
   - Ensure fill value matches the data type of the trace.
+  - Add provenance entry for when the detrend method is "pre".
+  - Fix errors in some filtering provenance entries.
+  - Bugfix in normalizing pre-event noise spectra.
 
 ## 2.2.0 / 2024-12-23
 - Enhancements
