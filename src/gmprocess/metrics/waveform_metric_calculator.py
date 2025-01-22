@@ -69,7 +69,12 @@ class WaveformMetricCalculator:
     all_steps = {
         "channels-pga": [reduce.TraceMax],
         "channels-pgv": [transform.Integrate, reduce.TraceMax],
+        "channels-psa": [
+            transform.TraceOscillator,
+            reduce.OscillatorPseudoAcceleration,
+        ],
         "channels-sa": [transform.TraceOscillator, reduce.OscillatorMaxAcceleration],
+        "channels-psv": [transform.TraceOscillator, reduce.OscillatorPseudoVelocity],
         "channels-sv": [transform.TraceOscillator, reduce.OscillatorMaxVelocity],
         "channels-sd": [transform.TraceOscillator, reduce.OscillatorMaxDisplacement],
         "channels-arias": [transform.Arias, reduce.TraceMax],
@@ -147,10 +152,22 @@ class WaveformMetricCalculator:
             reduce.RotDOscMaxAcceleration,
             reduce.RotDPercentileAcceleration,
         ],
+        "rotd-psa": [
+            rotate.RotD,
+            transform.RotDOscillator,
+            reduce.RotDOscPseudoAcceleration,
+            reduce.RotDPercentileAcceleration,
+        ],
         "rotd-sv": [
             rotate.RotD,
             transform.RotDOscillator,
             reduce.RotDOscMaxVelocity,
+            reduce.RotDPercentileVelocity,
+        ],
+        "rotd-psv": [
+            rotate.RotD,
+            transform.RotDOscillator,
+            reduce.RotDOscPseudoVelocity,
             reduce.RotDPercentileVelocity,
         ],
         "rotd-sd": [

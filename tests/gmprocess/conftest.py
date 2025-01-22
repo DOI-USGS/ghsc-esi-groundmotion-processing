@@ -49,6 +49,15 @@ def load_ci38457511_demo_export():
 
 
 @pytest.fixture(scope="package")
+def load_nc73821036_psa_psv():
+    """Load the workspace file for the nc73821036 demo export test."""
+    ddir = constants.TEST_DATA_DIR / "psa_psv" / "nc73821036"
+    ws_file = ddir / "workspace.h5"
+    ws = StreamWorkspace(ws_file)
+    return ws
+
+
+@pytest.fixture(scope="package")
 def load_data_usb000syza():
     """Load data for event usb000syza.
 

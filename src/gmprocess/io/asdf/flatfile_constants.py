@@ -71,8 +71,10 @@ FLATFILE_COLUMNS = {
 FLATFILE_IMT_COLUMNS = {
     "PGA": f"Peak ground acceleration ({constants.UNITS['pga']})",
     "PGV": f"Peak ground velocity ({constants.UNITS['pgv']})",
-    "SA(X)": f"Pseudo-spectral acceleration ({constants.UNITS['sa']}) at X seconds",
-    "SV(X)": f"Sspectral velocity ({constants.UNITS['sv']}) at X seconds",
+    "SA(X)": f"Spectral acceleration ({constants.UNITS['sa']}) at X seconds",
+    "PSA(X)": f"Pseudo-spectral acceleration ({constants.UNITS['psa']}) at X seconds",
+    "SV(X)": f"Spectral velocity ({constants.UNITS['sv']}) at X seconds",
+    "PSV(X)": f"Pseudo-spectral velocity ({constants.UNITS['psv']}) at X seconds",
     "SD(X)": f"Spectral displacmeent ({constants.UNITS['sd']}) at X seconds",
     "FAS(X)": (
         f"Fourier amplitude spectrum value ({constants.UNITS['fas']}) at X seconds"

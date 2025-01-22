@@ -31,6 +31,7 @@ METRIC_INFO = {
     "PGA": ("Peak ground acceleration", "%g"),
     "PGV": ("Peak ground velocity", "cm/s"),
     "SA": ("Spectral acceleration", "%g"),
+    "PSA": ("Pseudo-spectral acceleration", "%g"),
     "DURATION": ("Earthquake duration", "s"),
     "FAS": ("Fourier Amplitude Spectra", "cm/s"),
     "SORTEDDURATION": (

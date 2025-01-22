@@ -55,11 +55,22 @@ def test_metric_calculator(load_data_us1000778i, config):
 
     metric_config = {
         "components_and_types": {
-            "channels": ["pga", "pgv", "sa", "sv", "sd", "arias", "cav", "duration"],
+            "channels": [
+                "pga",
+                "pgv",
+                "psa",
+                "sa",
+                "psv",
+                "sv",
+                "sd",
+                "arias",
+                "cav",
+                "duration",
+            ],
             "arithmetic_mean": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "geometric_mean": ["pga", "pgv", "sa", "arias", "cav", "duration"],
             "quadratic_mean": ["fas"],
-            "rotd": ["pga", "pgv", "sa", "sv", "sd"],
+            "rotd": ["pga", "pgv", "psa", "sa", "psv", "sv", "sd"],
         },
         "type_parameters": {
             "sa": {
@@ -117,23 +128,34 @@ def test_metric_calculator(load_data_us1000778i, config):
     np.testing.assert_allclose(pgv["RotD(percentile=100.0)"], 33.284090745430966)
 
     sa1 = wml.select("SA", period=1.0, damping=0.05)[0].values
-
     np.testing.assert_allclose(sa1["Channels(component=H1)"], 42.135839)
     np.testing.assert_allclose(sa1["Channels(component=H2)"], 41.891393940234074)
     np.testing.assert_allclose(sa1["Channels(component=Z)"], 12.789046181803089)
     np.testing.assert_allclose(sa1["RotD(percentile=50.0)"], 42.13583921464555)
     np.testing.assert_allclose(sa1["RotD(percentile=100.0)"], 47.910999673071736)
 
-    sv1 = wml.select("SV", period=1.0, damping=0.05)[0].values
+    psa1 = wml.select("PSA", period=1.0, damping=0.05)[0].values
+    np.testing.assert_allclose(psa1["Channels(component=H1)"], 41.96825932989227)
+    np.testing.assert_allclose(psa1["Channels(component=H2)"], 41.698425141967675)
+    np.testing.assert_allclose(psa1["Channels(component=Z)"], 12.717042982072364)
+    np.testing.assert_allclose(psa1["RotD(percentile=50.0)"], 41.968259329892255)
+    np.testing.assert_allclose(psa1["RotD(percentile=100.0)"], 47.690218046876154)
 
+    sv1 = wml.select("SV", period=1.0, damping=0.05)[0].values
     np.testing.assert_allclose(sv1["Channels(component=H1)"], 63.02799719)
     np.testing.assert_allclose(sv1["Channels(component=H2)"], 62.15551237)
     np.testing.assert_allclose(sv1["Channels(component=Z)"], 20.49380808)
     np.testing.assert_allclose(sv1["RotD(percentile=50.0)"], 64.763622)
     np.testing.assert_allclose(sv1["RotD(percentile=100.0)"], 70.624906)
 
-    sd1 = wml.select("SD", period=1.0, damping=0.05)[0].values
+    psv1 = wml.select("PSV", period=1.0, damping=0.05)[0].values
+    np.testing.assert_allclose(psv1["Channels(component=H1)"], 65.50308644998945)
+    np.testing.assert_allclose(psv1["Channels(component=H2)"], 65.08193550351218)
+    np.testing.assert_allclose(psv1["Channels(component=Z)"], 19.848465939343882)
+    np.testing.assert_allclose(psv1["RotD(percentile=50.0)"], 65.50308644998944)
+    np.testing.assert_allclose(psv1["RotD(percentile=100.0)"], 74.4337869957447)
 
+    sd1 = wml.select("SD", period=1.0, damping=0.05)[0].values
     np.testing.assert_allclose(sd1["Channels(component=H1)"], 10.42514)
     np.testing.assert_allclose(sd1["Channels(component=H2)"], 10.35811174)
     np.testing.assert_allclose(sd1["Channels(component=Z)"], 3.15898147)

@@ -553,8 +553,8 @@ metrics:
   # Do *not* delete a key to remove a component, it will be replaced with the default.
   # To remove a component, set it's types as an empty list.
   components_and_types: 
-    channels: [pga, pgv, sa, duration, cav, arias]
-    rotd: [pga, pgv, sa]
+    channels: [pga, pgv, psa, duration, cav, arias]
+    rotd: [pga, pgv, psa]
     geometric_mean: [duration]
     quadratic_mean: [fas]
 

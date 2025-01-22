@@ -3,7 +3,19 @@ import numpy as np
 from gmprocess.io.asdf.flatfile import Flatfile
 
 
-def test_flatfile(load_ci38457511_demo_export):
+def test_flatfile_nc73821036(load_nc73821036_psa_psv):
+    ws = load_nc73821036_psa_psv
+    ff = Flatfile(ws)
+    _, imc_tables, _ = ff.get_tables()
+    assert len(imc_tables) == 6
+    rot50_table = imc_tables["RotD(percentile=50.0)"]
+    target_psa = np.array([24.236534])
+    np.testing.assert_allclose(
+        rot50_table["PSA(T=1.0000, D=0.050)"], target_psa, atol=1e-6
+    )
+
+
+def test_flatfile_ci38457511(load_ci38457511_demo_export):
     ws = load_ci38457511_demo_export
     ff = Flatfile(ws)
     spect_table, _ = ff.get_fit_spectra_table()
