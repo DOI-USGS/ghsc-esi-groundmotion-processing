@@ -51,6 +51,45 @@ TAPER_WIDTH = 0.05
 
 
 @processing_step
+def pre_filter(st, lp_factor=0.8, hp_freq=0.05, corners=20):
+    """Filters to be applied prior to instrument response removal.
+
+    Using this is an alternative to the "pre_filt" option in ObsPy's "remove_response"
+    function. The prefiltering they apply is a cosine filter that is somewhat unusual
+    and provide this option as an alternative.
+
+    One of the motivations for this is that sometimes the instrument response can
+    radically amplify high-frequency noise near the Nyquist and it is essential to
+    severely suppress the amplitudes within about 20% of the Nyquist prior to removing
+    the response, which is why the default number of corners is so large.
+
+    Note that this is only
+
+    Args:
+        st (StationStream):
+            Stream of data.
+        lp_factor (float):
+            Multiplicative factor to get the lowpass corner (flp) from the Nyquist (Fn).
+            Computed as flp = lp_factor*Fn.
+        hp_freq (float):
+            Highpass corner frequency (Hz).
+        corners (int):
+            Number of poles for the bandpass filter.
+    """
+    #
+    for trace in st:
+        f_n = 0.5 / trace.stats.delta
+        freqmax = lp_factor * f_n
+        trace.filter(
+            "bandpass",
+            freqmin=hp_freq,
+            freqmax=freqmax,
+            corners=corners,
+            frequency_domain=True,
+        )
+
+
+@processing_step
 def remove_response(
     st,
     sensitivity_threshold=10.0,
@@ -62,16 +101,34 @@ def remove_response(
     f4=None,
     water_level=60,
     inv=None,
+    custom_pre_filt=None,
     config=None,
 ):
     """Perform the instrument response correction.
 
-    If the response information is not already attached to the stream, then an
-    inventory object must be provided. If the instrument is a strong-motion
-    accelerometer, then tr.remove_sensitivity() will be used. High-gain seismometers
-    will use tr.remove_response() with the defined pre-filter and water level.
+    If the response information is not already attached to the stream, then an inventory
+    object must be provided. See the "instrument response" section of the manual for
+    more details on how the instrument response is removed.
 
-    If f3 is Null it will be set to 0.9*fn, if f4 is Null it will be set to fn.
+    The `f1`, `f2`, `f3`, `f4`, and `water_level` arguments are all handed off to
+    ObsPy's `remove_response` function.  If f3 is Null it will be set to 0.9*fn, if f4
+    is Null it will be set to fn.
+
+    The `custom_pre_filt` argument is an alternative to using the `pre_filt` argument in
+    ObsPy's `remove_response` function in which the prefiltering is a cosine filter that
+    is somewhat unusual. If `custom_pre_filt` is specified, then `pre_filt` is
+    overwritten to be None, and the prefiltering is applied with the options specified
+    in the `custom_pre_filt` dictionary using a Butterworth filter prior to calling
+    `remove_response`. One of the motivations for this is that sometimes the instrument
+    response can radically amplify high-frequency noise near the Nyquist and it is
+    essential to severely suppress the amplitudes within about 20% of the Nyquist prior
+    to removing the response, which is why the default number of corners is so large.
+
+    The required keys for the `custom_pre_filt` dictionary are:
+    - lp_factor: Multiplicative factor to get the lowpass corner (flp) from the
+      Nyquist (Fn). Computed as flp = lp_factor*Fn.
+    - hp_freq: Highpass corner frequency (Hz).
+    - corners: Number of poles for the bandpass filter.
 
     Args:
         st (StationStream):
@@ -98,6 +155,8 @@ def remove_response(
             Water level for deconvolution.
         inv (obspy.core.inventory.inventory):
             Obspy inventory object containing response information.
+        custom_pre_filt (dict, None):
+            If not None, a dictionary with the following options for pre-filtering.
         config (dict):
             Configuration dictionary (or None). See get_config().
 
@@ -120,6 +179,7 @@ def remove_response(
         f4,
         water_level,
         inv,
+        custom_pre_filt,
         config,
     )
     return resp.stream
@@ -140,6 +200,7 @@ class RemoveResponse(object):
         f4=None,
         water_level=60,
         inv=None,
+        custom_pre_filt=None,
         config=None,
     ):
         self.unit_registry = UnitRegistry()
@@ -155,6 +216,7 @@ class RemoveResponse(object):
         self.inventory = inv
         if self.inventory is None:
             self.inventory = self.stream.get_inventory()
+        self.custom_pre_filt = custom_pre_filt
         self.config = config
         for self.trace in self.stream:
             # Select the inventory for this trace
@@ -168,8 +230,20 @@ class RemoveResponse(object):
 
             if "remove_response" in self.trace.provenance.ids:
                 continue
-            self._set_pre_filt()
+
             self._set_poles_and_zeros()
+
+            if self.custom_pre_filt is None:
+                self._set_pre_filt()
+            else:
+                self.pre_filt = None
+                req_kws = ["lp_factor", "hp_freq", "corners"]
+                for req in req_kws:
+                    if req not in self.custom_pre_filt:
+                        raise ValueError(
+                            "Required keyword '{req}' not in 'custom_pre_filt'"
+                        )
+
             self._remove_response_selector()
 
     def _set_pre_filt(self):
@@ -220,7 +294,7 @@ class RemoveResponse(object):
 
         if self.has_paz:
             try:
-                self._remove_response()
+                self._remove_response_has_paz()
             except BaseException as exc:
                 logging.info(
                     "Encountered an error when in remove_response: %s. Now using "
@@ -231,7 +305,7 @@ class RemoveResponse(object):
         else:
             self._remove_sensitivity()
 
-    def _remove_response(self):
+    def _remove_response_has_paz(self):
         try:
             # Note: rater than set OUTPUT to 'ACC' for seismometers, we are are setting
             # it to 'VEL" and then differentiating.
@@ -246,24 +320,7 @@ class RemoveResponse(object):
 
             if self.total_units_match and self.stage_units_match:
                 if self.sensitivity_check_passed:
-                    self.trace.remove_response(
-                        inventory=self.selected_inventory,
-                        output=self.output_units,
-                        water_level=self.water_level,
-                        pre_filt=self.pre_filt,
-                        zero_mean=True,
-                        taper=False,
-                    )
-                    self.trace.set_provenance(
-                        "remove_response",
-                        {
-                            "method": "remove_response",
-                            "input_units": "counts",
-                            "output_units": ABBREV_UNITS[self.output_units],
-                            "water_level": self.water_level,
-                            "pre_filt_freqs": str(self.pre_filt),
-                        },
-                    )
+                    self._remove_response()
                 else:
                     self.warning("Total and stage sensitivities do not match.")
                     if self.instrument_code == "N":
@@ -286,24 +343,7 @@ class RemoveResponse(object):
                     if not self.sensitivity_check_passed:
                         self.warning("Total and stage sensitivities do not match.")
                     # stage units match, so trust full instrument response.
-                    self.trace.remove_response(
-                        inventory=self.selected_inventory,
-                        output=self.output_units,
-                        water_level=self.water_level,
-                        pre_filt=self.pre_filt,
-                        zero_mean=True,
-                        taper=False,
-                    )
-                    self.trace.set_provenance(
-                        "remove_response",
-                        {
-                            "method": "remove_response",
-                            "input_units": "counts",
-                            "output_units": ABBREV_UNITS[self.output_units],
-                            "water_level": self.water_level,
-                            "pre_filt_freqs": str(self.pre_filt),
-                        },
-                    )
+                    self._remove_response()
                 else:
                     reason = "Total and stage units mismatch instrument type."
                     self.trace.fail(reason)
@@ -424,3 +464,36 @@ class RemoveResponse(object):
             self.sensitivity_check_passed = False
         else:
             self.sensitivity_check_passed = True
+
+    def _remove_response(self):
+        if self.custom_pre_filt is not None:
+            f_n = 0.5 / self.trace.stats.delta
+            freqmax = self.custom_pre_filt["lp_factor"] * f_n
+            freqmin = self.custom_pre_filt["hp_freq"]
+            corners = self.custom_pre_filt["corners"]
+            self.trace.filter(
+                "bandpass",
+                freqmin=freqmin,
+                freqmax=freqmax,
+                corners=corners,
+                frequency_domain=True,
+            )
+
+        self.trace.remove_response(
+            inventory=self.selected_inventory,
+            output=self.output_units,
+            water_level=self.water_level,
+            pre_filt=self.pre_filt,
+            zero_mean=True,
+            taper=False,
+        )
+        self.trace.set_provenance(
+            "remove_response",
+            {
+                "method": "remove_response",
+                "input_units": "counts",
+                "output_units": ABBREV_UNITS[self.output_units],
+                "water_level": self.water_level,
+                "pre_filt_freqs": str(self.pre_filt),
+            },
+        )

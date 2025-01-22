@@ -231,7 +231,7 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
                 "freq": tr.get_cached("noise_spectrum")["freq"],
             },
         )
-        tr.set_parameter("noise_spectrum", {"duration": dur_event})
+        tr.set_parameter("noise_spectrum", {"duration": dur_preevent})
         tr.set_cached(
             "signal_spectrum",
             {
@@ -265,7 +265,7 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
         )
 
         smooth_event_noise_normspectrum = smooth_event_noise_spectrum / np.sqrt(
-            dur_event
+            dur_preevent
         )
         smooth_signal_normspectrum = smooth_signal_spectrum / np.sqrt(dur_shaking)
         snr = smooth_signal_normspectrum / smooth_event_noise_normspectrum

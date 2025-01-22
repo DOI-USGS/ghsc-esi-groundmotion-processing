@@ -65,4 +65,10 @@ def _detrend_pre_event_mean(trace, config=None):
     noise = trace.copy().trim(endtime=split_time)
     noise_mean = np.mean(noise.data)
     trace.data = trace.data - noise_mean
+    trace.set_provenance(
+        "detrend",
+        {
+            "detrending_method": "pre",
+        },
+    )
     return trace

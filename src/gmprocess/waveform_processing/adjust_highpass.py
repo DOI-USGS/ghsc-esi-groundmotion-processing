@@ -6,6 +6,7 @@ from gmprocess.utils.config import get_config
 from gmprocess.waveform_processing.filtering import (
     lowpass_filter_trace,
     highpass_filter_trace,
+    bandpass_filter_trace,
 )
 from gmprocess.waveform_processing.baseline_correction import correct_baseline
 from gmprocess.waveform_processing.integrate import get_disp
@@ -87,24 +88,32 @@ def adjust_highpass_corner(
 def __disp_checks(
     tr, max_final_displacement=0.025, max_displacement_ratio=0.2, config=None
 ):
+    # Make a copy of the trace so we don't modify it in place with
+    # filtering or integration
+    trdis = tr.copy()
+
     # Need to find the high/low pass filtering steps in the config
     # to ensure that filtering here is done with the same options
     if config is None:
         config = get_config()
     processing_steps = config["processing"]
     ps_names = [list(ps.keys())[0] for ps in processing_steps]
-    ind = int(np.where(np.array(ps_names) == "highpass_filter")[0][0])
-    hp_args = processing_steps[ind]["highpass_filter"] or {}
-    ind = int(np.where(np.array(ps_names) == "lowpass_filter")[0][0])
-    lp_args = processing_steps[ind]["lowpass_filter"] or {}
 
-    # Make a copy of the trace so we don't modify it in place with
-    # filtering or integration
-    trdis = tr.copy()
+    if "bandpass_filter" in ps_names:
+        ind = int(np.where(np.array(ps_names) == "bandpass_filter")[0][0])
+        bp_args = processing_steps[ind]["bandpass_filter"] or {}
 
-    # Filter
-    trdis = lowpass_filter_trace(trdis, **lp_args)
-    trdis = highpass_filter_trace(trdis, **hp_args)
+        # Filter
+        trdis = bandpass_filter_trace(trdis, **bp_args)
+    else:
+        ind = int(np.where(np.array(ps_names) == "highpass_filter")[0][0])
+        hp_args = processing_steps[ind]["highpass_filter"] or {}
+        ind = int(np.where(np.array(ps_names) == "lowpass_filter")[0][0])
+        lp_args = processing_steps[ind]["lowpass_filter"] or {}
+
+        # Filter
+        trdis = lowpass_filter_trace(trdis, **lp_args)
+        trdis = highpass_filter_trace(trdis, **hp_args)
 
     # Apply baseline correction
     trdis = correct_baseline(trdis, config)
