@@ -1,4 +1,8 @@
 ## main
+
+
+## 2.3.0 / 2025-01-23
+
 - Enhancements
   - Substantial changes to the default processing steps.
   - Add support for psudo-response spectra (PSA and PSV) and change default metrics to use PSA rather than SA.
