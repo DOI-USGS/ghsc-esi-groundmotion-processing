@@ -116,8 +116,32 @@ class OscillatorMaxAcceleration(BaseComponent):
         return get_channel_outputs(self)
 
 
+class OscillatorPseudoAcceleration(BaseComponent):
+    """Return the pseudo-acceleration for each oscillator."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.Oscillator]
+
+    def calculate(self):
+        max_list = []
+        for osc, stats in zip(
+            self.prior_step.output.displacement, self.prior_step.output.stats_list
+        ):
+            period = self.prior_step.output.period
+            pseudo_absolute_acc = (2 * np.pi / period) ** 2 * np.max(np.abs(osc))
+            max_list.append(
+                containers.ReferenceValue(
+                    value=GAL_TO_PCTG * pseudo_absolute_acc, stats=stats
+                )
+            )
+        self.output = containers.Scalar(max_list)
+
+    def get_component_results(self):
+        return get_channel_outputs(self)
+
+
 class OscillatorMaxVelocity(BaseComponent):
-    """Return the maximum absolute value for each oscillator."""
+    """Return the maximum absolute acceleration for each oscillator."""
 
     outputs = {}
     INPUT_CLASS = [containers.Oscillator]
@@ -129,6 +153,28 @@ class OscillatorMaxVelocity(BaseComponent):
         ):
             max_list.append(
                 containers.ReferenceValue(value=np.max(np.abs(osc)), stats=stats)
+            )
+        self.output = containers.Scalar(max_list)
+
+    def get_component_results(self):
+        return get_channel_outputs(self)
+
+
+class OscillatorPseudoVelocity(BaseComponent):
+    """Return the pseudo-velocity for each oscillator."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.Oscillator]
+
+    def calculate(self):
+        max_list = []
+        for osc, stats in zip(
+            self.prior_step.output.displacement, self.prior_step.output.stats_list
+        ):
+            period = self.prior_step.output.period
+            pseudo_relative_velocity = (2 * np.pi / period) * np.max(np.abs(osc))
+            max_list.append(
+                containers.ReferenceValue(value=pseudo_relative_velocity, stats=stats)
             )
         self.output = containers.Scalar(max_list)
 
@@ -197,6 +243,27 @@ class RotDOscMaxAcceleration(BaseComponent):
         )
 
 
+class RotDOscPseudoAcceleration(BaseComponent):
+    """Return the pseudo absolute acceleration of the oscillators."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.RotDOscillator]
+
+    def calculate(self):
+        period = self.prior_step.output.period
+        abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
+        max_array = np.max(abs_matrix, axis=1) * (2 * np.pi / period) ** 2
+        self.prior_step.output.stats["standard"]["units_type"] = "acc"
+        unit_factor = GAL_TO_PCTG
+        self.output = containers.RotDMax(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            oscillator_maxes=unit_factor * max_array,
+            stats=self.prior_step.output.stats,
+            type="oscillator acceleration",
+        )
+
+
 class RotDOscMaxVelocity(BaseComponent):
     """Return the maximum absolute value of the oscillators."""
 
@@ -206,6 +273,26 @@ class RotDOscMaxVelocity(BaseComponent):
     def calculate(self):
         abs_matrix = np.abs(self.prior_step.output.velocity_matrix)
         max_array = np.max(abs_matrix, axis=1)
+        self.prior_step.output.stats["standard"]["units_type"] = "vel"
+        self.output = containers.RotDMax(
+            period=self.prior_step.output.period,
+            damping=self.prior_step.output.damping,
+            oscillator_maxes=max_array,
+            stats=self.prior_step.output.stats,
+            type="oscillator velocity",
+        )
+
+
+class RotDOscPseudoVelocity(BaseComponent):
+    """Return the maximum absolute value of the oscillators."""
+
+    outputs = {}
+    INPUT_CLASS = [containers.RotDOscillator]
+
+    def calculate(self):
+        period = self.prior_step.output.period
+        abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
+        max_array = np.max(abs_matrix, axis=1) * (2 * np.pi / period)
         self.prior_step.output.stats["standard"]["units_type"] = "vel"
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,

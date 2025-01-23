@@ -208,6 +208,47 @@ class SA(WaveformMetricType):
         return f"SA(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
 
 
+class PSA(WaveformMetricType):
+    """WaveformMetricType subclass for PSA, pseudo-spectral acceleration."""
+
+    def __init__(
+        self, values, components, period, damping=5.0, component_to_channel=None
+    ):
+        """Construct a PSA metric object.
+
+        Args:
+            values (list):
+                List of PSA values.
+            components (list):
+                List of the components that map to the PSA values.
+            period (float):
+                Oscillator period for this PSA (in seconds).
+            damping (float):
+                Percentage of critical damping.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "pgm"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {
+            "period": period,
+            "damping": damping,
+        }
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        attrs = self.metric_attributes
+        return f"PSA(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
+
+
 class SV(WaveformMetricType):
     """WaveformMetricType subclass for SV, spectral velocity."""
 
@@ -247,6 +288,47 @@ class SV(WaveformMetricType):
     def identifier(self):
         attrs = self.metric_attributes
         return f"SV(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
+
+
+class PSV(WaveformMetricType):
+    """WaveformMetricType subclass for PSV, pseudo-spectral velocity."""
+
+    def __init__(
+        self, values, components, period, damping=5.0, component_to_channel=None
+    ):
+        """Construct a PSV metric object.
+
+        Args:
+            values (list):
+                List of PSV values.
+            components (list):
+                List of the components that map to the PSV values.
+            period (float):
+                Oscillator period for this PSV (in seconds).
+            damping (float):
+                Percentage of critical damping.
+            component_to_channel (dict):
+                Optional dictionary mapping the simplifued component names to the
+                as-recorded channel names.
+        """
+        super().__init__()
+        if len(values) != len(components):
+            raise ValueError("Length of values must equal length of components.")
+
+        self._values = dict(zip(components, values))
+        self._type = self.__class__.__name__
+        self.format_type = "pgm"
+        self._units = constants.UNITS[self._type.lower()]
+        self.metric_attributes = {
+            "period": period,
+            "damping": damping,
+        }
+        self.component_to_channel = component_to_channel
+
+    @property
+    def identifier(self):
+        attrs = self.metric_attributes
+        return f"PSV(T={float(attrs['period']):.4f}, D={float(attrs['damping']):.3f})"
 
 
 class SD(WaveformMetricType):

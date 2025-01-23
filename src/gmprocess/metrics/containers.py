@@ -89,9 +89,16 @@ class Oscillator:
 
     period: float
     damping: float
+
+    # Total acceleration
     acceleration: list[np.ndarray]
+
+    # Relative velocity
     velocity: list[np.ndarray]
+
+    # Relative displacement
     displacement: list[np.ndarray]
+
     oscillator_dt: float
     stats_list: list[dict]
 

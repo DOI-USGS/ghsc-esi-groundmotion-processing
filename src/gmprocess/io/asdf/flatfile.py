@@ -291,8 +291,16 @@ class Flatfile(object):
                     imt = col.upper()
                     if imt.startswith("SA"):
                         readme_dict["SA(X)"] = flat_const.FLATFILE_IMT_COLUMNS["SA(X)"]
+                    elif imt.startswith("PSA"):
+                        readme_dict["PSA(X)"] = flat_const.FLATFILE_IMT_COLUMNS[
+                            "PSV(X)"
+                        ]
                     elif imt.startswith("SV"):
                         readme_dict["SV(X)"] = flat_const.FLATFILE_IMT_COLUMNS["SV(X)"]
+                    elif imt.startswith("PSV"):
+                        readme_dict["PSV(X)"] = flat_const.FLATFILE_IMT_COLUMNS[
+                            "PSV(X)"
+                        ]
                     elif imt.startswith("SD"):
                         readme_dict["SD(X)"] = flat_const.FLATFILE_IMT_COLUMNS["SD(X)"]
                     elif imt.startswith("FAS"):

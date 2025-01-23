@@ -57,10 +57,14 @@ class Arias(BaseComponent):
 
 
 def calculate_trace_oscillator(parameters, prior_step):
-    """_summary_
+    """Helper function to compute the oscillator response for a trace.
 
     Args:
-        osc_type (_type_): "SA", "SV", or "SD"
+        parameters (dict):
+            Dictionary of oscillator processing parameters (periods, damping).
+        prior_step (BaseComponent):
+            Result of the prior processing step.
+
     """
     per = parameters["periods"]
     damp = parameters["damping"]
@@ -70,8 +74,14 @@ def calculate_trace_oscillator(parameters, prior_step):
     stats_list = []
     for trace in prior_step.output.traces:
         osc_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
+
+        # Total acceleration
         acceleration_list.append(osc_results[0])
+
+        # Relative velocity
         velocity_list.append(osc_results[1])
+
+        # Relative displacement
         displacement_list.append(osc_results[2])
         stats_list.append(dict(trace.stats))
 
@@ -88,10 +98,13 @@ def calculate_trace_oscillator(parameters, prior_step):
 
 
 def calculate_rotd_oscillator(parameters, prior_step):
-    """_summary_
+    """Helper function to compute the rotd oscillator response.
 
     Args:
-        osc_type (_type_): "SA", "SV", or "SD"
+        parameters (dict):
+            Dictionary of oscillator processing parameters (periods, damping).
+        prior_step (BaseComponent):
+            Result of the prior processing step.
     """
     per = parameters["periods"]
     damp = parameters["damping"]

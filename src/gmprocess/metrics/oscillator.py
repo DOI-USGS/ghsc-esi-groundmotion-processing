@@ -40,5 +40,6 @@ def calculate_spectrals(trace, period, damping):
         window = get_window(trace.stats.npts, percent=0.02)
         trace.resample(new_sample_rate, window=window)
     sa_list = spec_calc(trace.data, new_np, new_dt, new_sample_rate, period, damping)
-    # Note: sa_list has elements: [acc, vel, dis], in which each element is an ndarray.
+    # Note: sa_list has elements: [total acc, relative vel, relative dis], in which
+    #       each element is an ndarray.
     return sa_list

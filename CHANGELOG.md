@@ -1,6 +1,7 @@
 ## main
 - Enhancements
   - Substantial changes to the default processing steps.
+  - Add support for psudo-response spectra (PSA and PSV) and change default metrics to use PSA rather than SA.
   - Allow for user to set a different query window duration for different tectonic envirnments.
   - Increase default query window duraiton.
   - Add a new "source_path" method to compute the signal end that uses 1/fc as the source duration, which is then added to a path duration that is parameterized with coefficients for an intercept and distance term.
