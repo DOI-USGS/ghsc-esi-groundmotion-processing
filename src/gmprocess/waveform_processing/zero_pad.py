@@ -41,7 +41,7 @@ def zero_pad(st, length="fhp", config=None):
                 and (pstep["highpass_filter"] is not None)
                 and ("filter_order" in pstep["highpass_filter"])
             ):
-                filter_order = pstep["filter_order"]
+                filter_order = pstep["highpass_filter"]["filter_order"]
         if filter_order is None:
             # If filter order is not set in config, then it will use the default
             # argument value.

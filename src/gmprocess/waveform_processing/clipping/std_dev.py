@@ -43,7 +43,7 @@ class StdDev(ClipDetection):
         test_all=False,
     ):
         """
-        Constructs all neccessary attributes for the StdDev class.
+        Constructs all necessary attributes for the StdDev class.
 
         Args:
             st (StationStream):

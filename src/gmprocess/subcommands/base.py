@@ -75,7 +75,7 @@ class SubcommandModule(ABC):
         return arg_list
 
     @classmethod
-    def argugments_default_dict(cls):
+    def arguments_default_dict(cls):
         """List the arguments of the subcommand."""
         arg_list = cls.list_arguments()
         default_list = [arg["default"] for arg in cls.arguments]
@@ -91,7 +91,7 @@ class SubcommandModule(ABC):
         directly, rather than from the gmrecords command line program.
         """
         args = self.gmrecords.args
-        req_args = self.argugments_default_dict()
+        req_args = self.arguments_default_dict()
         for arg, val in req_args.items():
             if arg not in args:
                 args.__dict__.update({arg: val})

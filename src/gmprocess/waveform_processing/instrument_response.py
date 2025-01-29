@@ -135,10 +135,10 @@ def remove_response(
             Stream of data.
         sensitivity_threshold (float):
             Traces will be failed if the overall reported sensitivity differs by more
-            than this threshold (units are percent) when compared to the sensitivty as
+            than this threshold (units are percent) when compared to the sensitivity as
             computed by combining the reported gains of each response stage.
         output_as_acceleration (bool):
-            For velocity intruments, differentiate the waveform after the instrument
+            For velocity instruments, differentiate the waveform after the instrument
             response is removed to convert the units to acceleration.
         pre_filt (bool):
             Apply a bandpass filter in frequency domain to the data before
@@ -280,7 +280,7 @@ class RemoveResponse(object):
 
         trace_sps = self.trace.stats.sampling_rate
         if self.selected_inventory[0][0][0].sample_rate != trace_sps:
-            reason = "Sample rate is not consistent betwen data and metadata"
+            reason = "Sample rate is not consistent between data and metadata"
             self.trace.fail(reason)
             return
 

@@ -103,7 +103,7 @@ class StationStream(Stream):
                             if not isinstance(trace, StationTrace):
                                 raise ValueError(
                                     "Input Traces to StationStream must be of subtype "
-                                    "StationTrace unless an invenotry is also provided."
+                                    "StationTrace unless an inventory is also provided."
                                 )
                         else:
                             if not isinstance(trace, StationTrace):
@@ -164,7 +164,7 @@ class StationStream(Stream):
                         if not isinstance(trace, StationTrace):
                             raise ValueError(
                                 "Input Traces to StationStream must be of subtype "
-                                "StationTrace unless an invenotry is also provided."
+                                "StationTrace unless an inventory is also provided."
                             )
                     else:
                         if not isinstance(trace, StationTrace):
@@ -273,7 +273,7 @@ class StationStream(Stream):
         return self.id
 
     def get_net_sta(self):
-        """Get just the network and station compopnent of the ID."""
+        """Get just the network and station component of the ID."""
         return ".".join(self.get_id().split(".")[0:2])
 
     def get_net_sta_loc(self):

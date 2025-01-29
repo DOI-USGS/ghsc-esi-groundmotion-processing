@@ -28,7 +28,7 @@ class Jerk(ClipDetection):
 
     def __init__(self, st, point_thresh=400, test_all=False):
         """
-        Constructs all neccessary attributes for the MaxAmp class.
+        Constructs all necessary attributes for the MaxAmp class.
 
         Args:
             st (StationStream):

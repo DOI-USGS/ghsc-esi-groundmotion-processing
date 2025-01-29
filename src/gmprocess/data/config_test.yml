@@ -36,7 +36,7 @@ fetchers:
         station_type: Ground
         # define the distance search radius (km)
         eq_radius : 10.0
-        # define the time search threshokd (sec)
+        # define the time search threshold (sec)
         eq_dt : 10.0
         # station search radius (km)
         station_radius: 100.0
@@ -51,7 +51,7 @@ fetchers:
             circular:
                 # Should the center be specified as earthquake epicenter?
                 use_epicenter: True
-                # If use_epicenter is false, then latitude and longtidue will be used.
+                # If use_epicenter is false, then latitude and longitude will be used.
                 latitude: 37.5
                 longitude: -122.0
                 # Radius units are decimal degrees
@@ -111,7 +111,7 @@ fetchers:
 # Options for readers
 read:
     # Look for StationXML files in this directory instead of the `<event>/raw`
-    # directory. StationXML file names must follow the convension of 
+    # directory. StationXML file names must follow the convention of 
     # `<network>.<station>.xml`.
     metadata_directory: None
 
@@ -162,7 +162,7 @@ windows:
         #    - "model": Set the end of the signal window using a shaking duration model;
         #      this options makes use of the keys "model" and "epsilon"
         #    - "none": Use the full available record; this is useful if the records
-        #      have already been trimmed to a resonable level and you do not wish to
+        #      have already been trimmed to a reasonable level and you do not wish to
         #      further reduce trace duration.
         #    - "magnitude": Use the magnitude-based signal end as defined by CISN, which
         #      is magnitude/2 (units of minutes).
@@ -379,7 +379,7 @@ integration:
 # -----------------------------------------------------------------------------
 # This section is for options for differentiation
 differentiation:
-    # Frequency or time domain differentation?
+    # Frequency or time domain differentiation?
     frequency: True
 
 # -----------------------------------------------------------------------------

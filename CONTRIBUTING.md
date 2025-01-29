@@ -47,7 +47,7 @@ DOCS: [one line description]
 ```
 
 We use the set of commit types from the [angular][9] project:
-* **BUILD**: Changes that affect the build system or external dependencies (e.g., pyrpoject.toml)
+* **BUILD**: Changes that affect the build system or external dependencies (e.g., pyproject.toml)
 * **CI**: Changes to our CI configuration files and scripts (e.g., .gitlab-ci.yml)
 * **DOCS**: Documentation only changes
 * **FEAT**: A new feature
@@ -76,7 +76,7 @@ Common reasons to rebase include:
 ## Releases
 
 1. Create a release candidate branch with a name related to the release version like `v1.2.1.rc0`.
-2. Update `code.json`, this is now automated with the `esi-releases` pacakge. For example, use the following command to increase the minor version number (options are "major", "minor", and "patch"):
+2. Update `code.json`, this is now automated with the `esi-releases` package. For example, use the following command to increase the minor version number (options are "major", "minor", and "patch"):
    ```
    releases minor
    ```
@@ -95,7 +95,7 @@ Common reasons to rebase include:
    - This git push command is what triggers the "release" pipeline that includes the test, build, and deploy stages.
    - *Note that we cannot have a hyphen in the tag name.* 
    - Also, if we end the tag name with "dev" then it will be build and uploaded to pypi as a pre-release version, which means that it will never be pip installed unless the user specifies the exact version of the pre-release.
-   - Maintainence note: the PYPI tokens are maintained in gitlab for the ESI group, under Settings then CI/CD, then Variables. These tokens are associated with the "pager_cicd" pypi service account.  
+   - Maintenance note: the PYPI tokens are maintained in gitlab for the ESI group, under Settings then CI/CD, then Variables. These tokens are associated with the "pager_cicd" pypi service account.  
 8. Create release from tag in gitlab. Give it a release title like `v1.2.1`.
 9. Copy/paste the relevant part of the changelog into the "describe this release" section.
 
@@ -126,7 +126,7 @@ Note that the script includes the follow arguments:
 Notes:
  - Never commit the built documentation files.
  - Remember that the notebooks run gmprocess code when you build the docs, 
-   so please be sure to check that the tutorials ran sucessfully. 
+   so please be sure to check that the tutorials ran successfully. 
  - The result of the tutorials will depend on your config file options, 
    so I recommend having a project with the default config file set up 
    and use that project when building the docs. 

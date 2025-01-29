@@ -24,7 +24,7 @@ class StationMetricCollection(MetricCollection):
     """StationMetricCollection class.
 
     This class is intended to hold a collection of StationMetric objects, which are
-    stored as a list in the "station_metrics" attriute.
+    stored as a list in the "station_metrics" attribute.
     """
 
     def __init__(self):

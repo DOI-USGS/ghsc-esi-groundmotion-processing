@@ -95,7 +95,7 @@ class clipNet:
 
         Args:
             v_input (list or np.array):
-                Values to correspond to the following paramters: mag, dist, 6M
+                Values to correspond to the following parameters: mag, dist, 6M
                 amplitude check, histogram check, ping check.
 
         Returns:

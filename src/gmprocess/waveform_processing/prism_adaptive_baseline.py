@@ -105,7 +105,7 @@ def prism_adaptive_baseline(
     is described as part of the adaptive baseline correction in Jones et al., and we
     prefer to have that occur as a separate processing step.
 
-    The final QA step, which checks the mean velocity and displacment in the leading and
+    The final QA step, which checks the mean velocity and displacement in the leading and
     trailing windows, is described to apply after bandpass filtering. Since we keep the
     filtering as a separate step, we also need to keep the final QA as a separate step.
     Thus, the stream is never failed failed by this adaptive baseline correction step.
@@ -153,7 +153,7 @@ def prism_adaptive_baseline(
             if lead_velocity_qc and trail_velocity_qc:
                 # note: I want to put an entry in the provenance to document that the
                 # trace was checked using this method and that it determined that no
-                # baseline correction was necessary. this deviates from convension and
+                # baseline correction was necessary. this deviates from convention and
                 # could be a mistake.
                 tr.set_provenance(
                     "detrend",

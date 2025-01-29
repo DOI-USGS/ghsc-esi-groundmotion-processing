@@ -49,8 +49,8 @@ def cut(st, sec_before_split=5.0, config=None):
     was estimated by that method.
 
     To trim the beginning of the record, the sec_before_split must be
-    specified, which uses the noise/signal split time that was estiamted by the
-    windows.signal_split mehtod.
+    specified, which uses the noise/signal split time that was estimated by the
+    windows.signal_split method.
 
     Args:
         st (StationStream):

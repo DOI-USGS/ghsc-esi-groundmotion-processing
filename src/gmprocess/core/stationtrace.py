@@ -515,7 +515,7 @@ class StationTrace(Trace):
             fill_value (int, float):
                 Fill value for gaps.
             suppress_provenance (bool):
-                Do not put a provenance entry. Useful becasue we need a custom
+                Do not put a provenance entry. Useful because we need a custom
                 provenance entry for zero padding, which calls this method.
         """
         if not suppress_provenance:

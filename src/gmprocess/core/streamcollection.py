@@ -60,7 +60,7 @@ class StreamCollection(StreamArray):
                 List of StationStream objects.
             drop_non_free (bool):
                 If True, drop non-free-field Streams from the collection.
-            hande_duplicates (bool):
+            handle_duplicates (bool):
                 If True, remove duplicate data from the collection.
             max_dist_tolerance (float):
                 Maximum distance tolerance for determining whether two streams
@@ -74,7 +74,7 @@ class StreamCollection(StreamArray):
                 which process level is the most preferred (most preferred goes
                 first in the list).
             format_preference (list):
-                A list continaing strings of the file source formats (found
+                A list containing strings of the file source formats (found
                 in gmprocess.io). Does not need to list all of the formats.
                 Example: ['cosmos', 'dmg'] indicates that cosmos files are
                 preferred over dmg files.

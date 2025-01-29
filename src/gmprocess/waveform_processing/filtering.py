@@ -253,5 +253,5 @@ def lowpass_filter_trace(
         )
 
     except BaseException as e:
-        tr.fail(f"Lowpass filter failed with excpetion: {e}")
+        tr.fail(f"Lowpass filter failed with exception: {e}")
     return tr

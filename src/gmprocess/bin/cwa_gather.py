@@ -111,6 +111,7 @@ class App:
             msg = "Failed to download STREC results."
         print(msg)
 
+
 def cli():
     """Command line interface to the cwa_gather application."""
 
@@ -133,7 +134,7 @@ def cli():
      - For "Channel", choose "HN?" for all strong motion stations.
      - For "Start Time (UTC)", enter a date before the event of interest.
      - For "End Time (UTC)", enter a date after the event of interest.
-     - "Label", doesn't matter becasue they don't use what you put here.
+     - "Label", doesn't matter because they don't use what you put here.
      - Click the "Submit" button, and you should see a "Success!" pop up.
      - Next will be a screen showing a list of all of your downloads.
      - Right click on the most recent entry, it will be called "output.stationXML"
@@ -227,6 +228,7 @@ def cli():
 
     app = App()
     app.main(args.event_id, args.datafile, args.metadata)
+
 
 if __name__ == "__main__":
     cli()

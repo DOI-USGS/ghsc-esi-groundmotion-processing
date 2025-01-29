@@ -37,7 +37,7 @@ class WaveformMetricList(object):
             mtype (str):
                 The metric type to select.
             **kwargs:
-                Additional critera to be applied to the metric's 'metric_attributes'.
+                Additional criteria to be applied to the metric's 'metric_attributes'.
         """
         selected = []
         for metric in self:

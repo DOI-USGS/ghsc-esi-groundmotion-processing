@@ -148,7 +148,7 @@ class PGV(WaveformMetricType):
             components (list):
                 List of the components that map to the PGV values.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -185,7 +185,7 @@ class SA(WaveformMetricType):
             damping (float):
                 Percentage of critical damping.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -226,7 +226,7 @@ class PSA(WaveformMetricType):
             damping (float):
                 Percentage of critical damping.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -267,7 +267,7 @@ class SV(WaveformMetricType):
             damping (float):
                 Percentage of critical damping.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -308,7 +308,7 @@ class PSV(WaveformMetricType):
             damping (float):
                 Percentage of critical damping.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -349,7 +349,7 @@ class SD(WaveformMetricType):
             damping (float):
                 Percentage of critical damping.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -407,7 +407,7 @@ class FAS(WaveformMetricType):
                 result in nans when smoothed using the Konno-Omachi method. False
                 adjusts the number of points in the FFT to ensure no nans.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -449,7 +449,7 @@ class Duration(WaveformMetricType):
                 Significant duration interval in percentage of Arias Intensity in which
                 the start and end percentages are separated by a hyphen: e.g., "5-75".
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -483,7 +483,7 @@ class SortedDuration(WaveformMetricType):
             components (list):
                 List of the components that map to the Sorted Duration values.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -514,7 +514,7 @@ class Arias(WaveformMetricType):
             components (list):
                 List of the components that map to the Arias Intensity values.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
@@ -546,7 +546,7 @@ class CAV(WaveformMetricType):
                 List of the components that map to the Cumulative Absolute Velocity
                 values.
             component_to_channel (dict):
-                Optional dictionary mapping the simplifued component names to the
+                Optional dictionary mapping the simplified component names to the
                 as-recorded channel names.
         """
         super().__init__()
