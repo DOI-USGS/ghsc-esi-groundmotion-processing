@@ -23,7 +23,7 @@ fetchers:
             max_distance: 800.0
             # NOTE: the GMM is evaluated with a number of simplifications, including 
             # Ztor=0 and dip=90 deg such that the 'distance' is both Rrup and Rjb. See 
-            # the dynamic_searc_parameters.py module for further details. 
+            # the dynamic_search_parameters.py module for further details. 
     KNETFetcher:
         # Enable this fetcher?
         enabled: True
@@ -63,13 +63,13 @@ fetchers:
         enabled: True
         # The domain section is for defining the search domain.
         domain:
-            # Two domian types of supported: circular, rectangular
+            # Two domain types of supported: circular, rectangular
             type: circular
             # Arguments for the circular domain type
             circular:
                 # Should the center be specified as earthquake epicenter?
                 use_epicenter: True
-                # If use_epicenter is false, then latitude and longtidue will be used.
+                # If use_epicenter is false, then latitude and longitude will be used.
                 latitude: 37.5
                 longitude: -122.0
                 # Radius units are decimal degrees
@@ -306,7 +306,7 @@ fetchers:
 # Options for readers
 read:
     # Look for StationXML files in this directory instead of the `<event>/raw`
-    # directory. StationXML file names must follow the convension of 
+    # directory. StationXML file names must follow the convention of 
     # `<network>.<station>.xml`.
     metadata_directory: None
 
@@ -364,7 +364,7 @@ windows:
         #      this option makes use of the keys "vmin" and "floor". Duration is 
         #      relative to origin time.
         #    - "none": Use the full available record; this is useful if the records
-        #      have already been trimmed to a resonable level and you do not wish to
+        #      have already been trimmed to a reasonable level and you do not wish to
         #      further reduce trace duration.
 
         method: source_path

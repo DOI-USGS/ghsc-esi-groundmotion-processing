@@ -484,7 +484,7 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
                     is_north=False,
                 )
                 horizontal_angle = 90.0
-            else:  # For the occassional 'OTHR' channel
+            else:  # For the occasional 'OTHR' channel
                 raise ValueError("Channel name is not valid.")
 
         elif horizontal_angle >= 0 and horizontal_angle <= 360:

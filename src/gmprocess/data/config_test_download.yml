@@ -36,7 +36,7 @@ fetchers:
         station_type: Ground
         # define the distance search radius (km)
         eq_radius : 10.0
-        # define the time search threshokd (sec)
+        # define the time search threshold (sec)
         eq_dt : 10.0
         # station search radius (km)
         station_radius: 100.0
@@ -51,7 +51,7 @@ fetchers:
             circular:
                 # Should the center be specified as earthquake epicenter?
                 use_epicenter: True
-                # If use_epicenter is false, then latitude and longtidue will be used.
+                # If use_epicenter is false, then latitude and longitude will be used.
                 latitude: 37.5
                 longitude: -122.0
                 # Radius units are decimal degrees

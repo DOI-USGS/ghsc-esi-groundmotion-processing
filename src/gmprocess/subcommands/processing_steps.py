@@ -29,7 +29,7 @@ class processing_stepsModule(base.SubcommandModule):
         {
             "short_flag": "-o",
             "long_flag": "--output-type",
-            "help": "File path to save output, formated as markdown.",
+            "help": "File path to save output, formatted as markdown.",
             "default": None,
             "type": str,
             "choices": ["text", "myst"],

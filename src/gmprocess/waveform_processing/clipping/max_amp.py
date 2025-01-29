@@ -27,7 +27,7 @@ class MaxAmp(ClipDetection):
 
     def __init__(self, st, max_amp_thresh=6e6, test_all=False):
         """
-        Constructs all neccessary attributes for the MaxAmp method.
+        Constructs all necessary attributes for the MaxAmp method.
 
         Args:
             st (StationStream):

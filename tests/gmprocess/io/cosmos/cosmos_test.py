@@ -95,7 +95,7 @@ def test_cosmos():
     stream3 = read_cosmos(one_channel, valid_station_types=[building_code])[0]
     assert stream3.count() == 1
 
-    # Test location overrride
+    # Test location override
     stream = read_cosmos(one_channel, location="test")[0]
     assert stream[0].stats.location == "test"
 

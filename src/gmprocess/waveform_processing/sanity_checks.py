@@ -11,7 +11,7 @@ from gmprocess.waveform_processing.processing_step import processing_step
 def check_tail(st, duration=5.0, max_vel_ratio=0.3, max_dis_ratio=0.9, config=None):
     """Check for abnormally large values in the tail of the stream.
 
-    This QA check looks for the presence of abnomally large values in the tail
+    This QA check looks for the presence of abnormally large values in the tail
     velocity and displacement traces. This can occur due to baseline shifts or
     long period noise that has not been properly filtered out that manifest
     as long-period drifts in the velocity and/or displacement traces.

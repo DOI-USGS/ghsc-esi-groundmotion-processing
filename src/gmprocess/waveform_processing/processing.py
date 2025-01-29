@@ -30,8 +30,8 @@ def process_streams(streams, event, config=None, old_streams=None, strec=None):
     """Run processing steps from the config file.
 
     This method looks in the 'processing' config section and loops over those
-    steps and hands off the config options to the appropriate prcessing method.
-    Streams that fail any of the tests are kepth in the StreamCollection but
+    steps and hands off the config options to the appropriate processing method.
+    Streams that fail any of the tests are kept in the StreamCollection but
     the parameter 'passed_checks' is set to False and subsequent processing
     steps are not applied once a check has failed.
 

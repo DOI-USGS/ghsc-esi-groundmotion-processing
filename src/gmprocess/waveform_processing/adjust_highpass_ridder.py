@@ -28,7 +28,7 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
             target percentage for ratio between max polynomial value and max
             displacement.
         tol (float):
-            tolereance for matching the ratio target
+            tolerance for matching the ratio target
         maxiter (float):
             maximum number of allowed iterations in Ridder's method
         maxfc (float):

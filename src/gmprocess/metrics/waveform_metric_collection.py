@@ -55,7 +55,7 @@ class WaveformMetricCollection(MetricCollection):
             config (dict):
                 Dictionary of config options.
             label (str):
-                Procesing labe.
+                Processing label.
         """
 
         wmc = cls()
@@ -68,7 +68,7 @@ class WaveformMetricCollection(MetricCollection):
 
         Args:
             workspace (StreamWorkspace):
-                A StreaWorkspace object.
+                A StreamWorkspace object.
             label (str):
                 Processing label.
         """

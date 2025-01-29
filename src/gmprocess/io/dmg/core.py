@@ -279,7 +279,7 @@ def _read_volume_one(filename, line_offset, location="", units="acc", config=Non
         data = _read_lines(skip_rows, max_rows, widths, filename)
         acc_data = data[: hdr["npts"]]
         evenly_spaced = True
-        # Sometimes, npts is incrrectly specified, leading to nans
+        # Sometimes, npts is incorrectly specified, leading to nans
         # in the resulting data. Fix that here
         if np.any(np.isnan(acc_data)):
             while np.isnan(acc_data[-1]):
@@ -633,7 +633,7 @@ def _get_header_info(int_data, flt_data, lines, level, location=""):
       - source_format (str): Always dmg
     - format_specific
       - sensor_sensitivity (float): Transducer sensitivity (cm/g)
-      - time_sd (float): Standard deviaiton of time steop (millisecond)
+      - time_sd (float): Standard deviation of time stop (millisecond)
       - fractional_unit (float): Units of digitized acceleration
             in file (fractions of g)
       - scaling_factor (float): Scaling used for converting acceleration

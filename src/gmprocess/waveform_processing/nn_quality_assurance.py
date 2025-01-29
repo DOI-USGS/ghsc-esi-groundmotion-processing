@@ -45,7 +45,7 @@ def nnet_qa(st, acceptance_threshold, model_name, config=None):
     if st.num_horizontal != 2:
         for tr in st:
             tr.fail(
-                "Stream does not contain two horiztonal components. "
+                "Stream does not contain two horizontal components. "
                 "NNet QA check will not be performed."
             )
         return st
@@ -234,7 +234,7 @@ class neuralNet:
     # load_nn: load and build neural network model
     def load_nn(self, nn_path):
         """
-        Populate an instantated neural netowrk with data contained in a
+        Populate an instantiated neural network with data contained in a
         specific folder.
 
         Args:
@@ -442,7 +442,7 @@ def standardize_data(data, mu, sigma):
 
 def decorrelate_data(data, M):
     """
-    Decorrelate the data based on a Mahalanobis tranform. The transformation
+    Decorrelate the data based on a Mahalanobis transform. The transformation
     matrix is given as an input.
 
     Args:
@@ -513,9 +513,9 @@ def get_freq_index(ft_freq, lower, upper):
 
     Args:
         ft_freq (list of float):
-            list of ordred frequencies
+            list of ordered frequencies
         lower (float):
-            lower boud of the frequency range
+            lower bound of the frequency range
         upper (float):
             upper bound of the frequency range
 
@@ -595,7 +595,7 @@ def get_classification_metrics(tr, p_pick, delta_t):
     Compute the quality metrics as in Bellagamba et al. (2019). More details
     in the paper.
 
-    WARNINGS: - Acceleration untis changed into g at the beginning!
+    WARNINGS: - Acceleration units changed into g at the beginning!
               - Vertical component is not used!
 
     Args:

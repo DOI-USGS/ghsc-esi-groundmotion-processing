@@ -33,7 +33,7 @@ def adjust_highpass_corner(
 
     This algorithm begins with an initial corner frequency that was selected
     as configured in the `get_corner_frequencies` step. It then checks the
-    criteria descibed below; if the criteria are not met then the high pass
+    criteria described below; if the criteria are not met then the high pass
     corner is increased the multiplicative step factor until the criteria
     are met.
 

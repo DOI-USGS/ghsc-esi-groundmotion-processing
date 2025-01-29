@@ -30,7 +30,7 @@ class Ping(ClipDetection):
 
     def __init__(self, st, percent_thresh=0.57, test_all=False):
         """
-        Constructs all neccessary attributes for the Ping class.
+        Constructs all necessary attributes for the Ping class.
 
         Args:
             st (StationStream):
@@ -52,7 +52,7 @@ class Ping(ClipDetection):
     def _detect(self, clip_tr):
         """
         If any two points differ by more than a threshold, fail the trace.
-        Threshold given as percent_thresh * datarange.
+        Threshold given as percent_thresh * data-range.
 
         Args:
             clip_tr (StationTrace):

@@ -22,7 +22,7 @@ attribute is None.
 - Initially, "result" holds the InputDataComponent, which is handed off as output
   for the next processing step.
 - "metric_dicts" is a dictionary that holds results for all completed steps, in which keys are unique hashes.
-- "metric_dicts" can be inspected by loooking at the prior_step/output attributes, e.g.
+- "metric_dicts" can be inspected by looking at the prior_step/output attributes, e.g.
 
     metric_dicts["test1"]
 
@@ -42,7 +42,7 @@ attribute is None.
   This continues recursively until the "prior_step" attribute is Null, which is the
   initial input data.
 
-  The "outputs" attibute is a shared dictionary across all steps that caches the
+  The "outputs" attribute is a shared dictionary across all steps that caches the
   and are re-used
 
 """

@@ -25,7 +25,7 @@ def fit_spectra(
     max_stress=10000,
     config=None,
 ):
-    """Fit spectra vaying stress_drop and moment.
+    """Fit spectra varying stress_drop and moment.
 
     Args:
         st (gmprocess.core.stationstream.StationStream):
@@ -33,7 +33,7 @@ def fit_spectra(
         event (gmprocess.utils.scalar_event.ScalarEvent):
              ScalarEvent object.
         kappa (float):
-            Site diminution factor (sec). Typical value for active cruststal
+            Site diminution factor (sec). Typical value for active crustal
             regions is about 0.03-0.04, and stable continental regions is about
             0.006.
         RP (float):
@@ -233,7 +233,7 @@ def spectrum_cost(
             Maximum frequency to use in computing residuals.
         dist (float):
             Distance (km).
-        kappa (float): Site diminution factor (sec). Typical value for active cruststal
+        kappa (float): Site diminution factor (sec). Typical value for active crustal
             regions is about 0.03-0.04, and stable continental regions is about 0.006.
         RP (float):
             Partition of shear-wave energy into horizontal components.
@@ -256,7 +256,7 @@ def spectrum_cost(
             - 'REA99' for Raoof et al. (1999)
             - 'none' for no anelastic attenuation
         crust_mod (str):
-            Name of model for crustal amplification. Currently onlysupported value:
+            Name of model for crustal amplification. Currently only supported value:
             - 'BT15' for Boore and Thompson (2015)
             - 'none' for no crustal amplification model.
 
@@ -320,7 +320,7 @@ def model(
         dist (float):
             Distance (km).
         kappa (float):
-            Site diminution factor (sec). Typical value for active cruststal
+            Site diminution factor (sec). Typical value for active crustal
             regions is about 0.03-0.04, and stable continental regions is about 0.006.
         RP (float):
             Partition of shear-wave energy into horizontal components.
@@ -403,9 +403,9 @@ def brune(
             Reference distance (km).
        output_units (str):
             Time domain equivalent units for the output spectrum. One of:
-                - "ACC" for acceleration, giving Fourier spectra units of cm/s.
-                - "VEL" for velocity, giving Fourier spectra units of cm.
-                - "DISP"
+                - "ACC" for acceleration, giving Fourier spectra units of cm/s^2.
+                - "VEL" for velocity, giving Fourier spectra units of cm/s.
+                - "DISP" for displacement, giving Fourier spectra units of cm.
 
     Returns:
         Array of source spectra.
@@ -529,7 +529,7 @@ def site(freq, kappa, crust_mod="BT15"):
         freq (array):
             Numpy array of frequencies for computing spectra (Hz).
         kappa (float):
-            Site diminution factor (sec). Typical value for active cruststal
+            Site diminution factor (sec). Typical value for active crustal
             regions is about 0.03-0.04, and stable continental regions is about 0.006.
         crust_mod (str):
             Name of model for crustal amplification. Currently only supported value:

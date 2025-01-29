@@ -1,13 +1,17 @@
 ## main
 
+- Enhancements
+  - COSMOS v0 writer incorporates sensitivity from StationXML stages in real #22 and real #42 headers
+- Bugfix
+  - Fix error with zeropad method using 'fhp' to extracts filter order
 
 ## 2.3.0 / 2025-01-23
 
 - Enhancements
   - Substantial changes to the default processing steps.
-  - Add support for psudo-response spectra (PSA and PSV) and change default metrics to use PSA rather than SA.
-  - Allow for user to set a different query window duration for different tectonic envirnments.
-  - Increase default query window duraiton.
+  - Add support for psuedo-response spectra (PSA and PSV) and change default metrics to use PSA rather than SA.
+  - Allow for user to set a different query window duration for different tectonic environments.
+  - Increase default query window duration.
   - Add a new "source_path" method to compute the signal end that uses 1/fc as the source duration, which is then added to a path duration that is parameterized with coefficients for an intercept and distance term.
   - Exclude network 7D, which is for ocean bottom stations.
   - Apply clipping check to strong motion instruments. In the past, we thought it was safe to assume strong motion instruments did not clip but we have found exceptions to this. 
@@ -57,7 +61,7 @@
 ## 2.1.2 / 2024-11-14
 - Enhancements
   - Station distance (epicentral distance) added to the reports
-  - Add support velocity and dispacement COSMOS and DMG files
+  - Add support velocity and displacement COSMOS and DMG files
   - More graceful exiting when bad eventid is inputted to `download`
   - Allow `reports` to continue processing when an event directory is empty (no data)
   - Update default config to use the Ramos-Sepulveda et al. (2023) high-pass corner selection method, and increase the p-wave shift to -2 sec from -1 sec. 
@@ -93,7 +97,7 @@
   - Updated line styles of annotation lines in SNR plots.
   - Remove the `export_shakemap` subcommand.
   - Default config updates
-    - Change KO smoothing paramter to 188.5.
+    - Change KO smoothing parameter to 188.5.
     - Add arias intensity.
     - Lower pga threshold on distance search criteria.
     - Update release instructions in CONTRIBUTING.md.
@@ -120,7 +124,7 @@
 - Other
   - Turned off automatic generation of moveout plot since it isn't getting used.
   - Renamed src/gmprocess/utils/test_utils.py to src/gmprocess/utils/test_utils.py to avoid it being detected as a unit test module.
-  - Decrease precision in fetcher bounds and fix Geonet bounds to include negaive longitudes.
+  - Decrease precision in fetcher bounds and fix Geonet bounds to include negative longitudes.
   - Move the "config" subcommand to be a stand-alone command line program called "gmprocess_config".
   - Removed "list_metrics" command.
   - Removed cap on python version, increased minimum version to 3.9
@@ -168,7 +172,7 @@
 - Added station metric units to constants.
 - Bugfixes
   - Resolve key error that was preventing writing of metric tables when Arias Intensity was requested. 
-  - Resolve bug that occurs when multiple channels/stations are present in the invetory when trying to retrieve the sampling rate for the metric table.
+  - Resolve bug that occurs when multiple channels/stations are present in the inventory when trying to retrieve the sampling rate for the metric table.
 
 ## 1.2.8 / 2023-08-21
 
@@ -296,7 +300,7 @@
 - More gracefully handle cases where workspace file does not exist but is expected.
 - Add label arg to gmconvert.
 - Make colocated selection optional.
-- Replace stastic map with interactive HTML map and add to CLI tutorial in documentation.
+- Replace statistic map with interactive HTML map and add to CLI tutorial in documentation.
 - Remove cartopy dependency.
 - Get scnl from COSMOS comments.
 - Add freq differentiation option.

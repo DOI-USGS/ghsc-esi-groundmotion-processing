@@ -531,7 +531,12 @@ class IntHeader(object):
 
 
 class FloatHeader(object):
-    def __init__(self, trace, scalar_event, volume):
+    def __init__(
+        self,
+        trace,
+        scalar_event,
+        volume,
+    ):
         self.volume = volume
         # fill in data for float header
         # fill in data for int header
@@ -562,12 +567,15 @@ class FloatHeader(object):
         self.header[17] = az  # 18
 
         # Recorder/datalogger parameters
-        if hasattr(trace.stats.standard, "volts_to_counts"):
+        if hasattr(trace.stats.standard, "data_logger_sensitivity"):
             # volts to counts is counts/volt
             # MICRO_TO_VOLT is microvolts/volt
+            # self.header[21] = (
+            #     1 / trace.stats.standard.volts_to_counts
+            # ) * MICRO_TO_VOLT  # 22 microvolts/count
             self.header[21] = (
-                1 / trace.stats.standard.volts_to_counts
-            ) * MICRO_TO_VOLT  # 22 microvolts/count
+                trace.stats.data_logger_sensitivity * 1e6
+            )  # Convert to microvolts
 
         # length of noise and signal windows
         if trace.has_parameter("signal_split"):  # only present in processed data??
@@ -595,13 +603,15 @@ class FloatHeader(object):
         self.header[40] = trace.stats.standard.instrument_damping  # 41
         has_sensitivity = hasattr(trace.stats.standard, "instrument_sensitivity")
         has_volts = hasattr(trace.stats.standard, "volts_to_counts")
-        if has_sensitivity and has_volts:
-            instrument_sensitivity = (
-                trace.stats.standard.instrument_sensitivity
-            )  # counts/m/s^2
-            volts_to_counts = trace.stats.standard.volts_to_counts  # counts/volts
-            sensor_sensitivity = (1 / volts_to_counts) * instrument_sensitivity * sp.g
-            self.header[41] = sensor_sensitivity  # 42 volts/g
+        # if has_sensitivity and has_volts:
+        # instrument_sensitivity = (
+        #     trace.stats.standard.instrument_sensitivity
+        # )  # counts/m/s^2
+        # volts_to_counts = trace.stats.standard.volts_to_counts  # counts/volts
+        # sensor_sensitivity = (1 / volts_to_counts) * instrument_sensitivity * sp.g
+        # self.header[41] = sensor_sensitivity  # 42 volts/g
+        if hasattr(trace.stats.standard, "stage_1_sensitivity"):
+            self.header[41] = trace.stats.stage_1_sensitivity * sp.g
         if volume == Volume.PROCESSED:
             lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
             highpass_info = trace.get_provenance("highpass_filter")[0][
@@ -842,7 +852,14 @@ class CosmosWriter(object):
                     logging.info(f"Writing stream {stream.id}...")
                     nstreams += 1
                     cosmos_file = None
-
+                    inv = stream.get_inventory()
+                    if inv is None:
+                        msg = (
+                            f"Stream {stream} is missing StationXML inventory object and so "
+                            "unknown -999 values will be used in the header for instrument sensitivity "
+                            "and data logger sensitivity in the COSMOS headers "
+                        )
+                        logging.info(msg)
                     if self._concatenate_channels:
                         cosmos_file = io.StringIO()
                         net = stream[0].stats.network
@@ -863,6 +880,29 @@ class CosmosWriter(object):
                         sta = trace.stats.station
                         cha = trace.stats.channel
                         loc = trace.stats.location
+                        if inv:
+                            # Extract sensitivity from StationXML object
+                            tinv = inv.select(
+                                network=trace.stats.network,
+                                station=trace.stats.station,
+                                channel=trace.stats.channel,
+                                location=trace.stats.location,
+                                time=trace.stats.starttime,
+                            )
+                            stages = tinv[0][0][0].response.response_stages  # Careful
+                            data_logger_sensitivity = 1
+                            for idx, stage in enumerate(stages):
+                                if idx == 0:
+                                    instrument_sensitivity = stage.stage_gain
+                                else:
+                                    data_logger_sensitivity *= 1 / stage.stage_gain
+                            trace.stats["stage_1_sensitivity"] = instrument_sensitivity
+                            trace.stats["data_logger_sensitivity"] = (
+                                data_logger_sensitivity
+                            )
+                            # print("instrument sensitivity ", instrument_sensitivity)
+                            # print("data logger sensitivity ", data_logger_sensitivity)
+
                         if trace.stats.standard.units_type != "acc":
                             msg = (
                                 "Only supporting acceleration data at this "
@@ -1052,7 +1092,11 @@ class CosmosWriter(object):
             gmprocess_version,
         )
         logging.debug(f"Getting float header for {trace.id}")
-        float_header = FloatHeader(trace, scalar_event, self._volume)
+        float_header = FloatHeader(
+            trace,
+            scalar_event,
+            self._volume,
+        )
         text_header.write(cosmos_file)
         int_header.write(cosmos_file)
         float_header.write(cosmos_file)

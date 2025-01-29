@@ -27,7 +27,7 @@ class StationMetric:
     back_azimuth: float
 
     def to_dict(self):
-        """Convenience method to conver to a dictionary.
+        """Convenience method to convert to a dictionary.
 
         Note that since this dataclass does not have any nesting, there's no need to use
         the "asdict" method, which is supposedly much slower.

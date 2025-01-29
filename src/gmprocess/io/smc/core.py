@@ -24,7 +24,7 @@ FLOAT_DATA_WIDTHS = 8 * [10]
 
 # some smc records have nonsensically high sampling rate values
 # in the header. This is what we think is the upper end
-# of sensical.
+# of sensible.
 MAX_ALLOWED_SAMPLE_RATE = 1e5
 
 VALID_HEADERS = {"1 UNCORRECTED ACCELEROGRAM": "V1", "2 CORRECTED ACCELEROGRAM": "V2"}
