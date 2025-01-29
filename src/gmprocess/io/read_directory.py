@@ -12,7 +12,16 @@ from gmprocess.io.read import read_data
 from gmprocess.io.utils import flatten_directory
 from gmprocess.io.utils import _walk
 
-EXT_IGNORE = [".gif", ".csv", ".dis", ".abc", ".zip", ".rs2", ".fs1", ".xml"]
+EXT_IGNORE = [
+    ".gif",
+    ".csv",
+    ".dis",
+    ".abc",
+    ".zip",
+    ".rs2",
+    ".fs1",
+    ".xml",
+]
 
 
 def directory_to_streams(directory, config=None):
@@ -53,7 +62,7 @@ def directory_to_streams(directory, config=None):
         for file_path in _walk(target_dir):
             file_name = file_path.name
             file_ext = file_path.suffix.lower()
-            if file_ext not in EXT_IGNORE:
+            if file_ext not in EXT_IGNORE and len(file_ext) > 0:
                 try:
                     streams += read_data(file_path, config=config)
                 except BaseException as ex:
