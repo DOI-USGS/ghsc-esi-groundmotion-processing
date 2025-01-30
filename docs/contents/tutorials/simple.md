@@ -223,7 +223,7 @@ In order to re-organize the data a bit to make it more convenient to plot the Ro
 ```{code-cell} ipython3
 sa_rotd_dfs = []
 for wml in wmc.waveform_metrics:
-    tmp_df = wml.select("SA").to_df()
+    tmp_df = wml.select("PSA").to_df()
     tmp_df = tmp_df.loc[tmp_df["IMC"] == "RotD(percentile=50.0)"]
     sa_rotd_dfs.append(tmp_df)
 ```
