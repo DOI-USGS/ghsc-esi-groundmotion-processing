@@ -48,10 +48,10 @@ FLOAT_FMT = "%15.6f"
 NUM_FLOAT_ROWS = 20
 NUM_FLOAT_COLS = 5
 
-NUM_DATA_COLS = 8
-FLOAT_DATA_FMT = "%10.5f"
+NUM_DATA_COLS = 10
+FLOAT_DATA_FMT = "%8.5f"
 SPECTRA_DATA_FMT = "%15.6E"
-INT_DATA_FMT = "%10d"
+INT_DATA_FMT = "%8d"
 
 TABLE1 = {"acc": 1, "vel": 2, "disp": 3}
 TABLE2 = {"acc": 4, "vel": 5, "disp": 6, "counts": 50}
@@ -567,7 +567,7 @@ class FloatHeader(object):
         self.header[17] = az  # 18
 
         # Recorder/datalogger parameters
-        if hasattr(trace.stats.standard, "data_logger_sensitivity"):
+        if hasattr(trace.stats, "data_logger_sensitivity"):
             # volts to counts is counts/volt
             # MICRO_TO_VOLT is microvolts/volt
             # self.header[21] = (
@@ -610,7 +610,7 @@ class FloatHeader(object):
         # volts_to_counts = trace.stats.standard.volts_to_counts  # counts/volts
         # sensor_sensitivity = (1 / volts_to_counts) * instrument_sensitivity * sp.g
         # self.header[41] = sensor_sensitivity  # 42 volts/g
-        if hasattr(trace.stats.standard, "stage_1_sensitivity"):
+        if hasattr(trace.stats, "stage_1_sensitivity"):
             self.header[41] = trace.stats.stage_1_sensitivity * sp.g
         if volume == Volume.PROCESSED:
             lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
@@ -831,13 +831,13 @@ class CosmosWriter(object):
             gmprocess_version = gmprocess_version[0:idx]
             ds = self._workspace.dataset
             station_list = ds.waveforms.list()
-            extension = "V0"
+            extension = "v0"
             if self._volume == Volume.CONVERTED:
-                extension = "V1"
+                extension = "v1"
             elif self._volume == Volume.PROCESSED:
-                extension = "V2"
+                extension = "v2"
             elif self._volume == Volume.SPECTRA:
-                extension = "V3"
+                extension = "v3"
                 wmc = WaveformMetricCollection.from_workspace(
                     self._workspace, "default"
                 )
