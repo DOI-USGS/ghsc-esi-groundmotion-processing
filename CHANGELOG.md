@@ -4,6 +4,7 @@
   - COSMOS v0 writer incorporates sensitivity from StationXML stages in real #22 and real #42 headers
 - Bugfix
   - Fix error with zeropad method using 'fhp' to extracts filter order
+  - Fix cosmos v0 writer header failing to write sensitivities due to if statement testing 'trace.stats.standard' instead of 'trace.stats'
 
 ## 2.3.0 / 2025-01-23
 
