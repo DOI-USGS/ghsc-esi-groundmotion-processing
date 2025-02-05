@@ -432,20 +432,21 @@ class StreamWorkspace(object):
             else:
                 level = "processed"
 
+            stream_copy = stream
             if overwrite:
                 net_sta = stream.get_net_sta()
                 if net_sta in self.dataset.waveforms:
                     if tag in self.dataset.waveforms[net_sta]:
+                        # Add stream + traces in dataset not in stream to updated stream
+                        stream_copy = stream.copy()
+                        stream_trace_ids = set([tr.id for tr in stream])
                         tmp_stream = self.dataset.waveforms[net_sta][tag]
-                        tmp_stats = tmp_stream[0].stats
-                        tmp_nsl = ".".join(
-                            [tmp_stats.network, tmp_stats.station, tmp_stats.location]
-                        )
-                        nsl = stream.get_net_sta_loc()
-                        if nsl == tmp_nsl:
-                            del self.dataset.waveforms[net_sta][tag]
-
-            self.dataset.add_waveforms(stream, tag=tag, event_id=event)
+                        for tmp_tr in tmp_stream:
+                            if tmp_tr.id not in stream_trace_ids:
+                                stream_copy.append(tmp_tr)
+                        del self.dataset.waveforms[net_sta][tag]
+            
+            self.dataset.add_waveforms(stream_copy, tag=tag, event_id=event_id)
 
             # add processing provenance info from traces
             if level == "processed":
@@ -460,7 +461,7 @@ class StreamWorkspace(object):
             # add supplemental stats, e.g., "standard" and "format_specific"
             sup_stats = stream.get_supplemental_stats()
             self.insert_aux(
-                dict_to_str(sup_stats), "StreamSupplementalStats", stream_path
+                dict_to_str(sup_stats), "StreamSupplementalStats", stream_path, overwrite
             )
 
             # add processing parameters from streams
