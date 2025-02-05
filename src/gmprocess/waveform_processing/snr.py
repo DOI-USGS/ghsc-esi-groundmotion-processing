@@ -191,18 +191,18 @@ def compute_snr_trace(tr, event_magnitude, smoothing_parameter=20.0):
             compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
             return tr
 
-        nfft = max(
-            next_pow_2(event.stats.npts),
-            next_pow_2(preevent_noise.stats.npts),
-        )
-
         # Check that there are a minimum number of points in the event window
         if event.stats.npts < MIN_POINTS_IN_WINDOW:
             # Fail the trace, but still compute the event spectra
             if tr.passed:
                 tr.fail("SNR check; Not enough points in event window")
-            compute_and_smooth_spectrum(tr, smoothing_parameter, "event", nfft=nfft)
+            compute_and_smooth_spectrum(tr, smoothing_parameter, "event")
             return tr
+
+        nfft = max(
+            next_pow_2(event.stats.npts),
+            next_pow_2(preevent_noise.stats.npts),
+        )
 
         compute_and_smooth_spectrum(
             tr, smoothing_parameter, "noise", preevent_noise, nfft=nfft
