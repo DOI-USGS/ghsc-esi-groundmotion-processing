@@ -179,32 +179,19 @@ class StreamCollection(StreamArray):
                 if event.magnitude > m:
                     dist_thresh = d
 
-        # Create a list of streams with matching id (combo of net and station).
-        all_matches = []
-        match_list = []
-        for idx1, stream1 in enumerate(self):
-            cond1 = idx1 in all_matches
-            cond2 = not stream1.passed
-            if cond1 or cond2:
+        # Create a dict of colocated streams.
+        # net_sta -> array of indices for matching stations in stream
+        match_list = {}
+        for i_st, stream in enumerate(self):
+            if not stream.passed:
                 continue
-            matches = [idx1]
-            net_sta = stream1.get_net_sta()
-            for idx2, stream2 in enumerate(self):
-                cond1 = idx1 != idx2
-                cond2 = idx1 not in all_matches
-                cond3 = net_sta == stream2.get_net_sta()
-                cond4 = stream2.passed
-                if cond1 and cond2 and cond3 and cond4:
-                    matches.append(idx2)
-            if len(matches) > 1:
-                match_list.append(matches)
-                all_matches.extend(matches)
+            net_sta = stream.get_net_sta()
+            if not net_sta in match_list:
+                match_list[net_sta] = [i_st]
             else:
-                if matches[0] not in all_matches:
-                    match_list.append(matches)
-                    all_matches.extend(matches)
+                match_list[net_sta].append(i_st)
 
-        for group in match_list:
+        for group in match_list.values():
             # Are there colocated instruments for this group?
             if len(group) > 1:
                 # If so, loop over list of preferred instruments
