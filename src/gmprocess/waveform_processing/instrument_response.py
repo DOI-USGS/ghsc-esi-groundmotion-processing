@@ -307,7 +307,7 @@ class RemoveResponse(object):
 
     def _remove_response_has_paz(self):
         try:
-            # Note: rater than set OUTPUT to 'ACC' for seismometers, we are are setting
+            # Note: rather than set OUTPUT to 'ACC' for seismometers, we are are setting
             # it to 'VEL" and then differentiating.
             if self.instrument_code == "H":
                 self.output_units = "VEL"
@@ -374,6 +374,7 @@ class RemoveResponse(object):
             self.trace.fail(reason)
 
     def _remove_sensitivity(self):
+        self.output_units = "ACC" # Should only be called for accelerometers
         self.trace.remove_sensitivity(inventory=self.selected_inventory)
         self.trace.data *= constants.M_TO_CM  # Convert from m to cm
         self.trace.set_provenance(
