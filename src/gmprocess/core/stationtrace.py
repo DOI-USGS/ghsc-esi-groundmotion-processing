@@ -282,6 +282,10 @@ class StationTrace(Trace):
     def passed(self):
         """Has this trace passed checks?"""
         return not self.has_parameter("failure")
+    
+    @property
+    def is_horizontal(self):
+        return "z" not in self.stats.channel.lower()
 
     def validate(self):
         """Ensure that all required metadata fields have been set.
