@@ -623,9 +623,8 @@ class StationTrace(Trace):
         zerophase=False,
         config=None,
         frequency_domain=True,
-        **options,
     ):
-        """Overwrite parent function to allow for conf options.
+        """Overwrite parent function to allow for configuration options.
 
         Args:
             type (str):
@@ -666,7 +665,6 @@ class StationTrace(Trace):
                     freq=freq,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
@@ -706,7 +704,6 @@ class StationTrace(Trace):
                     freq=freq,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
@@ -748,7 +745,6 @@ class StationTrace(Trace):
                     freqmax=freqmax,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
@@ -790,7 +786,6 @@ class StationTrace(Trace):
                     freqmax=freqmax,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
