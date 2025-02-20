@@ -1,6 +1,8 @@
 """Module for the ridder_fchp processign step."""
 
 import inspect
+import numpy as np
+
 from esi_core.gmprocess.waveform_processing.auto_fchp import get_fchp
 from gmprocess.waveform_processing.taper import taper
 from gmprocess.waveform_processing.filtering import highpass_filter
@@ -10,7 +12,7 @@ FORDER = 5.0
 
 
 @processing_step
-def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
+def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, same_horiz=True, config=None):
     """Search for highpass corner using Ridder's method.
 
     Search such that the criterion that the ratio between the maximum of a third order
@@ -37,6 +39,8 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
             method used to perform integration between acceleration, velocity, and
             dispacement. Options are "frequency_domain", "time_domain_zero_init" or
             "time_domain_zero_mean"
+        same_horiz (bool):
+            impose same highpass corner frequency across horizontal components
         config (dict):
             Configuration dictionary (or None). See get_config().
 
@@ -57,6 +61,7 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
     else:
         filter_code = 0
 
+    adjusted_horiz_hp = False
     for tr in st:
         if tr.stats.standard.units_type != "acc":
             tr.fail("Unit type must be acc to apply Ridder fchp method.")
@@ -88,6 +93,7 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
             continue
 
         if new_f_hp > initial_f_hp:
+            adjusted_horiz_hp = True if tr.is_horizontal else adjusted_horiz_hp
             tr.set_parameter(
                 "corner_frequencies",
                 {
@@ -96,4 +102,16 @@ def ridder_fchp(st, target=0.02, tol=0.001, maxiter=30, maxfc=0.5, config=None):
                     "lowpass": initial_corners["lowpass"],
                 },
             )
+
+    if adjusted_horiz_hp and same_horiz and st.passed and st.num_horizontal > 1:
+        hp_corners = [
+            tr.get_parameter("corner_frequencies")["highpass"]
+            for tr in st if tr.is_horizontal
+        ]
+        hp_corner = np.max(hp_corners)
+        for tr in st:
+            if tr.is_horizontal:
+                cfdict = tr.get_parameter("corner_frequencies")
+                cfdict["highpass"] = hp_corner
+                tr.set_parameter("corner_frequencies", cfdict)
     return st
