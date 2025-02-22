@@ -420,8 +420,7 @@ class StreamCollection(StreamArray):
 
         traces = []
         for st in self.streams:
-            for tr in st:
-                traces.append(tr)
+            traces += [tr for tr in st]
         preferred_traces = []
 
         for tr_to_add in traces:
