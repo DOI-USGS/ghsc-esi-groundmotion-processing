@@ -252,9 +252,9 @@ class TextHeader(object):
     header_fmt["data_maximum_time"] = ["at {value:7.3f} sec", 66, None]
 
     # line 12
-    header_fmt["low_band_hz"] = ["Record filtered below {value:1s} Hz", 0, None]
-    header_fmt["low_band_sec"] = ["(periods over {value:1s} secs)", 31, None]
-    header_fmt["high_band_hz"] = ["and above {value:1s} Hz", 58, None]
+    header_fmt["low_band_hz"] = ["Record filtered below{value:6.2f} Hz", 0, None]
+    header_fmt["low_band_sec"] = ["(periods over{value:6.1f} secs)", 31, None]
+    header_fmt["high_band_hz"] = ["and above{value:5.1f} Hz", 58, None]
 
     # line 13
     header_fmt["missing_data_str"] = ["{value:64s}", 0, None]
@@ -391,24 +391,37 @@ class TextHeader(object):
         self.set_header_value("data_maximum_time", maxtime)
 
         # line 12
-        lowpass_prov = trace.get_provenance("lowpass_filter")
-        highpass_prov = trace.get_provenance("highpass_filter")
-        self.set_header_value("high_band_hz", " ")
-        self.set_header_value("low_band_hz", " ")
-        self.set_header_value("low_band_sec", " ")
-        if len(lowpass_prov):
+        if volume != volume.RAW:
+            # self.set_header_value("high_band_hz", np.nan)
+            # self.set_header_value("low_band_hz", np.nan)
+            # self.set_header_value("low_band_sec", np.nan)
             self.set_header_value(
-                "high_band_hz", lowpass_prov[0]["prov_attributes"]["corner_frequency"]
+                "high_band_hz",
+                trace.get_parameter("corner_frequencies")["lowpass"],
             )
-
-        if len(highpass_prov):
             self.set_header_value(
-                "low_band_hz", highpass_prov[0]["prov_attributes"]["corner_frequency"]
+                "low_band_hz",
+                trace.get_parameter("corner_frequencies")["highpass"],
             )
             self.set_header_value(
                 "low_band_sec",
-                1 / highpass_prov[0]["prov_attributes"]["corner_frequency"],
+                1 / trace.get_parameter("corner_frequencies")["highpass"],
             )
+        else:
+            self.header_fmt["low_band_hz"] = [
+                "Record filtered below{value:1} Hz",
+                0,
+                None,
+            ]
+            self.header_fmt["low_band_sec"] = [
+                "(periods over{value:1} secs)",
+                31,
+                None,
+            ]
+            self.header_fmt["high_band_hz"] = ["and above{value:1} Hz", 58, None]
+            self.set_header_value("high_band_hz", " ")
+            self.set_header_value("low_band_hz", " ")
+            self.set_header_value("low_band_sec", " ")
 
         # line 13
         miss_str = "Values used when parameter or data value is unknown/unspecified:"
@@ -417,14 +430,11 @@ class TextHeader(object):
         self.set_header_value("missing_data_float", MISSING_DATA_FLOAT)
 
     def set_header_value(self, key, value):
-        try:
-            width = int(re.search(r"\d+", self.header_fmt[key][0]).group(0))
-            if isinstance(value, str) and len(value) > width:
-                value = value[0:width]
-            formatted_value = self.header_fmt[key][0].format(value=value)
-            self.header_fmt[key][2] = formatted_value
-        except:
-            breakpoint()
+        width = int(re.search(r"\d+", self.header_fmt[key][0]).group(0))
+        if isinstance(value, str) and len(value) > width:
+            value = value[0:width]
+        formatted_value = self.header_fmt[key][0].format(value=value)
+        self.header_fmt[key][2] = formatted_value
 
     def write(self, cosmos_file):
         # write out data for text header to cosmos_file object
@@ -513,15 +523,17 @@ class IntHeader(object):
 
         # Filtering/processing parameters
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
-            highpass_info = trace.get_provenance("highpass_filter")[0][
-                "prov_attributes"
-            ]
+            try:
+                num_of_passes = trace.get_provenance("bandpass_filter")[1][
+                    "prov_attributes"
+                ]["number_of_passes"]
+            except IndexError:
+                num_of_passes = 0
             self.header[5][9] = NONCAUSAL_BUTTERWORTH_FILTER
-            if highpass_info["number_of_passes"] == 1:
+            if num_of_passes == 1:
                 self.header[5][9] = CAUSAL_BUTTERWORTH_FILTER
             self.header[6][1] = NONCAUSAL_BUTTERWORTH_FILTER
-            if lowpass_info["number_of_passes"] == 1:
+            if num_of_passes == 1:
                 self.header[6][1] = CAUSAL_BUTTERWORTH_FILTER
             self.header[6][3] = FREQ_DOMAIN_FILTER
         # Response spectrum parameters
@@ -619,12 +631,8 @@ class FloatHeader(object):
         if hasattr(trace.stats, "stage_1_sensitivity"):
             self.header[41] = trace.stats.stage_1_sensitivity * sp.g
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
-            highpass_info = trace.get_provenance("highpass_filter")[0][
-                "prov_attributes"
-            ]
-            self.header[53] = highpass_info["corner_frequency"]  # 54
-            self.header[56] = lowpass_info["corner_frequency"]  # 57
+            self.header[53] = trace.get_parameter("corner_frequencies")["lowpass"]
+            self.header[56] = trace.get_parameter("corner_frequencies")["highpass"]
 
         # time history parameters
         self.header[61] = trace.stats.delta * 1000  # 62 msecs
@@ -874,8 +882,11 @@ class CosmosWriter(object):
                         stime = stream[0].stats.starttime.strftime("%Y%m%d%H%M%S")
                         # fname = f"{eventid}_{net}_{sta}_{loc}_{stime}.{extension}c"
                         dashes = "-" * (5 - len(sta))
-                        eventid_ = eventid[2:]  # strip origin code from event id
-                        fname = f"{net}{sta}{dashes}n.{eventid_}.{extension}c"
+                        if self._volume == Volume.RAW:
+                            eventid_ = eventid[2:]  # strip origin code from event id
+                            fname = f"{net}{sta}{dashes}n.{eventid_}.{extension}c"
+                        else:
+                            fname = f"{net}{sta}{dashes}n.{eventid}.{extension}c"
                         cosmos_filename = self._cosmos_directory / fname
                         files.append(cosmos_filename)
                     ichannel = 1
@@ -924,8 +935,13 @@ class CosmosWriter(object):
                         ntraces += 1
                         stime = trace.stats.starttime.strftime("%Y%m%d%H%M%S")
                         if cosmos_file is None:
-                            eventid_ = eventid[2:]  # strip origin code from event id
-                            fname = f"{eventid_}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
+                            if self.volume == Volume.RAW:
+                                eventid_ = eventid[
+                                    2:
+                                ]  # strip origin code from event id
+                                fname = f"{eventid_}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
+                            else:
+                                fname = f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
                             if self._volume == Volume.PROCESSED:
                                 fname += ".acc"
                             cosmos_filename = self._cosmos_directory / fname

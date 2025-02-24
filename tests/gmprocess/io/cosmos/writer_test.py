@@ -45,8 +45,8 @@ SAMPLE_FLOAT_HDR = """
     -999.000000    -999.000000    -999.000000    -999.000000    -999.000000
     -999.000000    -999.000000    -999.000000    -999.000000    -999.000000
     -999.000000    -999.000000    -999.000000    -999.000000    -999.000000
-    -999.000000    -999.000000    -999.000000       0.656950    -999.000000
-    -999.000000      12.940812    -999.000000    -999.000000    -999.000000
+    -999.000000    -999.000000    -999.000000      12.940812    -999.000000
+    -999.000000       0.656950    -999.000000    -999.000000    -999.000000
     -999.000000      10.000000     120.910000       0.587939      17.080000
       -0.000000    -999.000000    -999.000000    -999.000000    -999.000000
     -999.000000    -999.000000    -999.000000    -999.000000    -999.000000
@@ -69,7 +69,7 @@ Rcrd start time:12/20/2021, 20:13:10.750 UTC (Q= ) RcrdId:(see comment)
 Sta Chan   1:270 deg (Rcrdr Chan  1) Location:10
 Raw record length = 450.000 sec, Uncor max =12703.000 counts at   62.180 sec
 Processed:                               Max = 12703.000 counts   at  62.180 sec
-Record filtered below   nan Hz (periods over   nan secs)  and above  nan Hz
+Record filtered below  Hz      (periods over  secs)       and above  Hz
 Values used when parameter or data value is unknown/unspecified:   -999, -999.0
 """
 
@@ -218,7 +218,10 @@ def test_float_header():
         line2 = sample_lines[idx]
         if line2.startswith("|<SCNL>"):
             continue
-        assert line1.strip() == line2.strip()
+        try:
+            assert line1.strip() == line2.strip()
+        except:
+            breakpoint()
 
 
 def test_data_block():

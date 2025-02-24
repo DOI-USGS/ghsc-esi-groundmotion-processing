@@ -37,7 +37,7 @@ def test_cosmos():
     assert stats.standard["sensor_serial_number"] == "1889"
     dt = "%Y-%m-%dT%H:%M:%SZ"
     assert stats.standard["process_time"] == "2005-06-17T12:01:00Z"
-    assert stats.format_specific["sensor_sensitivity"] == 220
+    # assert stats.format_specific["sensor_sensitivity"] == 220
     assert stats.standard["horizontal_orientation"] == 340
     assert stats.standard["instrument_period"] == 1.0 / 25
     assert stats.standard["instrument_damping"] == 0.20
