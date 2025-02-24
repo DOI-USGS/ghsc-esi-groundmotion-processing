@@ -252,9 +252,9 @@ class TextHeader(object):
     header_fmt["data_maximum_time"] = ["at {value:7.3f} sec", 66, None]
 
     # line 12
-    header_fmt["low_band_hz"] = ["Record filtered below{value:6.2f} Hz", 0, None]
-    header_fmt["low_band_sec"] = ["(periods over{value:6.1f} secs)", 31, None]
-    header_fmt["high_band_hz"] = ["and above{value:5.1f} Hz", 58, None]
+    header_fmt["low_band_hz"] = ["Record filtered below {value:1s} Hz", 0, None]
+    header_fmt["low_band_sec"] = ["(periods over {value:1s} secs)", 31, None]
+    header_fmt["high_band_hz"] = ["and above {value:1s} Hz", 58, None]
 
     # line 13
     header_fmt["missing_data_str"] = ["{value:64s}", 0, None]
@@ -393,9 +393,9 @@ class TextHeader(object):
         # line 12
         lowpass_prov = trace.get_provenance("lowpass_filter")
         highpass_prov = trace.get_provenance("highpass_filter")
-        self.set_header_value("high_band_hz", np.nan)
-        self.set_header_value("low_band_hz", np.nan)
-        self.set_header_value("low_band_sec", np.nan)
+        self.set_header_value("high_band_hz", " ")
+        self.set_header_value("low_band_hz", " ")
+        self.set_header_value("low_band_sec", " ")
         if len(lowpass_prov):
             self.set_header_value(
                 "high_band_hz", lowpass_prov[0]["prov_attributes"]["corner_frequency"]
@@ -417,11 +417,14 @@ class TextHeader(object):
         self.set_header_value("missing_data_float", MISSING_DATA_FLOAT)
 
     def set_header_value(self, key, value):
-        width = int(re.search(r"\d+", self.header_fmt[key][0]).group(0))
-        if isinstance(value, str) and len(value) > width:
-            value = value[0:width]
-        formatted_value = self.header_fmt[key][0].format(value=value)
-        self.header_fmt[key][2] = formatted_value
+        try:
+            width = int(re.search(r"\d+", self.header_fmt[key][0]).group(0))
+            if isinstance(value, str) and len(value) > width:
+                value = value[0:width]
+            formatted_value = self.header_fmt[key][0].format(value=value)
+            self.header_fmt[key][2] = formatted_value
+        except:
+            breakpoint()
 
     def write(self, cosmos_file):
         # write out data for text header to cosmos_file object
@@ -430,8 +433,11 @@ class TextHeader(object):
             for line_key in line_keys:
                 _, column_offset, value = self.header_fmt[line_key]
                 offset = column_offset - len(line)
-                line += " " * offset + value
-
+                if value != None:
+                    line += " " * offset + value
+                else:
+                    value = ""
+                    line += " " * offset + value
             line = line.rstrip()
             cosmos_file.write(line + "\n")
         return None
@@ -868,7 +874,8 @@ class CosmosWriter(object):
                         stime = stream[0].stats.starttime.strftime("%Y%m%d%H%M%S")
                         # fname = f"{eventid}_{net}_{sta}_{loc}_{stime}.{extension}c"
                         dashes = "-" * (5 - len(sta))
-                        fname = f"{net}{sta}{dashes}n.{eventid}.{extension}c"
+                        eventid_ = eventid[2:]  # strip origin code from event id
+                        fname = f"{net}{sta}{dashes}n.{eventid_}.{extension}c"
                         cosmos_filename = self._cosmos_directory / fname
                         files.append(cosmos_filename)
                     ichannel = 1
@@ -890,16 +897,19 @@ class CosmosWriter(object):
                                 time=trace.stats.starttime,
                             )
                             stages = tinv[0][0][0].response.response_stages  # Careful
-                            data_logger_sensitivity = 1
+                            instrument_sensitivity, data_logger_sensitivity = 1, 1
                             for idx, stage in enumerate(stages):
                                 if idx == 0:
                                     instrument_sensitivity = stage.stage_gain
                                 else:
                                     data_logger_sensitivity *= 1 / stage.stage_gain
-                            trace.stats["stage_1_sensitivity"] = instrument_sensitivity
-                            trace.stats["data_logger_sensitivity"] = (
-                                data_logger_sensitivity
-                            )
+                            if instrument_sensitivity:
+                                trace.stats["stage_1_sensitivity"] = (
+                                    instrument_sensitivity
+                                )
+                                trace.stats["data_logger_sensitivity"] = (
+                                    data_logger_sensitivity
+                                )
                             # print("instrument sensitivity ", instrument_sensitivity)
                             # print("data logger sensitivity ", data_logger_sensitivity)
 
@@ -914,9 +924,8 @@ class CosmosWriter(object):
                         ntraces += 1
                         stime = trace.stats.starttime.strftime("%Y%m%d%H%M%S")
                         if cosmos_file is None:
-                            fname = (
-                                f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
-                            )
+                            eventid_ = eventid[2:]  # strip origin code from event id
+                            fname = f"{eventid_}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
                             if self._volume == Volume.PROCESSED:
                                 fname += ".acc"
                             cosmos_filename = self._cosmos_directory / fname
