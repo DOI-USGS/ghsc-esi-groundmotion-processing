@@ -527,19 +527,16 @@ class IntHeader(object):
         # Filtering/processing parameters
         if volume == Volume.PROCESSED:
             try:
-                if len(trace.get_provenance("bandpass_filter")[-1][
-                    "prov_attributes"
-                ]["number_of_passes"]) > 0:
-                    num_of_passes = trace.get_provenance("bandpass_filter")[-1][
-                    "prov_attributes"]["number_of_passes"]
-                elif len(trace.get_provenance("highpass_filter")[-1][
-                    num_of_passes = trace.get_provenance("highpass_filter")[-1][
-                    "prov_attributes"]["number_of_passes"] > 0:
-                elif len(num_of_passes = trace.get_provenance("lowpass_filter")[-1][
-                    "prov_attributes"]["number_of_passes"]) > 0:
-                    num_of_passes = trace.get_provenance("lowpass_filter")[-1][
-                    "prov_attributes"]["number_of_passes"]
-            except [KeyError, IndexError]:
+                bp_prov = trace.get_provenance("bandpass_filter")[-1]["prov_attributes"]
+                hp_prov = trace.get_provenance("highpass_filter")[-1]["prov_attributes"]
+                lp_prov = trace.get_provenance("lowpass_filter")[-1]["prov_attributes"]
+                if len(bp_prov["number_of_passes"]) > 0:
+                    num_of_passes = bp_prov["number_of_passes"]
+                elif len(hp_prov["number_of_passes"]) > 0:
+                    num_of_passes = hp_prov["number_of_passes"]
+                elif len(lp_prov["number_of_passes"]) > 0:
+                    num_of_passes = lp_prov["number_of_passes"]
+            except IndexError:
                 num_of_passes = 0
             self.header[5][9] = NONCAUSAL_BUTTERWORTH_FILTER
             if num_of_passes == 1:
