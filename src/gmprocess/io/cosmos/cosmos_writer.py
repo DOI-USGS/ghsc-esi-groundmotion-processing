@@ -16,7 +16,7 @@ import scipy.constants as sp
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.waveform_processing.integrate import get_disp, get_vel
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.io.cosmos.core import BUILDING_TYPES, MICRO_TO_VOLT, SENSOR_TYPES
+from gmprocess.io.cosmos.core import BUILDING_TYPES, SENSOR_TYPES
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import UNIT_TYPES, M_TO_CM
 from obspy.core.utcdatetime import UTCDateTime
@@ -395,6 +395,9 @@ class TextHeader(object):
             # self.set_header_value("high_band_hz", np.nan)
             # self.set_header_value("low_band_hz", np.nan)
             # self.set_header_value("low_band_sec", np.nan)
+            msg = """The COSMOS format defines the corner frequencies to be computed
+            based on a 3 DB cutoff frequency. gmprocess does not enforce this requirement."""
+            logging.warning(msg)
             self.set_header_value(
                 "high_band_hz",
                 trace.get_parameter("corner_frequencies")["lowpass"],
@@ -524,10 +527,19 @@ class IntHeader(object):
         # Filtering/processing parameters
         if volume == Volume.PROCESSED:
             try:
-                num_of_passes = trace.get_provenance("bandpass_filter")[1][
+                if len(trace.get_provenance("bandpass_filter")[-1][
                     "prov_attributes"
-                ]["number_of_passes"]
-            except IndexError:
+                ]["number_of_passes"]) > 0:
+                    num_of_passes = trace.get_provenance("bandpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"]
+                elif len(trace.get_provenance("highpass_filter")[-1][
+                    num_of_passes = trace.get_provenance("highpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"] > 0:
+                elif len(num_of_passes = trace.get_provenance("lowpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"]) > 0:
+                    num_of_passes = trace.get_provenance("lowpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"]
+            except [KeyError, IndexError]:
                 num_of_passes = 0
             self.header[5][9] = NONCAUSAL_BUTTERWORTH_FILTER
             if num_of_passes == 1:
@@ -914,13 +926,10 @@ class CosmosWriter(object):
                                     instrument_sensitivity = stage.stage_gain
                                 else:
                                     data_logger_sensitivity *= 1 / stage.stage_gain
-                            if instrument_sensitivity:
-                                trace.stats["stage_1_sensitivity"] = (
-                                    instrument_sensitivity
-                                )
-                                trace.stats["data_logger_sensitivity"] = (
-                                    data_logger_sensitivity
-                                )
+                            trace.stats["stage_1_sensitivity"] = instrument_sensitivity
+                            trace.stats["data_logger_sensitivity"] = (
+                                data_logger_sensitivity
+                            )
                             # print("instrument sensitivity ", instrument_sensitivity)
                             # print("data logger sensitivity ", data_logger_sensitivity)
 
