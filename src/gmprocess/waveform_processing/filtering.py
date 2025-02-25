@@ -71,13 +71,13 @@ def bandpass_filter_trace(
         raise ValueError("number_of_passes must be 1 or 2.")
     try:
         freq_dict = tr.get_parameter("corner_frequencies")
-        minfreq = freq_dict["highpass"]
-        maxfreq = freq_dict["lowpass"]
+        freqmin = freq_dict["highpass"]
+        freqmax = freq_dict["lowpass"]
 
         tr.filter(
             type="bandpass",
-            minfreq=minfreq,
-            maxfreq=maxfreq,
+            freqmin=freqmin,
+            freqmax=freqmax,
             corners=filter_order,
             zerophase=zerophase,
             config=config,

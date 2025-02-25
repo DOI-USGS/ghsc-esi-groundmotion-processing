@@ -1,5 +1,6 @@
 """Module for storing and organizing waveform metrics"""
 
+import sys
 import logging
 import re
 from io import BytesIO
@@ -224,11 +225,21 @@ class WaveformMetricCollection(MetricCollection):
                     if sptype == "lp":
                         for attr_key, attr_val in record.attributes:
                             if "seis_prov:corner_frequency" in str(attr_key):
-                                tr_dict["lowpass_filter"] = attr_val
-                    if sptype == "hp":
+                                cur_val = tr_dict.get("lowpass_filter") or sys.float_info.max
+                                tr_dict["lowpass_filter"] = min(attr_val, cur_val)
+                    elif sptype == "hp":
                         for attr_key, attr_val in record.attributes:
                             if "seis_prov:corner_frequency" in str(attr_key):
-                                tr_dict["highpass_filter"] = attr_val
+                                cur_val = tr_dict.get("highpass_filter") or 0.0
+                                tr_dict["highpass_filter"] = max(attr_val, cur_val)
+                    elif sptype == "bp":
+                        for attr_key, attr_val in record.attributes:
+                            if "seis_prov:upper_corner_frequency" in str(attr_key):
+                                cur_val = tr_dict.get("lowpass_filter") or sys.float_info.max
+                                tr_dict["lowpass_filter"] = min(attr_val, cur_val)
+                            if "seis_prov:lower_corner_frequency" in str(attr_key):
+                                cur_val = tr_dict.get("highpass_filter") or 0.0
+                                tr_dict["highpass_filter"] = max(attr_val, cur_val)
 
                 # get the trace processing parameters, check for failures
                 trace_dict = workspace.get_trace_processing_parameters(

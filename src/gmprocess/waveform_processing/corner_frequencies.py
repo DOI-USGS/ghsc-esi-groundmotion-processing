@@ -62,18 +62,16 @@ def get_corner_frequencies(
         if snr["same_horiz"] and st.passed and st.num_horizontal > 1:
             hlps = [
                 tr.get_parameter("corner_frequencies")["lowpass"]
-                for tr in st
-                if "z" not in tr.stats.channel.lower()
+                for tr in st if tr.is_horizontal
             ]
             hhps = [
                 tr.get_parameter("corner_frequencies")["highpass"]
-                for tr in st
-                if "z" not in tr.stats.channel.lower()
+                for tr in st if tr.is_horizontal
             ]
             llp = np.min(hlps)
             hhp = np.max(hhps)
             for tr in st:
-                if "z" not in tr.stats.channel.lower():
+                if tr.is_horizontal:
                     cfdict = tr.get_parameter("corner_frequencies")
                     cfdict["lowpass"] = llp
                     cfdict["highpass"] = hhp
@@ -138,8 +136,8 @@ def lowpass_max_frequency(st, fn_fac=0.75, lp_max=40.0, config=None):
                     rev_fc_dict = rdict["corner_frequencies"]
                     if "lowpass" in rev_fc_dict:
                         logging.warning(
-                            f"Not applying lowpass_max_frequency for {tr} because the "
-                            "lowpass filter corner was set by manual review."
+                            "Not applying lowpass_max_frequency for %s because the "
+                            "lowpass filter corner was set by manual review.", tr
                         )
                         continue
 

@@ -282,6 +282,10 @@ class StationTrace(Trace):
     def passed(self):
         """Has this trace passed checks?"""
         return not self.has_parameter("failure")
+    
+    @property
+    def is_horizontal(self):
+        return "z" not in self.stats.channel.lower()
 
     def validate(self):
         """Ensure that all required metadata fields have been set.
@@ -623,9 +627,8 @@ class StationTrace(Trace):
         zerophase=False,
         config=None,
         frequency_domain=True,
-        **options,
     ):
-        """Overwrite parent function to allow for conf options.
+        """Overwrite parent function to allow for configuration options.
 
         Args:
             type (str):
@@ -666,7 +669,6 @@ class StationTrace(Trace):
                     freq=freq,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
@@ -706,7 +708,6 @@ class StationTrace(Trace):
                     freq=freq,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
@@ -748,7 +749,6 @@ class StationTrace(Trace):
                     freqmax=freqmax,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
@@ -790,7 +790,6 @@ class StationTrace(Trace):
                     freqmax=freqmax,
                     corners=corners,
                     zerophase=zerophase,
-                    **options,
                 )
 
             else:
