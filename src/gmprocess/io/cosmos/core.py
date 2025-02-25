@@ -790,14 +790,19 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
     else:
         format_specific["scaling_factor"] = np.nan
 
-    if flt_data[41] != unknown_flt:
-        format_specific["sensor_sensitivity"] = float(flt_data[41])
+    if flt_data[21] != unknown_flt:
+        format_specific["data_logger_sensitivity"] = float(flt_data[21])
     else:
-        format_specific["sensor_sensitivity"] = np.nan
+        format_specific["data_logger_sensitivity"] = np.nan
+
+    if flt_data[41] != unknown_flt:
+        format_specific["stage_1_sensitivity"] = float(flt_data[41])
+    else:
+        format_specific["stage_1_sensitivity"] = np.nan
 
     # for V0 files, set a standard field called instrument_sensitivity
     ctov = format_specific["least_significant_bit"] / MICRO_TO_VOLT
-    vtog = 1 / format_specific["sensor_sensitivity"]
+    vtog = 1 / format_specific["stage_1_sensitivity"]
     if not np.isnan(format_specific["gain"]):
         gain = format_specific["gain"]
     else:

@@ -16,7 +16,7 @@ import scipy.constants as sp
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.waveform_processing.integrate import get_disp, get_vel
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
-from gmprocess.io.cosmos.core import BUILDING_TYPES, MICRO_TO_VOLT, SENSOR_TYPES
+from gmprocess.io.cosmos.core import BUILDING_TYPES, SENSOR_TYPES
 from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import UNIT_TYPES, M_TO_CM
 from obspy.core.utcdatetime import UTCDateTime
@@ -391,24 +391,40 @@ class TextHeader(object):
         self.set_header_value("data_maximum_time", maxtime)
 
         # line 12
-        lowpass_prov = trace.get_provenance("lowpass_filter")
-        highpass_prov = trace.get_provenance("highpass_filter")
-        self.set_header_value("high_band_hz", np.nan)
-        self.set_header_value("low_band_hz", np.nan)
-        self.set_header_value("low_band_sec", np.nan)
-        if len(lowpass_prov):
+        if volume != volume.RAW:
+            # self.set_header_value("high_band_hz", np.nan)
+            # self.set_header_value("low_band_hz", np.nan)
+            # self.set_header_value("low_band_sec", np.nan)
+            msg = """The COSMOS format defines the corner frequencies to be computed
+            based on a 3 DB cutoff frequency. gmprocess does not enforce this requirement."""
+            logging.warning(msg)
             self.set_header_value(
-                "high_band_hz", lowpass_prov[0]["prov_attributes"]["corner_frequency"]
+                "high_band_hz",
+                trace.get_parameter("corner_frequencies")["lowpass"],
             )
-
-        if len(highpass_prov):
             self.set_header_value(
-                "low_band_hz", highpass_prov[0]["prov_attributes"]["corner_frequency"]
+                "low_band_hz",
+                trace.get_parameter("corner_frequencies")["highpass"],
             )
             self.set_header_value(
                 "low_band_sec",
-                1 / highpass_prov[0]["prov_attributes"]["corner_frequency"],
+                1 / trace.get_parameter("corner_frequencies")["highpass"],
             )
+        else:
+            self.header_fmt["low_band_hz"] = [
+                "Record filtered below{value:1} Hz",
+                0,
+                None,
+            ]
+            self.header_fmt["low_band_sec"] = [
+                "(periods over{value:1} secs)",
+                31,
+                None,
+            ]
+            self.header_fmt["high_band_hz"] = ["and above{value:1} Hz", 58, None]
+            self.set_header_value("high_band_hz", " ")
+            self.set_header_value("low_band_hz", " ")
+            self.set_header_value("low_band_sec", " ")
 
         # line 13
         miss_str = "Values used when parameter or data value is unknown/unspecified:"
@@ -430,8 +446,11 @@ class TextHeader(object):
             for line_key in line_keys:
                 _, column_offset, value = self.header_fmt[line_key]
                 offset = column_offset - len(line)
-                line += " " * offset + value
-
+                if value != None:
+                    line += " " * offset + value
+                else:
+                    value = ""
+                    line += " " * offset + value
             line = line.rstrip()
             cosmos_file.write(line + "\n")
         return None
@@ -507,15 +526,26 @@ class IntHeader(object):
 
         # Filtering/processing parameters
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
-            highpass_info = trace.get_provenance("highpass_filter")[0][
-                "prov_attributes"
-            ]
+            try:
+                if len(trace.get_provenance("bandpass_filter")[-1][
+                    "prov_attributes"
+                ]["number_of_passes"]) > 0:
+                    num_of_passes = trace.get_provenance("bandpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"]
+                elif len(trace.get_provenance("highpass_filter")[-1][
+                    num_of_passes = trace.get_provenance("highpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"] > 0:
+                elif len(num_of_passes = trace.get_provenance("lowpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"]) > 0:
+                    num_of_passes = trace.get_provenance("lowpass_filter")[-1][
+                    "prov_attributes"]["number_of_passes"]
+            except [KeyError, IndexError]:
+                num_of_passes = 0
             self.header[5][9] = NONCAUSAL_BUTTERWORTH_FILTER
-            if highpass_info["number_of_passes"] == 1:
+            if num_of_passes == 1:
                 self.header[5][9] = CAUSAL_BUTTERWORTH_FILTER
             self.header[6][1] = NONCAUSAL_BUTTERWORTH_FILTER
-            if lowpass_info["number_of_passes"] == 1:
+            if num_of_passes == 1:
                 self.header[6][1] = CAUSAL_BUTTERWORTH_FILTER
             self.header[6][3] = FREQ_DOMAIN_FILTER
         # Response spectrum parameters
@@ -613,12 +643,8 @@ class FloatHeader(object):
         if hasattr(trace.stats, "stage_1_sensitivity"):
             self.header[41] = trace.stats.stage_1_sensitivity * sp.g
         if volume == Volume.PROCESSED:
-            lowpass_info = trace.get_provenance("lowpass_filter")[0]["prov_attributes"]
-            highpass_info = trace.get_provenance("highpass_filter")[0][
-                "prov_attributes"
-            ]
-            self.header[53] = highpass_info["corner_frequency"]  # 54
-            self.header[56] = lowpass_info["corner_frequency"]  # 57
+            self.header[53] = trace.get_parameter("corner_frequencies")["lowpass"]
+            self.header[56] = trace.get_parameter("corner_frequencies")["highpass"]
 
         # time history parameters
         self.header[61] = trace.stats.delta * 1000  # 62 msecs
@@ -868,7 +894,11 @@ class CosmosWriter(object):
                         stime = stream[0].stats.starttime.strftime("%Y%m%d%H%M%S")
                         # fname = f"{eventid}_{net}_{sta}_{loc}_{stime}.{extension}c"
                         dashes = "-" * (5 - len(sta))
-                        fname = f"{net}{sta}{dashes}n.{eventid}.{extension}c"
+                        if self._volume == Volume.RAW:
+                            eventid_ = eventid[2:]  # strip origin code from event id
+                            fname = f"{net}{sta}{dashes}n.{eventid_}.{extension}c"
+                        else:
+                            fname = f"{net}{sta}{dashes}n.{eventid}.{extension}c"
                         cosmos_filename = self._cosmos_directory / fname
                         files.append(cosmos_filename)
                     ichannel = 1
@@ -890,7 +920,7 @@ class CosmosWriter(object):
                                 time=trace.stats.starttime,
                             )
                             stages = tinv[0][0][0].response.response_stages  # Careful
-                            data_logger_sensitivity = 1
+                            instrument_sensitivity, data_logger_sensitivity = 1, 1
                             for idx, stage in enumerate(stages):
                                 if idx == 0:
                                     instrument_sensitivity = stage.stage_gain
@@ -914,9 +944,13 @@ class CosmosWriter(object):
                         ntraces += 1
                         stime = trace.stats.starttime.strftime("%Y%m%d%H%M%S")
                         if cosmos_file is None:
-                            fname = (
-                                f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
-                            )
+                            if self.volume == Volume.RAW:
+                                eventid_ = eventid[
+                                    2:
+                                ]  # strip origin code from event id
+                                fname = f"{eventid_}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
+                            else:
+                                fname = f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
                             if self._volume == Volume.PROCESSED:
                                 fname += ".acc"
                             cosmos_filename = self._cosmos_directory / fname
