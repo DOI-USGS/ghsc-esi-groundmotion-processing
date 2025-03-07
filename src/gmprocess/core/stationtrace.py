@@ -192,14 +192,30 @@ class StationTrace(Trace):
 
         # Sometimes the channel names do not indicate which one is the
         # Z channel. If we have vertical_orientation information, then
-        # let's get that and change the vertical channel to end in Z.
+        # let's get that and change the vertical channel to end in Z
+        # as long as the channel name does not include the direction (E, N, Z).
+        # Some inventory files mistakenly include a vertical orientation for horizontal channels.
         #     NOTE: `vertical_orientation` here is defined as the angle
         #           from horizontal (aka, dip), not inclination.
         if not np.isnan(header["standard"]["vertical_orientation"]):
             delta = np.abs(np.abs(header["standard"]["vertical_orientation"]) - 90.0)
-            is_z = header["channel"].endswith("Z")
-            if delta < MAX_DIP_OFFSET and not is_z:
-                header["channel"] = header["channel"][0:-1] + "Z"
+            is_horizcomp = header["channel"][-1] in ["E", "N"]
+            is_vertcomp = header["channel"][-1] in ["Z"]
+            if delta < MAX_DIP_OFFSET:
+                trace_id = f"{header['network']}.{header['station']}.{header['location']}.{header['channel']}"
+                if is_vertcomp:
+                    pass
+                elif is_horizcomp:
+                    logging.warning(
+                        "Found vertical orientation in trace %s, which seems to be a horizontal component. Assuming vertical orientation is incorrect.",
+                        trace_id
+                    )
+                else:
+                    header["channel"] = header["channel"][0:-1] + "Z"
+                    logging.warning(
+                        "Found vertical orientation in trace %s. Component direction is unknown from channel name, so renaming channel to vertical component 'Z'.",
+                        trace_id
+                    )
 
         super(StationTrace, self).__init__(data=data, header=header)
         self.provenance = TraceProvenance(self.stats)
