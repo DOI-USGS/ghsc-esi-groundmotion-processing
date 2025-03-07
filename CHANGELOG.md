@@ -2,6 +2,7 @@
 
 - Enhancements
   - COSMOS v0 writer incorporates sensitivity from StationXML stages in real #22 and real #42 headers
+  - Support FAS metric for individual channel components (this could be classified as a bugfix).
 - Bugfix
   - Fix error with zeropad method using 'fhp' to extracts filter order
   - Fix cosmos v0 writer header failing to write sensitivities due to if statement testing 'trace.stats.standard' instead of 'trace.stats'

@@ -9,7 +9,7 @@ from gmprocess.io.asdf.base_metrics_xml import MetricXML
 from gmprocess.metrics.waveform_metric_type import WaveformMetricType
 from gmprocess.metrics.waveform_metric_list import WaveformMetricList
 from gmprocess.metrics.utils import component_to_channel
-from gmprocess.metrics.containers import CombinedSpectra
+from gmprocess.metrics.containers import CombinedSpectra, FourierSpectra
 from gmprocess.metrics.waveform_metric_component import xml_string_to_wmc, RotD
 
 FLOAT_ATTRIBUTES = ["period", "damping"]
@@ -66,7 +66,7 @@ class WaveformMetricsXML(MetricXML):
                     imc_str = imc.replace("()", "")
                     attributes = {}
                 imc_tag = etree.SubElement(imt_tag, imc_str, attrib=attributes)
-                if isinstance(wm.value(imc), CombinedSpectra):
+                if isinstance(wm.value(imc), (CombinedSpectra, FourierSpectra)):
                     ctr = wm.value(imc)
                     freq_tag = etree.SubElement(imc_tag, "frequency")
                     freq_tag.text = (
@@ -75,8 +75,11 @@ class WaveformMetricsXML(MetricXML):
                         .replace("]", "")
                     )
                     spec_tag = etree.SubElement(imc_tag, "fourier_spectra")
+                    spec_array = ctr.fourier_spectra
+                    if isinstance(spec_array, list):
+                        spec_array = spec_array[0]
                     spec_tag.text = (
-                        np.array2string(ctr.fourier_spectra, max_line_width=np.inf)
+                        np.array2string(spec_array, max_line_width=np.inf)
                         .replace("[", "")
                         .replace("]", "")
                     )

@@ -54,12 +54,14 @@ class FourierSpectra:
 
     frequency: np.ndarray
     fourier_spectra: list[np.ndarray]
+    stats_list: list[dict]
 
     def __repr__(self):
         return (
             "containers.FourierSpectra(\n"
             f"  frequency=ndarray {self.frequency.shape},\n"
             f"  fourier_spectra=[ndarray, n={len(self.fourier_spectra)}]\n"
+            f"  stats_list=[dict, n={len(self.stats_list)}],\n"
             ")"
         )
 
