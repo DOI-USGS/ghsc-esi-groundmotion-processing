@@ -10,6 +10,8 @@ from esi_core.gmprocess.waveform_processing.smoothing import konno_ohmachi
 from gmprocess.metrics.oscillator import calculate_spectrals
 from gmprocess.metrics.waveform_metric_calculator_component_base import BaseComponent
 from gmprocess.metrics import containers
+from gmprocess.metrics.waveform_metric_component import Channels
+from gmprocess.metrics.utils import component_to_channel
 from gmprocess.utils.constants import GAL_TO_PCTG
 import gmprocess.metrics.waveform_metric_component as wm_comp
 
@@ -180,12 +182,15 @@ class FourierAmplitudeSpectra(BaseComponent):
     def calculate(self):
         nfft = self._get_nfft(self.prior_step.output.traces[0])
         spectra_list = []
+        stats_list = []
         for trace in self.prior_step.output.traces:
             spectra1, freqs1 = self._compute_fft(trace, nfft)
             spectra_list.append(spectra1)
+            stats_list.append(trace.stats)
         self.output = containers.FourierSpectra(
             frequency=freqs1,
             fourier_spectra=spectra_list,
+            stats_list=stats_list,
         )
 
     @staticmethod
@@ -227,25 +232,64 @@ class SmoothSpectra(BaseComponent):
     """Return the smoothed Fourier amplitude spectra of the input spectra."""
 
     outputs = {}
-    INPUT_CLASS = [containers.CombinedSpectra]
+    INPUT_CLASS = [containers.CombinedSpectra, containers.FourierSpectra]
 
     def calculate(self):
-        ko_spec, ko_freq = self._smooth_spectrum(
-            self.prior_step.output.fourier_spectra,
-            self.prior_step.output.frequency,
-        )
-        self.output = containers.CombinedSpectra(
-            frequency=ko_freq,
-            fourier_spectra=ko_spec,
-        )
+        if isinstance(self.prior_step.output, containers.FourierSpectra):
+            nspec = len(self.prior_step.output.fourier_spectra)
+            ko_spec_list = []
+            for i in range(nspec):
+                ko_spec, ko_freq = self._smooth_spectrum(
+                    self.prior_step.output.fourier_spectra[i],
+                    self.prior_step.output.frequency,
+                )
+                ko_spec_list.append(ko_spec)
+
+            self.output = containers.FourierSpectra(
+                frequency=ko_freq,
+                fourier_spectra=ko_spec_list,
+                stats_list=self.prior_step.output.stats_list,
+            )
+        elif isinstance(self.prior_step.output, containers.CombinedSpectra):
+            ko_spec, ko_freq = self._smooth_spectrum(
+                self.prior_step.output.fourier_spectra,
+                self.prior_step.output.frequency,
+            )
+            self.output = containers.CombinedSpectra(
+                frequency=ko_freq,
+                fourier_spectra=ko_spec,
+            )
+        else:
+            raise TypeError("Unsupported input class for SmoothSpectra component.")
 
     @staticmethod
     def get_type_parameters(config):
         return config["metrics"]["type_parameters"]["fas"]
 
     def get_component_results(self):
-        # return get_component_output(self, str(wm_comp.QuadraticMean()))
-        return ([self.output], [str(wm_comp.QuadraticMean())])
+        if isinstance(self.prior_step.output, containers.CombinedSpectra):
+            # return get_channel_outputs(self)
+            # return get_component_output(self, str(wm_comp.QuadraticMean()))
+            return ([self.output], [str(wm_comp.QuadraticMean())])
+        elif isinstance(self.prior_step.output, containers.FourierSpectra):
+            vals = []
+            coms = []
+            channels = [stats["channel"] for stats in self.output.stats_list]
+            _, chan2comp = component_to_channel(channels)
+            for spec, chan, stats in zip(
+                self.output.fourier_spectra, channels, self.output.stats_list
+            ):
+                vals.append(
+                    containers.FourierSpectra(
+                        frequency=self.output.frequency,
+                        fourier_spectra=[spec],
+                        stats_list=[stats],
+                    )
+                )
+                coms.append(str(Channels(chan, chan2comp[chan])))
+        else:
+            raise TypeError("Unsupported input class for SmoothSpectra component.")
+        return (vals, coms)
 
     def _smooth_spectrum(self, spec, freqs):
         """
