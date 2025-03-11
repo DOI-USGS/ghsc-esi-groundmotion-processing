@@ -123,16 +123,39 @@ def window_checks(st, min_noise_duration=0.5, min_signal_duration=5.0):
     return st
 
 
+def plot_pick(stream, event, utc_pick):
+    from matplotlib import pyplot
+
+    figure = pyplot.figure(figsize=(8.5, 9.0), layout="constrained")
+    grid = figure.add_gridspec(3, 2)
+
+    t_pick = utc_pick - stream[0].stats.starttime
+    t_split = t_pick - 1.0
+    for i_comp, trace in enumerate(stream):
+        ax = figure.add_subplot(grid[i_comp, 0])
+        ax.plot(trace.times(), trace.data, lw=0.5)
+        ax.axvline(t_pick, color="red", ls="dashed")
+        ax.axvline(t_split, color="green", ls="dashed")
+        ax.set_xlim(t_pick-10, t_pick+10)
+
+        ax = figure.add_subplot(grid[i_comp, 1])
+        ax.plot(trace.times(), trace.data, lw=0.5)
+        ax.axvline(t_pick, color="red", ls="dashed")
+        ax.axvline(t_split, color="green", ls="dashed")
+    filename = f"pick_{event.id}_{stream.get_id()}.png"
+    pyplot.savefig(filename)
+    pyplot.close(figure)
+
+
 def signal_split(st, event, model=None, config=None):
     """
     This method tries to identifies the boundary between the noise and signal
     for the waveform. The split time is placed inside the
     'processing_parameters' key of the trace stats.
 
-    The P-wave arrival is used as the split between the noise and signal
-    windows. Multiple picker methods are suppored and can be configured in the
-    config file
-    '~/.gmprocess/picker.yml
+    The P-phase arrival is used as the split between the noise and signal
+    windows. The default behavior uses the median value of the P-phase arrival
+    from multiple methods within a 10s window of the expected travel time.
 
     Args:
         st (StationStream):
@@ -166,60 +189,108 @@ def signal_split(st, event, model=None, config=None):
     picker_config = config["pickers"]
 
     loc, mean_snr = pick_travel(st, event, config, model)
-    if loc > 0:
-        tsplit = st[0].stats.starttime + loc
-        preferred_picker = "travel_time"
+    pick_methods = picker_config["methods"]
+    if loc > 0 and len(pick_methods) == 1 and pick_methods[0] == "travel_time":
+        st_tsplit = st[0].stats.starttime + loc
+        st_picker = "travel_time"
     else:
-        pick_methods = ["ar", "baer", "power", "kalkan"]
-        rows = []
+        pick_methods = picker_config["methods"]
+        pick_window = picker_config.get("window", 10.0)
+        pick_combine = picker_config.get("combine", "median")
+        p_arrival = st[0].stats.starttime + loc
+        st_windowed = st.copy().trim(starttime=p_arrival-pick_window, endtime=p_arrival+pick_window)
+
+        pickers = {
+            "travel_time": {
+                "fn": pick_travel,
+                "args": {
+                    "event": event,
+                    "config": config,
+                    "model": model,
+                },
+            },
+            "ar": {
+                "fn": pick_ar,
+                "args": {
+                    "config": config,
+                },
+            },
+            "baer": {
+                "fn": pick_baer,
+                "args": {
+                    "config": config,
+                },
+            },
+            "power": {
+                "fn": pick_power,
+                "args": {
+                    "config": config,
+                },
+            },
+            "kalkan": {
+                "fn": pick_kalkan,
+                "args": {
+                    "config": config,
+                },
+            },
+            "yeck": {
+                "fn": pick_yeck,
+                "args": {
+                    "config": config,
+                },
+            },
+        }
+        picks_time = []
+        picks_snr = []
         for pick_method in pick_methods:
             try:
-                if pick_method == "ar":
-                    loc, mean_snr = pick_ar(st, config=config)
-                elif pick_method == "baer":
-                    loc, mean_snr = pick_baer(st, config=config)
-                elif pick_method == "power":
-                    loc, mean_snr = pick_power(st, config=config)
-                elif pick_method == "kalkan":
-                    loc, mean_snr = pick_kalkan(st, config=config)
-                elif pick_method == "yeck":
-                    loc, mean_snr = pick_yeck(st, config=config)
+                pick_info = pickers[pick_method]
+                loc, mean_snr = pick_info["fn"](st_windowed, **pick_info["args"])
+                if loc < 0:
+                    loc = np.nan
             except BaseException:
-                loc = -1
+                loc = np.nan
                 mean_snr = np.nan
-            rows.append(
-                {
-                    "Stream": st.get_id(),
-                    "Method": pick_method,
-                    "Pick_Time": loc,
-                    "Mean_SNR": mean_snr,
-                }
-            )
-        df = pd.DataFrame(rows)
+            picks_time.append(loc)
+            picks_snr.append(mean_snr)
+        picks_time = np.array(picks_time)
 
-        max_snr = df["Mean_SNR"].max()
-        if not np.isnan(max_snr):
-            maxrow = df[df["Mean_SNR"] == max_snr].iloc[0]
-            tsplit = st[0].stats.starttime + maxrow["Pick_Time"]
-            preferred_picker = maxrow["Method"]
+        # Combine picks
+        if np.all(np.isnan(picks_time)):
+            st_tsplit = st[0].stats.starttime
+            st_picker = "None"
+        elif pick_combine == "median":
+            st_tsplit = st_windowed[0].stats.starttime + np.nanmedian(picks_time)
+            st_picker = f"median({', '.join(pick_methods)})"
+        elif pick_combine == "mean":
+            st_tsplit = st_windowed[0].stats.starttime + np.nanmean(picks_time)
+            st_picker = f"mean({', '.join(pick_methods)})"
+        elif pick_combine == "max_snr":
+            i_picker = np.nanargmax(picks_snr)
+            st_tsplit = st_windowed[0].stats.starttime + picks_time[i_picker]
+            st_picker = pick_methods[i_picker]
         else:
-            tsplit = -1
+            raise ValueError(f"Unknown method {pick_combine} for combining picks.")
 
-    # the user may have specified a p_arrival_shift value.
+        diff_warning = picker_config.get("pick_travel_time_warning", 3.0)
+        if abs(p_arrival - st_tsplit) > diff_warning:
+            logging.warning(f"P wave pick differs from travel time by {st_tsplit-p_arrival:.2f}s for {event.id} at {st.get_id()}")
+
+    if picker_config.get("plot_picks", False):
+        plot_pick(st, event, st_tsplit)
+
+    # The user may have specified a p_arrival_shift value.
     # this is used to shift the P arrival time (i.e., the break between the
     # noise and signal windows).
-    shift = 0.0
-    if "p_arrival_shift" in picker_config:
-        shift = picker_config["p_arrival_shift"]
-        if tsplit + shift >= st[0].stats.starttime:
-            tsplit += shift
+    shift = picker_config.get("p_arrival_shift", 0.0)
+    st_tsplit = max(st[0].stats.starttime, st_tsplit + shift)
 
-    if tsplit >= st[0].stats.starttime:
+    if st_tsplit >= st[0].stats.starttime:
         # Update trace params
         split_params = {
-            "split_time": tsplit,
+            "split_time": st_tsplit,
             "method": "p_arrival",
-            "picker_type": preferred_picker,
+            "picker_type": st_picker,
         }
         for tr in st:
             tr.set_parameter("signal_split", split_params)
