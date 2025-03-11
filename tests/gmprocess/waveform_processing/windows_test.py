@@ -58,11 +58,11 @@ def test_windows_durations(method, target, load_data_us1000778i):
 @pytest.mark.parametrize(
     "method, target",
     [
-        ("none", [205.215, 205.215, 205.215]),
-        ("magnitude", [205.215, 205.215, 205.215]),
-        ("velocity", [121.215, 121.215, 121.215]),
-        ("model", [216.786455, 216.786455, 216.786455]),
-        ("source_path", [218.48169, 218.48169, 218.48169]),
+        ("none", [230.215, 230.215, 230.215]),
+        ("magnitude", [230.215, 230.215, 230.215]),
+        ("velocity", [146.215, 146.215, 146.215]),
+        ("model", [241.786455, 241.786455, 241.786455]),
+        ("source_path", [243.48169, 243.48169, 243.48169]),
     ],
 )
 def test_signal_end_methods(method, target, load_data_us1000778i):

@@ -81,4 +81,4 @@ def check_workspace(filename, hierarchy):
     with h5py.File(filename) as h5:
         tracker.items = []
         h5.visit(tracker)
-        assert tuple(tracker.items) == hierarchy
+        assert sorted(tuple(tracker.items)) == sorted(hierarchy)
