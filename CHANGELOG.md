@@ -8,6 +8,7 @@
   - Fix cosmos v0 writer header failing to write sensitivities due to if statement testing 'trace.stats.standard' instead of 'trace.stats'
 - Bugfix
   - Set self.output_units in instrument_response.RemoveResponse._remove_sensivitiy() to "ACC" (was not set).
+  - Get structure type from correct field in DMG format.
 
 ## 2.3.0 / 2025-01-23
 

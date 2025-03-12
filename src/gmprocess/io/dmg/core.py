@@ -573,7 +573,7 @@ def _get_header_info_v1(int_data, flt_data, lines, level, location="", config=No
     standard["process_level"] = PROCESS_LEVELS[level]
     if "comments" not in standard:
         standard["comments"] = ""
-    standard["structure_type"] = lines[7][46:80].strip()
+    standard["structure_type"] = lines[6][46:80].strip()
     standard["instrument"] = station_line[39:47].strip()
     standard["sensor_serial_number"] = station_line[53:57].strip()
     standard["corner_frequency"] = np.nan
