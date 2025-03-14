@@ -551,7 +551,7 @@ metrics:
   # The 'components_and_types' section has key-value pairs in which the key is the
   # metric component and the value is a list of metric types for that component.
   # Do *not* delete a key to remove a component, it will be replaced with the default.
-  # To remove a component, set it's types as an empty list.
+  # To remove a component, set its types to an empty list.
   components_and_types: 
     channels: [pga, pgv, psa, duration, cav, arias]
     rotd: [pga, pgv, psa]
