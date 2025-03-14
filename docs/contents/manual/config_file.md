@@ -66,7 +66,7 @@ fetchers:
 ```
 
 
-## The "processing" section
+## `processing`
 
 The `processing` section behaves somewhat differently than other sections because some steps may need to be repeated. 
 The most common example is of this is the `detrend` step, which often has to happen multiple times. 
@@ -147,7 +147,7 @@ Please post any questions or issues that you have regarding the config to the Gi
 [issues](https://code.usgs.gov/ghsc/esi/groundmotion-processing/-/issues) page. 
 
 
-## The "fetchers" section
+## `fetchers`
 
 The `download` subcommand will look for data from providers configured in the `fetchers` section of the config file.
 Three of the subsections correspond to different data retrieval methods, such as the International Federation of Digital Seismograph Networks ([FDSN](https://www.fdsn.org/)). 
@@ -167,7 +167,7 @@ fetchers:
         enabled: False
 ```
 
-### search_parameters
+### `search_parameters`
 
 In this section you can configure updates to the search radius and duration of the waveform queries that are based on the magnitude and location of the earthquake.
 If this section is enabled, the corresponding static search parameters that are specified in the data fetchers sections will be overwritten by the values computed as configured in this section.
@@ -197,7 +197,7 @@ The following is an example of how this section can be configued and includes co
 ```
 
 
-### FDSNFetcher
+### `FDSNFetcher`
 
 The FDSNFetcher section is organized to mimic obspy's [mass_downloader](https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.mass_downloader.html), which is what gmprocess uses to interact with FDSN web services. 
 Thus, there are three main subsections:
@@ -221,7 +221,7 @@ If you want to use a provider that is not available in the `URL_MAPPINGS` dictio
                 url: https://seis.gsi.gov.il/
 ``` 
 
-### CESMDFetcher
+### `CESMDFetcher`
 
 In order to use the `CESMDFetcher` you have to provide an email address that is registered at <www.strongmotioncenter.org>. 
 The other options are explained here:
@@ -244,7 +244,7 @@ The other options are explained here:
         station_radius: 100.0
 ```
 
-### KNETFetcher
+### `KNETFetcher`
 
 The `KNETFetcher` options are explained here:
 
@@ -268,7 +268,7 @@ The `KNETFetcher` options are explained here:
         restrict_stations: false
 ```
 
-## The "read" section
+## `read`
 
 This section contains some miscellaneous options for data readers. 
 A particularly important option is `use_streamcollection`, which is `True` by default. 
@@ -276,7 +276,7 @@ The `StreamCollection` class in gmprocess groups channels from the same instrume
 However, these are not desirable for all projects. By setting this to `False`, each channel will be analyzed independently.
 This is useful for structural arrays that may have complicated configurations, but comes at the cost of not allowing the computation of some waveform metric types (such as RotDxx, which requires two orthogonal horizontal components that are aligned in time).
 
-## The "windows" section
+## `windows`
 
 This section defines how the signal and noise windows are estimated and some relevant QA checks.
 The beginning of the signal window is based on an estimated P-wave arrival time, and the relevant options are set in the "pickers" section of the config file. 
@@ -290,14 +290,14 @@ The `no_noise` option allows processing to run for older data for which no pre-e
 Essentially it sets the "split time" to be the start time of the record, which would normally fail because it is estiamted as the p-wave arrival time. 
 
 
-## The "check_stream" section
+## `check_stream`
 
 This section currently only has one key: `any_trace_failures`. 
 This controls whether a stream will be marked as failed if ANY of the constituent traces fail a QA check.
 If `False` then streams will continue to be processed if some but not all of the traces have failed.
 The default is `True`. 
 
-## The "colocated" section
+## `colocated`
 
 This section includes options for handling colocated instruments. 
 More details are given in the default config file:
@@ -335,17 +335,17 @@ colocated:
         dist: [20, 50,100, 300, 600]
 ```
 
-## The "duplicate" section
+## `duplicate`
 
 This section is for handling duplicate data when creating a StreamCollection. 
 This includes a spatial tolerance for classifying stations as colocated (`max_dist_tolerance`), as well as options for which data to prefer in the case that data is duplicated (e.g., available from multiple sources in different formats).
 
-## The "build_report" section
+## `build_report`
 
 This is for building a report, with a one-page summary of the data in each StationStream per page. 
 It will write out the latex file, and then look for the `pdflatex` command and attempt to build the pdf. 
 
-## The "metrics" section 
+## `metrics` 
 
 This section is for setting options for the waveform metrics. 
 The options are further described in this example:
@@ -399,7 +399,7 @@ metrics:
         intervals: [5-75, 5-95]
 ```
 
-## The "gmm_selection" section
+## `gmm_selection`
 
 This section is ground motion model selection given the tectonic region. 
 Model abbreviaitons are defined in modules.yml
@@ -415,7 +415,7 @@ gmm_selection:
     StableShallow: AB06
 ```
 
-## The "integration" section 
+## `integration` 
 
 Options for how integration is performed. 
 
@@ -434,7 +434,7 @@ integration:
     taper_side: both
 ```
 
-## The "differentiation" section 
+## `differentiation` 
 
 Should differentiation be performed in the time or frequency domain?
 
@@ -444,23 +444,42 @@ differentiation:
     frequency: True
 ```
 
-## The "pickers" section 
+## `pickers` 
 
-This section is for options that determine how the P-wave arrival time is estimated.
+Gmprocess uses the P phase arrival time to separate a waveform into a "noise" window (before the P phase arrival) and a "signal" window (after the P phase arrival).
+The default behavior is to use the median value from multiple methods for picking the P phase arrival time within 10 s of the expected P phase travel time.
+The default also shifts the split time beween the noise and signal windows to 2.0 s before the P phase arrival time.
+You can customize this behavior using the parameters in the `pickers` section.
+The parameters also include a threshold for logging a warning if the P phase pick differs from the P phase travel time; when the P phase pick substantially differs from the P phase travel time for multiple stations, it may indicate errors in the earthquake location.
+The parameters also allow plotting of the P phase picks (PNG files written to the currently directory).
+
+```yaml
+pickers:
+    # Shift in split time relative to P phase arrival time
+    p_arrival_shift: -2.0
+
+    # P phase picking methods
+    methods: [travel_time, ar, baer, power, kalkan]
+
+    # Window around P phase travel time to apply picking methods
+    window: 10.0
+
+    # Method used to determine P phase arrival time from the various methods
+    combine: median
+
+    # Log a warning if the P phase pick time differs from the travel time by this threshold
+    pick_travel_time_warning: 3.0
+
+    # Plot P phase picks (png files are written to current directory)
+    plot_picks: False
+```
+
+The rest of the `pickers` section includes the parameters for each of the P phase picking methods.
 We do not recommend modifying this section unless you are experiencing problems with the start time of the signal window.
-Please see the default config file for additional details.
+Please refer to the default configuration file for additional details.
 
-% Indices and tables
 
-% ==================
-
-% * :ref:`genindex`
-
-% * :ref:`modindex`
-
-% * :ref:`search`
-
-## The "error_notification" section 
+## `error_notification`
 
 This section will allow for automated exception emails to be sent to a specified list of users. This is most 
 likely useful for situations where gmrecords is set to run automatically on a server. When using this configuration,
