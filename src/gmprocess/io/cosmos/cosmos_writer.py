@@ -4,7 +4,7 @@ import logging
 import pathlib
 import re
 from collections import OrderedDict
-from datetime import datetime
+import datetime
 from enum import Enum
 
 # third party imports
@@ -17,7 +17,6 @@ from gmprocess.io.asdf.stream_workspace import StreamWorkspace
 from gmprocess.waveform_processing.integrate import get_disp, get_vel
 from gmprocess.metrics.waveform_metric_collection import WaveformMetricCollection
 from gmprocess.io.cosmos.core import BUILDING_TYPES, SENSOR_TYPES
-from gmprocess.utils.config import get_config
 from gmprocess.utils.constants import UNIT_TYPES, M_TO_CM
 from obspy.core.utcdatetime import UTCDateTime
 from obspy.geodetics.base import gps2dist_azimuth
@@ -48,8 +47,8 @@ FLOAT_FMT = "%15.6f"
 NUM_FLOAT_ROWS = 20
 NUM_FLOAT_COLS = 5
 
-NUM_DATA_COLS = 10
-FLOAT_DATA_FMT = "%8.5f"
+NUM_DATA_COLS = 1
+FLOAT_DATA_FMT = "%15.6E"
 SPECTRA_DATA_FMT = "%15.6E"
 INT_DATA_FMT = "%8d"
 
@@ -261,7 +260,7 @@ class TextHeader(object):
     header_fmt["missing_data_int"] = ["{value:7d},", 64, None]
     header_fmt["missing_data_float"] = ["{value:5.1f}", 73, None]
 
-    def __init__(self, trace, scalar_event, stream, volume, gmprocess_version):
+    def __init__(self, trace, scalar_event, stream, volume, config):
         datadir = pathlib.Path(__file__).parent / ".." / ".." / "data"
         excelfile = pathlib.Path(datadir) / "cosmos_table4.xls"
         table4 = Table4(excelfile)
@@ -378,10 +377,10 @@ class TextHeader(object):
         ptimestr = trace.stats.standard.process_time
         pdate = ""
         if len(ptimestr.strip()):
-            ptime = datetime.strptime(ptimestr, TIMEFMT)
+            ptime = datetime.datetime.strptime(ptimestr, TIMEFMT)
             pdate = ptime.strftime(UTC_TIME_FMT) + " UTC"
         self.set_header_value("processing_date", pdate)
-        config = get_config()
+
         agency = "UNK"
         if "agency" in config:
             agency = config["agency"]
@@ -446,7 +445,7 @@ class TextHeader(object):
             for line_key in line_keys:
                 _, column_offset, value = self.header_fmt[line_key]
                 offset = column_offset - len(line)
-                if value != None:
+                if value is not None:
                     line += " " * offset + value
                 else:
                     value = ""
@@ -628,15 +627,7 @@ class FloatHeader(object):
         # Sensor/channel parameters
         self.header[39] = 1 / trace.stats.standard.instrument_period  # 40
         self.header[40] = trace.stats.standard.instrument_damping  # 41
-        has_sensitivity = hasattr(trace.stats.standard, "instrument_sensitivity")
-        has_volts = hasattr(trace.stats.standard, "volts_to_counts")
-        # if has_sensitivity and has_volts:
-        # instrument_sensitivity = (
-        #     trace.stats.standard.instrument_sensitivity
-        # )  # counts/m/s^2
-        # volts_to_counts = trace.stats.standard.volts_to_counts  # counts/volts
-        # sensor_sensitivity = (1 / volts_to_counts) * instrument_sensitivity * sp.g
-        # self.header[41] = sensor_sensitivity  # 42 volts/g
+
         if hasattr(trace.stats, "stage_1_sensitivity"):
             self.header[41] = trace.stats.stage_1_sensitivity * sp.g
         if volume == Volume.PROCESSED:
@@ -684,7 +675,8 @@ class DataBlock(object):
         if trace.stats.standard.units_type == "acc":
             quantity = "acceleration"
         npts = len(trace.data)
-        itime = int(trace.stats.endtime - trace.stats.starttime)  # duration secs
+        # duration secs
+        itime = int(trace.stats.endtime - trace.stats.starttime)
 
         if volume == Volume.RAW:
             data_fmt = INT_DATA_FMT
@@ -713,7 +705,9 @@ class DataBlock(object):
         )
         self.write_comment("RcrdId", record_id, "standard")
         scnl = f"{station}.{channel}.{network}.{location}"
-        tnow_str = datetime.utcnow().strftime("%Y/%m/%d %H:%M:%S.%f")
+        tnow_str = datetime.datetime.now(datetime.timezone.utc).strftime(
+            "%Y/%m/%d %H:%M:%S.%f"
+        )
         scnl_str = f"{scnl} <AUTH> {tnow_str}"
         self.write_comment("SCNL", scnl_str, "non-standard")
         if self.volume != Volume.RAW:
@@ -757,7 +751,8 @@ class DataBlock(object):
             comment = f"| {key}: {value}"
         else:
             comment = f"|<{key}>{value}"
-        comment += (80 - len(comment)) * " "  # pad to 80 characters
+        # pad to 80 characters
+        comment += (80 - len(comment)) * " "
         self.comment_lines.append(comment)
         return
 
@@ -773,9 +768,8 @@ class DataBlock(object):
             fmt = [INT_DATA_FMT] * NUM_DATA_COLS
         data = self.trace.data
         if self.volume == Volume.CONVERTED:
-            instrument_sensitivity = (
-                self.trace.stats.standard.instrument_sensitivity
-            )  # counts/m/s^2
+            # counts/m/s^2
+            instrument_sensitivity = self.trace.stats.standard.instrument_sensitivity
             data /= instrument_sensitivity
             data *= M_TO_CM  # Convert from m to cm
             data -= data.mean()
@@ -806,6 +800,8 @@ def split_data(data, ncols):
 
 
 class CosmosWriter(object):
+    """Class for writing COSMOS files from ASDF/HDF5 workspace files."""
+
     def __init__(
         self,
         cosmos_directory,
@@ -814,6 +810,20 @@ class CosmosWriter(object):
         label=None,
         concatenate_channels=False,
     ):
+        """CosmosWriter initialization.
+
+        Args:
+            cosmos_directory (str, pathlib.Path):
+                Path to write output files.
+            h5_filename (str, pathlib.Path):
+                Path to HDF5 workspace file.
+            volume (Volume):
+                COSMOS processing volume level.
+            label (str):
+                ASDF label.
+            concatenate_channels (bool):
+                Concatenate channels into one file.
+        """
         self._workspace = StreamWorkspace.open(h5_filename)
         self._cosmos_directory = pathlib.Path(cosmos_directory)
         self._volume = volume
@@ -883,19 +893,20 @@ class CosmosWriter(object):
                             "and data logger sensitivity in the COSMOS headers "
                         )
                         logging.info(msg)
+                    net = stream[0].stats.network
+                    sta = stream[0].stats.station
+                    loc = stream[0].stats.location
+                    dashes = "-" * (5 - len(sta))
                     if self._concatenate_channels:
                         cosmos_file = io.StringIO()
-                        net = stream[0].stats.network
-                        sta = stream[0].stats.station
-                        loc = stream[0].stats.location
-                        stime = stream[0].stats.starttime.strftime("%Y%m%d%H%M%S")
-                        # fname = f"{eventid}_{net}_{sta}_{loc}_{stime}.{extension}c"
-                        dashes = "-" * (5 - len(sta))
                         if self._volume == Volume.RAW:
-                            eventid_ = eventid[2:]  # strip origin code from event id
-                            fname = f"{net}{sta}{dashes}n.{eventid_}.{extension}c"
+                            # strip origin code from event id
+                            event_code = eventid[2:]
+                            fname = f"{net}{sta}{dashes}n.{event_code}.{extension}c"
                         else:
-                            fname = f"{net}{sta}{dashes}n.{eventid}.{extension}c"
+                            fname = (
+                                f"{net}{sta}{dashes}n.{eventid}.{extension.upper()}c"
+                            )
                         cosmos_filename = self._cosmos_directory / fname
                         files.append(cosmos_filename)
                     ichannel = 1
@@ -916,7 +927,7 @@ class CosmosWriter(object):
                                 location=trace.stats.location,
                                 time=trace.stats.starttime,
                             )
-                            stages = tinv[0][0][0].response.response_stages  # Careful
+                            stages = tinv[0][0][0].response.response_stages
                             instrument_sensitivity, data_logger_sensitivity = 1, 1
                             for idx, stage in enumerate(stages):
                                 if idx == 0:
@@ -927,8 +938,6 @@ class CosmosWriter(object):
                             trace.stats["data_logger_sensitivity"] = (
                                 data_logger_sensitivity
                             )
-                            # print("instrument sensitivity ", instrument_sensitivity)
-                            # print("data logger sensitivity ", data_logger_sensitivity)
 
                         if trace.stats.standard.units_type != "acc":
                             msg = (
@@ -939,17 +948,18 @@ class CosmosWriter(object):
                             continue
                         has_data = True
                         ntraces += 1
-                        stime = trace.stats.starttime.strftime("%Y%m%d%H%M%S")
-                        if cosmos_file is None:
-                            if self.volume == Volume.RAW:
-                                eventid_ = eventid[
-                                    2:
-                                ]  # strip origin code from event id
-                                fname = f"{eventid_}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
+                        event_code = eventid[2:]
+                        if not self._concatenate_channels:
+                            units = trace.stats.standard.units_type
+                            if self._volume == Volume.RAW:
+                                # strip origin code from event id
+                                fname = f"{net}{sta}{dashes}n.{event_code}.{cha}.{loc}.{extension}c"
+                            elif self._volume == Volume.CONVERTED:
+                                fname = f"{net}{sta}{dashes}n.{event_code}.{cha}.{loc}.{extension.upper()}c"
+                            elif self._volume == Volume.PROCESSED:
+                                fname = f"{net}{sta}{dashes}n.{event_code}.{cha}.{loc}.{units}.{extension.upper()}c"
                             else:
-                                fname = f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.{extension}"
-                            if self._volume == Volume.PROCESSED:
-                                fname += ".acc"
+                                fname = f"{net}{sta}{dashes}n.{event_code}.{cha}.{loc}.{extension.upper()}c"
                             cosmos_filename = self._cosmos_directory / fname
                             files.append(cosmos_filename)
                             cosmos_file = open(cosmos_filename, "wt")
@@ -963,7 +973,7 @@ class CosmosWriter(object):
                                 gmprocess_version,
                             )
                         if self._volume == Volume.PROCESSED:
-                            config = get_config()
+                            config = self._workspace.config
                             vel = get_vel(trace.copy(), config=config)
                             disp = get_disp(trace.copy(), config=config)
                             if self._concatenate_channels:
@@ -984,12 +994,8 @@ class CosmosWriter(object):
                                     gmprocess_version,
                                 )
                             else:
-                                fname_vel = (
-                                    f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.vel"
-                                )
-                                fname_disp = (
-                                    f"{eventid}_{net}_{sta}_{cha}_{loc}_{stime}.disp"
-                                )
+                                fname_vel = f"{net}{sta}{dashes}n.{event_code}.{cha}.{loc}.vel.{extension.upper()}c"
+                                fname_disp = f"{net}{sta}{dashes}n.{event_code}.{cha}.{loc}.dis.{extension.upper()}c"
                                 cosmos_file_vel = self._cosmos_directory / fname_vel
                                 cosmos_file_disp = self._cosmos_directory / fname_disp
                                 files.append(cosmos_file_vel)
@@ -1112,7 +1118,7 @@ class CosmosWriter(object):
             scalar_event,
             stream,
             self._volume,
-            gmprocess_version,
+            self._workspace.config,
         )
         logging.debug(f"Getting int header for {trace.id}")
         int_header = IntHeader(
