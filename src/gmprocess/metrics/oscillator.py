@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.signal import windows
 
-from esi_core.gmprocess.metrics.oscillators import calculate_spectrals as spec_calc
+from esi_core.gmprocess.metrics import oscillators
 
 
 def get_window(npts, percent=0.02):
@@ -39,7 +39,7 @@ def calculate_spectrals(trace, period, damping):
         # Resample the trace
         window = get_window(trace.stats.npts, percent=0.02)
         trace.resample(new_sample_rate, window=window)
-    sa_list = spec_calc(trace.data, new_np, new_dt, new_sample_rate, period, damping)
+    sa_list = oscillators.calculate_spectrals(trace.data, new_np, new_dt, new_sample_rate, period, damping)
     # Note: sa_list has elements: [total acc, relative vel, relative dis], in which
     #       each element is an ndarray.
     return sa_list
