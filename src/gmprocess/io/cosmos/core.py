@@ -175,7 +175,7 @@ def is_cosmos(filename, config=None, v2=False):
     return False
 
 
-def read_cosmos(filename, config=None, v2=False, **kwargs):
+def read_cosmos(filename, config=None, v2=False, use_original_chan=False, **kwargs):
     """Read COSMOS V1/V2 strong motion file.
 
     There is one extra key in the Stats object for each Trace -
@@ -188,10 +188,12 @@ def read_cosmos(filename, config=None, v2=False, **kwargs):
             Dictionary containing configuration.
         v2 (bool):
             Include v2 velocity and displacement traces.
+        use_original_chan (bool):
+            Don't try to sort out consistent channel naming.
         kwargs (ref):
-            valid_station_types (list): List of valid station types. See table
-                6 in the COSMOS strong motion data format documentation for
-                station type codes.
+            valid_station_types (list):
+                List of valid station types. See table 6 in the COSMOS strong motion
+                data format documentation for station type codes.
             Other arguments will be ignored.
 
     Returns:
@@ -214,7 +216,11 @@ def read_cosmos(filename, config=None, v2=False, **kwargs):
     stream = StationStream([], config=config)
     while line_offset < line_count:
         trace, line_offset = _read_channel(
-            filename, line_offset, location=location, config=config
+            filename,
+            line_offset,
+            location=location,
+            config=config,
+            use_original_chan=use_original_chan,
         )
         # store the trace if the station type is in the valid_station_types
         # list or store the trace if there is no valid_station_types list
@@ -228,7 +234,9 @@ def read_cosmos(filename, config=None, v2=False, **kwargs):
     return [stream]
 
 
-def _read_channel(filename, line_offset, location="", config=None):
+def _read_channel(
+    filename, line_offset, location="", config=None, use_original_chan=False
+):
     """Read channel data from COSMOS V1/V2 text file.
 
     Args:
@@ -236,6 +244,8 @@ def _read_channel(filename, line_offset, location="", config=None):
             Input COSMOS V1/V2 filename.
         line_offset (int):
             Line offset to beginning of channel text block.
+        use_original_chan (book):
+            Do not try to sort out consistent channel naming system.
 
     Returns:
         tuple: (obspy Trace, int line offset)
@@ -263,7 +273,14 @@ def _read_channel(filename, line_offset, location="", config=None):
     # according to the powers that defined the Network.Station.Channel.Location
     # "standard", Location is a two character field.  Most data providers,
     # including cosmos here, don't provide this.  We'll flag it as "--".
-    hdr = _get_header_info(int_data, flt_data, lines, cmt_data, location=location)
+    hdr = _get_header_info(
+        int_data,
+        flt_data,
+        lines,
+        cmt_data,
+        location=location,
+        use_original_chan=use_original_chan,
+    )
     head, tail = os.path.split(filename)
     hdr["standard"]["source_file"] = tail or os.path.basename(head)
 
@@ -306,7 +323,9 @@ def _read_channel(filename, line_offset, location="", config=None):
     return (trace, new_offset)
 
 
-def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
+def _get_header_info(
+    int_data, flt_data, lines, cmt_data, location="", use_original_chan=False
+):
     """Return stats structure from various headers.
 
     Output is a dictionary like this:
@@ -375,6 +394,8 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
             Array of comments (str).
         location (str):
             Location metadata.
+        use_original_chan (bool):
+            Do not try to sort out channel based on orientation informaiton.
 
     Returns:
         dictionary: Dictionary of header/metadata information
@@ -513,6 +534,15 @@ def _get_header_info(int_data, flt_data, lines, cmt_data, location=""):
             "vertical channels."
         )
         raise ValueError("COSMOS: " + errstr)
+
+    # Override channel name if necessary
+    if use_original_chan:
+        scnl_line = [line for line in cmt_data if line.startswith("|<SCNL>")]
+        if scnl_line:
+            channel = scnl_line[0].replace("|<SCNL>", "").split(".")[1]
+        else:
+            raise ValueError("No SCNL line found, cannot get original channel name.")
+
     hdr["channel"] = channel
     if location:
         hdr["location"] = location
