@@ -507,7 +507,7 @@ def calc_snr(stream, minloc):
         snr_i = 10 * np.math.log10(aps / apn)
         snr_values.append(snr_i)
 
-    return np.mean(snr_values)
+    return np.mean(snr_values) if len(snr_values) > 0 else 0.0
 
 
 def pphase_pick(trace, period=None, damping=0.6, nbins=None, peak_selection=False):
