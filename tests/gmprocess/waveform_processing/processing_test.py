@@ -73,7 +73,7 @@ def test_process_streams(load_data_us1000778i, config):
 
     np.testing.assert_allclose(
         trace_maxes,
-        np.array([157.81244924, 240.37952095, 263.6015194]),
+        np.array([157.83845356, 240.36542113, 263.7788309]),
         rtol=1e-5,
     )
 
@@ -96,7 +96,7 @@ def test_free_field(kiknet_usp000hzq8):
                 reason = trace.get_parameter("failure")["reason"]
                 break
         if is_free:
-            assert reason == "Failed SNR check."
+            assert reason == "Failed noise window duration check."
         else:
             assert reason == "Failed free field sensor check."
 
