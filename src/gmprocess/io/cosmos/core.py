@@ -313,7 +313,8 @@ def _read_channel(
 
     # record that this data has been converted to g, if it has
     if hdr["standard"]["process_level"] != PROCESS_LEVELS["V0"]:
-        response = {"input_units": "counts", "output_units": unit}
+        # We multiply by UNIT_CONVERSIONS above, so this is cm/s/s
+        response = {"input_units": "counts", "output_units": "cm/s/s"}
         trace.set_provenance("remove_response", response)
 
     # set new offset
