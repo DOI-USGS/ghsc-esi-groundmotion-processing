@@ -626,12 +626,19 @@ differentiation:
 # -----------------------------------------------------------------------------
 # This section is for options for phase pickers
 pickers:
-    # P-wave pickers, particularly the Travel Time model, can
+    # P-wave pickers, particularly the travel time model, can
     # sometimes erroneously place the P-wave arrival time into the
     # signal window, which in turn can degrade the SNR value.
-    # this parameter gives the user the ability to shift the
-    # calculated P-wave arrival times forwards or backwards in time.
+    # This parameter allows the user to shift the split time.
+    # A negative value splits the noise and signal windows before
+    # the P-phase arrival.
     p_arrival_shift: -2.0
+
+    methods: [travel_time, ar, baer, power, kalkan]
+    window: 10.0
+    combine: median
+    pick_travel_time_warning: 3.0
+    plot_picks: False
 
     # Options for obspy.signal.trigger.ar_pick()
     ar:

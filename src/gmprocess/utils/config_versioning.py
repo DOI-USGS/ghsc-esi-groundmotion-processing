@@ -200,6 +200,18 @@ def config_from_v1(conf_dict):
     if "enabled" not in conf_dict["build_report"]:
         conf_dict["build_report"]["enabled"] = True
 
+    pickers_add = {
+        "p_arrival_shift": -2.0,
+        "methods": ["travel_time", "ar", "baer", "power", "kalkan"],
+        "window": 10.0,
+        "combine": "median",
+        "pick_travel_time_warning": 3.0,
+        "plot_picks": False,
+    }
+    conf_dict["pickers"].update(pickers_add)
+
+
+
     # Possible full replacements
     replace_sections = [
         "check_stream",

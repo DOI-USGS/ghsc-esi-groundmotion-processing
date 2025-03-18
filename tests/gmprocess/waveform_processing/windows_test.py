@@ -58,11 +58,11 @@ def test_windows_durations(method, target, load_data_us1000778i):
 @pytest.mark.parametrize(
     "method, target",
     [
-        ("none", [230.215, 230.215, 230.215]),
-        ("magnitude", [230.215, 230.215, 230.215]),
-        ("velocity", [146.215, 146.215, 146.215]),
-        ("model", [241.786455, 241.786455, 241.786455]),
-        ("source_path", [243.48169, 243.48169, 243.48169]),
+        ("none", [231.685, 231.685, 231.685]),
+        ("magnitude", [231.685, 231.685, 231.685]),
+        ("velocity", [147.685, 147.685, 147.685]),
+        ("model", [241.784936, 241.784936, 241.784936]),
+        ("source_path", [243.480171, 243.480171, 243.480171]),
     ],
 )
 def test_signal_end_methods(method, target, load_data_us1000778i):
@@ -96,9 +96,9 @@ def test_signal_split2(load_data_us1000778i):
     windows.signal_split(stream, event)
 
     cmpdict = {
-        "split_time": UTCDateTime(2016, 11, 13, 11, 3, 0, 0),
+        "split_time": UTCDateTime(2016, 11, 13, 11, 2, 58, 655000),
         "method": "p_arrival",
-        "picker_type": "travel_time",
+        "picker_type": "median(travel_time, ar, baer, power, kalkan)",
     }
 
     pdict = stream[0].get_parameter("signal_split")

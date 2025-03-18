@@ -1,6 +1,7 @@
 ## main
 
 - Enhancements
+  - Use P phase pickers within time window around P phase travel time to set split time between noise (pre-event window) and signal (event window). Update the `pickers` section of the configuration file to include relevant parameters.
   - COSMOS v0 writer incorporates sensitivity from StationXML stages in real #22 and real #42 headers
   - Support FAS metric for individual channel components (this could be classified as a bugfix).
   - Add helper functions to facilitate developers tracking memory usage with `tracemalloc`.
@@ -9,6 +10,7 @@
   - Fix cosmos v0 writer header failing to write sensitivities due to if statement testing 'trace.stats.standard' instead of 'trace.stats'
   - Set self.output_units in instrument_response.RemoveResponse._remove_sensivitiy() to "ACC" (was not set).
   - Get structure type from correct field in DMG format.
+  - Fix two calls to `numpy.mean()` to avoid warnings about zero length arrays.
 
 ## 2.3.0 / 2025-01-23
 

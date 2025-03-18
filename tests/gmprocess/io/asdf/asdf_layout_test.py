@@ -69,9 +69,6 @@ def generate_workspace(config, load_data_us1000778i, tmp_path, configure_strec):
 
 def test_layout(generate_workspace):
     LAYOUT_FILENAME = "asdf_layout.txt"
-
-    tfilename = generate_workspace
-    h5 = h5py.File(tfilename, "r")
     # To regenerate an updated version of the asdf_layout.txt file:
     #   - Install hdf5 command line tools,
     #   - h5dump -n workspace.h5 > asdf_layout.txt
@@ -80,7 +77,12 @@ def test_layout(generate_workspace):
     layout_abspath = os.path.join(testroot, LAYOUT_FILENAME)
     with open(layout_abspath, "r", encoding="utf-8") as fin:
         lines = fin.readlines()
-        for line in lines:
-            assert line.strip() in h5
+    itemsE = [item.strip() for item in lines]
+
+    tfilename = generate_workspace
+    h5 = h5py.File(tfilename, "r")
+    items = []
+    h5.visit(lambda item : items.append("/"+item))
     h5.close()
-    return
+
+    assert set(itemsE) == set(items)

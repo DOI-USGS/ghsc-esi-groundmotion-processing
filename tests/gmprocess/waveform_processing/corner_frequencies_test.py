@@ -22,7 +22,7 @@ def test_corner_frequencies(setup_corner_freq_test):
 
     np.testing.assert_allclose(
         np.sort(hp),
-        [0.024919013207076998, 0.024919013207076998, 0.024919013207076998],
+        [0.02586653, 0.02586653, 0.02586653],
         atol=1e-6,
     )
     np.testing.assert_allclose(np.sort(lp), [100.0, 100.0, 100.0])

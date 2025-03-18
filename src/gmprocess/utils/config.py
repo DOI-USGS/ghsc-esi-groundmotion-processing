@@ -254,6 +254,11 @@ CONF_SCHEMA = Schema(
         },
         "pickers": {
             "p_arrival_shift": float,
+            "methods": list,
+            Optional("pick_travel_time_warning"): float,
+            Optional("window"): float,
+            Optional("combine"): Or("mean", "median", "max_snr"),
+            Optional("plot_picks"): bool,
             "ar": {
                 "f1": float,
                 "f2": float,

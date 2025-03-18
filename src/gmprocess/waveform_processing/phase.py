@@ -277,7 +277,7 @@ def pick_ar(stream, config):
     # Check if we found one of each component
     # If not, use the next picker in the order of preference
     if len(st_e) != 1 or len(st_n) != 1 or len(st_z) != 1:
-        raise BaseException("Unable to perform AR picker.")
+        raise BaseException("Could not determine horizontal and vertical components in AR picker.")
 
     minloc = ar_pick(
         st_z[0].data, st_n[0].data, st_e[0].data, st_z[0].stats.sampling_rate, **params
@@ -507,7 +507,7 @@ def calc_snr(stream, minloc):
         snr_i = 10 * np.math.log10(aps / apn)
         snr_values.append(snr_i)
 
-    return np.mean(snr_values)
+    return np.mean(snr_values) if len(snr_values) > 0 else 0.0
 
 
 def pphase_pick(trace, period=None, damping=0.6, nbins=None, peak_selection=False):
