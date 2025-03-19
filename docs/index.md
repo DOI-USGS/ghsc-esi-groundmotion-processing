@@ -20,8 +20,11 @@ Acknowledgements
 Reference
 : If you wish to cite this software, please use this reference:
 
-: > Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey software release. [https://doi.org/10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ)
+: > Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, K.K. Smith, and A.R. Kottke (2024). USGS Automated Ground Motion Processing Software Version 2, U.S. Geological Survey software release, doi: [10.5066/P13HMKFJ](https://doi.org/10.5066/P13HMKFJ).
 
+: You can also cite the following journal article that gives an overview and of the software:
+
+: > Thompson, E.M., M. Hearne, B.T. Aagaard, J.M. Rekoske, C.B. Worden, M.P. Moschetti, H.E. Hunsinger, G.C. Ferragut, G.A. Parker, J.A. Smith, Smith, K.K., and A.R. Kottke (2025). Automated, Near Real‐Time Ground‐Motion Processing at the US Geological Survey. _Seismological Research Letters_, 96(1), pp.538-553, doi: [10.1785/0220240021](https://doi.org/10.1785/0220240021).
 
 License
 : This is free and unencumbered software released into the public domain. It is
