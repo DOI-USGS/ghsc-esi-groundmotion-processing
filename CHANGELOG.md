@@ -11,6 +11,7 @@
   - Set self.output_units in instrument_response.RemoveResponse._remove_sensivitiy() to "ACC" (was not set).
   - Get structure type from correct field in DMG format.
   - Fix two calls to `numpy.mean()` to avoid warnings about zero length arrays.
+  - Fixed error in parsing units from COSMOS format.
 
 ## 2.3.0 / 2025-01-23
 
