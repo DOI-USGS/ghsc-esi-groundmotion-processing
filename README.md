@@ -45,7 +45,7 @@ The list below is a subset of articles that made use of this software in their s
 
 - Moschetti, M.P., B.T. Aagaard, S.K. Ahdi, J. Altekruse, O.S. Boyd, A.D. Frankel, J. Herrick, M.D. Petersen, P.M. Powers, S. Rezaeian, and A.M. Shumway (2024). The 2023 US national seismic hazard model: Ground-motion characterization for the conterminous United States. _Earthquake Spectra_, 40(2): 1158-1190, doi: [10.1177/87552930231223995](https://doi.org/10.1177/87552930231223995).
 
-- Parker G, A. Baltay (2022). Empirical Map‐Based Nonergodic Models of Site Response in the Greater Los Angeles Area. _Bulletin of the Seismological Society of America_, 112 (3): 1607–1629, doi: [10.1785/0120210175](https://doi.org/10.1785/0120210175)
+- Parker, G.A., and A.S. Baltay (2022). Empirical Map‐Based Nonergodic Models of Site Response in the Greater Los Angeles Area. _Bulletin of the Seismological Society of America_, 112(3): 1607–1629, doi: [10.1785/0120210175](https://doi.org/10.1785/0120210175)
 
 - Rekoske J.M., E.M. Thompson, M.P. Moschetti, M. Hearne, B.T. Aagaard, G. Parker (2020). The 2019 Ridgecrest, California, Earthquake Sequence Ground Motions: Processed Records and Derived Intensity Metrics. _Seismological Research Letters_, 91(4): 2010–2023, doi: [10.1785/0220190292](https://doi.org/10.1785/0220190292)
 
