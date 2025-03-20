@@ -89,9 +89,11 @@ TIME_CORRECTION = 0.0
 def cfmt_to_ffmt(cfmt, ncols):
     ffmt = cfmt.replace("%", "")
     if "d" in cfmt:
-        ffmt = str(ncols) + "I" + ffmt.replace("d", "")
+        ffmt = str(ncols) + "I" + re.sub("d", "", ffmt, flags=re.IGNORECASE)
+    elif "f" in cfmt:
+        ffmt = str(ncols) + "F" + re.sub("f", "", ffmt, flags=re.IGNORECASE)
     else:
-        ffmt = str(ncols) + "F" + ffmt.replace("f", "")
+        ffmt = str(ncols) + "E" + re.sub("e", "", ffmt, flags=re.IGNORECASE)
     return ffmt
 
 
@@ -743,7 +745,7 @@ class DataBlock(object):
             int_units = TABLE2["acc"]  # Verify this makes sense
         self.header_line2 = (
             f"{npts:8d} {quantity} pts, approx  {itime} secs, "
-            f"units={units} ({int_units}),Format=({ffmt})"
+            f"units={units.replace("^", "")} ({int_units}),Format=({ffmt})"
         )
 
     def write_comment(self, key, value, comment_type):
