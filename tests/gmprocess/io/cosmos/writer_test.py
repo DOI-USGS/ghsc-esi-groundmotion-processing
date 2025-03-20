@@ -3,6 +3,7 @@ import pathlib
 import tempfile
 import time
 from io import StringIO
+import re
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -97,7 +98,7 @@ SAMPLE_DATA_BLOCK = """
 |<PROCESS>Automatically processed using gmprocess version 1.1.11
 |<eventURL>For updated information about the earthquake visit the URL below:
 |<eventURL>https://earthquake.usgs.gov/earthquakes/eventpage/nc71126864
-   12091 acceleration pts, approx  120 secs, units=cm/s^2 (4),Format=(1F15.6E)
+   12091 acceleration pts, approx  120 secs, units=cm/s2 (4),Format=(1E15.6)
   -2.770328E-05
   -3.681258E-05
   -4.259866E-05
