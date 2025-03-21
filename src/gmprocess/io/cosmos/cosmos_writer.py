@@ -737,15 +737,18 @@ class DataBlock(object):
         self.header_line1 = (
             f'{ncomments:4d} Comment line(s) follow, each starting with a "|":'
         )
+        int_units = None
         if volume == Volume.RAW or volume == Volume.CONVERTED:
             int_units = TABLE2["counts"]
         elif volume == Volume.PROCESSED:
             int_units = TABLE2[trace.stats.standard.units_type]
         elif volume == Volume.SPECTRA:
             int_units = TABLE2["acc"]  # Verify this makes sense
+        else:
+            raise ValueError("Unknown volume '{volume}' for setting int_units.")
         self.header_line2 = (
             f"{npts:8d} {quantity} pts, approx  {itime} secs, "
-            f"units={units.replace("^", "")} ({int_units}),Format=({ffmt})"
+            f"units={units.replace('^', '')} ({int_units}),Format=({ffmt})"
         )
 
     def write_comment(self, key, value, comment_type):
