@@ -70,21 +70,16 @@ def calculate_trace_oscillator(parameters, prior_step):
     """
     per = parameters["periods"]
     damp = parameters["damping"]
-    acceleration_list = []
-    velocity_list = []
-    displacement_list = []
+    n_traces = len(prior_step.output.traces)
+    acceleration_list = np.zeros((n_traces,))
+    velocity_list = np.zeros((n_traces,))
+    displacement_list = np.zeros((n_traces,))
     stats_list = []
-    for trace in prior_step.output.traces:
+    for i_trace, trace in enumerate(prior_step.output.traces):
         osc_results = calculate_spectrals(trace.copy(), period=per, damping=damp)
-
-        # Total acceleration
-        acceleration_list.append(osc_results[0])
-
-        # Relative velocity
-        velocity_list.append(osc_results[1])
-
-        # Relative displacement
-        displacement_list.append(osc_results[2])
+        acceleration_list[i_trace] = np.max(np.abs(osc_results[0]))
+        velocity_list[i_trace] = np.max(np.abs(osc_results[1]))
+        displacement_list[i_trace] = np.max(np.abs(osc_results[2]))
         stats_list.append(dict(trace.stats))
 
     output = containers.Oscillator(
@@ -110,23 +105,24 @@ def calculate_rotd_oscillator(parameters, prior_step):
     """
     per = parameters["periods"]
     damp = parameters["damping"]
-    acceleration_list = []
-    velocity_list = []
-    displacement_list = []
-    for trace_data in prior_step.output.matrix:
+    n_orientations = prior_step.output.matrix.shape[0]
+    acceleration_matrix = np.zeros((n_orientations,))
+    velocity_matrix = np.zeros((n_orientations,))
+    displacement_matrix = np.zeros((n_orientations,))
+    for i_orientation, trace_data in enumerate(prior_step.output.matrix):
         temp_trace = Trace(trace_data, prior_step.output.stats)
         osc_results = calculate_spectrals(temp_trace, period=per, damping=damp)
-        acceleration_list.append(osc_results[0])
-        velocity_list.append(osc_results[1])
-        displacement_list.append(osc_results[2])
+        acceleration_matrix[i_orientation] = np.max(np.abs(osc_results[0]))
+        velocity_matrix[i_orientation] = np.max(np.abs(osc_results[1]))
+        displacement_matrix[i_orientation] = np.max(np.abs(osc_results[2]))
 
     output = containers.RotDOscillator(
         period=per,
         damping=damp,
         oscillator_dt=osc_results[0][4],
-        acceleration_matrix=np.stack(acceleration_list),
-        velocity_matrix=np.stack(velocity_list),
-        displacement_matrix=np.stack(displacement_list),
+        acceleration_matrix=acceleration_matrix,
+        velocity_matrix=velocity_matrix,
+        displacement_matrix=displacement_matrix,
         stats=prior_step.output.stats,
     )
     return output

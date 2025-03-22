@@ -230,14 +230,12 @@ class RotDOscMaxAcceleration(BaseComponent):
     INPUT_CLASS = [containers.RotDOscillator]
 
     def calculate(self):
-        abs_matrix = np.abs(self.prior_step.output.acceleration_matrix)
-        max_array = np.max(abs_matrix, axis=1)
         self.prior_step.output.stats["standard"]["units_type"] = "acc"
         unit_factor = GAL_TO_PCTG
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
             damping=self.prior_step.output.damping,
-            oscillator_maxes=unit_factor * max_array,
+            oscillator_maxes=unit_factor * self.prior_step.output.acceleration_matrix,
             stats=self.prior_step.output.stats,
             type="oscillator acceleration",
         )
@@ -251,8 +249,9 @@ class RotDOscPseudoAcceleration(BaseComponent):
 
     def calculate(self):
         period = self.prior_step.output.period
-        abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
-        max_array = np.max(abs_matrix, axis=1) * (2 * np.pi / period) ** 2
+        max_array = (
+            self.prior_step.output.displacement_matrix * (2 * np.pi / period) ** 2
+        )
         self.prior_step.output.stats["standard"]["units_type"] = "acc"
         unit_factor = GAL_TO_PCTG
         self.output = containers.RotDMax(
@@ -271,13 +270,11 @@ class RotDOscMaxVelocity(BaseComponent):
     INPUT_CLASS = [containers.RotDOscillator]
 
     def calculate(self):
-        abs_matrix = np.abs(self.prior_step.output.velocity_matrix)
-        max_array = np.max(abs_matrix, axis=1)
         self.prior_step.output.stats["standard"]["units_type"] = "vel"
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
             damping=self.prior_step.output.damping,
-            oscillator_maxes=max_array,
+            oscillator_maxes=self.prior_step.output.velocity_matrix,
             stats=self.prior_step.output.stats,
             type="oscillator velocity",
         )
@@ -291,8 +288,7 @@ class RotDOscPseudoVelocity(BaseComponent):
 
     def calculate(self):
         period = self.prior_step.output.period
-        abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
-        max_array = np.max(abs_matrix, axis=1) * (2 * np.pi / period)
+        max_array = self.prior_step.output.displacement_matrix * (2 * np.pi / period)
         self.prior_step.output.stats["standard"]["units_type"] = "vel"
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
@@ -310,8 +306,7 @@ class RotDOscMaxDisplacement(BaseComponent):
     INPUT_CLASS = [containers.RotDOscillator]
 
     def calculate(self):
-        abs_matrix = np.abs(self.prior_step.output.displacement_matrix)
-        max_array = np.max(abs_matrix, axis=1)
+        max_array = self.prior_step.output.displacement_matrix
         self.prior_step.output.stats["standard"]["units_type"] = "disp"
         self.output = containers.RotDMax(
             period=self.prior_step.output.period,
