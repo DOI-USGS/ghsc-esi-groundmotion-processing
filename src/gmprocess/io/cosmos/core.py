@@ -321,7 +321,10 @@ def _read_channel(
     ):  # We multiply by UNIT_CONVERSIONS above, so this is cm/s/s
         response = {"input_units": "counts", "output_units": "cm/s/s"}
     else:
-        response = {"input_units": "counts", "output_units": hdr["standard"]["units"]}
+        response = {
+            "input_units": "counts",
+            "output_units": hdr["format_specific"]["physical_units"],
+        }
     trace.set_provenance("remove_response", response)
 
     # set new offset
