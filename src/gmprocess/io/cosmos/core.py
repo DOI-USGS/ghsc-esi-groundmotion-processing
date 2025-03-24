@@ -159,7 +159,9 @@ def is_cosmos(filename, config=None, v2=False):
         valid_markers.extend(
             [
                 "Velocity data",
+                "Corrected velocity",
                 "Displacement data",
+                "Corrected displacement",
             ]
         )
     if is_binary(filename):
@@ -301,19 +303,22 @@ def _read_channel(
         hdr["duration"] = (hdr["npts"] - 1) * hdr["delta"]
 
     # check units
-    unit = hdr["format_specific"]["physical_units"]
-    hdr["standard"]["units"] = unit
-    if unit in UNIT_CONVERSIONS:
-        data *= UNIT_CONVERSIONS[unit]
-    else:
-        if unit != "counts":
-            raise ValueError(f"COSMOS: {unit} is not a supported unit.")
+    if hdr["standard"]["units_type"] == "acc":
+        unit = hdr["format_specific"]["physical_units"]
+        hdr["standard"]["units"] = unit
+        if unit in UNIT_CONVERSIONS:
+            data *= UNIT_CONVERSIONS[unit]
+        else:
+            if unit != "counts":
+                raise ValueError(f"COSMOS: {unit} is not a supported unit.")
 
     trace = StationTrace(data.copy(), Stats(hdr.copy()), config=config)
 
     # record that this data has been converted to g, if it has
-    if hdr["standard"]["process_level"] != PROCESS_LEVELS["V0"]:
-        # We multiply by UNIT_CONVERSIONS above, so this is cm/s/s
+    if (
+        hdr["standard"]["process_level"] != PROCESS_LEVELS["V0"]
+        and hdr["standard"]["units_type"] == "acc"
+    ):  # We multiply by UNIT_CONVERSIONS above, so this is cm/s/s
         response = {"input_units": "counts", "output_units": "cm/s/s"}
         trace.set_provenance("remove_response", response)
 
