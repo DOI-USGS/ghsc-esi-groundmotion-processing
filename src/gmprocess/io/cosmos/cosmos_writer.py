@@ -10,7 +10,6 @@ from enum import Enum
 # third party imports
 import numpy as np
 import pandas as pd
-import scipy.constants as sp
 
 # local imports
 from gmprocess.io.asdf.stream_workspace import StreamWorkspace
@@ -601,9 +600,7 @@ class FloatHeader(object):
             # self.header[21] = (
             #     1 / trace.stats.standard.volts_to_counts
             # ) * MICRO_TO_VOLT  # 22 microvolts/count
-            self.header[21] = (
-                trace.stats.data_logger_sensitivity * 1e6
-            )  # Convert to microvolts
+            self.header[21] = trace.stats.data_logger_sensitivity
 
         # length of noise and signal windows
         if trace.has_parameter("signal_split"):  # only present in processed data??
@@ -631,7 +628,7 @@ class FloatHeader(object):
         self.header[40] = trace.stats.standard.instrument_damping  # 41
 
         if hasattr(trace.stats, "stage_1_sensitivity"):
-            self.header[41] = trace.stats.stage_1_sensitivity * sp.g
+            self.header[41] = trace.stats.stage_1_sensitivity
         if volume == Volume.PROCESSED:
             self.header[53] = trace.get_parameter("corner_frequencies")["lowpass"]
             self.header[56] = trace.get_parameter("corner_frequencies")["highpass"]
@@ -678,7 +675,7 @@ class DataBlock(object):
             quantity = "acceleration"
         npts = len(trace.data)
         # duration secs
-        itime = int(trace.stats.endtime - trace.stats.starttime)
+        itime = int(np.round(trace.stats.endtime - trace.stats.starttime))
 
         if volume == Volume.RAW:
             data_fmt = INT_DATA_FMT
@@ -923,8 +920,17 @@ class CosmosWriter(object):
                         sta = trace.stats.station
                         cha = trace.stats.channel
                         loc = trace.stats.location
-                        if inv:
-                            # Extract sensitivity from StationXML object
+                        # COSMOS files will have trace.stats.format_specific,
+                        # miniseed/stationxml will not.
+                        if trace.stats.format_specific:
+                            trace.stats["stage_1_sensitivity"] = (
+                                trace.stats.format_specific["stage_1_sensitivity"]
+                            )
+                            trace.stats["data_logger_sensitivity"] = (
+                                trace.stats.format_specific["data_logger_sensitivity"]
+                            )
+                        else:
+                            # Do somthing with StationXML information
                             tinv = inv.select(
                                 network=trace.stats.network,
                                 station=trace.stats.station,
@@ -938,7 +944,7 @@ class CosmosWriter(object):
                                 if idx == 0:
                                     instrument_sensitivity = stage.stage_gain
                                 else:
-                                    data_logger_sensitivity *= 1 / stage.stage_gain
+                                    data_logger_sensitivity *= stage.stage_gain
                             trace.stats["stage_1_sensitivity"] = instrument_sensitivity
                             trace.stats["data_logger_sensitivity"] = (
                                 data_logger_sensitivity
@@ -946,8 +952,8 @@ class CosmosWriter(object):
 
                         if trace.stats.standard.units_type != "acc":
                             msg = (
-                                "Only supporting acceleration data at this "
-                                f"time. Skipping channel {cha}."
+                                "Only supporting acceleration data at this time. "
+                                f"Skipping channel {cha}."
                             )
                             logging.info(msg)
                             continue

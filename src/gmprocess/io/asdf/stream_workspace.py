@@ -445,7 +445,7 @@ class StreamWorkspace(object):
                             if tmp_tr.id not in stream_trace_ids:
                                 stream_copy.append(tmp_tr)
                         del self.dataset.waveforms[net_sta][tag]
-            
+
             self.dataset.add_waveforms(stream_copy, tag=tag, event_id=event_id)
 
             # add processing provenance info from traces
@@ -461,7 +461,10 @@ class StreamWorkspace(object):
             # add supplemental stats, e.g., "standard" and "format_specific"
             sup_stats = stream.get_supplemental_stats()
             self.insert_aux(
-                dict_to_str(sup_stats), "StreamSupplementalStats", stream_path, overwrite
+                dict_to_str(sup_stats),
+                "StreamSupplementalStats",
+                stream_path,
+                overwrite,
             )
 
             # add processing parameters from streams

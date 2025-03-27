@@ -842,7 +842,11 @@ def _get_header_info(
         format_specific["stage_1_sensitivity"] = np.nan
 
     # for V0 files, set a standard field called instrument_sensitivity
+    # least_significant_bit is real header 22 in COSMOS docs.
+    # units are microvolts/count
     ctov = format_specific["least_significant_bit"] / MICRO_TO_VOLT
+    # stage_1_sensitivity is real header 43, i.e., "sensor sensitivity" in COSMOS docs
+    # with units of volts/g
     vtog = 1 / format_specific["stage_1_sensitivity"]
     if not np.isnan(format_specific["gain"]):
         gain = format_specific["gain"]
