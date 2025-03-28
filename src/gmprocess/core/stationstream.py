@@ -136,23 +136,27 @@ class StationStream(Stream):
 
                     # If not, resample
                     if not success:
-                        for tr in self.traces:
-                            tr.interpolate(
-                                sampling_rate=1 / new_delta,
-                                method="lanczos",
-                                starttime=newstart,
-                                npts=new_npts,
-                                a=N_LANCZOS,
-                            )
-                            tr.set_provenance(
-                                "interpolate",
-                                {
-                                    "interpolation_method": "lanczos",
-                                    "new_number_of_samples": new_npts,
-                                    "new_start_time": newstart,
-                                    "a": N_LANCZOS,
-                                },
-                            )
+                        try:
+                            for tr in self.traces:
+                                tr.interpolate(
+                                    sampling_rate=1 / new_delta,
+                                    method="lanczos",
+                                    starttime=newstart,
+                                    npts=new_npts,
+                                    a=N_LANCZOS,
+                                )
+                                tr.set_provenance(
+                                    "interpolate",
+                                    {
+                                        "interpolation_method": "lanczos",
+                                        "new_number_of_samples": new_npts,
+                                        "new_start_time": newstart,
+                                        "a": N_LANCZOS,
+                                    },
+                                )
+                        except BaseException:
+                            for tr in self.traces:
+                                tr.fail("Traces within stream are misaligned.")
             else:
                 # start/end times may be different but within tolerance
                 # to prevent further issues downstream, setting these
