@@ -137,7 +137,7 @@ INT_SAMPLE_DATA_BLOCK = """
 |<PROCESS>Created using gmprocess version 1.1.11
 |<eventURL>For updated information about the earthquake visit the URL below:
 |<eventURL>https://earthquake.usgs.gov/earthquakes/eventpage/nc71126864
-   45000 acceleration pts, approx  449 secs, units=counts (50),Format=(1I8)
+   45000 acceleration pts, approx  450 secs, units=counts (50),Format=(1I8)
   -11547
   -11307
   -11515
