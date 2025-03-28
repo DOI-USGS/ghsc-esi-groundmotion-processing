@@ -623,6 +623,16 @@ class FloatHeader(object):
         self.header[33] = trace.stats.delta  # 34
         self.header[34] = dtime  # 35
 
+        # Find detrend to put in header:
+        dprov = trace.get_provenance("detrend")
+        detrend_values = [
+            p["prov_attributes"]["value"]
+            for p in dprov
+            if "value" in p["prov_attributes"]
+        ]
+        if detrend_values:
+            self.header[35] = detrend_values[0]
+
         # Sensor/channel parameters
         self.header[39] = 1 / trace.stats.standard.instrument_period  # 40
         self.header[40] = trace.stats.standard.instrument_damping  # 41

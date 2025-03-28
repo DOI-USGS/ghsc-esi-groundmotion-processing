@@ -208,13 +208,13 @@ class StationTrace(Trace):
                 elif is_horizcomp:
                     logging.warning(
                         "Found vertical orientation in trace %s, which seems to be a horizontal component. Assuming vertical orientation is incorrect.",
-                        trace_id
+                        trace_id,
                     )
                 else:
                     header["channel"] = header["channel"][0:-1] + "Z"
                     logging.warning(
                         "Found vertical orientation in trace %s. Component direction is unknown from channel name, so renaming channel to vertical component 'Z'.",
-                        trace_id
+                        trace_id,
                     )
 
         super(StationTrace, self).__init__(data=data, header=header)
@@ -298,7 +298,7 @@ class StationTrace(Trace):
     def passed(self):
         """Has this trace passed checks?"""
         return not self.has_parameter("failure")
-    
+
     @property
     def is_horizontal(self):
         return "z" not in self.stats.channel.lower()
@@ -500,14 +500,14 @@ class StationTrace(Trace):
             type (str):
                  Method to use for detrending.
         """
-
-        self.set_provenance(
-            "detrend",
-            {
-                "detrending_method": type,
-            },
-        )
-        return super().detrend(type=type)
+        prov_dict = {"detrending_method": type}
+        if type in ["constant", "demean"]:
+            prov_dict["value"] = np.mean(self.data)
+            self.data = np.array(self.data, dtype=float) - prov_dict["value"]
+        else:
+            super().detrend(type=type)
+        self.set_provenance("detrend", prov_dict)
+        return self
 
     def trim(
         self,
