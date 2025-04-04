@@ -1,5 +1,7 @@
 ## main
 
+## 2.4.0 / 2025-04-04
+
 - Enhancements
   - Store only the peak value instead of the whole trace for waveform_metrics, resulting in significantly less memory usage.
   - Use P phase pickers within time window around P phase travel time to set split time between noise (pre-event window) and signal (event window). Update the `pickers` section of the configuration file to include relevant parameters.
