@@ -930,34 +930,12 @@ class CosmosWriter(object):
                         sta = trace.stats.station
                         cha = trace.stats.channel
                         loc = trace.stats.location
-                        # COSMOS files will have trace.stats.format_specific,
-                        # miniseed/stationxml will not.
                         if trace.stats.format_specific:
                             trace.stats["stage_1_sensitivity"] = (
                                 trace.stats.format_specific["stage_1_sensitivity"]
                             )
                             trace.stats["data_logger_sensitivity"] = (
                                 trace.stats.format_specific["data_logger_sensitivity"]
-                            )
-                        else:
-                            # Do somthing with StationXML information
-                            tinv = inv.select(
-                                network=trace.stats.network,
-                                station=trace.stats.station,
-                                channel=trace.stats.channel,
-                                location=trace.stats.location,
-                                time=trace.stats.starttime,
-                            )
-                            stages = tinv[0][0][0].response.response_stages
-                            instrument_sensitivity, data_logger_sensitivity = 1, 1
-                            for idx, stage in enumerate(stages):
-                                if idx == 0:
-                                    instrument_sensitivity = stage.stage_gain
-                                else:
-                                    data_logger_sensitivity *= stage.stage_gain
-                            trace.stats["stage_1_sensitivity"] = instrument_sensitivity
-                            trace.stats["data_logger_sensitivity"] = (
-                                data_logger_sensitivity
                             )
 
                         if trace.stats.standard.units_type != "acc":
