@@ -254,6 +254,25 @@ def read_obspy(filename, config=None, **kwargs):
             # Apply conversion factor if one was specified for this format
             trace.data *= float(config["read"]["sac_conversion_factor"])
 
+        if "_format" in trace.stats and trace.stats._format.lower() == "MSEED":
+
+            stages = tinventory[0][0][0].response.response_stages
+            data_logger_sensitivity = 1
+            for idx, stage in enumerate(stages):
+                if idx == 0:
+                    sensor_sensitivity = stage.stage_gain
+                else:
+                    data_logger_sensitivity *= stage.stage_gain
+            # Unit conversions used by the COSMOS writer for real hdr 22 and 42
+            # Sensor sensitivity (row 9 column 2)
+            trace.stats["format_specific"]["stage_1_sensitivity"] = (
+                float(sensor_sensitivity) * sp.g
+            )  # Units will be in (units per motion) / g
+            # Data logger sensitivity (row 5 column 2)
+            trace.stats["format_specific"]["data_logger_sensitivity"] = (
+                1 / float(data_logger_sensitivity)
+            ) * 1e6  # It's the inverse bit-weight in microvolts
+
         traces.append(trace)
     if no_match:
         stream = StationStream(traces=traces, config=config)
