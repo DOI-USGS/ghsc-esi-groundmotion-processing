@@ -7,6 +7,7 @@ import os
 import re
 
 import numpy as np
+import scipy.constants as sp
 from obspy import read_inventory
 from obspy.core.stream import read
 
@@ -254,20 +255,21 @@ def read_obspy(filename, config=None, **kwargs):
             # Apply conversion factor if one was specified for this format
             trace.data *= float(config["read"]["sac_conversion_factor"])
 
-        if "_format" in trace.stats and trace.stats._format.lower() == "MSEED":
+        if "_format" in trace.stats and trace.stats._format.lower() == "mseed":
+            # Unit conversions used by the COSMOS writer for real hdr 22 and 42
+            # This code assumes that specific stages in the instrument response
+            # correspond to the sensor sensitivity and the data logger sensitivity.
 
             stages = tinventory[0][0][0].response.response_stages
             data_logger_sensitivity = 1
             for idx, stage in enumerate(stages):
                 if idx == 0:
-                    sensor_sensitivity = stage.stage_gain
+                    # Sensor sensitivity (row 9 column 2)
+                    trace.stats["format_specific"]["stage_1_sensitivity"] = (
+                        float(stage.stage_gain)
+                    ) * sp.g  # Units will be in (units per motion) / g
                 else:
                     data_logger_sensitivity *= stage.stage_gain
-            # Unit conversions used by the COSMOS writer for real hdr 22 and 42
-            # Sensor sensitivity (row 9 column 2)
-            trace.stats["format_specific"]["stage_1_sensitivity"] = (
-                float(sensor_sensitivity) * sp.g
-            )  # Units will be in (units per motion) / g
             # Data logger sensitivity (row 5 column 2)
             trace.stats["format_specific"]["data_logger_sensitivity"] = (
                 1 / float(data_logger_sensitivity)
